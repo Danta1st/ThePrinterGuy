@@ -32,7 +32,17 @@ public class TimerUtilities : MonoBehaviour
 
     public float getTimeLeft()
     {
-        return Time.time - _endTime;
+        float timeLeft;
+        if (!_isElapsed)
+        {
+            timeLeft = _endTime - Time.time;
+        }
+        else
+        {
+            timeLeft = 0;
+        }
+
+        return timeLeft;
     }
 
     public void DestroyTimer()
@@ -40,4 +50,18 @@ public class TimerUtilities : MonoBehaviour
         Destroy(this);
     }
 
+    public void ExtendTimer(float extensionTime)
+    {
+        _endTime += extensionTime;
+    }
+
+    public void DecreaseTimer(float decreaseTime)
+    {
+        _endTime -= decreaseTime;
+    }
+
+    public bool isElapsed()
+    {
+        return _isElapsed;
+    }
 }
