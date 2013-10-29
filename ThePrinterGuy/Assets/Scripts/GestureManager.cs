@@ -364,7 +364,6 @@ public class GestureManager : MonoBehaviour
                     _touchBeganObject = hit.collider.gameObject;
                 }
             }
-        }
 #endif
     }
 
