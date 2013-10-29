@@ -58,7 +58,7 @@ public class TimerUtilities : MonoBehaviour
         _pauseTimer = true;
     }
 
-    public void Timer()
+    IEnumerator Timer()
     {
         while(_timeLeft > 0)
         {
@@ -73,5 +73,6 @@ public class TimerUtilities : MonoBehaviour
             }
         }
     }
+
 
 }
