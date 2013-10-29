@@ -20,16 +20,87 @@ public class GestureManager : MonoBehaviour
     private Dictionary<int,float> _touchBeginTimes = new Dictionary<int, float>();
     private Dictionary<int,Vector2> _touchBeginPositions = new Dictionary<int, Vector2>();
     private bool _isPressing = false;
+    private bool _isSwiping = false;
+    private GameObject _touchBeganObject;
+
+    private bool _canTap = true;
+    private bool _canDoubletap = true;
+    private bool _canPress = true;
+    private bool _canSwipe = true;
+    private bool _canPinchSpread = true;
+    private bool _canDrag = true;
+    #endregion
+
+    #region Properties
+    public void DisableTap()
+    {
+        _canTap = false;
+    }
+
+    public void EnableTap()
+    {
+        _canTap = true;
+    }
+
+    public void DisableDoubleTap()
+    {
+        _canDoubletap = false;
+    }
+
+    public void EnableDoubleTap()
+    {
+        _canDoubletap = true;
+    }
+
+    public void DisablePress()
+    {
+        _canPress = false;
+    }
+
+    public void EnablePress()
+    {
+        _canPress = true;
+    }
+
+    public void DisableSwipes()
+    {
+        _canSwipe = false;
+    }
+
+    public void EnableSwipes()
+    {
+        _canSwipe = true;
+    }
+
+    public void DisablePinchSpread()
+    {
+        _canPinchSpread = false;
+    }
+
+    public void EnablePinchSpread()
+    {
+        _canPinchSpread = true;
+    }
+
+    public void DisableDrag()
+    {
+        _canDrag = false;
+    }
+
+    public void EnableDrag()
+    {
+        _canDrag = true;
+    }
     #endregion
 
     #region Delegates & Events
-    public delegate void TapAction(Vector2 screenPosition);
+    public delegate void TapAction(GameObject go, Vector2 screenPosition);
     public static event TapAction OnTap;
 
-    public delegate void DoubleTapAction(Vector2 screenPosition);
+    public delegate void DoubleTapAction(GameObject go, Vector2 screenPosition);
     public static event DoubleTapAction OnDoubleTap;
 
-    public delegate void PressAction(Vector2 screenPosition);
+    public delegate void PressAction(GameObject go, Vector2 screenPosition);
     public static event PressAction OnPress;
 
     public delegate void SwipeRightAction();
@@ -43,6 +114,9 @@ public class GestureManager : MonoBehaviour
 
     public delegate void SwipeDownAction();
     public static event SwipeDownAction OnSwipeDown;
+
+    public delegate void DragAction(GameObject go, Vector2 deltaPosition);
+    public static event DragAction OnDrag;
 
     public delegate void PinchAction(float deltaDistance);
     public static event PinchAction OnPinch;
@@ -61,7 +135,10 @@ public class GestureManager : MonoBehaviour
         }
 
 
+
     #if UNITY_ANDROID
+        UpdateTouchBeginGameObject();
+
         UpdateTouchBeginTimes();
 
         UpdateTouchBeginPositions();
@@ -70,32 +147,34 @@ public class GestureManager : MonoBehaviour
         {
             var primaryFinger = Input.GetTouch(0);
 
-            //FIXME: Fix single tap solution. This method reacts on fast swipes and it should not.
-            if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) <= _tapThreshold)
+            //Single Tap
+            if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1)
             {
-                if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1)
+                if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) < _tapThreshold)
                 {
+                    //Single Tap Event
                     if(OnTap != null)
-                        OnTap(primaryFinger.position);
+                        OnTap(_touchBeganObject, primaryFinger.position);
                 }
             }
 
             //Double Tap
-            if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 2)
+            else if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 2)
             {
                 //DoubleTap Event
                 if(OnDoubleTap != null)
-                    OnDoubleTap(primaryFinger.position);
+                    OnDoubleTap(_touchBeganObject, primaryFinger.position);
             }
 
-            //FIXME: OnPress is currently counting time wrong. if phase switching to stationary while above treshold OnPress is called.
-            if(primaryFinger.phase == TouchPhase.Stationary)
+            //Press
+            else if(primaryFinger.phase == TouchPhase.Stationary && _isSwiping == false)
             {
                 if(Time.time - _touchBeginTimes[primaryFinger.fingerId] >= _pressThreshold)
                 {
                     if(OnPress != null && _isPressing == false)
                     {
-                        OnPress(primaryFinger.position);
+                        //Press Event
+                        OnPress(_touchBeganObject, primaryFinger.position);
                         _isPressing = true;
                     }
                 }
@@ -104,8 +183,10 @@ public class GestureManager : MonoBehaviour
             }
 
             //Swipes
-            if(primaryFinger.phase == TouchPhase.Moved && primaryFinger.deltaTime < 0.02f)
+            else if(primaryFinger.phase == TouchPhase.Moved &&
+                    (Time.time - _touchBeginTimes[primaryFinger.fingerId]) > _tapThreshold)
             {
+                _isSwiping = true;
                 //Horizontal swipes
                 if(primaryFinger.deltaPosition.x >= _swipeThreshold &&
                     Mathf.Abs(primaryFinger.deltaPosition.y) <= _swipeOffset)
@@ -113,6 +194,7 @@ public class GestureManager : MonoBehaviour
                     //SwipeRight Event
                     if(OnSwipeRight != null)
                         OnSwipeRight();
+
                 }
                 else if(primaryFinger.deltaPosition.x <= _swipeThreshold * -1.0f &&
                          Mathf.Abs(primaryFinger.deltaPosition.y) <= _swipeOffset)
@@ -139,8 +221,19 @@ public class GestureManager : MonoBehaviour
                         OnSwipeDown();
                 }
             }
+            else if(primaryFinger.phase == TouchPhase.Ended)
+            {
+                _isSwiping = false;
+                _touchBeganObject = null;
+            }
 
-            //TODO: Implement Drag
+            //Drag
+            if(primaryFinger.phase == TouchPhase.Moved)
+            {
+                //Drag Event
+                if(OnDrag != null)
+                    OnDrag(_touchBeganObject, primaryFinger.deltaPosition);
+            }
         }
 
 
@@ -182,11 +275,21 @@ public class GestureManager : MonoBehaviour
     #endif
 
     #if UNITY_EDITOR
-        if(Input.GetKeyDown(KeyCode.Return))
+         if(Input.GetMouseButtonUp(0))
+         {
+             var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+        
+             if(OnTap != null)
+                 OnTap(_touchBeganObject, mousePosition);
+         }
+
+        if(Input.GetMouseButtonUp(1))
         {
+            var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+
             //DoubleTap Event
             if(OnDoubleTap != null)
-                OnDoubleTap(Vector2.zero);
+                OnDoubleTap(_touchBeganObject, mousePosition);
         }
 
         if(Input.GetKeyDown(KeyCode.RightArrow))
@@ -233,6 +336,38 @@ public class GestureManager : MonoBehaviour
     }
 
     #region Methods
+    void UpdateTouchBeginGameObject()
+    {
+#if UNITY_ANDROID
+        foreach(Touch t in Input.touches)
+        {
+            if(t.fingerId == 0 && t.phase == TouchPhase.Began)
+            {
+
+            Ray ray = camera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+                {
+                    _touchBeganObject = hit.collider.gameObject;
+                }
+            }
+        }
+#else
+        if(Input.GetMouseButtonDown(0))
+        {
+            Ray ray = camera.ViewportPointToRay(Input.mousePosition);
+            RaycastHit hit;
+    
+            if (Physics.Raycast(ray, out hit))
+                {
+                    _touchBeganObject = hit.collider.gameObject;
+                }
+            }
+        }
+#endif
+    }
+
     void UpdateTouchBeginTimes()
     {
         foreach(Touch t in Input.touches)
