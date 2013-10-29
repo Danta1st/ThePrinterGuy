@@ -8,6 +8,8 @@ public class TimerUtilities : MonoBehaviour
 
     private float _startTime;
     private float _endTime;
+    private float _timeLeft;
+    private bool _isPaused = true;
 
     private bool _isElapsed = false;
 
@@ -16,33 +18,19 @@ public class TimerUtilities : MonoBehaviour
     {
         _startTime = Time.time;
         _endTime = _startTime + _duration;
+        _timeLeft = _duration;
+        StartCoroutine(Timer());
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(_isElapsed == false)
-        {
-            if(Time.time >= _endTime)
-            {
-                _isElapsed = true;
-            }
-        }
+
     }
 
     public float getTimeLeft()
     {
-        float timeLeft;
-        if (!_isElapsed)
-        {
-            timeLeft = _endTime - Time.time;
-        }
-        else
-        {
-            timeLeft = 0;
-        }
-
-        return timeLeft;
+        return _timeLeft;
     }
 
     public void DestroyTimer()
@@ -60,8 +48,30 @@ public class TimerUtilities : MonoBehaviour
         _endTime -= decreaseTime;
     }
 
-    public bool isElapsed()
+    public bool IsElapsed()
     {
         return _isElapsed;
     }
+
+    public void pauseTimer()
+    {
+        _pauseTimer = true;
+    }
+
+    public void Timer()
+    {
+        while(_timeLeft > 0)
+        {
+            if(_pauseTimer == false)
+            {
+                _timeLeft = _endTime - Time.time;
+                yield return new WaitForSeconds(1f);
+            }
+            else
+            {
+                yield break;
+            }
+        }
+    }
+
 }
