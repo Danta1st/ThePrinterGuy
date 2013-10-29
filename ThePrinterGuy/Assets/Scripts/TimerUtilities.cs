@@ -3,32 +3,41 @@ using System.Collections;
 
 public class TimerUtilities : MonoBehaviour
 {
+    #region Inspector variables
     [SerializeField]
-    private float _duration = 60;
+    private float _duration;
+    #endregion
 
+    #region Private variables
     private float _startTime;
     private float _endTime;
     private float _timeLeft;
-    private bool _isPaused = true;
+    private bool _isPaused = false;
+    private float _pauseTime;
+    private float _pauseOffset = 0f;
+    #endregion
 
-    private bool _isElapsed = false;
-
-    // Use this for initialization
-    void Start()
-    {
-        _startTime = Time.time;
-        _endTime = _startTime + _duration;
-        _timeLeft = _duration;
-        StartCoroutine(Timer());
-    }
-
-    // Update is called once per frame
+    #region Unity Functions
     void Update()
     {
+        if(_timeLeft > 0 && !_isPaused)
+        {
+            _timeLeft = _endTime - Time.time - _pauseOffset;
+            if(_timeLeft < 0)
+            {
+                _timeLeft = 0;
+            }
+        }
+    }
+    #endregion
 
+    #region Timer methods
+    public float GetDuration()
+    {
+        return _duration;
     }
 
-    public float getTimeLeft()
+    public float GetTimeLeft()
     {
         return _timeLeft;
     }
@@ -48,31 +57,36 @@ public class TimerUtilities : MonoBehaviour
         _endTime -= decreaseTime;
     }
 
-    public bool IsElapsed()
+    public void StartTimer(float duration)
     {
-        return _isElapsed;
+        _duration = duration;
+        _startTime = Time.time;
+        _endTime = _startTime + _duration;
+        _timeLeft = duration;
     }
 
-    public void pauseTimer()
+    public void StartTimer()
     {
-        _pauseTimer = true;
+        _startTime = Time.time;
+        _endTime = _startTime + _duration;
+        _timeLeft = _duration;
     }
 
-    IEnumerator Timer()
+    public void PauseTimer()
     {
-        while(_timeLeft > 0)
-        {
-            if(_pauseTimer == false)
-            {
-                _timeLeft = _endTime - Time.time;
-                yield return new WaitForSeconds(1f);
-            }
-            else
-            {
-                yield break;
-            }
-        }
+        _pauseTime = _pauseOffset + Time.time;
+        _isPaused = true;
     }
 
+    public void ResumeTimer()
+    {
+        _pauseOffset = Time.time - _pauseTime;
+        _isPaused = false;
+    }
 
+    public float GetTimeLeftInPctDecimal()
+    {
+        return _timeLeft / _duration;
+    }
+    #endregion
 }
