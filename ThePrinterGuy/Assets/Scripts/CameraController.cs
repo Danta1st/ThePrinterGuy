@@ -3,21 +3,85 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour
 {
-    public GameObject printer;
+    #region Editor Publics
+    [SerializeField]
+    private iTween.EaseType easeType = iTween.EaseType.easeOutBack;
+    [SerializeField]
+    private float rotationTime = 0.5f;
+    [SerializeField]
+    private GameObject cameraRotationPoint;
+    #endregion
 
-    OnStart(){
+    #region Privates
+    private bool RotationInProcess = false;
+    #endregion
 
-
-}
-
+    #region OnEnableOnDisable
     void OnEnable()
     {
-        GestureManager.OnSwipeRight += CameraRotation;
-
+        GestureManager.OnSwipeRight += CameraRotationLeft;
+        GestureManager.OnSwipeLeft += CameraRotationRight;
+        GestureManager.OnSwipeDown += CameraRotationUp;
     }
 
-    public void CameraRotation()
+    void OnDisable()
     {
-        iTween.MoveTo(GameObject, "lookTarget", printer.transform.position, "position", new Vector3(-10,3,0));
+        GestureManager.OnSwipeRight -= CameraRotationLeft;
+        GestureManager.OnSwipeLeft -= CameraRotationRight;
+        GestureManager.OnSwipeDown -= CameraRotationUp;
     }
+    #endregion
+
+    #region Methods
+    public void CameraRotationLeft()
+    {
+        if(RotationInProcess == false)
+        {
+            RotateCamera(0, 90, 0);
+        }
+    }
+
+    public void CameraRotationRight()
+    {
+        if(RotationInProcess == false)
+        {
+            RotateCamera(0, -90, 0);
+        }
+    }
+
+    public void CameraRotationUp()
+    {
+        if(RotationInProcess == false)
+        {
+            GestureManager.OnSwipeRight -= CameraRotationLeft;
+            GestureManager.OnSwipeLeft -= CameraRotationRight;
+            GestureManager.OnSwipeDown -= CameraRotationUp;
+            GestureManager.OnSwipeUp += CameraRotationDown;
+            RotateCamera(60, 0, 0);
+        }
+    }
+
+    public void CameraRotationDown()
+    {
+        if(RotationInProcess == false)
+        {
+            GestureManager.OnSwipeRight += CameraRotationLeft;
+            GestureManager.OnSwipeLeft += CameraRotationRight;
+            GestureManager.OnSwipeUp -= CameraRotationDown;
+            GestureManager.OnSwipeDown += CameraRotationUp;
+            RotateCamera(-60, 0, 0);
+        }
+    }
+
+    public void RotateCamera(float rotateX, float rotateY, float rotateZ)
+    {
+            RotationInProcess = true;
+            iTween.RotateAdd(cameraRotationPoint, iTween.Hash("x", cameraRotationPoint.transform.position.x + rotateX, "y", cameraRotationPoint.transform.position.y + rotateY, "z", cameraRotationPoint.transform.position.y + rotateZ, "time", rotationTime, "easeType", easeType, "onComplete", "CameraRotationStopped", "onCompleteTarget", gameObject));
+    }
+
+    public void CameraRotationStopped()
+    {
+        RotationInProcess = false;
+    }
+    #endregion
 }
