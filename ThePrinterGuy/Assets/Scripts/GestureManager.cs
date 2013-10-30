@@ -343,20 +343,21 @@ public class GestureManager : MonoBehaviour
         {
             if(t.fingerId == 0 && t.phase == TouchPhase.Began)
             {
-
-            Ray ray = camera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0));
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
-                {
-                    _touchBeganObject = hit.collider.gameObject;
-                }
+                var touchPosition = new Vector3(Input.touches[0].position.x, Input.touches[0].position.y, 0);
+                Ray ray = camera.ScreenPointToRay(touchPosition);
+                RaycastHit hit;
+    
+                if (Physics.Raycast(ray, out hit))
+                    {
+                        _touchBeganObject = hit.collider.gameObject;
+                    }
             }
         }
-#else
+#endif
+#if UNITY_EDITOR
         if(Input.GetMouseButtonDown(0))
         {
-            Ray ray = camera.ViewportPointToRay(Input.mousePosition);
+            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
     
             if (Physics.Raycast(ray, out hit))
