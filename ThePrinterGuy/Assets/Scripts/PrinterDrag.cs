@@ -5,10 +5,6 @@ public class PrinterDrag : MonoBehaviour {
 
     #region Editor Publics
     [SerializeField]
-    private LayerMask _layerMask;
-    [SerializeField]
-    private GameObject _targetObject;
-    [SerializeField]
     private iTween.EaseType _easeType = iTween.EaseType.easeOutBack;
     [SerializeField]
     private Vector3 _destination = Vector3.zero;
@@ -47,23 +43,19 @@ public class PrinterDrag : MonoBehaviour {
     #region Class Methods
     public void SmoothDrag(GameObject go, Vector2 _screenPosition)
     {
-        Ray _ray = _camera.ScreenPointToRay(_screenPosition);
-
-        if(Physics.Raycast(_ray, out _hit, 100, _layerMask.value))
+        if(go.Equals(gameObject))
         {
-            if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("Default"))
-            {
-                if(_targetObject != null)
+                if(go != null)
                 {
                     if(!_isBack)
                     {
-                        iTween.MoveAdd(_targetObject, iTween.Hash("amount", _destination,
+                        iTween.MoveAdd(go, iTween.Hash("amount", _destination,
                                                                     "time", _duration));
                         _isBack = true;
                     }
                     else
                     {
-                        iTween.MoveAdd(_targetObject, iTween.Hash("amount", -_destination,
+                        iTween.MoveAdd(go, iTween.Hash("amount", -_destination,
                                                                     "time", _duration));
                         _isBack = false;
                     }
@@ -72,7 +64,6 @@ public class PrinterDrag : MonoBehaviour {
                 {
                     Debug.Log("Missing object");
                 }
-            }
         }
     }
     #endregion
