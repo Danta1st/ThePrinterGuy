@@ -33,12 +33,12 @@ public class GUICamera : MonoBehaviour
 
     void OnEnable()
     {
-        GestureManager.OnDrag += CheckCollision;
+        GestureManager.OnTap += CheckCollision;
     }
 
     void OnDisable()
     {
-        GestureManager.OnDrag -= CheckCollision;
+        GestureManager.OnTap -= CheckCollision;
     }
 
     public void EnableGUI()
@@ -114,6 +114,15 @@ public class GUICamera : MonoBehaviour
 
             if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
             {
+                //General GUI.
+                //-----------------------------------------------------------------------//
+                if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
+                {
+                    if(_hit.collider.gameObject.name == "RestartButton")
+                    {
+                        RestartLevel();
+                    }
+                }
                 //ToolBox.
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUIToolBox"))
@@ -169,10 +178,17 @@ public class GUICamera : MonoBehaviour
             }
         }
     }
+
+    #region GUI Restart
+    private void RestartLevel()
+    {
+        Application.LoadLevel(Application.loadedLevel);
+    }
     #endregion
 
-    #region ToolBox
-    private void UpdateToolBoxPage(){
+    #region GUI ToolBox
+    private void UpdateToolBoxPage()
+    {
         int _index = 0;
         foreach(GameObject _toolBoxPage in _toolBoxPages)
         {
@@ -188,5 +204,7 @@ public class GUICamera : MonoBehaviour
             }
         }
     }
+    #endregion
+
     #endregion
 }
