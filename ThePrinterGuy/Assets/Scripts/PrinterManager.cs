@@ -38,7 +38,8 @@ public class PrinterManager : MonoBehaviour
 	private TimerUtilities BlueTimer;
 	private TimerUtilities GreenTimer;
 	#endregion
-
+	
+	#region Unity methods
 	void Start () 
 	{
 		BlackTimer = gameObject.AddComponent<TimerUtilities>();
@@ -57,7 +58,9 @@ public class PrinterManager : MonoBehaviour
 	{
 		
 	}
+	#endregion
 	
+	#region Public methods
 	public void StartPrinter(float timeToPrint)
 	{
 		StartCoroutine_Auto(Print(timeToPrint));
@@ -100,7 +103,9 @@ public class PrinterManager : MonoBehaviour
 			GreenTimer.StartTimer(greenPrintLifetime, greenPrintDecayRate);
 		}
 	}
+	#endregion
 	
+	#region Private methods
 	private IEnumerator Print(float timeToPrint)
 	{
 		while(true)
@@ -136,4 +141,5 @@ public class PrinterManager : MonoBehaviour
 			yield return new WaitForSeconds(timeToPrint);
 		}
 	}
+	#endregion
 }
