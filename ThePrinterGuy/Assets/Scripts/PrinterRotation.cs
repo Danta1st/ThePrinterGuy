@@ -47,7 +47,7 @@ public class PrinterRotation : MonoBehaviour
     #region Class Methods
     void SmoothRotation(GameObject go, Vector2 _screenPosition)
     {
-        if(gameObject.Equals(go))
+        if(go != null && gameObject.Equals(go))
         {
             if(go != null)
             {

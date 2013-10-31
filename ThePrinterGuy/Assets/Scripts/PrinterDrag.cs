@@ -43,7 +43,7 @@ public class PrinterDrag : MonoBehaviour {
     #region Class Methods
     public void SmoothDrag(GameObject go, Vector2 _screenPosition)
     {
-        if(go.Equals(gameObject))
+        if(go != null && gameObject.Equals(go))
         {
                 if(go != null)
                 {
