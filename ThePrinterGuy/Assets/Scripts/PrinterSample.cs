@@ -62,7 +62,7 @@ public class PrinterSample : MonoBehaviour
                                                 "easeType", iTween.EaseType.easeOutBack));
     }
 
-    void Move(GameObject go, Vector2 deltaPosition)
+    void Move(GameObject go, Vector2 screenPosition, Vector2 deltaPosition)
     {
         var newPos = new Vector3(deltaPosition.x, deltaPosition.y, 0);
         go.transform.position += newPos * Time.deltaTime;

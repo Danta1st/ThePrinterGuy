@@ -113,6 +113,7 @@ GameObject:
   - 92: {fileID: 932340689}
   - 124: {fileID: 932340688}
   - 81: {fileID: 932340687}
+  - 114: {fileID: 932340692}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -180,6 +181,21 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!114 &932340692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 932340686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e98db1efff22e9d49b145d0c1d9a600e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tapThreshold: .100000001
+  _pressThreshold: 1
+  _swipeThreshold: 10
+  _swipeOffset: 2
 --- !u!1 &1115503602
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,14 +298,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1710377060}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4512d5ddc12a9344fb5b576e55388186, type: 3}
+  m_Script: {fileID: 11500000, guid: 9808fad9141165248a72a42ad007be1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _layerMask: {}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   _targetObject: {fileID: 458969974}
   _easeType: 27
-  _maxAngle: {x: 0, y: 0, z: 90}
-  _duration: 3
-  _camera: {fileID: 0}
-  _startAngle: {x: 0, y: 0, z: 0}
-  _isBack: 0
+  _maxAngle: {x: 0, y: 90, z: 0}
+  _duration: .5
