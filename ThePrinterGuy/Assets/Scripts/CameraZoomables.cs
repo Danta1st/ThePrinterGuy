@@ -6,7 +6,7 @@ public class CameraZoomables : MonoBehaviour
     #region Editor Publics
     [SerializeField]
     private float _zoomTime = 2.0f;
-    [SerializeField]
+    //[SerializeField]
     //private int _layerID = 8;
     #endregion
 

@@ -8,10 +8,9 @@ public class CameraZooming : MonoBehaviour
     private float _zoomFieldOfView = 20.0f;
     [SerializeField]
     private float _fieldOfViewTimeAdjustment = 0.5f;
-    [SerializeField]
-    private string _zoomPointName = "Point";
+    //[SerializeField]
+    private string _zoomPointName = "CameraZoomPosition";
     #endregion
-
 
     #region Privates
     private Transform _movePointTransform;
@@ -31,7 +30,7 @@ public class CameraZooming : MonoBehaviour
 
     void Awake()
     {
-        _movePointTransform = gameObject.transform.GetComponentInChildren<Transform>();
+        _movePointTransform = gameObject.transform.FindChild(_zoomPointName);
 
         if(_movePointTransform == null)
         {
