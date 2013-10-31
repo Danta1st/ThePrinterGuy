@@ -115,7 +115,7 @@ public class GestureManager : MonoBehaviour
     public delegate void SwipeDownAction();
     public static event SwipeDownAction OnSwipeDown;
 
-    public delegate void DragAction(GameObject go, Vector2 deltaPosition);
+    public delegate void DragAction(GameObject go, Vector2 screenPosition, Vector2 deltaPosition);
     public static event DragAction OnDrag;
 
     public delegate void PinchAction(float deltaDistance);
@@ -232,7 +232,7 @@ public class GestureManager : MonoBehaviour
             {
                 //Drag Event
                 if(OnDrag != null)
-                    OnDrag(_touchBeganObject, primaryFinger.deltaPosition);
+                    OnDrag(_touchBeganObject, primaryFinger.position, primaryFinger.deltaPosition);
             }
         }
 
@@ -275,7 +275,7 @@ public class GestureManager : MonoBehaviour
     #endif
 
     #if UNITY_EDITOR
-         if(Input.GetMouseButtonUp(0))
+         if(Input.GetMouseButtonDown(0))
          {
              var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
 
@@ -283,9 +283,9 @@ public class GestureManager : MonoBehaviour
                 RaycastHit hit;
     
                 if (Physics.Raycast(ray, out hit))
-                    {
-                        _touchBeganObject = hit.collider.gameObject;
-                    }
+                {
+                    _touchBeganObject = hit.collider.gameObject;
+                }
 
              if(OnTap != null)
                  OnTap(_touchBeganObject, mousePosition);
@@ -346,7 +346,7 @@ public class GestureManager : MonoBehaviour
     #region Methods
     void UpdateTouchBeginGameObject()
     {
-#if UNITY_ANDROID
+	#if UNITY_ANDROID
         foreach(Touch t in Input.touches)
         {
             if(t.fingerId == 0 && t.phase == TouchPhase.Began)
@@ -356,24 +356,29 @@ public class GestureManager : MonoBehaviour
                 RaycastHit hit;
     
                 if (Physics.Raycast(ray, out hit))
-                    {
-                        _touchBeganObject = hit.collider.gameObject;
-                    }
+                {
+                    _touchBeganObject = hit.collider.gameObject;
+                }
             }
+			else if(t.fingerId == 0 && t.phase == TouchPhase.Ended)
+				_touchBeganObject = null;
         }
-#endif
-#if UNITY_EDITOR
+	#endif
+	#if UNITY_EDITOR
         if(Input.GetMouseButtonDown(0))
         {
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
-                {
-                    _touchBeganObject = hit.collider.gameObject;
-                }
+            {
+                _touchBeganObject = hit.collider.gameObject;
             }
-#endif
+        }
+		else if(Input.GetMouseButtonUp(0))
+			_touchBeganObject = null;
+		
+	#endif
     }
 
     void UpdateTouchBeginTimes()
