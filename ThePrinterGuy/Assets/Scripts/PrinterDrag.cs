@@ -17,6 +17,7 @@ public class PrinterDrag : MonoBehaviour {
     private RaycastHit _hit;
     private Vector3 _startPos;
     private bool _isBack = false;
+    private bool AnimationInProcess = false;
     #endregion
 
     void OnEnable(){
@@ -43,28 +44,25 @@ public class PrinterDrag : MonoBehaviour {
     #region Class Methods
     public void SmoothDrag(GameObject go, Vector2 _screenPosition)
     {
-        if(go != null && gameObject.Equals(go))
+        if(go != null && gameObject.Equals(go ) && AnimationInProcess == false)
         {
-                if(go != null)
-                {
-                    if(!_isBack)
-                    {
-                        iTween.MoveAdd(go, iTween.Hash("amount", _destination,
-                                                                    "time", _duration));
-                        _isBack = true;
-                    }
-                    else
-                    {
-                        iTween.MoveAdd(go, iTween.Hash("amount", -_destination,
-                                                                    "time", _duration));
-                        _isBack = false;
-                    }
-                }
-                else
-                {
-                    Debug.Log("Missing object");
-                }
+            AnimationInProcess = true;
+            if(!_isBack)
+            {
+                iTween.MoveAdd(go, iTween.Hash("amount", _destination, "time", _duration, "onComplete", "AnimationStopped"));
+                _isBack = true;
+            }
+            else
+            {
+                iTween.MoveAdd(go, iTween.Hash("amount", -_destination, "time", _duration, "onComplete", "AnimationStopped"));
+                _isBack = false;
+            }
         }
+    }
+
+    public void AnimationStopped()
+    {
+        AnimationInProcess = false;
     }
     #endregion
 }
