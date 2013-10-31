@@ -3,9 +3,12 @@ using System.Collections;
 
 public class LightController : MonoBehaviour
 {
+    #region Editor Variables
     [SerializeField]
     private float _blinkRate = 0.5f;
+    #endregion
 
+    #region Private variables
     private Material _lightOn = (Material)Resources.Load("Materials/lightOnMat", typeof(Material));
     private Material _lightOff = (Material)Resources.Load("Materials/lightOffMat", typeof(Material));
 
@@ -13,19 +16,9 @@ public class LightController : MonoBehaviour
     private GameObject _go;
     private enum States { On, Off };
     private States _state = States.Off;
+    #endregion
 
-	// Use this for initialization
-	void Start ()
-    {
-	
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	
-	}
-
+    #region Public methods
     public void InitializeLight(GameObject go, bool enabled)
     {
         _isEnabled = enabled;
@@ -64,7 +57,9 @@ public class LightController : MonoBehaviour
         StopCoroutine("Blink");
         UpdateTexture();
     }
+    #endregion
 
+    #region Private methods
     private void UpdateTexture()
     {
         if(_isEnabled)
@@ -113,4 +108,5 @@ public class LightController : MonoBehaviour
             yield return new WaitForSeconds(_blinkRate);
         }
     }
+    #endregion
 }
