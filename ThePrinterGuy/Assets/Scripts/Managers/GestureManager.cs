@@ -278,7 +278,15 @@ public class GestureManager : MonoBehaviour
          if(Input.GetMouseButtonUp(0))
          {
              var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
-        
+
+                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+    
+                if (Physics.Raycast(ray, out hit))
+                    {
+                        _touchBeganObject = hit.collider.gameObject;
+                    }
+
              if(OnTap != null)
                  OnTap(_touchBeganObject, mousePosition);
          }
@@ -359,7 +367,7 @@ public class GestureManager : MonoBehaviour
         {
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-    
+
             if (Physics.Raycast(ray, out hit))
                 {
                     _touchBeganObject = hit.collider.gameObject;
