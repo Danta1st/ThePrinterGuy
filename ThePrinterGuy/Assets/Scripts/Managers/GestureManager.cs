@@ -360,8 +360,6 @@ public class GestureManager : MonoBehaviour
                     _touchBeganObject = hit.collider.gameObject;
                 }
             }
-			else if(t.fingerId == 0 && t.phase == TouchPhase.Ended)
-				_touchBeganObject = null;
         }
 	#endif
 	#if UNITY_EDITOR
@@ -375,8 +373,6 @@ public class GestureManager : MonoBehaviour
                 _touchBeganObject = hit.collider.gameObject;
             }
         }
-		else if(Input.GetMouseButtonUp(0))
-			_touchBeganObject = null;
 		
 	#endif
     }
