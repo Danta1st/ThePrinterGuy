@@ -33,12 +33,12 @@ public class GUICamera : MonoBehaviour
 
     void OnEnable()
     {
-        GestureManager.OnTap += CheckCollision;
+        GestureManager.OnDrag += CheckCollision;
     }
 
     void OnDisable()
     {
-        GestureManager.OnTap -= CheckCollision;
+        GestureManager.OnDrag -= CheckCollision;
     }
 
     public void EnableGUI()
