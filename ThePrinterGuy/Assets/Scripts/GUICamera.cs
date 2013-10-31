@@ -27,7 +27,7 @@ public class GUICamera : MonoBehaviour
     #endregion
 
     #region Delegates and Events
-    public delegate void InventoryPress(string buttonName, Vector2 position);
+    public delegate void InventoryPress(string buttonName, Vector2 position, Vector2 deltaPosition);
     public static event InventoryPress OnInventoryPress;
     #endregion
 
@@ -35,11 +35,13 @@ public class GUICamera : MonoBehaviour
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
+        GestureManager.OnDrag += CheckCollision;
     }
 
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
+        GestureManager.OnDrag -= CheckCollision;
     }
 
     public void EnableGUI()
@@ -119,7 +121,7 @@ public class GUICamera : MonoBehaviour
 
             if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
             {
-                //General GUI.
+                //General GUI layer mask.
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
                 {
@@ -128,7 +130,7 @@ public class GUICamera : MonoBehaviour
                         RestartLevel();
                     }
                 }
-                //ToolBox.
+                //ToolBox layer mask.
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUIToolBox"))
                 {
@@ -169,14 +171,26 @@ public class GUICamera : MonoBehaviour
                         }
                         UpdateToolBoxPage();
                     }
-                    else
-                    {
-                        Debug.Log(_hit.collider.gameObject.name);
+                }
+                //-----------------------------------------------------------------------//
+            }
+        }
+    }
+    private void CheckCollision(GameObject _go, Vector2 _screenPosition, Vector2 _deltaPosition)
+    {
+        if(_isGUI)
+        {
+            Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
 
-                        if(OnInventoryPress != null)
-                        {
-                            OnInventoryPress(_hit.collider.gameObject.name, _screenPosition);
-                        }
+            if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
+            {
+                //ToolBox layer mask.
+                //-----------------------------------------------------------------------//
+                if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUIToolBox"))
+                {
+                    if(OnInventoryPress != null)
+                    {
+                        OnInventoryPress(_hit.collider.gameObject.name, _screenPosition, _deltaPosition);
                     }
                 }
                 //-----------------------------------------------------------------------//
