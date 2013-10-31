@@ -6,8 +6,6 @@ public class CameraZoomables : MonoBehaviour
     #region Editor Publics
     [SerializeField]
     private float _zoomTime = 2.0f;
-    //[SerializeField]
-    //private int _layerID = 8;
     #endregion
 
     #region Privates
@@ -18,7 +16,6 @@ public class CameraZoomables : MonoBehaviour
 
     void Awake()
     {
-        //_zoomObjects = FindGameObjectsWithLayer(_layerID);
         _zoomObjects = GameObject.FindGameObjectsWithTag("Player");
     }
 
@@ -47,9 +44,9 @@ public class CameraZoomables : MonoBehaviour
     {
         if(!_isZoomed)
         {
-            foreach (GameObject zoomObject in _zoomObjects)
+            foreach(GameObject zoomObject in _zoomObjects)
             {
-                if( thisGameObj == zoomObject)
+                if(thisGameObj == zoomObject)
                 {
                     thisGameObj.GetComponent<CameraZooming>().ZoomIn(_zoomCamera, _zoomTime);
                     _isZoomed = true;
@@ -62,9 +59,9 @@ public class CameraZoomables : MonoBehaviour
     {
         if(_isZoomed)
         {
-            foreach (GameObject zoomObject in _zoomObjects)
+            foreach(GameObject zoomObject in _zoomObjects)
             {
-                if( thisGameObj == zoomObject)
+                if(thisGameObj == zoomObject)
                 {
                     thisGameObj.GetComponent<CameraZooming>().ZoomOut(_zoomCamera, _zoomTime);
                     _isZoomed = false;
@@ -74,8 +71,8 @@ public class CameraZoomables : MonoBehaviour
     }
     #endregion
 
-    /*
-    GameObject[] FindGameObjectsWithLayer(int layerH)
+    //Not used, should return the GameObjects with a specific layer - for identification of zoomable targets.
+    GameObject[] FindGameObjectsWithLayer(int thisLayer)
     {
         GameObject[] allGameObjectsArray = (GameObject[]) Object.FindObjectsOfType(typeof(GameObject));
 
@@ -84,8 +81,7 @@ public class CameraZoomables : MonoBehaviour
 
         for (var i = 0; i < allGameObjectsArray.Length; i++)
         {
-            Debug.Log("GOGOGO!!!");
-            if(allGameObjectsArray[i].layer == layerH)
+            if(allGameObjectsArray[i].layer == thisLayer)
             {
                 layerObjectsList.Add(allGameObjectsArray[i]);
             }
@@ -93,11 +89,10 @@ public class CameraZoomables : MonoBehaviour
 
         if(layerObjectsList.Count == 0)
         {
-            Debug.Log("No objects with layer " + _layerID);
+            Debug.Log("No objects with layer found");
             return null;
         }
 
         return layerObjectsList.ToArray();
     }
-    */
 }

@@ -8,8 +8,8 @@ public class CameraZooming : MonoBehaviour
     private float _zoomFieldOfView = 20.0f;
     [SerializeField]
     private float _fieldOfViewTimeAdjustment = 0.5f;
-    //[SerializeField]
-    private string _zoomPointName = "CameraZoomPosition";
+    [SerializeField]
+    private string _cameraZoomPositionName = "CameraZoomPosition";
     #endregion
 
     #region Privates
@@ -30,11 +30,11 @@ public class CameraZooming : MonoBehaviour
 
     void Awake()
     {
-        _movePointTransform = gameObject.transform.FindChild(_zoomPointName);
+        _movePointTransform = gameObject.transform.FindChild(_cameraZoomPositionName);
 
         if(_movePointTransform == null)
         {
-            Debug.Log("No child transforms found for " + _zoomPointName);
+            Debug.Log("No child transforms found for " + _cameraZoomPositionName);
         }
     }
 
