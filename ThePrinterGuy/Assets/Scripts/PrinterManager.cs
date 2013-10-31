@@ -47,10 +47,6 @@ public class PrinterManager : MonoBehaviour
 		RedTimer = gameObject.AddComponent<TimerUtilities>();
 		GreenTimer = gameObject.AddComponent<TimerUtilities>();
 		
-		BlackTimer.StartTimer(blackPrintLifetime, blackPrintDecayRate);
-		BlueTimer.StartTimer(bluePrintLifetime, bluePrintDecayRate);
-		RedTimer.StartTimer(redPrintLifetime, redPrintDecayRate);
-		GreenTimer.StartTimer(greenPrintLifetime, greenPrintDecayRate);
 		StartPrinter(_timeToPrintPage);
 	}
 	
@@ -63,6 +59,10 @@ public class PrinterManager : MonoBehaviour
 	#region Public methods
 	public void StartPrinter(float timeToPrint)
 	{
+		BlackTimer.StartTimer(blackPrintLifetime, blackPrintDecayRate);
+		BlueTimer.StartTimer(bluePrintLifetime, bluePrintDecayRate);
+		RedTimer.StartTimer(redPrintLifetime, redPrintDecayRate);
+		GreenTimer.StartTimer(greenPrintLifetime, greenPrintDecayRate);
 		StartCoroutine_Auto(Print(timeToPrint));
 	}
 	
