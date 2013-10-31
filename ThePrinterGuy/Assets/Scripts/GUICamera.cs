@@ -18,6 +18,7 @@ public class GUICamera : MonoBehaviour
     private RaycastHit _hit;
     private bool _isGUI = false;
 
+    private GameObject _toolBoxSelectionObject;
     private GameObject _toolBoxObject;
     private Vector3 _toolBoxStartPos;
     private Vector3 _toolBoxTargetPos;
@@ -27,7 +28,7 @@ public class GUICamera : MonoBehaviour
     #endregion
 
     #region Delegates and Events
-    public delegate void InventoryPress(string buttonName, Vector2 position, Vector2 deltaPosition);
+    public delegate void InventoryPress(string buttonName);
     public static event InventoryPress OnInventoryPress;
     #endregion
 
@@ -35,13 +36,11 @@ public class GUICamera : MonoBehaviour
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
-        GestureManager.OnDrag += CheckCollision;
     }
 
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
-        GestureManager.OnDrag -= CheckCollision;
     }
 
     public void EnableGUI()
@@ -91,9 +90,14 @@ public class GUICamera : MonoBehaviour
             {
                 _toolBoxObject = _guiObject;
             }
+
+            if(_guiObject.name == "Selection")
+            {
+                _toolBoxSelectionObject = _guiObject;
+            }
         }
 
-        Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 50);
+        Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 5);
         _toolBoxObject.transform.position = _tempToolBoxPos;
 
         _toolBoxStartPos = _toolBoxObject.transform.position;
@@ -102,6 +106,7 @@ public class GUICamera : MonoBehaviour
         _toolBoxObject.transform.FindChild("DestinationPosition").gameObject.SetActive(false);
         _toolBoxMaxPageCount = _toolBoxPages.Length;
 
+        _toolBoxSelectionObject.SetActive(false);
         EnableGUI();
     }
 
@@ -139,16 +144,13 @@ public class GUICamera : MonoBehaviour
                         if(_isToolBoxOpen)
                         {
                             _isToolBoxOpen = false;
-                            iTween.MoveTo(_toolBoxObject, iTween.Hash("x", _toolBoxStartPos.x,
-                                                            "y", _toolBoxObject.transform.position.y,
-                                                            "z", _toolBoxObject.transform.position.z, "duration", 1));
+                            CloseToolBox();
+
                         }
                         else if(!_isToolBoxOpen)
                         {
                             _isToolBoxOpen = true;
-                            iTween.MoveTo(_toolBoxObject, iTween.Hash("x", _toolBoxTargetPos.x,
-                                                            "y", _toolBoxObject.transform.position.y,
-                                                            "z", _toolBoxObject.transform.position.z, "duration", 1));
+                            OpenToolBox();
                         }
                     }
                     else if(_hit.collider.gameObject.name == "ToolBoxPageUp")
@@ -171,29 +173,24 @@ public class GUICamera : MonoBehaviour
                         }
                         UpdateToolBoxPage();
                     }
-                }
-                //-----------------------------------------------------------------------//
-            }
-        }
-    }
-    private void CheckCollision(GameObject _go, Vector2 _screenPosition, Vector2 _deltaPosition)
-    {
-        if(_isGUI)
-        {
-            Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
-
-            if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
-            {
-                //ToolBox layer mask.
-                //-----------------------------------------------------------------------//
-                if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUIToolBox"))
-                {
-                    if(OnInventoryPress != null)
+                    else
                     {
-                        OnInventoryPress(_hit.collider.gameObject.name, _screenPosition, _deltaPosition);
+                        if(OnInventoryPress != null)
+                        {
+                            OnInventoryPress(_hit.collider.gameObject.name);
+                        }
+
+                        _toolBoxSelectionObject.SetActive(true);
+                        Vector3 _tempPos = _hit.collider.transform.position;
+                        _tempPos.z = 6;
+                        _toolBoxSelectionObject.transform.position = _tempPos;
                     }
                 }
                 //-----------------------------------------------------------------------//
+            }
+            else
+            {
+                _toolBoxSelectionObject.SetActive(false);
             }
         }
     }
@@ -222,6 +219,22 @@ public class GUICamera : MonoBehaviour
                 _toolBoxPage.SetActive(false);
             }
         }
+    }
+
+    private void OpenToolBox()
+    {
+        iTween.MoveTo(_toolBoxObject, iTween.Hash("x", _toolBoxTargetPos.x,
+                                        "y", _toolBoxObject.transform.position.y,
+                                        "z", _toolBoxObject.transform.position.z, "duration", 1));
+    }
+
+    private void CloseToolBox()
+    {
+        iTween.MoveTo(_toolBoxObject, iTween.Hash("x", _toolBoxStartPos.x,
+                                        "y", _toolBoxObject.transform.position.y,
+                                        "z", _toolBoxObject.transform.position.z, "duration", 1));
+
+        _toolBoxSelectionObject.SetActive(false);
     }
     #endregion
 
