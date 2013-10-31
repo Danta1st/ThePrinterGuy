@@ -34,12 +34,12 @@ public class GUICamera : MonoBehaviour
     #region Enable and Disable
     void OnEnable()
     {
-        GestureManager.OnDrag += CheckCollision;
+        GestureManager.OnTap += CheckCollision;
     }
 
     void OnDisable()
     {
-        GestureManager.OnDrag -= CheckCollision;
+        GestureManager.OnTap -= CheckCollision;
     }
 
     public void EnableGUI()
