@@ -31,14 +31,15 @@ public class GUICamera : MonoBehaviour
     public static event InventoryPress OnInventoryPress;
     #endregion
 
+    #region Enable and Disable
     void OnEnable()
     {
-        GestureManager.OnTap += CheckCollision;
+        GestureManager.OnDrag += CheckCollision;
     }
 
     void OnDisable()
     {
-        GestureManager.OnTap -= CheckCollision;
+        GestureManager.OnDrag -= CheckCollision;
     }
 
     public void EnableGUI()
@@ -74,6 +75,7 @@ public class GUICamera : MonoBehaviour
             }
         }
     }
+    #endregion
 
     #region Start and Update
     // Use this for initialization
@@ -81,15 +83,18 @@ public class GUICamera : MonoBehaviour
     {
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
 
-        foreach(GameObject _gui in _guiList)
+        foreach(GameObject _guiObject in _guiList)
         {
-            if(_gui.name == "ToolBox")
+            if(_guiObject.name == "ToolBox")
             {
-                _toolBoxObject = _gui;
-                _toolBoxStartPos = _gui.transform.position;
+                _toolBoxObject = _guiObject;
             }
         }
 
+        Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 50);
+        _toolBoxObject.transform.position = _tempToolBoxPos;
+
+        _toolBoxStartPos = _toolBoxObject.transform.position;
         _toolBoxTargetPos = _toolBoxObject.transform.FindChild("DestinationPosition").position;
         _toolBoxTargetPos.z = _toolBoxStartPos.z;
         _toolBoxObject.transform.FindChild("DestinationPosition").gameObject.SetActive(false);
