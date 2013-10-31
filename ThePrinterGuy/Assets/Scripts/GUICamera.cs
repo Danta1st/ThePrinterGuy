@@ -84,6 +84,8 @@ public class GUICamera : MonoBehaviour
     {
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
 
+        //Find specific gui objects in the gui list.
+        //--------------------------------------------------//
         foreach(GameObject _guiObject in _guiList)
         {
             if(_guiObject.name == "ToolBox")
@@ -96,7 +98,10 @@ public class GUICamera : MonoBehaviour
                 _toolBoxSelectionObject = _guiObject;
             }
         }
+        //--------------------------------------------------//
 
+        //Initialization of various tool box variable.
+        //--------------------------------------------------//
         Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 5);
         _toolBoxObject.transform.position = _tempToolBoxPos;
 
@@ -107,6 +112,8 @@ public class GUICamera : MonoBehaviour
         _toolBoxMaxPageCount = _toolBoxPages.Length;
 
         _toolBoxSelectionObject.SetActive(false);
+        //--------------------------------------------------//
+
         EnableGUI();
     }
 
