@@ -20,9 +20,18 @@ public class GUICamera : MonoBehaviour
     private Camera _guiCamera;
     private RaycastHit _hit;
     private bool _isGUI = false;
+    private bool _canTouch = true;
     private float _timeScale = 0.0f;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
+
+    private float _scaleMultiplier;
+
+    //Ingame menu variables.
+    private GameObject _ingameMenuObject;
+    private Vector3 _ingameMenuStartPos;
+    private Vector3 _ingameMenuTargetPos;
+    private float _ingameMenuDuration = 0.2f;
 
     //Tool box variables.
     private GameObject _toolBoxSelectionObject;
@@ -84,51 +93,81 @@ public class GUICamera : MonoBehaviour
             }
         }
     }
+
+    public void EnableGUIElementAll()
+    {
+        foreach(GameObject _gui in _guiList)
+        {
+            _gui.SetActive(true);
+        }
+    }
+
+    public void DisableGUIElementAll()
+    {
+        foreach(GameObject _gui in _guiList)
+        {
+            _gui.SetActive(false);
+        }
+    }
     #endregion
 
     #region Start and Update
     // Use this for initialization
     void Start()
     {
+        //GUI Camera and rescale of GUI elements.
+        //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
-        _guiAnchorPointObject = GameObject.Find("GUIElements");
-        _guiAnchorPointObject.transform.position = _guiCamera.transform.position;
+        transform.position = _guiCamera.transform.position;
+
+//        _scaleMultiplierY = Screen.width / Screen.height;
+//        Debug.Log(Screen.height + " " + _scaleMultiplier);
+//        _guiCamera.orthographicSize = _guiCamera.orthographicSize * _scaleMultiplierY;
+//        GameObject.Find("GUIGame").transform.localScale *= _scaleMultiplierY;
+        //--------------------------------------------------//
 
         //Find specific gui objects in the gui list.
         //--------------------------------------------------//
         foreach(GameObject _guiObject in _guiList)
         {
+            if(_guiObject.name == "IngameMenu")
+            {
+                _ingameMenuObject = _guiObject.transform.FindChild("StatsOverview").gameObject;
+
+                Vector3 _tempIngameMenuPos = new Vector3(_ingameMenuObject.transform.position.x, _ingameMenuObject.transform.position.y, 5);
+                _ingameMenuObject.transform.position = _tempIngameMenuPos;
+
+                _ingameMenuStartPos = _ingameMenuObject.transform.position;
+                _ingameMenuTargetPos = _guiObject.transform.FindChild("IngameDestinationPosition").position;
+                _ingameMenuTargetPos.x = _ingameMenuStartPos.x;
+                _ingameMenuTargetPos.z = _ingameMenuStartPos.z;
+
+                _guiObject.transform.FindChild("IngameDestinationPosition").gameObject.SetActive(false);
+
+                _guiObject.SetActive(false);
+            }
+
             if(_guiObject.name == "ToolBox")
             {
                 _toolBoxObject = _guiObject;
+
+                Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 5);
+                _toolBoxObject.transform.position = _tempToolBoxPos;
+    
+                _toolBoxStartPos = _toolBoxObject.transform.position;
+                _toolBoxTargetPos = _toolBoxObject.transform.FindChild("ToolBoxDestinationPosition").position;
+                _toolBoxTargetPos.y = _toolBoxStartPos.y;
+                _toolBoxTargetPos.z = _toolBoxStartPos.z;
+    
+                _toolBoxObject.transform.FindChild("ToolBoxDestinationPosition").gameObject.SetActive(false);
+                _toolBoxMaxPageCount = _toolBoxPages.Length;
             }
 
-            if(_guiObject.name == "Selection")
+            if(_guiObject.name == "ToolBoxSelection")
             {
                 _toolBoxSelectionObject = _guiObject;
+                _toolBoxSelectionObject.SetActive(false);
             }
-        }
-        //--------------------------------------------------//
-
-        //Initialization of various tool box variable.
-        //--------------------------------------------------//
-        if(_toolBoxObject != null)
-        {
-            Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 5);
-            _toolBoxObject.transform.position = _tempToolBoxPos;
-    
-            _toolBoxStartPos = _toolBoxObject.transform.position;
-            _toolBoxTargetPos = _toolBoxObject.transform.FindChild("DestinationPosition").position;
-            _toolBoxTargetPos.y = _toolBoxStartPos.y;
-            _toolBoxTargetPos.z = _toolBoxStartPos.z;
-    
-            _toolBoxObject.transform.FindChild("DestinationPosition").gameObject.SetActive(false);
-            _toolBoxMaxPageCount = _toolBoxPages.Length;
-        }
-
-        if(_toolBoxSelectionObject != null)
-        {
-            _toolBoxSelectionObject.SetActive(false);
         }
         //--------------------------------------------------//
 
@@ -145,7 +184,7 @@ public class GUICamera : MonoBehaviour
     #region Class Methods
     private void CheckCollision(GameObject _go, Vector2 _screenPosition)
     {
-        if(_isGUI)
+        if(_isGUI && _canTouch)
         {
             Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
 
@@ -155,13 +194,31 @@ public class GUICamera : MonoBehaviour
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
                 {
-                    if(_hit.collider.gameObject.name == "RestartButton")
+
+                }
+                //GUI Menu layer mask.
+                //-----------------------------------------------------------------------//
+                if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUIMenu"))
+                {
+                    if(_hit.collider.gameObject.name == "Pause")
+                    {
+                        OpenIngameMenu();
+                    }
+                    else if(_hit.collider.gameObject.name == "Resume")
+                    {
+                        CloseIngameMenu();
+                    }
+                    else if(_hit.collider.gameObject.name == "Restart")
                     {
                         RestartLevel();
                     }
-                    else if(_hit.collider.gameObject.name == "PauseButton")
+                    else if(_hit.collider.gameObject.name == "Quit")
                     {
-                        //Do something.
+                        QuitLevel();
+                    }
+                    else if(_hit.collider.gameObject.name == "Settings")
+                    {
+
                     }
                 }
                 //ToolBox layer mask.
@@ -253,10 +310,55 @@ public class GUICamera : MonoBehaviour
     }
     #endregion
 
-    #region GUI Restart
+    #region GUI Ingame Menu
+    private void OpenIngameMenu()
+    {
+        SaveGUIState();
+        DisableGUIElement("Pause");
+        EnableGUIElement("IngameMenu");
+
+        MoveGUIElement(_ingameMenuObject, _ingameMenuTargetPos, _ingameMenuDuration);
+    }
+
+    private void CloseIngameMenu()
+    {
+        float _start = 0.0f;
+        float _end = 3.0f;
+        _canTouch = false;
+        StartCoroutine(UnpauseTimer(_start ,_end));
+    }
+
+    IEnumerator UnpauseTimer(float _start, float _end)
+    {
+        while(true)
+        {
+            if(_start < _end)
+            {
+                _start++;
+            }
+            else
+            {
+                _canTouch = true;
+                MoveGUIElement(_ingameMenuObject, _ingameMenuStartPos, _ingameMenuDuration);
+                yield return new WaitForSeconds(_ingameMenuDuration+0.1f);
+                LoadGUIState();
+                DisableGUIElement("IngameMenu");
+                break;
+            }
+            yield return new WaitForSeconds(1);
+        }
+    }
+    #endregion
+
+    #region GUI Restart and Quit
     private void RestartLevel()
     {
         Application.LoadLevel(Application.loadedLevel);
+    }
+
+    private void QuitLevel()
+    {
+        //Application.LoadLevel("SOMETHING SCENE");
     }
     #endregion
 
