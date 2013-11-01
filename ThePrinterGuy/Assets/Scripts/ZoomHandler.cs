@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ZoomHandler : MonoBehaviour
 {
@@ -9,74 +10,144 @@ public class ZoomHandler : MonoBehaviour
     #endregion
 
     #region Privates
-    private GameObject[] _zoomObjects;
     private Camera _zoomCamera;
     private static bool _canZoom = true;
     private bool _isZoomed = false;
     private GameObject _tmpObj;
+	private List<GameObject> _zoomables = new List<GameObject>();
     #endregion
+	
+	#region Delegates & Events
+	public delegate void OnFreeroamAction();
+	public static event OnFreeroamAction OnFreeroam;
+	
+	public delegate void OnJamTask();
+	public static event OnJamTask OnJam;
+	
+	public delegate void OnTrayTask();
+	public static event OnTrayTask OnTray;
+	
+	public delegate void OnInkTask();
+	public static event OnInkTask OnInk;
+	
+	public delegate void OnPopoutTask();
+	public static event OnPopoutTask onPopout;
+	#endregion
 
     void Awake()
     {
-        _zoomObjects = GameObject.FindGameObjectsWithTag("Zoomable");
+		_zoomables.Add(GameObject.FindGameObjectWithTag("TrayTask"));
+		_zoomables.Add(GameObject.FindGameObjectWithTag("InkTask"));
+		_zoomables.Add(GameObject.FindGameObjectWithTag("JamTask"));
+		_zoomables.Add(GameObject.FindGameObjectWithTag("PopoutTask"));
     }
-
-    // Use this for initialization
+	 
     void Start()
     {
         _zoomCamera = Camera.main;
+		Camera.main.transform.LookAt(Vector3.zero);
     }
 
     #region OnEnable / Disable
     void OnEnable()
     {
-        GestureManager.OnTap += OnTapAction;
-        GestureManager.OnDoubleTap += OnDoubleTapAction;
+        GestureManager.OnTap += GoToTask;
+//        GestureManager.OnDoubleTap += OnDoubleTapAction;
+		GestureManager.OnSwipeDown += GoToFreeRoam;
     }
 
     void OnDisable()
     {
-        GestureManager.OnTap -= OnTapAction;
-        GestureManager.OnDoubleTap -= OnDoubleTapAction;
+        GestureManager.OnTap -= GoToTask;
+//        GestureManager.OnDoubleTap -= OnDoubleTapAction;
+		GestureManager.OnSwipeDown -= GoToFreeRoam;
     }
     #endregion
 
     #region TouchEvents
-    private void OnTapAction(GameObject thisGameObj, Vector2 screenPos)
+	private void CheckSwitch(GameObject go)
+	{
+		switch(go.tag)
+		{
+		case "TrayTask":
+			SetObjectsIn(go);
+			if(OnJam != null)
+				OnJam();
+			break;
+		case "InkTask":
+			SetObjectsIn(go);
+			if(OnTray != null)
+				OnTray();
+			break;
+		case "JamTask":
+			SetObjectsIn(go);
+			if(OnInk != null)
+				OnInk();
+			break;
+		case "PopoutTask":
+			SetObjectsIn(go);
+			if(onPopout != null)
+				onPopout();
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void SetObjectsIn(GameObject tmpObj)
+	{
+        _tmpObj = tmpObj;
+        _canZoom = false;
+        _tmpObj.GetComponent<ZoomController>().ZoomIn(_zoomCamera, _zoomTime);
+        _isZoomed = true;
+	}
+	
+	private void SetObjectsOut()
+	{
+        _canZoom = false;
+        _tmpObj.GetComponent<ZoomController>().ZoomOut(_zoomCamera, _zoomTime);
+        _isZoomed = false;
+        _tmpObj = null;
+	}
+	
+	//Zoom in on Task
+    private void GoToTask(GameObject thisGameObj, Vector2 screenPos)
     {
         if(_canZoom && !_isZoomed)
         {
-
-            foreach(GameObject zoomObject in _zoomObjects)
-            {
-                if(thisGameObj == zoomObject)
-                {
-                    _tmpObj = thisGameObj;
-                    _canZoom = false;
-                    _tmpObj.GetComponent<ZoomController>().ZoomIn(_zoomCamera, _zoomTime);
-                    _isZoomed = true;
-                }
-            }
-
+			foreach(GameObject go in _zoomables)
+			{
+				if(go != null)
+				{
+					if(go.tag == thisGameObj.tag){
+						CheckSwitch(go);
+					}
+				}
+			}
         }
     }
-
-    private void OnDoubleTapAction(GameObject thisGameObj, Vector2 screenPos)
+	
+	//Zoom out from task
+	private void GoToFreeRoam()
+    //private void goBackToFreeRoam(GameObject thisGameObj, Vector2 screenPos)
     {
         if(_canZoom && _isZoomed)
         {
-            GameObject tmpObj;
-            foreach(GameObject zoomObject in _zoomObjects)
-            {
-                if(thisGameObj == zoomObject && thisGameObj == _tmpObj)
-                {
-                    _canZoom = false;
-                    _tmpObj.GetComponent<ZoomController>().ZoomOut(_zoomCamera, _zoomTime);
-                    _isZoomed = false;
-                    _tmpObj = null;
-                }
-            }
-
+			SetObjectsOut();
+			
+			if(OnFreeroam != null)
+				OnFreeroam();
+			
+			//Method needed if using a DoubleTap Solution
+//			foreach(GameObject go in _zoomables)
+//			{
+//				if(go.tag == thisGameObj.tag && _tmpObj.tag == thisGameObj.tag)
+//				{
+//					SetObjectsOut();
+//					if(OnFreeroam != null)
+//						OnFreeroam();
+//				}
+//			}
         }
     }
     #endregion
@@ -84,30 +155,5 @@ public class ZoomHandler : MonoBehaviour
     public static void SetAnimationReady()
     {
         _canZoom = true;
-    }
-
-    //Not used, should return the GameObjects with a specific layer - for identification of zoomable targets.
-    GameObject[] FindGameObjectsWithLayer(int thisLayer)
-    {
-        GameObject[] allGameObjectsArray = (GameObject[]) Object.FindObjectsOfType(typeof(GameObject));
-
-        System.Collections.Generic.List<GameObject> layerObjectsList
-            = new System.Collections.Generic.List<GameObject>();
-
-        for (var i = 0; i < allGameObjectsArray.Length; i++)
-        {
-            if(allGameObjectsArray[i].layer == thisLayer)
-            {
-                layerObjectsList.Add(allGameObjectsArray[i]);
-            }
-        }
-
-        if(layerObjectsList.Count == 0)
-        {
-            Debug.Log("No objects with layer found");
-            return null;
-        }
-
-        return layerObjectsList.ToArray();
     }
 }

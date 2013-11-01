@@ -90,7 +90,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &293336989
 Transform:
   m_ObjectHideFlags: 0
@@ -129,6 +129,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zoomTime: 2
+--- !u!1 &297731765
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 297731766}
+  m_Layer: 0
+  m_Name: Dynamic Objects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &297731766
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 297731765}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1 &411002798
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +257,7 @@ GameObject:
   - 114: {fileID: 1209495002}
   m_Layer: 0
   m_Name: Panel
-  m_TagString: Zoomable
+  m_TagString: TrayTask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -297,8 +323,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zoomFieldOfView: 20
-  _fieldOfViewTimeAdjustment: .5
-  _cameraZoomPositionName: CameraZoomPosition
 --- !u!1 &1384380394
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,7 +332,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1384380395}
   m_Layer: 0
-  m_Name: CameraZoomPosition
+  m_Name: CamPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -339,7 +363,7 @@ GameObject:
   - 114: {fileID: 1431622669}
   m_Layer: 0
   m_Name: Panel2
-  m_TagString: Zoomable
+  m_TagString: JamTask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -405,8 +429,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zoomFieldOfView: 20
-  _fieldOfViewTimeAdjustment: .5
-  _cameraZoomPositionName: CameraZoomPosition
 --- !u!1 &1447542901
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,7 +438,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1447542902}
   m_Layer: 0
-  m_Name: CameraZoomPosition
+  m_Name: CamPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -442,7 +464,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1890509720}
   m_Layer: 0
-  m_Name: CameraZoomPosition
+  m_Name: CamPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -471,6 +493,8 @@ GameObject:
   - 92: {fileID: 1909213932}
   - 124: {fileID: 1909213931}
   - 81: {fileID: 1909213930}
+  - 114: {fileID: 1909213935}
+  - 114: {fileID: 1909213936}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -538,6 +562,33 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!114 &1909213935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1909213929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523dd8f161775564cbef006f9e4ca18b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _zoomTime: 2
+--- !u!114 &1909213936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1909213929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e98db1efff22e9d49b145d0c1d9a600e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tapThreshold: .100000001
+  _pressThreshold: 1
+  _swipeThreshold: 10
+  _swipeOffset: 2
 --- !u!1 &2008768981
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,7 +603,7 @@ GameObject:
   - 114: {fileID: 2008768986}
   m_Layer: 0
   m_Name: Panel3
-  m_TagString: Zoomable
+  m_TagString: InkTask
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -618,8 +669,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zoomFieldOfView: 20
-  _fieldOfViewTimeAdjustment: .5
-  _cameraZoomPositionName: CameraZoomPosition
 --- !u!1 &2052378034
 GameObject:
   m_ObjectHideFlags: 0
