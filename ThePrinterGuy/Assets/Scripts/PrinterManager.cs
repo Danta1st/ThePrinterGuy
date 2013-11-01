@@ -5,8 +5,6 @@ public class PrinterManager : MonoBehaviour
 {
 	#region Public variables
 	[SerializeField]
-	private int _paperlimit = 500;
-	[SerializeField]
 	private float _timeToPrintPage = 0.2f;
 	[SerializeField]
 	private float blackPrintLifetime = 100;
@@ -24,6 +22,17 @@ public class PrinterManager : MonoBehaviour
 	private float greenPrintLifetime = 100;
 	[SerializeField]
 	private float greenPrintDecayRate = 1;
+	
+	[SerializeField]
+	private int _paperlimit = 500;
+	[SerializeField]
+	private int _starterPapercount = 500;
+	[SerializeField]
+	private float _stressDecreasePerSecond = 1;
+	[SerializeField]
+	private float _stressIncreasePerFill = 10;
+	[SerializeField]
+	private float _stressThresholdPerPenalty = 50;
 	#endregion
 	
 	#region Private variables
@@ -33,10 +42,18 @@ public class PrinterManager : MonoBehaviour
 	private bool _isBroken = false;
 	
 	private int _printedPapers = 0;
+	private int _printerproblems = 0;
 	private TimerUtilities BlackTimer;
 	private TimerUtilities RedTimer;
 	private TimerUtilities BlueTimer;
 	private TimerUtilities GreenTimer;
+	private PaperTray paperTray;
+	private int PaperTrayPenalties;
+	#endregion
+	
+	#region Delegates & Events
+	public delegate void PagePrinted(GameObject go);
+	public static event PagePrinted OnPagePrinted;
 	#endregion
 	
 	#region Unity methods
@@ -47,7 +64,7 @@ public class PrinterManager : MonoBehaviour
 		RedTimer = gameObject.AddComponent<TimerUtilities>();
 		GreenTimer = gameObject.AddComponent<TimerUtilities>();
 		
-		StartPrinter(_timeToPrintPage);
+		StartPrinter();
 	}
 	
 	void Update () 
@@ -57,31 +74,79 @@ public class PrinterManager : MonoBehaviour
 	#endregion
 	
 	#region Public methods
-	public void StartPrinter(float timeToPrint)
+	public void OnEnable()
 	{
+		PaperTray.OnEmptyTray += PrinterBroken;
+		PaperTray.OnTrayRefilledFromEmpty += PrinterFixed;
+		PaperTray.OnPaperTrayPenalty += OnPaperTrayPenalty;
+	}
+	public void OnDisable()
+	{
+		PaperTray.OnEmptyTray -= PrinterBroken;
+		PaperTray.OnTrayRefilledFromEmpty -= PrinterFixed;
+		PaperTray.OnPaperTrayPenalty -= OnPaperTrayPenalty;
+	}
+	
+	public void StartPrinter()
+	{
+		paperTray = gameObject.AddComponent<PaperTray>();
+		paperTray.SetUpTray(_paperlimit, _starterPapercount, _stressDecreasePerSecond, _stressIncreasePerFill, _stressThresholdPerPenalty);
+		
 		BlackTimer.StartTimer(blackPrintLifetime, blackPrintDecayRate);
 		BlueTimer.StartTimer(bluePrintLifetime, bluePrintDecayRate);
 		RedTimer.StartTimer(redPrintLifetime, redPrintDecayRate);
 		GreenTimer.StartTimer(greenPrintLifetime, greenPrintDecayRate);
-		StartCoroutine_Auto(Print(timeToPrint));
+		StartCoroutine_Auto(Print());
 	}
 	
-	public void RefillPaper(int amountOfPapers)
+	public void PrinterBroken(GameObject myGO)
 	{
-		if((_papercount + amountOfPapers) <= _paperlimit)
+		if(myGO != this.gameObject)
 		{
-			_papercount = _papercount + amountOfPapers;	
+			return;	
 		}
-		else
+		_printerproblems++;
+		_isBroken = true;	
+	}
+	public void PrinterFixed(GameObject myGO)
+	{
+		if(myGO != this.gameObject)
 		{
-			_papercount = _paperlimit;
-			// TODO: Error return? Skal der bare fyldes helt op hver gang?
+			return;	
+		}
+		
+		_printerproblems--;
+		if(_printerproblems == 0)
+		{
+			_isBroken = false;
 		}
 	}
-	
-	public void RefillPaper()
+	public void OnPaperTrayPenalty(GameObject myGO)
 	{
-		_papercount = _paperlimit;
+		if(myGO != this.gameObject)
+		{
+			return;	
+		}
+		
+		if(PaperTrayPenalties < 3)
+		{
+			_timeToPrintPage = _timeToPrintPage / (PaperTrayPenalties + 1);
+			PaperTrayPenalties++;
+			_timeToPrintPage = _timeToPrintPage * (PaperTrayPenalties + 1);
+		}
+	}
+	public void OnPaperTrayPenaltyRemoved(GameObject myGO)
+	{
+		if(myGO != this.gameObject)
+		{
+			return;	
+		}
+		_timeToPrintPage = _timeToPrintPage / (PaperTrayPenalties + 1);
+		PaperTrayPenalties--;
+		if(PaperTrayPenalties != 0)
+		{
+			_timeToPrintPage = _timeToPrintPage * (PaperTrayPenalties + 1);
+		}
 	}
 	
 	public void RestockInk(Color inkColor)
@@ -106,16 +171,15 @@ public class PrinterManager : MonoBehaviour
 	#endregion
 	
 	#region Private methods
-	private IEnumerator Print(float timeToPrint)
+	private IEnumerator Print()
 	{
 		while(true)
 		{
 			if(BlackTimer.GetTimeLeft() <= 0 || RedTimer.GetTimeLeft() <= 0 || GreenTimer.GetTimeLeft() <= 0
-				|| BlueTimer.GetTimeLeft() <= 0 || _papercount == 0)
+				|| BlueTimer.GetTimeLeft() <= 0)
 			{
-				if(!_isBroken)
+				if(_isBroken)
 				{
-					_isBroken = true;
 					BlackTimer.PauseTimer();
 					BlueTimer.PauseTimer();
 					RedTimer.PauseTimer();
@@ -126,19 +190,23 @@ public class PrinterManager : MonoBehaviour
 			{
 				if(_isBroken)
 				{
-					_isBroken = false;
-					BlackTimer.ResumeTimer();
-					BlueTimer.ResumeTimer();
-					RedTimer.ResumeTimer();
-					GreenTimer.ResumeTimer();
 				}
 			}
-			if(!_isBroken && Time.deltaTime != 0)
+			if(_isBroken && Time.deltaTime != 0)
 			{
-				_papercount--;
+				BlackTimer.PauseTimer();
+				BlueTimer.PauseTimer();
+				RedTimer.PauseTimer();
+				GreenTimer.PauseTimer();	
+			}
+			else if(!_isBroken && Time.deltaTime != 0)
+			{
+				if(OnPagePrinted != null)
+					OnPagePrinted(this.gameObject);
+				
 				_printedPapers++;
 			}
-			yield return new WaitForSeconds(timeToPrint);
+			yield return new WaitForSeconds(_timeToPrintPage);
 		}
 	}
 	#endregion
