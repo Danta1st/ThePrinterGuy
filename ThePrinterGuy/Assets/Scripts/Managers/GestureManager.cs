@@ -221,7 +221,8 @@ public class GestureManager : MonoBehaviour
                         OnSwipeDown();
                 }
             }
-            else if(primaryFinger.phase == TouchPhase.Ended)
+            
+			if(primaryFinger.phase == TouchPhase.Ended)
             {
                 _isSwiping = false;
                 _touchBeganObject = null;
@@ -279,7 +280,29 @@ public class GestureManager : MonoBehaviour
          {
              var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
 
-                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+    
+                if (Physics.Raycast(ray, out hit))
+                {
+                    _touchBeganObject = hit.collider.gameObject;
+                }
+			
+			//Single Tap Event
+            if(OnTap != null)
+                OnTap(_touchBeganObject, mousePosition);
+        }
+		
+		if(Input.GetMouseButtonUp(0))
+		{
+			_touchBeganObject = null;
+		}
+
+        if(Input.GetMouseButtonUp(1))
+        {
+             var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
     
                 if (Physics.Raycast(ray, out hit))
@@ -287,18 +310,15 @@ public class GestureManager : MonoBehaviour
                     _touchBeganObject = hit.collider.gameObject;
                 }
 
-             if(OnTap != null)
-                 OnTap(_touchBeganObject, mousePosition);
-         }
-
-        if(Input.GetMouseButtonUp(1))
-        {
-            var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
-
             //DoubleTap Event
             if(OnDoubleTap != null)
                 OnDoubleTap(_touchBeganObject, mousePosition);
         }
+		
+		if(Input.GetMouseButtonUp(1))
+		{
+			_touchBeganObject = null;
+		}
 
         if(Input.GetKeyDown(KeyCode.RightArrow))
         {
