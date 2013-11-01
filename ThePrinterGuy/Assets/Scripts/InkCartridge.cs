@@ -7,8 +7,8 @@ public class InkCartridge : MonoBehaviour
     private float _lifeTime = 60;
     private TimerUtilities _inkTimer;
     private bool _isInstantiated = false;
-    private float _defaultScaleY;
-    private float _defaultPositionY;
+    private Vector3 _defaultScale;
+    private Vector3 _defaultPosition;
     private Color _inkColor;
 
     public delegate void InkCartridgeError(GameObject go);
@@ -34,8 +34,8 @@ public class InkCartridge : MonoBehaviour
 
     public void InitializeInkCartridge(Color color)
     {
-        _defaultScaleY = gameObject.transform.localScale.y;
-        _defaultPositionY = gameObject.transform.localPosition.y;
+        _defaultScale = this.gameObject.transform.localScale;
+        _defaultPosition = this.gameObject.transform.localPosition;
 
         _inkColor = color;
         _inkTimer = gameObject.AddComponent<TimerUtilities>();
@@ -45,8 +45,8 @@ public class InkCartridge : MonoBehaviour
 
     public void InitializeInkCartridge(Color color, float lifeTime)
     {
-        _defaultScaleY = gameObject.transform.localScale.y;
-        _defaultPositionY = gameObject.transform.localPosition.y;
+        _defaultScale = gameObject.transform.localScale;
+        _defaultPosition = gameObject.transform.position;
 
         _inkColor = color;
         _lifeTime = lifeTime;
@@ -61,6 +61,8 @@ public class InkCartridge : MonoBehaviour
 
         if(OnInkCartridgeRefilled != null)
             OnInkCartridgeRefilled(this.gameObject);
+
+        RescaleCartridge();
     }
 
     public void RefillInk(float amount)
@@ -71,6 +73,8 @@ public class InkCartridge : MonoBehaviour
 
             if(OnInkCartridgeRefilled != null)
                 OnInkCartridgeRefilled(this.gameObject);
+
+            RescaleCartridge(amount);
         }
         else if(amount > _lifeTime)
         {
@@ -78,6 +82,8 @@ public class InkCartridge : MonoBehaviour
 
             if(OnInkCartridgeRefilled != null)
                 OnInkCartridgeRefilled(this.gameObject);
+
+            RescaleCartridge(amount);
         }
     }
 
@@ -85,12 +91,23 @@ public class InkCartridge : MonoBehaviour
     {
         float deltaScale = 0.0f;
         Vector3 scale = gameObject.transform.localScale;
-        scale.y = _defaultScaleY * _inkTimer.GetTimeLeftInPctDecimal();
+        scale.y = _defaultScale.y * _inkTimer.GetTimeLeftInPctDecimal();
         deltaScale = gameObject.transform.localScale.y - scale.y;
         gameObject.transform.localScale = scale;
 
         Vector3 pos = gameObject.transform.position;
-        pos.y = pos.y - deltaScale/2;
+        pos.y = pos.y - deltaScale;
         gameObject.transform.position = pos;
+    }
+
+    private void RescaleCartridge()
+    {
+        this.gameObject.transform.localScale = _defaultScale;
+        this.gameObject.transform.position = _defaultPosition;
+    }
+
+    private void RescaleCartridge(float amount)
+    {
+
     }
 }
