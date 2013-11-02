@@ -13,11 +13,15 @@ public class GUICamera : MonoBehaviour
     //List of tool box pages.
     [SerializeField]
     private GameObject[] _toolBoxPages;
+	[SerializeField]
+	private iTween.EaseType _easeTypeToolBox;
+	[SerializeField]
+	private iTween.EaseType _easeTypeIngameMenu;
     #endregion
 
     #region Private Variables
-    private GameObject _guiAnchorPointObject;
     private Camera _guiCamera;
+    private float _scaleMultiplier;
     private RaycastHit _hit;
     private bool _isGUI = false;
     private bool _canTouch = true;
@@ -25,22 +29,18 @@ public class GUICamera : MonoBehaviour
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
-    private float _scaleMultiplier;
-
     //Ingame menu variables.
     private GameObject _ingameMenuObject;
-    private Vector3 _ingameMenuStartPos;
-    private Vector3 _ingameMenuTargetPos;
-    private float _ingameMenuDuration = 0.2f;
+    private Vector3 _ingameMenuMoveAmount;
+    private float _ingameMenuDuration = 1.0f;
 
     //Tool box variables.
     private GameObject _toolBoxSelectionObject;
     private GameObject _toolBoxObject;
-    private Vector3 _toolBoxStartPos;
-    private Vector3 _toolBoxTargetPos;
-    private int _toolBoxCurrentPageCount = 1;
+    private Vector3 _toolBoxMoveAmount;
+	private float _toolBoxMoveDuration = 1.0f;
+	private int _toolBoxCurrentPageCount = 1;
     private int _toolBoxMaxPageCount;
-    private float _toolBoxMoveDuration = 1.0f;
     private bool _isToolBoxOpen = false;
     #endregion
 
@@ -137,13 +137,7 @@ public class GUICamera : MonoBehaviour
                 Vector3 _tempIngameMenuPos = new Vector3(_ingameMenuObject.transform.position.x, _ingameMenuObject.transform.position.y, 5);
                 _ingameMenuObject.transform.position = _tempIngameMenuPos;
 
-                _ingameMenuStartPos = _ingameMenuObject.transform.position;
-                _ingameMenuTargetPos = _guiObject.transform.FindChild("IngameDestinationPosition").position;
-                _ingameMenuTargetPos.x = _ingameMenuStartPos.x;
-                _ingameMenuTargetPos.z = _ingameMenuStartPos.z;
-
-                _guiObject.transform.FindChild("IngameDestinationPosition").gameObject.SetActive(false);
-
+                _ingameMenuMoveAmount = new Vector3(0, 1100, 0);
                 _guiObject.SetActive(false);
             }
 
@@ -154,12 +148,7 @@ public class GUICamera : MonoBehaviour
                 Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 5);
                 _toolBoxObject.transform.position = _tempToolBoxPos;
     
-                _toolBoxStartPos = _toolBoxObject.transform.position;
-                _toolBoxTargetPos = _toolBoxObject.transform.FindChild("ToolBoxDestinationPosition").position;
-                _toolBoxTargetPos.y = _toolBoxStartPos.y;
-                _toolBoxTargetPos.z = _toolBoxStartPos.z;
-    
-                _toolBoxObject.transform.FindChild("ToolBoxDestinationPosition").gameObject.SetActive(false);
+                _toolBoxMoveAmount = new Vector3(200, 0, 0);
                 _toolBoxMaxPageCount = _toolBoxPages.Length;
             }
 
@@ -200,25 +189,25 @@ public class GUICamera : MonoBehaviour
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUIMenu"))
                 {
-                    if(_hit.collider.gameObject.name == "Pause")
+                    if(_hit.collider.gameObject.name == "PauseButton")
                     {
                         OpenIngameMenu();
                     }
-                    else if(_hit.collider.gameObject.name == "Resume")
+                    else if(_hit.collider.gameObject.name == "ResumeButton")
                     {
                         CloseIngameMenu();
                     }
-                    else if(_hit.collider.gameObject.name == "Restart")
+                    else if(_hit.collider.gameObject.name == "RestartButton")
                     {
                         RestartLevel();
                     }
-                    else if(_hit.collider.gameObject.name == "Quit")
+                    else if(_hit.collider.gameObject.name == "QuitButton")
                     {
                         QuitLevel();
                     }
-                    else if(_hit.collider.gameObject.name == "Settings")
+                    else if(_hit.collider.gameObject.name == "SettingsButton")
                     {
-
+						Settings();
                     }
                 }
                 //ToolBox layer mask.
@@ -227,53 +216,19 @@ public class GUICamera : MonoBehaviour
                 {
                     if(_hit.collider.gameObject.name == "ToolBoxButton")
                     {
-                        if(_isToolBoxOpen)
-                        {
-                            _isToolBoxOpen = false;
-                            MoveGUIElement(_toolBoxObject, _toolBoxStartPos, _toolBoxMoveDuration);
-                            _toolBoxSelectionObject.SetActive(false);
-
-                        }
-                        else if(!_isToolBoxOpen)
-                        {
-                            _isToolBoxOpen = true;
-                            MoveGUIElement(_toolBoxObject, _toolBoxTargetPos, _toolBoxMoveDuration);
-                            _toolBoxSelectionObject.SetActive(false);
-                        }
+						OpenToolBox();
                     }
-                    else if(_hit.collider.gameObject.name == "ToolBoxPageUp")
+                    else if(_hit.collider.gameObject.name == "ToolBoxUpButton")
                     {
-                        _toolBoxCurrentPageCount -= 1;
-
-                        if(_toolBoxCurrentPageCount < 1)
-                        {
-                            _toolBoxCurrentPageCount = 1;
-                        }
-                        UpdateToolBoxPage();
-                        _toolBoxSelectionObject.SetActive(false);
+                        UpdateToolBoxPage(true);
                     }
-                    else if(_hit.collider.gameObject.name == "ToolBoxPageDown")
+                    else if(_hit.collider.gameObject.name == "ToolBoxDownButton")
                     {
-                         _toolBoxCurrentPageCount += 1;
-
-                        if(_toolBoxCurrentPageCount > _toolBoxMaxPageCount)
-                        {
-                            _toolBoxCurrentPageCount = _toolBoxMaxPageCount;
-                        }
-                        UpdateToolBoxPage();
-                        _toolBoxSelectionObject.SetActive(false);
+                        UpdateToolBoxPage(false);
                     }
                     else
                     {
-                        if(OnInventoryPress != null)
-                        {
-                            OnInventoryPress(_hit.collider.gameObject.name);
-                        }
-
-                        _toolBoxSelectionObject.SetActive(true);
-                        Vector3 _tempPos = _hit.collider.transform.position;
-                        _tempPos.z = 6;
-                        _toolBoxSelectionObject.transform.position = _tempPos;
+						UpdateToolBoxSelection(_hit.collider.gameObject);
                     }
                 }
                 //-----------------------------------------------------------------------//
@@ -284,15 +239,44 @@ public class GUICamera : MonoBehaviour
             }
         }
     }
-
-    private void MoveGUIElement(GameObject _guiElement, Vector3 _position, float _duration)
-    {
-        iTween.MoveTo(_guiElement, iTween.Hash("position", _position, "duration", _duration));
-    }
-
+	
     #region GUI ToolBox
-    private void UpdateToolBoxPage()
+	private void OpenToolBox()
+	{
+        if(_isToolBoxOpen)
+        {
+            _isToolBoxOpen = false;
+			iTween.MoveAdd(_toolBoxObject, iTween.Hash("amount", -_toolBoxMoveAmount,
+							"duration", _toolBoxMoveDuration, "easetype", _easeTypeToolBox));
+        }
+        else
+        {
+            _isToolBoxOpen = true;
+			iTween.MoveAdd(_toolBoxObject, iTween.Hash("amount", _toolBoxMoveAmount,
+							"duration", _toolBoxMoveDuration, "easetype", _easeTypeToolBox));
+        }
+		_toolBoxSelectionObject.SetActive(false);
+	}
+	
+    private void UpdateToolBoxPage(bool _isUp)
     {
+		if(_isUp)
+		{
+            _toolBoxCurrentPageCount -= 1;
+            if(_toolBoxCurrentPageCount < 1)
+            {
+                _toolBoxCurrentPageCount = 1;
+            }			
+		}
+		else
+		{
+             _toolBoxCurrentPageCount += 1;
+            if(_toolBoxCurrentPageCount > _toolBoxMaxPageCount)
+            {
+                _toolBoxCurrentPageCount = _toolBoxMaxPageCount;
+            }			
+		}
+		
         int _index = 0;
         foreach(GameObject _toolBoxPage in _toolBoxPages)
         {
@@ -307,7 +291,22 @@ public class GUICamera : MonoBehaviour
                 _toolBoxPage.SetActive(false);
             }
         }
+		
+		_toolBoxSelectionObject.SetActive(false);
     }
+	
+	private void UpdateToolBoxSelection(GameObject _buttonObject)
+	{
+        if(OnInventoryPress != null)
+        {
+            OnInventoryPress(_buttonObject.name);
+        }
+
+        _toolBoxSelectionObject.SetActive(true);
+        Vector3 _tempPos = _buttonObject.transform.position;
+        _tempPos.z = 6;
+        _toolBoxSelectionObject.transform.position = _tempPos;		
+	}
     #endregion
 
     #region GUI Ingame Menu
@@ -316,8 +315,9 @@ public class GUICamera : MonoBehaviour
         SaveGUIState();
         DisableGUIElement("Pause");
         EnableGUIElement("IngameMenu");
-
-        MoveGUIElement(_ingameMenuObject, _ingameMenuTargetPos, _ingameMenuDuration);
+		
+		iTween.MoveAdd(_ingameMenuObject, iTween.Hash("amount", _ingameMenuMoveAmount,
+						"duration", _ingameMenuDuration, "easetype", _easeTypeIngameMenu));
     }
 
     private void CloseIngameMenu()
@@ -325,7 +325,7 @@ public class GUICamera : MonoBehaviour
         float _start = 0.0f;
         float _end = 3.0f;
         _canTouch = false;
-        StartCoroutine(UnpauseTimer(_start ,_end));
+        StartCoroutine(UnpauseTimer(_start, _end));
     }
 
     IEnumerator UnpauseTimer(float _start, float _end)
@@ -339,7 +339,8 @@ public class GUICamera : MonoBehaviour
             else
             {
                 _canTouch = true;
-                MoveGUIElement(_ingameMenuObject, _ingameMenuStartPos, _ingameMenuDuration);
+				iTween.MoveAdd(_ingameMenuObject, iTween.Hash("amount", -_ingameMenuMoveAmount,
+								"duration", _ingameMenuDuration, "easetype", _easeTypeIngameMenu));
                 yield return new WaitForSeconds(_ingameMenuDuration+0.1f);
                 LoadGUIState();
                 DisableGUIElement("IngameMenu");
@@ -350,16 +351,24 @@ public class GUICamera : MonoBehaviour
     }
     #endregion
 
-    #region GUI Restart and Quit
+    #region GUI Restart, Quit and Settings
     private void RestartLevel()
     {
+		//Need confirmation before restart.
         Application.LoadLevel(Application.loadedLevel);
     }
-
+	
+	//TODO: Quit button functionality.
     private void QuitLevel()
     {
         //Application.LoadLevel("SOMETHING SCENE");
     }
+	
+	//TODO: Settings button functionality.
+	private void Settings()
+	{
+		//Settings for level.	
+	}
     #endregion
 
     #region GUI Save and Load
