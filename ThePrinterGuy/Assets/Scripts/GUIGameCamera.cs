@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GUICamera : MonoBehaviour
+public class GUIGameCamera : MonoBehaviour
 {
     #region Editor Publics
     [SerializeField]
@@ -30,9 +30,9 @@ public class GUICamera : MonoBehaviour
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
     //Ingame menu variables.
-    private GameObject _ingameMenuObject;
-    private Vector3 _ingameMenuMoveAmount;
-    private float _ingameMenuDuration = 1.0f;
+    private GameObject _statsOverviewObject;
+    private Vector3 _statsOverviewMoveAmount;
+    private float _statsOverviewDuration = 1.0f;
 
     //Tool box variables.
     private GameObject _toolBoxSelectionObject;
@@ -119,25 +119,28 @@ public class GUICamera : MonoBehaviour
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
-
-//        _scaleMultiplierY = Screen.width / Screen.height;
-//        Debug.Log(Screen.height + " " + _scaleMultiplier);
-//        _guiCamera.orthographicSize = _guiCamera.orthographicSize * _scaleMultiplierY;
-//        GameObject.Find("GUIGame").transform.localScale *= _scaleMultiplierY;
+		
+		_scaleMultiplier = Screen.height / 1080f;
+		AdjustCameraSize();
         //--------------------------------------------------//
 
         //Find specific gui objects in the gui list.
         //--------------------------------------------------//
         foreach(GameObject _guiObject in _guiList)
         {
-            if(_guiObject.name == "IngameMenu")
+			if(_guiObject.name == "IngameMenu")
+			{
+				_guiObject.SetActive(false);
+			}
+			
+            if(_guiObject.name == "StatsOverview")
             {
-                _ingameMenuObject = _guiObject.transform.FindChild("StatsOverview").gameObject;
+                _statsOverviewObject = _guiObject;
 
-                Vector3 _tempIngameMenuPos = new Vector3(_ingameMenuObject.transform.position.x, _ingameMenuObject.transform.position.y, 5);
-                _ingameMenuObject.transform.position = _tempIngameMenuPos;
+                Vector3 _tempStatsOverviewPos = new Vector3(_statsOverviewObject.transform.position.x, _statsOverviewObject.transform.position.y, 1);
+                _statsOverviewObject.transform.position = _tempStatsOverviewPos;
 
-                _ingameMenuMoveAmount = new Vector3(0, 1100, 0);
+                _statsOverviewMoveAmount = new Vector3(0, 1100*_scaleMultiplier, 0);
                 _guiObject.SetActive(false);
             }
 
@@ -148,7 +151,7 @@ public class GUICamera : MonoBehaviour
                 Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 5);
                 _toolBoxObject.transform.position = _tempToolBoxPos;
     
-                _toolBoxMoveAmount = new Vector3(200, 0, 0);
+                _toolBoxMoveAmount = new Vector3(200*_scaleMultiplier, 0, 0);
                 _toolBoxMaxPageCount = _toolBoxPages.Length;
             }
 
@@ -171,6 +174,27 @@ public class GUICamera : MonoBehaviour
     #endregion
 
     #region Class Methods
+	private void AdjustCameraSize()
+	{
+		float _aspectRatio = 1920f / 1080f;
+		float _startCameraSize = 540f;
+		float _newCameraSize = _guiCamera.orthographicSize * _scaleMultiplier;
+		
+		foreach(GameObject _guiObject in _guiList)
+		{
+			_guiCamera.aspect = _aspectRatio;
+			_guiCamera.orthographicSize = _startCameraSize;
+			
+			Vector3 _startPosition = _guiCamera.WorldToViewportPoint(_guiObject.transform.position);
+			_guiObject.transform.localScale *= _scaleMultiplier;
+			
+			_guiCamera.ResetAspect();
+			_guiCamera.orthographicSize = _newCameraSize;
+			_guiObject.transform.position = _guiCamera.ViewportToWorldPoint(_startPosition);
+		}
+		_guiCamera.orthographicSize = _newCameraSize;		
+	}
+	
     private void CheckCollision(GameObject _go, Vector2 _screenPosition)
     {
         if(_isGUI && _canTouch)
@@ -315,9 +339,10 @@ public class GUICamera : MonoBehaviour
         SaveGUIState();
         DisableGUIElement("Pause");
         EnableGUIElement("IngameMenu");
+		EnableGUIElement("StatsOverview");
 		
-		iTween.MoveAdd(_ingameMenuObject, iTween.Hash("amount", _ingameMenuMoveAmount,
-						"duration", _ingameMenuDuration, "easetype", _easeTypeIngameMenu));
+		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
+						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu));
     }
 
     private void CloseIngameMenu()
@@ -339,11 +364,12 @@ public class GUICamera : MonoBehaviour
             else
             {
                 _canTouch = true;
-				iTween.MoveAdd(_ingameMenuObject, iTween.Hash("amount", -_ingameMenuMoveAmount,
-								"duration", _ingameMenuDuration, "easetype", _easeTypeIngameMenu));
-                yield return new WaitForSeconds(_ingameMenuDuration+0.1f);
+				iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", -_statsOverviewMoveAmount,
+								"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu));
+                yield return new WaitForSeconds(_statsOverviewDuration+0.1f);
                 LoadGUIState();
-                DisableGUIElement("IngameMenu");
+				DisableGUIElement("IngameMenu");
+				DisableGUIElement("StatsOverview");
                 break;
             }
             yield return new WaitForSeconds(1);
