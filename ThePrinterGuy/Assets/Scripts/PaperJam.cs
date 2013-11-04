@@ -3,47 +3,106 @@ using System.Collections;
 
 public class PaperJam : MonoBehaviour
 {
+    #region Editor Publics
     [SerializeField]
-    private Vector3 _shake = new Vector3(1.0f, 2.0f, 4.0f);
+    private float _shakeJamInOut = 10.0f;
     [SerializeField]
-    private float _shakeTime = 1.5f;
+    private float _shakeJamLeftRight = 3.0f;
     [SerializeField]
-    private GameObject tempPrefab;
+    private float _shakeJamRotate = 0.5f;
+    [SerializeField]
+    private float _shakeJamTime = 1.5f;
+    [SerializeField]
+    private float _shakeInOut = 2.0f;
+    [SerializeField]
+    private float _shakeLeftRight = 0.5f;
+    [SerializeField]
+    private float _shakeRotate = 0.0f;
+    [SerializeField]
+    private float _shakeTime = 0.5f;
+    [SerializeField]
+    private int _paperJamMaxRate = 100;
+    [SerializeField]
+    private int _paperJamChance = 1;
+    #endregion
 
-    private GameObject particalHolder;
-    private ParticleSystem smoke;
+    #region Privates
+    private Vector3 _shakeJam;
+    private Vector3 _shakePrint;
+    private Quaternion _startRotation;
+    private GameObject _smokePrefabHolder;
+    #endregion
+
+    #region Delegates
+    public delegate void OnJamAction();
+    public static event OnJamAction OnJam;
+
+    public delegate void OnUnjammedAction();
+    public static event OnUnjammedAction OnUnjammed;
+    #endregion
 
     void Awake()
     {
-        particalHolder = new GameObject();
-        particalHolder.transform.parent = gameObject.transform;
-        particalHolder.transform.position = new Vector3(0, 0, 0);
+        _smokePrefabHolder = Resources.Load("Effects/jamSmoke", typeof(GameObject)) as GameObject;
+        Instantiate(_smokePrefabHolder);
 
-        smoke = particalHolder.AddComponent<ParticleSystem>();
-        smoke = tempPrefab.GetComponent<ParticleSystem>();
-
+        _smokePrefabHolder.transform.position = transform.position;
     }
 
-	// Use this for initialization
-	void Start ()
+    void Start()
     {
-        Shake();
-        Smoke();
-	}
-	
-	// Update is called once per frame
-	void Update ()
+        _startRotation = gameObject.transform.rotation;
+        _shakeJam = new Vector3(_shakeJamRotate, _shakeJamLeftRight, _shakeJamInOut);
+        _shakePrint = new Vector3(_shakeRotate, _shakeLeftRight, _shakeInOut);
+    }
+
+    void Update()
     {
-	
-	}
+        //Should be connected to the paper print event
+        OnPaperPrint();
+    }
+
+    void OnEnable()
+    {
+        OnJam += Shake;
+        OnJam += Smoke;
+        OnUnjammed += JamStopped;
+        //OnPrintPaper += OnPaperPrint;
+    }
+
+    void OnDisable()
+    {
+        OnJam -= Shake;
+        OnJam -= Smoke;
+        OnUnjammed -= JamStopped;
+        //OnPrintPaper += OnPaperPrint;
+    }
 
     void Shake()
     {
-        iTween.PunchRotation(gameObject, iTween.Hash("amount", _shake, "time", _shakeTime, "oncomplete", "Shake"));
+        iTween.PunchRotation(gameObject, iTween.Hash("amount", _shakeJam, "time", _shakeJamTime, "oncomplete", "Shake"));
+    }
+
+    void JamStopped()
+    {
+        iTween.Stop(gameObject);
+        transform.rotation = _startRotation;
+        _smokePrefabHolder.particleSystem.Stop();
     }
 
     void Smoke()
     {
-        smoke.Play();
+        _smokePrefabHolder.particleSystem.Play();
+    }
+
+    void OnPaperPrint()
+    {
+        iTween.PunchRotation(gameObject, iTween.Hash("amount", _shakePrint, "time", _shakeTime, "oncomplete", "Shake"));
+
+        if(Random.Range(0, _paperJamMaxRate) <= _paperJamChance)
+        {
+            if(OnJam != null)
+                OnJam();
+        }
     }
 }
