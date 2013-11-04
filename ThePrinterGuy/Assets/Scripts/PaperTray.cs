@@ -81,7 +81,6 @@ public class PaperTray : MonoBehaviour
 			return;
 		}*/
 		
-		Debug.Log("YOLO");
 		RefillPaper(10);
 	}
 	
