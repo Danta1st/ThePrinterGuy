@@ -43,7 +43,7 @@ public class PaperTray : MonoBehaviour
 	{
 		PrinterManager.OnPagePrinted -= PagePrinted;
 		ZoomHandler.OnTray -= TrayFocus;
-		ZoomHandler.OnFreeroam -= TrayFocus;
+		ZoomHandler.OnFreeroam -= FreeRoamMode;
 		GestureManager.OnTap -= TrayClicked;
 	}
 	
@@ -81,6 +81,7 @@ public class PaperTray : MonoBehaviour
 			return;
 		}*/
 		
+		Debug.Log("YOLO");
 		RefillPaper(10);
 	}
 	

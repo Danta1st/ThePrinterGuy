@@ -36,7 +36,6 @@ public class PopoutManager : MonoBehaviour
             int random = Random.Range(0, Popouts.Length);
             for (int i = 0; i < Popouts.Length; i++)
             {
-                Debug.Log(random);
                 Popout _popout = Popouts[random].GetComponent<Popout>();
                 if(_popout.GetIsOut() == false)
                 {

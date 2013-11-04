@@ -31,11 +31,16 @@ public class Popout: MonoBehaviour {
 
 
     #region Methods
-    void OnEnable(){
-        GestureManager.OnTap += HitCylinder;
+    void OnEnable()
+	{
+        ZoomHandler.onPopout += PopoutFocus;
+		ZoomHandler.OnFreeroam += FreeRoamMode;
     }
 
-    void OnDisable(){
+    void OnDisable()
+	{
+		ZoomHandler.onPopout -= PopoutFocus;
+		ZoomHandler.OnFreeroam -= FreeRoamMode;
         GestureManager.OnTap -= HitCylinder;
     }
 
@@ -43,8 +48,17 @@ public class Popout: MonoBehaviour {
     //Smoke/damp when it goes up - continue with small damp!
     //dust/force cloud when hammering
     //Handle hammer too
-
-    public void HitCylinder(GameObject go, Vector2 _screenPosition)
+	
+	public void PopoutFocus()
+	{
+		GestureManager.OnTap += HitCylinder;
+	}
+	public void FreeRoamMode()
+	{
+		GestureManager.OnTap -= HitCylinder;
+	}
+	
+    public void HitCylinder(GameObject go, Vector2 screenPos)
     {
         if(go != null && gameObject.Equals(go) && _animationInProcess == false && _isOut == true && _hammerHitsReq != _hammerHitsTaken)
         {

@@ -79,12 +79,14 @@ public class PrinterManager : MonoBehaviour
 		PaperTray.OnEmptyTray += PrinterBroken;
 		PaperTray.OnTrayRefilledFromEmpty += PrinterFixed;
 		PaperTray.OnPaperTrayPenalty += OnPaperTrayPenalty;
+		Popout.OnCylinderHammeredIn += OnPaperTrayPenaltyRemoved;
 	}
 	public void OnDisable()
 	{
 		PaperTray.OnEmptyTray -= PrinterBroken;
 		PaperTray.OnTrayRefilledFromEmpty -= PrinterFixed;
 		PaperTray.OnPaperTrayPenalty -= OnPaperTrayPenalty;
+		Popout.OnCylinderHammeredIn -= OnPaperTrayPenaltyRemoved;
 	}
 	
 	public void StartPrinter()
