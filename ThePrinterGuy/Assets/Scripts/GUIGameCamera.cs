@@ -21,7 +21,8 @@ public class GUIGameCamera : MonoBehaviour
 
     #region Private Variables
     private Camera _guiCamera;
-    private float _scaleMultiplier;
+    private float _scaleMultiplierX;
+    private float _scaleMultiplierY;
     private RaycastHit _hit;
     private bool _isGUI = false;
     private bool _canTouch = true;
@@ -119,8 +120,9 @@ public class GUIGameCamera : MonoBehaviour
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
-		
-		_scaleMultiplier = Screen.height / 1080f;
+
+        _scaleMultiplierX = Screen.width / 1920f;
+		_scaleMultiplierY = Screen.height / 1080f;
 		AdjustCameraSize();
         //--------------------------------------------------//
 
@@ -140,7 +142,7 @@ public class GUIGameCamera : MonoBehaviour
                 Vector3 _tempStatsOverviewPos = new Vector3(_statsOverviewObject.transform.position.x, _statsOverviewObject.transform.position.y, 1);
                 _statsOverviewObject.transform.position = _tempStatsOverviewPos;
 
-                _statsOverviewMoveAmount = new Vector3(0, 1100*_scaleMultiplier, 0);
+                _statsOverviewMoveAmount = new Vector3(0, 1100*_scaleMultiplierY, 0);
                 _guiObject.SetActive(false);
             }
 
@@ -151,7 +153,7 @@ public class GUIGameCamera : MonoBehaviour
                 Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 5);
                 _toolBoxObject.transform.position = _tempToolBoxPos;
     
-                _toolBoxMoveAmount = new Vector3(200*_scaleMultiplier, 0, 0);
+                _toolBoxMoveAmount = new Vector3(200*_scaleMultiplierY, 0, 0);
                 _toolBoxMaxPageCount = _toolBoxPages.Length;
             }
 
@@ -178,7 +180,7 @@ public class GUIGameCamera : MonoBehaviour
 	{
 		float _aspectRatio = 1920f / 1080f;
 		float _startCameraSize = 540f;
-		float _newCameraSize = _guiCamera.orthographicSize * _scaleMultiplier;
+		float _newCameraSize = _guiCamera.orthographicSize * _scaleMultiplierY;
 		
 		foreach(GameObject _guiObject in _guiList)
 		{
@@ -186,7 +188,10 @@ public class GUIGameCamera : MonoBehaviour
 			_guiCamera.orthographicSize = _startCameraSize;
 			
 			Vector3 _startPosition = _guiCamera.WorldToViewportPoint(_guiObject.transform.position);
-			_guiObject.transform.localScale *= _scaleMultiplier;
+//            Vector3 _scale = new Vector3(_guiObject.transform.localScale.x * _scaleMultiplierX,
+//                                        _guiObject.transform.localScale.y * _scaleMultiplierY,
+//                                        _guiObject.transform.localScale.z);
+			_guiObject.transform.localScale *= _scaleMultiplierY;// _scale;
 			
 			_guiCamera.ResetAspect();
 			_guiCamera.orthographicSize = _newCameraSize;
