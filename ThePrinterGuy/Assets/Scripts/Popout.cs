@@ -60,11 +60,14 @@ public class Popout: MonoBehaviour {
 	
     public void HitCylinder(GameObject go, Vector2 screenPos)
     {
-        if(go != null && gameObject.Equals(go) && _animationInProcess == false && _isOut == true && _hammerHitsReq != _hammerHitsTaken)
+        if(go != null && gameObject.Equals(go) && _animationInProcess == false && 
+			_isOut == true && _hammerHitsReq != _hammerHitsTaken)
         {
             _animationInProcess = true;
             float _hammerInAmount = -(_popoutLength / _hammerHitsReq);
-            iTween.MoveAdd(go, iTween.Hash("y", _hammerInAmount, "time", _hammerInDuration, "easeType", _hammerInEaseType, "onComplete", "AnimationStopped"));
+			
+            iTween.MoveAdd(go, iTween.Hash("y", _hammerInAmount, "time", _hammerInDuration, 
+											"easeType", _hammerInEaseType, "onComplete", "AnimationStopped"));
             _hammerHitsTaken++;
         }
         if(_hammerHitsReq == _hammerHitsTaken)
@@ -84,7 +87,9 @@ public class Popout: MonoBehaviour {
         {
             _animationInProcess = true;
             _isOut = true;
-            iTween.MoveAdd(gameObject, iTween.Hash("y", _popoutLength, "time", _popoutDuration, "easeType", _popoutEaseType, "onComplete", "AnimationStopped"));
+			
+            iTween.MoveAdd(gameObject, iTween.Hash("y", _popoutLength, "time", _popoutDuration, 
+													"easeType", _popoutEaseType, "onComplete", "AnimationStopped"));
         }
     }
 

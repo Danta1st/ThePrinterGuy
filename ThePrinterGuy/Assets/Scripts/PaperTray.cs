@@ -18,20 +18,23 @@ public class PaperTray : MonoBehaviour
 	private int _paperStackSize = 8;
 	#endregion
 	
+	
 	#region Private variables
 	private float _printerStress = 0;
 	#endregion
 	
-	#region Delegates & Events
-	public delegate void EmptyTray(GameObject go);
-	public static event EmptyTray OnEmptyTray;
 	
-	public delegate void TrayRefilledFromEmpty(GameObject go);
-	public static event TrayRefilledFromEmpty OnTrayRefilledFromEmpty;
+	#region Delegates & Events
+	public delegate void EmptyTrayAction(GameObject go);
+	public static event EmptyTrayAction OnEmptyTray;
+	
+	public delegate void TrayRefilledAction(GameObject go);
+	public static event TrayRefilledAction OnTrayRefilledFromEmpty;
 	
 	public delegate void PaperTrayPenalty(GameObject go);
 	public static event PaperTrayPenalty OnPaperTrayPenalty;
 	#endregion
+	
 	
 	#region Monobehaviour Functions
 	public void OnEnable()
@@ -50,11 +53,12 @@ public class PaperTray : MonoBehaviour
 	
 	void Start () 
 	{
-		StartCoroutine_Auto(PrinterStressDecreaser());
+		StartCoroutine_Auto(DecreasePrinterStress());
 	}
-	
 	#endregion
 	
+	
+	#region Class methods
 	public void TrayFocus()
 	{
 		GestureManager.OnTap += TrayClicked;
@@ -119,7 +123,7 @@ public class PaperTray : MonoBehaviour
 		return _currentPapercount;	
 	}
 	
-	IEnumerator PrinterStressDecreaser()
+	IEnumerator DecreasePrinterStress()
 	{
 		while(true)
 		{
@@ -130,4 +134,5 @@ public class PaperTray : MonoBehaviour
 			yield return new WaitForSeconds(1);
 		}
 	}
+	#endregion
 }

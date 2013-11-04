@@ -34,6 +34,7 @@ public class PopoutManager : MonoBehaviour
         if(rootPrinter != null && gameObject.transform.root.gameObject.Equals(rootPrinter))
         {
             int random = Random.Range(0, Popouts.Length);
+			
             for (int i = 0; i < Popouts.Length; i++)
             {
                 Popout _popout = Popouts[random].GetComponent<Popout>();
