@@ -71,23 +71,27 @@ public class ZoomHandler : MonoBehaviour
 		{
 		case "TrayTask":
 			SetObjectsIn(go);
-			if(OnJam != null)
-				OnJam();
+			if(OnTray != null)
+				OnTray();
+			//Debug.Log("Cam - OnTray()");
 			break;
 		case "InkTask":
 			SetObjectsIn(go);
-			if(OnTray != null)
-				OnTray();
+			if(OnInk != null)
+				OnInk();
+			//Debug.Log("Cam - OnInk()");
 			break;
 		case "JamTask":
 			SetObjectsIn(go);
-			if(OnInk != null)
-				OnInk();
+			if(OnJam != null)
+				OnJam();
+			//Debug.Log("Cam - OnJam()");
 			break;
 		case "PopoutTask":
 			SetObjectsIn(go);
 			if(onPopout != null)
 				onPopout();
+			//Debug.Log("Cam - OnPopout()");
 			break;
 		default:
 			break;
@@ -137,6 +141,7 @@ public class ZoomHandler : MonoBehaviour
 			
 			if(OnFreeroam != null)
 				OnFreeroam();
+			//Debug.Log("Cam - OnFreeroam()");
 			
 			//Method needed if using a DoubleTap Solution
 //			foreach(GameObject go in _zoomables)
