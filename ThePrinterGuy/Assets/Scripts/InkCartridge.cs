@@ -5,8 +5,8 @@ public class InkCartridge : MonoBehaviour
 {
     [SerializeField]
     private float _lifeTime = 60;
-    [SerializeField]
-    private ParticleSystem _particle;
+	
+	private GameObject _smoke;
     private TimerUtilities _inkTimer;
     private bool _isInstantiated = false;
     private Vector3 _defaultScale;
@@ -20,8 +20,8 @@ public class InkCartridge : MonoBehaviour
 
     public delegate void InkCartridgeRefilled(GameObject go);
     public static event InkCartridgeRefilled OnInkCartridgeRefilled;
-
-    public void Update()
+	
+    void Update()
     {
         if (_isInstantiated) {
             if (_inkTimer.GetTimeLeft() > 0 && _inkState == InkStates.Working)
@@ -32,8 +32,10 @@ public class InkCartridge : MonoBehaviour
             {
                 if (OnInkCartridgeError != null)
                     OnInkCartridgeError(this.gameObject);
-
-                Instantiate(_particle, this.gameObject.transform.position, Quaternion.identity);
+				
+				string path = "Prefabs/SmokeParticle";
+				
+                _smoke = (GameObject)Instantiate (Resources.Load(path), this.gameObject.transform.position, Quaternion.identity);
 
                 _inkState = InkStates.ErrorWait;
             }
@@ -54,7 +56,7 @@ public class InkCartridge : MonoBehaviour
     public void InitializeInkCartridge(Color color, float lifeTime)
     {
         _defaultScale = gameObject.transform.localScale;
-        _defaultPosition = gameObject.transform.position;
+        _defaultPosition = gameObject.transform.localPosition;
 
         _inkColor = color;
         _lifeTime = lifeTime;
@@ -72,7 +74,7 @@ public class InkCartridge : MonoBehaviour
 
         _inkState = InkStates.Working;
         RescaleCartridge();
-        Destroy(_particle);
+        Destroy (_smoke);
     }
 
     /*public void RefillInk(float amount)
@@ -100,20 +102,20 @@ public class InkCartridge : MonoBehaviour
     private void UseInk()
     {
         float deltaScale = 0.0f;
-        Vector3 scale = gameObject.transform.localScale;
+        Vector3 scale = this.gameObject.transform.localScale;
         scale.y = _defaultScale.y * _inkTimer.GetTimeLeftInPctDecimal();
-        deltaScale = gameObject.transform.localScale.y - scale.y;
-        gameObject.transform.localScale = scale;
+        deltaScale = this.gameObject.transform.localScale.y - scale.y;
+        this.gameObject.transform.localScale = scale;
 
-        Vector3 pos = gameObject.transform.position;
-        pos.y = pos.y - deltaScale;
-        gameObject.transform.position = pos;
+        Vector3 pos = this.gameObject.transform.localPosition;
+        pos.y = pos.y - (deltaScale * 4);
+        this.gameObject.transform.localPosition = pos;
     }
 
     private void RescaleCartridge()
     {
         this.gameObject.transform.localScale = _defaultScale;
-        this.gameObject.transform.position = _defaultPosition;
+        this.gameObject.transform.localPosition = _defaultPosition;
     }
 
 
