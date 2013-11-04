@@ -139,8 +139,7 @@ public class ZoomHandler : MonoBehaviour
         {
 			SetObjectsOut();
 			
-			if(OnFreeroam != null)
-				OnFreeroam();
+			StartCoroutine_Auto(SetFreeRoam());
 			//Debug.Log("Cam - OnFreeroam()");
 			
 			//Method needed if using a DoubleTap Solution
@@ -155,6 +154,13 @@ public class ZoomHandler : MonoBehaviour
 //			}
         }
     }
+	
+	IEnumerator SetFreeRoam()
+	{
+		yield return new WaitForSeconds(_zoomTime);
+		if(OnFreeroam != null)
+			OnFreeroam();
+	}
     #endregion
 
     public static void SetAnimationReady()

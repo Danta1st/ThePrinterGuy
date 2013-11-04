@@ -139,7 +139,7 @@ public class PrinterManager : MonoBehaviour
 	{
 		if(myGO != this.gameObject)
 		{
-			return;	
+			return;
 		}
 		_timeToPrintPage = _timeToPrintPage / (PaperTrayPenalties + 1);
 		PaperTrayPenalties--;

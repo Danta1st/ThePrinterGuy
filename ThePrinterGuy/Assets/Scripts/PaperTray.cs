@@ -18,6 +18,7 @@ public class PaperTray : MonoBehaviour
 	
 	#region Private variables
 	private float _printerStress = 0;
+	private bool _trayActive = false;
 	#endregion
 	
 	#region Delegates & Events
@@ -35,11 +36,14 @@ public class PaperTray : MonoBehaviour
 	public void OnEnable()
 	{
 		PrinterManager.OnPagePrinted += PagePrinted;
-		GestureManager.OnTap += TrayClicked;
+		ZoomHandler.OnTray += TrayFocus;
+		ZoomHandler.OnFreeroam += TrayFocus;
 	}
 	public void OnDisable()
 	{
 		PrinterManager.OnPagePrinted -= PagePrinted;
+		ZoomHandler.OnTray -= TrayFocus;
+		ZoomHandler.OnFreeroam -= TrayFocus;
 		GestureManager.OnTap -= TrayClicked;
 	}
 	
@@ -60,9 +64,19 @@ public class PaperTray : MonoBehaviour
 		_stressThresholdPerPenalty = stressThresholdPerPenalty;
 	}
 	
+	public void TrayFocus()
+	{
+		GestureManager.OnTap += TrayClicked;
+	}
+	public void FreeRoamMode()
+	{
+		GestureManager.OnTap -= TrayClicked;
+	}
+	
 	public void TrayClicked(GameObject myGO, Vector2 pos)
 	{
-		/*if(myGO.collider != this.gameObject.collider)
+		// TODO KJE: Tjek gameobject + tag højde for flere tray's
+		/*if(myGO != this.gameObject)
 		{
 			return;
 		}*/
