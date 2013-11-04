@@ -64,21 +64,14 @@ public class PaperJam : MonoBehaviour
         _particleHolder = (GameObject)Instantiate(_smokePrefabHolder);
     }
 
-    void Update()
-    {
-        //Should be connected to the paper print event, then deleted here
-        if(!_isJammed)
-        {
-            OnPaperPrint();
-        }
-    }
-
+    #region Enable/Disable
     void OnEnable()
     {
         OnJam += Shake;
         OnJam += Smoke;
         OnUnjammed += JamStopped;
-        //OnPrintPaper += OnPaperPrint;
+        PrinterManager.OnPagePrinted += OnPaperPrint;
+
         GestureManager.OnTap += ResolvePaperJam;
     }
 
@@ -87,20 +80,15 @@ public class PaperJam : MonoBehaviour
         OnJam -= Shake;
         OnJam -= Smoke;
         OnUnjammed -= JamStopped;
-        //OnPrintPaper += OnPaperPrint;
+        PrinterManager.OnPagePrinted -= OnPaperPrint;
         GestureManager.OnTap -= ResolvePaperJam;
     }
+    #endregion
 
+    #region PaperJam actions
     void Shake()
     {
-        Debug.Log("hello shake");
         iTween.PunchRotation(gameObject, iTween.Hash("amount", _shakeJam, "time", _shakeJamTime, "oncomplete", "Shake"));
-    }
-
-    void JamStopped()
-    {
-        iTween.Stop(gameObject);
-        transform.rotation = _startRotation;
     }
 
     void Smoke()
@@ -108,7 +96,15 @@ public class PaperJam : MonoBehaviour
         _particleHolder.particleSystem.enableEmission = true;
     }
 
-    void OnPaperPrint()
+    void JamStopped()
+    {
+        iTween.Stop(gameObject);
+        transform.rotation = _startRotation;
+    }
+    #endregion
+
+    #region PaperJam Occurs is Resolved
+    void OnPaperPrint(GameObject printObject)
     {
         iTween.PunchRotation(gameObject, iTween.Hash("amount", _shakePrint, "time", _shakeTime));
 
@@ -134,4 +130,5 @@ public class PaperJam : MonoBehaviour
             }
         }
     }
+    #endregion
 }
