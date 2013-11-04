@@ -25,20 +25,21 @@ public class InkController : MonoBehaviour
 	void OnEnable()
 	{
 		ZoomHandler.OnInk += EnableInkTask;
-		ZoomHandler.OnGoingFreeroamAction += DisableInkTask;
+		ZoomHandler.OnGoingFreeroam += DisableInkTask;
 		GestureManager.OnSwipeLeft += RotateLeft;
 		GestureManager.OnSwipeRight += RotateRight;
 		GestureManager.OnTap += InsertInk;
-		InventoryController.OnInkSelect += GetInkFromInv;
+		//InventoryController.OnInkSelect += GetInkFromInv;
 	}
 	
 	void OnDisable()
 	{
 		ZoomHandler.OnInk -= EnableInkTask;
+		ZoomHandler.OnGoingFreeroam -= DisableInkTask;
 		GestureManager.OnSwipeLeft -= RotateLeft;
 		GestureManager.OnSwipeRight -= RotateRight;
 		GestureManager.OnTap -= InsertInk;
-		InventoryController.OnInkSelect -= GetInkFromInv;
+		//InventoryController.OnInkSelect -= GetInkFromInv;
 	}
 	#endregion
 	
@@ -117,10 +118,10 @@ public class InkController : MonoBehaviour
 		}
 	}
 	
-	private void GetInkFromInv(Color col)
-	{
-		_inkSelected = true;
-		_inkColorSelected = col;
-	}
+//	private void GetInkFromInv(Color col)
+//	{
+//		_inkSelected = true;
+//		_inkColorSelected = col;
+//	}
 	#endregion
 }
