@@ -14,7 +14,7 @@ public class PrinterInkSample : MonoBehaviour
         _red = GameObject.FindGameObjectWithTag("InkRed").GetComponent<InkCartridge>();
         //_blue = GameObject.FindGameObjectWithTag("InkBlue").AddComponent<InkCartridge>();
         //_green = GameObject.FindGameObjectWithTag("InkGreen").AddComponent<InkCartridge>();
-        _red.InitializeInkCartridge(Color.red, 30f);
+        _red.InitializeInkCartridge(Color.red, 5f);
         //_blue.InitializeInkCartridge();
         //_green.InitializeInkCartridge();
 	}

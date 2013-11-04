@@ -5,11 +5,15 @@ public class InkCartridge : MonoBehaviour
 {
     [SerializeField]
     private float _lifeTime = 60;
+    [SerializeField]
+    private ParticleSystem _particle;
     private TimerUtilities _inkTimer;
     private bool _isInstantiated = false;
     private Vector3 _defaultScale;
     private Vector3 _defaultPosition;
     private Color _inkColor;
+    private enum InkStates { Working, ErrorWait };
+    private InkStates _inkState = InkStates.Working;
 
     public delegate void InkCartridgeError(GameObject go);
     public static event InkCartridgeError OnInkCartridgeError;
@@ -20,14 +24,18 @@ public class InkCartridge : MonoBehaviour
     public void Update()
     {
         if (_isInstantiated) {
-            if (_inkTimer.GetTimeLeft() > 0)
+            if (_inkTimer.GetTimeLeft() > 0 && _inkState == InkStates.Working)
             {
                 UseInk();
             }
-            else
+            else if (_inkTimer.GetTimeLeft() <= 0 && _inkState != InkStates.ErrorWait)
             {
                 if (OnInkCartridgeError != null)
                     OnInkCartridgeError(this.gameObject);
+
+                Instantiate(_particle, this.gameObject.transform.position, Quaternion.identity);
+
+                _inkState = InkStates.ErrorWait;
             }
         }
     }
@@ -62,10 +70,12 @@ public class InkCartridge : MonoBehaviour
         if(OnInkCartridgeRefilled != null)
             OnInkCartridgeRefilled(this.gameObject);
 
+        _inkState = InkStates.Working;
         RescaleCartridge();
+        Destroy(_particle);
     }
 
-    public void RefillInk(float amount)
+    /*public void RefillInk(float amount)
     {
         if(amount <= _lifeTime && amount > 0)
         {
@@ -85,7 +95,7 @@ public class InkCartridge : MonoBehaviour
 
             RescaleCartridge(amount);
         }
-    }
+    }*/
 
     private void UseInk()
     {
@@ -106,8 +116,5 @@ public class InkCartridge : MonoBehaviour
         this.gameObject.transform.position = _defaultPosition;
     }
 
-    private void RescaleCartridge(float amount)
-    {
 
-    }
 }
