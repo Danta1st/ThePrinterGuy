@@ -11,9 +11,11 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     private GameObject cameraRotationPoint;
     #endregion
+	
 
     #region Privates
     private bool RotationInProcess = false;
+	private bool _inFreeRoam = true;
     #endregion
 
     #region OnEnableOnDisable
@@ -22,6 +24,11 @@ public class CameraController : MonoBehaviour
         GestureManager.OnSwipeRight += CameraRotationLeft;
         GestureManager.OnSwipeLeft += CameraRotationRight;
         GestureManager.OnSwipeDown += CameraRotationUp;
+		ZoomHandler.OnTray += FocusedMode;
+		ZoomHandler.onPopout += FocusedMode;
+		ZoomHandler.OnJam += FocusedMode;
+		ZoomHandler.OnInk += FocusedMode;
+		ZoomHandler.OnFreeroam += FreeRoamMode;
     }
 
     void OnDisable()
@@ -29,13 +36,31 @@ public class CameraController : MonoBehaviour
         GestureManager.OnSwipeRight -= CameraRotationLeft;
         GestureManager.OnSwipeLeft -= CameraRotationRight;
         GestureManager.OnSwipeDown -= CameraRotationUp;
+		ZoomHandler.OnTray -= FocusedMode;
+		ZoomHandler.onPopout -= FocusedMode;
+		ZoomHandler.OnJam -= FocusedMode;
+		ZoomHandler.OnInk -= FocusedMode;
+		ZoomHandler.OnFreeroam -= FreeRoamMode;
     }
     #endregion
 
     #region Methods
+	public void FreeRoamMode()
+	{
+		GestureManager.OnSwipeRight += CameraRotationLeft;
+        GestureManager.OnSwipeLeft += CameraRotationRight;
+        GestureManager.OnSwipeDown += CameraRotationUp;
+	}
+	public void FocusedMode()
+	{
+		GestureManager.OnSwipeRight -= CameraRotationLeft;
+        GestureManager.OnSwipeLeft -= CameraRotationRight;
+        GestureManager.OnSwipeDown -= CameraRotationUp;
+	}
+	
     public void CameraRotationLeft()
     {
-        if(RotationInProcess == false)
+        if(RotationInProcess == false && _inFreeRoam)
         {
             RotateCamera(0, 90, 0);
         }
@@ -43,7 +68,7 @@ public class CameraController : MonoBehaviour
 
     public void CameraRotationRight()
     {
-        if(RotationInProcess == false)
+        if(RotationInProcess == false && _inFreeRoam)
         {
             RotateCamera(0, -90, 0);
         }
@@ -51,7 +76,7 @@ public class CameraController : MonoBehaviour
 
     public void CameraRotationUp()
     {
-        if(RotationInProcess == false)
+        if(RotationInProcess == false && _inFreeRoam)
         {
             GestureManager.OnSwipeRight -= CameraRotationLeft;
             GestureManager.OnSwipeLeft -= CameraRotationRight;
@@ -63,7 +88,7 @@ public class CameraController : MonoBehaviour
 
     public void CameraRotationDown()
     {
-        if(RotationInProcess == false)
+        if(RotationInProcess == false && _inFreeRoam)
         {
             GestureManager.OnSwipeRight += CameraRotationLeft;
             GestureManager.OnSwipeLeft += CameraRotationRight;
