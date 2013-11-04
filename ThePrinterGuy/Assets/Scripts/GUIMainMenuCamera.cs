@@ -19,7 +19,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
     private RaycastHit _hit;
-    private bool _isGUI = false;
+    private bool _isGUI = true;
     private bool _canTouch = true;
 
     private Vector3 _guiCameraMoveAmount;
@@ -198,12 +198,23 @@ public class GUIMainMenuCamera : MonoBehaviour
                     {
 
                     }
+                    else if(_hit.collider.gameObject.name == "ResumeButton")
+                    {
+
+                    }
+                    else if(_hit.collider.gameObject.name == "ResumeButton")
+                    {
+
+                    }
                 }
                 //-----------------------------------------------------------------------//
             }
             else
             {
-
+                if(_guiCameraStage == "Main Menu")
+                {
+                    //Load level selection scene.
+                }
             }
         }
     }
