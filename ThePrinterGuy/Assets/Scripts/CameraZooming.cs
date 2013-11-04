@@ -19,7 +19,7 @@ public class CameraZooming : MonoBehaviour
 
     void Awake()
     {
-        _movePointTransform = gameObject.transform.FindChild("Point");
+        _movePointTransform = gameObject.transform.FindChild("point");
 
         if(_movePointTransform == null)
         {

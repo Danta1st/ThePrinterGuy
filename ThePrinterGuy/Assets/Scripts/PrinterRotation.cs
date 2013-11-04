@@ -35,7 +35,7 @@ public class PrinterRotation : MonoBehaviour
     void Start()
     {
         _camera = GameObject.Find("Main Camera").camera;
-        _startAngle = transform.localEulerAngles;
+        _startAngle = transform.rotation.eulerAngles;
     }
 
     void Update()
@@ -47,33 +47,28 @@ public class PrinterRotation : MonoBehaviour
     #region Class Methods
     void SmoothRotation(GameObject go, Vector2 _screenPosition)
     {
-        Ray _ray = _camera.ScreenPointToRay(_screenPosition);
-
-        if(Physics.Raycast(_ray, out _hit, 100, _layerMask.value))
+        if(go != null && gameObject.Equals(go))
         {
-            if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("Default"))
+            if(go != null)
             {
-                if(_targetObject != null)
+                if(!_isBack)
                 {
-                    if(!_isBack)
-                    {
-                        iTween.RotateTo(_targetObject, iTween.Hash("rotation", _maxAngle,
-                                                                    "time", _duration));
-                        _isBack = true;
-                    }
-                    else
-                    {
-                        iTween.RotateTo(_targetObject, iTween.Hash("rotation", _startAngle, "easetype", _easeType,
-                                                                    "time", _duration));
-                        _isBack = false;
-                    }
+                    iTween.RotateTo(go, iTween.Hash("rotation", _maxAngle,
+                                                                "time", _duration));
+                    _isBack = true;
                 }
                 else
                 {
-                    Debug.Log("Missing object");
+                    iTween.RotateTo(go, iTween.Hash("rotation", _startAngle,
+                                                                "time", _duration));
+                    _isBack = false;
                 }
             }
-        }
+            else
+            {
+                Debug.Log("Missing object");
+            }
+		}
     }
     #endregion
 }

@@ -5,10 +5,6 @@ public class PrinterDrag : MonoBehaviour {
 
     #region Editor Publics
     [SerializeField]
-    private LayerMask _layerMask;
-    [SerializeField]
-    private GameObject _targetObject;
-    [SerializeField]
     private iTween.EaseType _easeType = iTween.EaseType.easeOutBack;
     [SerializeField]
     private Vector3 _destination = Vector3.zero;
@@ -21,6 +17,7 @@ public class PrinterDrag : MonoBehaviour {
     private RaycastHit _hit;
     private Vector3 _startPos;
     private bool _isBack = false;
+    private bool AnimationInProcess = false;
     #endregion
 
     void OnEnable(){
@@ -47,33 +44,25 @@ public class PrinterDrag : MonoBehaviour {
     #region Class Methods
     public void SmoothDrag(GameObject go, Vector2 _screenPosition)
     {
-        Ray _ray = _camera.ScreenPointToRay(_screenPosition);
-
-        if(Physics.Raycast(_ray, out _hit, 100, _layerMask.value))
+        if(go != null && gameObject.Equals(go ) && AnimationInProcess == false)
         {
-            if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("Default"))
+            AnimationInProcess = true;
+            if(!_isBack)
             {
-                if(_targetObject != null)
-                {
-                    if(!_isBack)
-                    {
-                        iTween.MoveAdd(_targetObject, iTween.Hash("amount", _destination,
-                                                                    "time", _duration));
-                        _isBack = true;
-                    }
-                    else
-                    {
-                        iTween.MoveAdd(_targetObject, iTween.Hash("amount", -_destination,
-                                                                    "time", _duration));
-                        _isBack = false;
-                    }
-                }
-                else
-                {
-                    Debug.Log("Missing object");
-                }
+                iTween.MoveAdd(go, iTween.Hash("amount", _destination, "time", _duration, "onComplete", "AnimationStopped"));
+                _isBack = true;
+            }
+            else
+            {
+                iTween.MoveAdd(go, iTween.Hash("amount", -_destination, "time", _duration, "onComplete", "AnimationStopped"));
+                _isBack = false;
             }
         }
+    }
+
+    public void AnimationStopped()
+    {
+        AnimationInProcess = false;
     }
     #endregion
 }
