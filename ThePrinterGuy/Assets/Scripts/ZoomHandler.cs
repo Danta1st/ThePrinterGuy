@@ -18,6 +18,9 @@ public class ZoomHandler : MonoBehaviour
     #endregion
 	
 	#region Delegates & Events
+	public delegate void OnGoingFreeroamAction();
+	public static event OnGoingFreeroamAction OnGoingFreeroam;
+	
 	public delegate void OnFreeroamAction();
 	public static event OnFreeroamAction OnFreeroam;
 	
@@ -121,7 +124,7 @@ public class ZoomHandler : MonoBehaviour
         {
 			foreach(GameObject go in _zoomables)
 			{
-				if(go != null)
+				if(go != null && thisGameObj != null)
 				{
 					if(go.tag == thisGameObj.tag){
 						CheckSwitch(go);
@@ -133,35 +136,26 @@ public class ZoomHandler : MonoBehaviour
 	
 	//Zoom out from task
 	private void GoToFreeRoam()
-    //private void goBackToFreeRoam(GameObject thisGameObj, Vector2 screenPos)
     {
         if(_canZoom && _isZoomed)
         {
 			SetObjectsOut();
 			
-			StartCoroutine_Auto(SetFreeRoam());
-			//Debug.Log("Cam - OnFreeroam()");
+			if(OnGoingFreeroam != null)
+				OnGoingFreeroam();
 			
-			//Method needed if using a DoubleTap Solution
-//			foreach(GameObject go in _zoomables)
-//			{
-//				if(go.tag == thisGameObj.tag && _tmpObj.tag == thisGameObj.tag)
-//				{
-//					SetObjectsOut();
-//					if(OnFreeroam != null)
-//						OnFreeroam();
-//				}
-//			}
+			Invoke("CallOnFreeroam",_zoomTime);
         }
     }
 	
-	IEnumerator SetFreeRoam()
+	private void CallOnFreeroam()
 	{
-		yield return new WaitForSeconds(_zoomTime);
 		if(OnFreeroam != null)
 			OnFreeroam();
 	}
+	
     #endregion
+	
 
     public static void SetAnimationReady()
     {
