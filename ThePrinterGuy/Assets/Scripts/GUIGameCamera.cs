@@ -20,13 +20,15 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Private Variables
-    private Camera _guiCamera;
+    private GameObject _popupTextObject;
+	private Camera _guiCamera;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
     private RaycastHit _hit;
     private bool _isGUI = false;
     private bool _canTouch = true;
     private float _timeScale = 0.0f;
+	
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -122,7 +124,7 @@ public class GUIGameCamera : MonoBehaviour
         transform.position = _guiCamera.transform.position;
 
         _scaleMultiplierX = Screen.width / 1920f;
-		_scaleMultiplierY = Screen.height / 1080f;
+		_scaleMultiplierY = Screen.height / 1200f;
 		AdjustCameraSize();
         //--------------------------------------------------//
 
@@ -130,7 +132,7 @@ public class GUIGameCamera : MonoBehaviour
         //--------------------------------------------------//
         foreach(GameObject _guiObject in _guiList)
         {
-			if(_guiObject.name == "IngameMenu")
+			if(_guiObject.name == "IngameMenu" || _guiObject.name == "BGIngameMenu")
 			{
 				_guiObject.SetActive(false);
 			}
@@ -176,10 +178,18 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Class Methods
+	public void InstantiatePopup()
+	{
+		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(0.5f,0.5f, _guiCamera.nearClipPlane));
+		_popupTextPos.z = 1f;
+		_popupTextObject = Resources.Load("Prefabs/GUIPopupText") as GameObject;
+		GameObject popupText = (GameObject)Instantiate(_popupTextObject, _popupTextPos , Quaternion.identity);
+	}
+	
 	private void AdjustCameraSize()
 	{
-		float _aspectRatio = 1920f / 1080f;
-		float _startCameraSize = 540f;
+		float _aspectRatio = 1920f / 1200f;
+		float _startCameraSize = 600f;
 		float _newCameraSize = _guiCamera.orthographicSize * _scaleMultiplierY;
 		
 		foreach(GameObject _guiObject in _guiList)
@@ -188,10 +198,18 @@ public class GUIGameCamera : MonoBehaviour
 			_guiCamera.orthographicSize = _startCameraSize;
 			
 			Vector3 _startPosition = _guiCamera.WorldToViewportPoint(_guiObject.transform.position);
-//            Vector3 _scale = new Vector3(_guiObject.transform.localScale.x * _scaleMultiplierX,
-//                                        _guiObject.transform.localScale.y * _scaleMultiplierY,
-//                                        _guiObject.transform.localScale.z);
-			_guiObject.transform.localScale *= _scaleMultiplierY;// _scale;
+            
+			if(_guiObject.name == "BGIngameMenu")
+			{
+				Vector3 _scale = new Vector3(_guiObject.transform.localScale.x * _scaleMultiplierX,
+	                                        _guiObject.transform.localScale.y * _scaleMultiplierY,
+	                                        _guiObject.transform.localScale.z);
+				_guiObject.transform.localScale = _scale;
+			}
+			else
+			{
+				_guiObject.transform.localScale *= _scaleMultiplierY;
+			}
 			
 			_guiCamera.ResetAspect();
 			_guiCamera.orthographicSize = _newCameraSize;
@@ -345,6 +363,7 @@ public class GUIGameCamera : MonoBehaviour
         DisableGUIElement("Pause");
         EnableGUIElement("IngameMenu");
 		EnableGUIElement("StatsOverview");
+		EnableGUIElement("BGIngameMenu");
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
 						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu));
@@ -375,6 +394,7 @@ public class GUIGameCamera : MonoBehaviour
                 LoadGUIState();
 				DisableGUIElement("IngameMenu");
 				DisableGUIElement("StatsOverview");
+				DisableGUIElement("BGIngameMenu");
                 break;
             }
             yield return new WaitForSeconds(1);
