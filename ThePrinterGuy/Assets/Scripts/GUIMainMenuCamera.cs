@@ -24,7 +24,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
-    private string _guiCameraStage = "Main Menu";
+    private string _guiCameraStage = "LanguageSelectionStage";
 
     private Vector3 _mainMenuPosition;
     private Vector3 _optionsPosition;
@@ -115,22 +115,27 @@ public class GUIMainMenuCamera : MonoBehaviour
         //--------------------------------------------------//
         foreach(GameObject _guiObject in _guiList)
         {
-            if(_guiObject.name == "MainMenu")
+            if(_guiObject.name == "LanguageMenu")
             {
-                _mainMenuPosition = _guiObject.transform.position;
                 _guiObject.SetActive(true);
             }
 
-            if(_guiObject.name == "Options")
+            if(_guiObject.name == "MainMenu")
+            {
+                _mainMenuPosition = _guiObject.transform.position;
+                _guiObject.SetActive(false);
+            }
+
+            if(_guiObject.name == "OptionsMenu")
             {
                 _optionsPosition = _guiObject.transform.position;
-                _guiObject.SetActive(true);
+                _guiObject.SetActive(false);
             }
 
             if(_guiObject.name == "Credits")
             {
                 _creditsPosition = _guiObject.transform.position;
-                _guiObject.SetActive(true);
+                _guiObject.SetActive(false);
             }
         }
         //--------------------------------------------------//
@@ -206,12 +211,26 @@ public class GUIMainMenuCamera : MonoBehaviour
                     {
 
                     }
+                    else if(_hit.collider.gameObject.name == "DanishButton")
+                    {
+                        if(_guiCameraStage == "LanguageSelectionStage")
+                        {
+                            SwitchToMainMenu();
+                        }
+                    }
+                    else if(_hit.collider.gameObject.name == "EnglishButton")
+                    {
+                        if(_guiCameraStage == "LanguageSelectionStage")
+                        {
+                            SwitchToMainMenu();
+                        }
+                    }
                 }
                 //-----------------------------------------------------------------------//
             }
             else
             {
-                if(_guiCameraStage == "Main Menu")
+                if(_guiCameraStage == "MainMenuStage")
                 {
                     //Load level selection scene.
                 }
@@ -219,30 +238,39 @@ public class GUIMainMenuCamera : MonoBehaviour
         }
     }
 
+    private void SwitchToMainMenu()
+    {
+        _guiCameraStage = "MainMenuStage";
+        DisableGUIElement("LanguageMenu");
+        EnableGUIElement("MainMenu");
+        EnableGUIElement("OptionsMenu");
+        EnableGUIElement("Credits");
+    }
+
     private void CheckLeft()
     {
-        if(_guiCameraStage == "Main Menu")
+        if(_guiCameraStage == "MainMenuStage")
         {
-            _guiCameraStage = "Credits";
+            _guiCameraStage = "CreditsStage";
             iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _creditsPosition, "time", _guiCameraDuration));
         }
-        else if(_guiCameraStage == "Options")
+        else if(_guiCameraStage == "OptionsMenuStage")
         {
-            _guiCameraStage = "Main Menu";
+            _guiCameraStage = "MainMenuStage";
             iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
         }
     }
 
     private void CheckRight()
     {
-        if(_guiCameraStage == "Main Menu")
+        if(_guiCameraStage == "MainMenuStage")
         {
-            _guiCameraStage = "Options";
+            _guiCameraStage = "OptionsMenuStage";
             iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _optionsPosition, "time", _guiCameraDuration));
         }
-        else if(_guiCameraStage == "Credits")
+        else if(_guiCameraStage == "CreditsStage")
         {
-            _guiCameraStage = "Main Menu";
+            _guiCameraStage = "MainMenuStage";
             iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
         }
     }
