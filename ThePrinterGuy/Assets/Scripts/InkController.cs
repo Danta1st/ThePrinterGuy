@@ -3,24 +3,33 @@ using System.Collections;
 
 public class InkController : MonoBehaviour
 {
-    private InkCartridge _redInk;
-    private InkCartridge _greenInk;
-    private InkCartridge _blueInk;
-	private bool _tasksEnabled = true;
+	#region Variables Editable in Editor
 	[SerializeField]
 	private iTween.EaseType _easeType;
 	[SerializeField]
 	private float _animationSpeed = 0.5f;
 	[SerializeField]
 	private float _rotationAmount = 75f;
-	private bool _inkSelected = true;
+	#endregion
 	
+	#region Private Variables
+	private InkCartridge _redInk;
+    private InkCartridge _greenInk;
+    private InkCartridge _blueInk;
+	private bool _tasksEnabled = false;
+	private bool _inkSelected = false;
+	private Color _inkColorSelected;
+	#endregion
+	
+	#region Setup of Delegates
 	void OnEnable()
 	{
 		ZoomHandler.OnInk += EnableInkTask;
+		ZoomHandler.OnGoingFreeroamAction += DisableInkTask;
 		GestureManager.OnSwipeLeft += RotateLeft;
 		GestureManager.OnSwipeRight += RotateRight;
 		GestureManager.OnTap += InsertInk;
+		InventoryController.OnInkSelect += GetInkFromInv;
 	}
 	
 	void OnDisable()
@@ -29,8 +38,11 @@ public class InkController : MonoBehaviour
 		GestureManager.OnSwipeLeft -= RotateLeft;
 		GestureManager.OnSwipeRight -= RotateRight;
 		GestureManager.OnTap -= InsertInk;
+		InventoryController.OnInkSelect -= GetInkFromInv;
 	}
+	#endregion
 	
+	#region Initializatio of InkCartridges
     void Start()
     {
         _redInk = GameObject.FindGameObjectWithTag("InkRed").GetComponent<InkCartridge>();
@@ -41,10 +53,17 @@ public class InkController : MonoBehaviour
         _blueInk.InitializeInkCartridge(Color.blue);
 		
     }
+	#endregion
 	
+	#region Delegate methods
 	private void EnableInkTask()
 	{
 		_tasksEnabled = true;		
+	}
+	
+	private void DisableInkTask()
+	{
+		_tasksEnabled = false;
 	}
 	
 	private void RotateLeft()
@@ -74,13 +93,21 @@ public class InkController : MonoBehaviour
 				switch(go.tag)
 				{
 				case "InkRed":
-					_redInk.RefillInk();
+					if(_inkColorSelected == Color.red)
+						_redInk.RefillInk();
+					
+					_inkSelected = false;
 					break;
 				case "InkGreen":
-					_greenInk.RefillInk();
+					if(_inkColorSelected == Color.green)
+						_greenInk.RefillInk();
+					_inkSelected = false;
 					break;
 				case "InkBlue":
-					_blueInk.RefillInk();
+					if(_inkColorSelected == Color.blue)
+						_blueInk.RefillInk();
+					
+					_inkSelected = false;
 					break;
 				default:
 					_inkSelected = false;
@@ -89,4 +116,11 @@ public class InkController : MonoBehaviour
 			}
 		}
 	}
+	
+	private void GetInkFromInv(Color col)
+	{
+		_inkSelected = true;
+		_inkColorSelected = col;
+	}
+	#endregion
 }

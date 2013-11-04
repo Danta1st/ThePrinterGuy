@@ -3,9 +3,12 @@ using System.Collections;
 
 public class InkCartridge : MonoBehaviour
 {
-    [SerializeField]
+	#region Variables Editable in Editor
+	[SerializeField]
     private float _lifeTime = 60;
+	#endregion
 	
+	#region Private variables
 	private GameObject _smoke;
     private TimerUtilities _inkTimer;
     private bool _isInstantiated = false;
@@ -14,12 +17,15 @@ public class InkCartridge : MonoBehaviour
     private Color _inkColor;
     private enum InkStates { Working, ErrorWait };
     private InkStates _inkState = InkStates.Working;
-
+	#endregion
+	
+	#region delegate declarations
     public delegate void InkCartridgeError(GameObject go);
     public static event InkCartridgeError OnInkCartridgeError;
 
     public delegate void InkCartridgeRefilled(GameObject go);
     public static event InkCartridgeRefilled OnInkCartridgeRefilled;
+	#endregion
 	
     void Update()
     {
@@ -41,7 +47,8 @@ public class InkCartridge : MonoBehaviour
             }
         }
     }
-
+	
+	#region Initialization methods
     public void InitializeInkCartridge(Color color)
     {
         _defaultScale = this.gameObject.transform.localScale;
@@ -64,7 +71,9 @@ public class InkCartridge : MonoBehaviour
         _inkTimer.StartTimer(_lifeTime);
         _isInstantiated = true;
     }
-
+	#endregion
+	
+	#region public methods
     public void RefillInk()
     {
         _inkTimer.StartTimer(_lifeTime);
@@ -98,7 +107,9 @@ public class InkCartridge : MonoBehaviour
             RescaleCartridge(amount);
         }
     }*/
-
+	#endregion
+	
+	#region private methods
     private void UseInk()
     {
         float deltaScale = 0.0f;
@@ -117,6 +128,6 @@ public class InkCartridge : MonoBehaviour
         this.gameObject.transform.localScale = _defaultScale;
         this.gameObject.transform.localPosition = _defaultPosition;
     }
-
+	#endregion
 
 }
