@@ -32,7 +32,7 @@ public class InventoryController : MonoBehaviour {
 				OnInkSelect(Color.black);
 			break;
 		case "ToolBoxHammerButton":
-			if(OnhammerSelect != null)
+			if(OnHammerSelect != null)
 				OnHammerSelect();
 			break;
 		case "ToolBoxPaperButton":
