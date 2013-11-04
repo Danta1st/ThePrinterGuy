@@ -37,7 +37,7 @@ public class PaperTray : MonoBehaviour
 	{
 		PrinterManager.OnPagePrinted += PagePrinted;
 		ZoomHandler.OnTray += TrayFocus;
-		ZoomHandler.OnFreeroam += TrayFocus;
+		ZoomHandler.OnFreeroam += FreeRoamMode;
 	}
 	public void OnDisable()
 	{
