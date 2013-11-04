@@ -20,7 +20,6 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Private Variables
-    private GameObject _popupTextObject;
 	private Camera _guiCamera;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
@@ -168,22 +167,59 @@ public class GUIGameCamera : MonoBehaviour
         //--------------------------------------------------//
 
         EnableGUICamera();
+		
+		
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
+		if(Input.GetKeyDown(KeyCode.N))
+		{
+			PopupText("Bonus Points");
+		}
     }
     #endregion
 
     #region Class Methods
-	public void InstantiatePopup()
+	public void PopupText(string _str)
 	{
-		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(0.5f,0.5f, _guiCamera.nearClipPlane));
+		StartCoroutine("InstantiatePopup", _str);
+	}
+	
+	private IEnumerator InstantiatePopup(string _str)
+	{
+		
+		float _xPopupPos = Random.Range(0.35f,0.65f);
+		float _yPopupPos = Random.Range(0.3f,0.4f);
+		
+		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
-		_popupTextObject = Resources.Load("Prefabs/GUIPopupText") as GameObject;
-		GameObject popupText = (GameObject)Instantiate(_popupTextObject, _popupTextPos , Quaternion.identity);
+		GameObject _popupTextPrefab = Resources.Load("GUIPopupText") as GameObject;
+		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
+		
+		float _fontSize = 200f;
+		
+		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
+		
+		_popupTextObject.GetComponent<TextMesh>().text = _str;
+		
+		float _fadeInDuration = 0.5f;
+		float _fadeOutDuration = 1.2f;
+		float _punchAmmount = -10f;
+		float _moveLength = 600f * _scaleMultiplierY;
+		
+		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			_fadeInDuration + _fadeOutDuration);
+		iTween.PunchScale(_popupTextObject, new Vector3(_punchAmmount,_punchAmmount,0f), 
+			_fadeOutDuration);
+		iTween.FadeFrom(_popupTextObject, 0f, _fadeInDuration);
+		yield return new WaitForSeconds(_fadeInDuration);
+		iTween.FadeTo(_popupTextObject, 0f, _fadeOutDuration);
+		yield return new WaitForSeconds(_fadeOutDuration);
+		Destroy(_popupTextObject);
+		
 	}
 	
 	private void AdjustCameraSize()
