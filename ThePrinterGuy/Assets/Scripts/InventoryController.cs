@@ -15,12 +15,12 @@ public class InventoryController : MonoBehaviour {
 	
 	void OnEnable()
 	{
-		//GUIGameCamera.OnInventoryPress += GetItemFromInv;	
+		GUIGameCamera.OnInventoryPress += GetItemFromInv;	
 	}
 	
 	void OnDisable()
 	{
-		//GUIGameCamera.OnInventoryPress -= GetItemFromInv;
+		GUIGameCamera.OnInventoryPress -= GetItemFromInv;
 	}
 	
 	private void GetItemFromInv(string itemName)

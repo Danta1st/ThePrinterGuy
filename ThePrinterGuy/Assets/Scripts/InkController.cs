@@ -10,15 +10,20 @@ public class InkController : MonoBehaviour
 	private float _animationSpeed = 0.5f;
 	[SerializeField]
 	private float _rotationAmount = 75f;
+	[SerializeField]
+	private float _sirenRotationSpeed = 50f;
 	#endregion
 	
 	#region Private Variables
+
 	private InkCartridge _redInk;
     private InkCartridge _greenInk;
     private InkCartridge _blueInk;
+	private GameObject _errorSiren;
 	private bool _tasksEnabled = false;
 	private bool _inkSelected = false;
 	private Color _inkColorSelected;
+	private bool _sirenEnabled = false;
 	#endregion
 	
 	#region Setup of Delegates
@@ -29,7 +34,9 @@ public class InkController : MonoBehaviour
 		GestureManager.OnSwipeLeft += RotateLeft;
 		GestureManager.OnSwipeRight += RotateRight;
 		GestureManager.OnTap += InsertInk;
-		//InventoryController.OnInkSelect += GetInkFromInv;
+		InkCartridge.OnInkCartridgeError += StartSiren;
+		InkCartridge.OnInkCartridgeRefilled += StopSiren;
+		InventoryController.OnInkSelect += GetInkFromInv;
 	}
 	
 	void OnDisable()
@@ -39,7 +46,9 @@ public class InkController : MonoBehaviour
 		GestureManager.OnSwipeLeft -= RotateLeft;
 		GestureManager.OnSwipeRight -= RotateRight;
 		GestureManager.OnTap -= InsertInk;
-		//InventoryController.OnInkSelect -= GetInkFromInv;
+		InkCartridge.OnInkCartridgeError -= StartSiren;
+		InkCartridge.OnInkCartridgeRefilled -= StopSiren;
+		InventoryController.OnInkSelect -= GetInkFromInv;
 	}
 	#endregion
 	
@@ -49,11 +58,20 @@ public class InkController : MonoBehaviour
         _redInk = GameObject.FindGameObjectWithTag("InkRed").GetComponent<InkCartridge>();
 		_greenInk = GameObject.FindGameObjectWithTag("InkGreen").GetComponent<InkCartridge>();
 		_blueInk = GameObject.FindGameObjectWithTag("InkBlue").GetComponent<InkCartridge>();
+		
 		_redInk.InitializeInkCartridge(Color.red);
         _greenInk.InitializeInkCartridge(Color.green);
         _blueInk.InitializeInkCartridge(Color.blue);
-		
+		_errorSiren = GameObject.FindGameObjectWithTag("InkSiren");
     }
+	
+	void Update()
+	{
+		if(_sirenEnabled)
+		{
+			_errorSiren.transform.Rotate(Vector3.up * _sirenRotationSpeed * Time.deltaTime);
+		}
+	}
 	#endregion
 	
 	#region Delegate methods
@@ -116,6 +134,19 @@ public class InkController : MonoBehaviour
 				}
 			}
 		}
+	}
+	
+	
+	private void StartSiren(GameObject go)
+	{
+		_sirenEnabled = true;
+		_errorSiren.renderer.material.SetFloat("_Progress", 0.5f);
+	}
+	
+	private void StopSiren(GameObject go)
+	{
+		_sirenEnabled = false;
+		_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
 	}
 	
 //	private void GetInkFromInv(Color col)

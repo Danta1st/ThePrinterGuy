@@ -1,5 +1,4 @@
-﻿Shader "Custom/Ink" {
-
+﻿Shader "Custom/SirenShader" {
 Properties {
 	_Color ("Color", Color) = (1,1,1,1)
 	_BackgroundTex ("Background (RGBA)", 2D) = "white" {}
@@ -10,9 +9,9 @@ Properties {
 
 SubShader {
 		//Tags { "Queue"="Transparent" }
-		Tags { "Queue"="Overlay+1" }
-		ZTest Always
-		Blend SrcAlpha OneMinusSrcAlpha
+		//Tags { "Queue"="Overlay+1" }
+		//ZTest Always
+		//Blend SrcAlpha OneMinusSrcAlpha
         Pass {
  
 CGPROGRAM
@@ -58,7 +57,7 @@ half4 frag( v2f i ) : COLOR
 	half4 f = tex2D( _ForegroundTex, i.uv);
 	
 	half4 color = b;
-	if( i.uv.y < _Progress ){
+	if( i.uv.x < _Progress ){
 		color = (1.0 - f.a)*color + f.a*f;
 	}
 	
