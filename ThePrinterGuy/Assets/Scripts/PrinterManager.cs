@@ -6,27 +6,17 @@ public class PrinterManager : MonoBehaviour
 	#region Public variables
 	[SerializeField]
 	private float _timeToPrintPage = 0.2f;
-	[SerializeField]
+	
+	// TODO: To be removed.
 	private float blackPrintLifetime = 100;
-	[SerializeField]
 	private float blackPrintDecayRate = 1;
-	[SerializeField]
 	private float bluePrintLifetime = 100;
-	[SerializeField]
 	private float bluePrintDecayRate = 1;
-	[SerializeField]
 	private float redPrintLifetime = 100;
-	[SerializeField]
 	private float redPrintDecayRate = 1;
-	[SerializeField]
 	private float greenPrintLifetime = 100;
-	[SerializeField]
 	private float greenPrintDecayRate = 1;
 	
-	[SerializeField]
-	private int _paperlimit = 500;
-	[SerializeField]
-	private int _starterPapercount = 500;
 	[SerializeField]
 	private float _stressDecreasePerSecond = 1;
 	[SerializeField]
@@ -91,9 +81,6 @@ public class PrinterManager : MonoBehaviour
 	
 	public void StartPrinter()
 	{
-		paperTray = gameObject.AddComponent<PaperTray>();
-		paperTray.SetUpTray(_paperlimit, _starterPapercount, _stressDecreasePerSecond, _stressIncreasePerFill, _stressThresholdPerPenalty);
-		
 		BlackTimer.StartTimer(blackPrintLifetime, blackPrintDecayRate);
 		BlueTimer.StartTimer(bluePrintLifetime, bluePrintDecayRate);
 		RedTimer.StartTimer(redPrintLifetime, redPrintDecayRate);
@@ -151,7 +138,7 @@ public class PrinterManager : MonoBehaviour
 		}
 	}
 	
-	public void RestockInk(Color inkColor)
+	/*public void RestockInk(Color inkColor)
 	{
 		if(inkColor == Color.black)	
 		{
@@ -169,7 +156,7 @@ public class PrinterManager : MonoBehaviour
 		{
 			GreenTimer.StartTimer(greenPrintLifetime, greenPrintDecayRate);
 		}
-	}
+	}*/
 	#endregion
 	
 	#region Private methods

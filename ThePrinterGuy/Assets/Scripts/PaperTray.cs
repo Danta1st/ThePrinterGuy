@@ -14,11 +14,12 @@ public class PaperTray : MonoBehaviour
 	private float _stressIncreasePerFill = 10;
 	[SerializeField]
 	private float _stressThresholdPerPenalty = 50;
+	[SerializeField]
+	private int _paperStackSize = 8;
 	#endregion
 	
 	#region Private variables
 	private float _printerStress = 0;
-	private bool _trayActive = false;
 	#endregion
 	
 	#region Delegates & Events
@@ -54,16 +55,6 @@ public class PaperTray : MonoBehaviour
 	
 	#endregion
 	
-	public void SetUpTray(int paperlimit, int starterPapercount, float stressDecreasePerSecond, 
-					 	  float stressIncreasePerFill, float stressThresholdPerPenalty)
-	{
-		_paperlimit = paperlimit;
-		_currentPapercount = starterPapercount;
-		_stressDecreasePerSecond = stressDecreasePerSecond;
-		_stressIncreasePerFill = stressIncreasePerFill;
-		_stressThresholdPerPenalty = stressThresholdPerPenalty;
-	}
-	
 	public void TrayFocus()
 	{
 		GestureManager.OnTap += TrayClicked;
@@ -75,13 +66,12 @@ public class PaperTray : MonoBehaviour
 	
 	public void TrayClicked(GameObject myGO, Vector2 pos)
 	{
-		// TODO KJE: Tjek gameobject + tag højde for flere tray's
-		/*if(myGO != this.gameObject)
+		if(myGO != this.gameObject)
 		{
 			return;
-		}*/
+		}
 		
-		RefillPaper(10);
+		RefillPaper(_paperStackSize);
 	}
 	
 	public void PagePrinted(GameObject myPrinterGO)
