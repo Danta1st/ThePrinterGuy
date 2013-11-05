@@ -11,6 +11,8 @@ public class GUIMainMenuCamera : MonoBehaviour
     [SerializeField]
     private GameObject[] _guiList;
     [SerializeField]
+    private GameObject[] _textList;
+    [SerializeField]
     private iTween.EaseType _easeTypeCamera;
     #endregion
 
@@ -29,6 +31,8 @@ public class GUIMainMenuCamera : MonoBehaviour
     private Vector3 _mainMenuPosition;
     private Vector3 _optionsPosition;
     private Vector3 _creditsPosition;
+
+    private string _language = "";
     #endregion
 
     #region Enable and Disable
@@ -217,6 +221,8 @@ public class GUIMainMenuCamera : MonoBehaviour
                         {
                             SwitchToMainMenu();
                         }
+
+                        _language = "Danish";
                     }
                     else if(_hit.collider.gameObject.name == "EnglishButton")
                     {
@@ -224,6 +230,8 @@ public class GUIMainMenuCamera : MonoBehaviour
                         {
                             SwitchToMainMenu();
                         }
+
+                        _language = "English";
                     }
                 }
                 //-----------------------------------------------------------------------//
