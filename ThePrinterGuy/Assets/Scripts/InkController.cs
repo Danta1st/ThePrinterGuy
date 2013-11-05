@@ -149,10 +149,10 @@ public class InkController : MonoBehaviour
 		_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
 	}
 	
-//	private void GetInkFromInv(Color col)
-//	{
-//		_inkSelected = true;
-//		_inkColorSelected = col;
-//	}
+	private void GetInkFromInv(Color col)
+	{
+		_inkSelected = true;
+		_inkColorSelected = col;
+	}
 	#endregion
 }
