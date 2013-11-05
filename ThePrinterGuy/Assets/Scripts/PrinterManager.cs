@@ -6,17 +6,6 @@ public class PrinterManager : MonoBehaviour
 	#region Public variables
 	[SerializeField]
 	private float _timeToPrintPage = 0.2f;
-	
-	// TODO: To be removed.
-	private float blackPrintLifetime = 100;
-	private float blackPrintDecayRate = 1;
-	private float bluePrintLifetime = 100;
-	private float bluePrintDecayRate = 1;
-	private float redPrintLifetime = 100;
-	private float redPrintDecayRate = 1;
-	private float greenPrintLifetime = 100;
-	private float greenPrintDecayRate = 1;
-	
 	[SerializeField]
 	private float _stressDecreasePerSecond = 1;
 	[SerializeField]
@@ -31,10 +20,6 @@ public class PrinterManager : MonoBehaviour
 	
 	private int _printedPapers = 0;
 	private int _printerproblems = 0;
-	private TimerUtilities BlackTimer;
-	private TimerUtilities RedTimer;
-	private TimerUtilities BlueTimer;
-	private TimerUtilities GreenTimer;
 	private PaperTray paperTray;
 	private int PaperTrayPenalties;
 	#endregion
@@ -42,16 +27,17 @@ public class PrinterManager : MonoBehaviour
 	#region Delegates & Events
 	public delegate void PagePrinted(GameObject go);
 	public static event PagePrinted OnPagePrinted;
+	
+	public delegate void PrinterBrokenAction(GameObject go);
+	public static event PrinterBrokenAction OnPrinterBroken;
+	
+	public delegate void PrinterFixedAction(GameObject go);
+	public static event PrinterFixedAction OnPrinterFixed;
 	#endregion
 	
 	#region Unity methods
 	void Start () 
 	{
-		BlackTimer = gameObject.AddComponent<TimerUtilities>();
-		BlueTimer = gameObject.AddComponent<TimerUtilities>();
-		RedTimer = gameObject.AddComponent<TimerUtilities>();
-		GreenTimer = gameObject.AddComponent<TimerUtilities>();
-		
 		StartPrinter();
 	}
 	
@@ -66,6 +52,8 @@ public class PrinterManager : MonoBehaviour
 	{
 		PaperTray.OnEmptyTray += PrinterBroken;
 		PaperTray.OnTrayRefilledFromEmpty += PrinterFixed;
+		InkCartridge.OnInkCartridgeError += PrinterBroken;
+		InkCartridge.OnInkCartridgeRefilledFromEmpty += PrinterFixed;
 		PaperTray.OnPaperTrayPenalty += OnPaperTrayPenalty;
 		Popout.OnCylinderHammeredIn += OnPaperTrayPenaltyRemoved;
 	}
@@ -75,14 +63,12 @@ public class PrinterManager : MonoBehaviour
 		PaperTray.OnTrayRefilledFromEmpty -= PrinterFixed;
 		PaperTray.OnPaperTrayPenalty -= OnPaperTrayPenalty;
 		Popout.OnCylinderHammeredIn -= OnPaperTrayPenaltyRemoved;
+		InkCartridge.OnInkCartridgeError -= PrinterBroken;
+		InkCartridge.OnInkCartridgeRefilledFromEmpty -= PrinterFixed;
 	}
 	
 	public void StartPrinter()
 	{
-		BlackTimer.StartTimer(blackPrintLifetime, blackPrintDecayRate);
-		BlueTimer.StartTimer(bluePrintLifetime, bluePrintDecayRate);
-		RedTimer.StartTimer(redPrintLifetime, redPrintDecayRate);
-		GreenTimer.StartTimer(greenPrintLifetime, greenPrintDecayRate);
 		StartCoroutine_Auto(Print());
 	}
 	
@@ -94,6 +80,10 @@ public class PrinterManager : MonoBehaviour
 		}
 		_printerproblems++;
 		_isBroken = true;	
+		if(OnPrinterBroken != null)
+		{	
+			OnPrinterBroken(gameObject);
+		}
 	}
 	public void PrinterFixed(GameObject myGO)
 	{
@@ -106,6 +96,8 @@ public class PrinterManager : MonoBehaviour
 		if(_printerproblems == 0)
 		{
 			_isBroken = false;
+			if(OnPrinterFixed != null)
+				OnPrinterFixed(gameObject);
 		}
 	}
 	public void OnPaperTrayPenalty(GameObject myGO)
@@ -135,26 +127,6 @@ public class PrinterManager : MonoBehaviour
 			_timeToPrintPage = _timeToPrintPage * (PaperTrayPenalties + 1);
 		}
 	}
-	
-	/*public void RestockInk(Color inkColor)
-	{
-		if(inkColor == Color.black)	
-		{
-			BlackTimer.StartTimer(blackPrintLifetime, blackPrintDecayRate);
-		}
-		else if(inkColor == Color.blue)
-		{
-			BlueTimer.StartTimer(bluePrintLifetime, bluePrintDecayRate);
-		}
-		else if(inkColor == Color.red)
-		{
-			RedTimer.StartTimer(redPrintLifetime, redPrintDecayRate);
-		}
-		else if(inkColor == Color.green)
-		{
-			GreenTimer.StartTimer(greenPrintLifetime, greenPrintDecayRate);
-		}
-	}*/
 	#endregion
 	
 	#region Private methods
@@ -162,31 +134,7 @@ public class PrinterManager : MonoBehaviour
 	{
 		while(true)
 		{
-			if(BlackTimer.GetTimeLeft() <= 0 || RedTimer.GetTimeLeft() <= 0 || GreenTimer.GetTimeLeft() <= 0
-				|| BlueTimer.GetTimeLeft() <= 0)
-			{
-				if(_isBroken)
-				{
-					BlackTimer.PauseTimer();
-					BlueTimer.PauseTimer();
-					RedTimer.PauseTimer();
-					GreenTimer.PauseTimer();
-				}
-			}
-			else
-			{
-				if(_isBroken)
-				{
-				}
-			}
-			if(_isBroken && Time.deltaTime != 0)
-			{
-				BlackTimer.PauseTimer();
-				BlueTimer.PauseTimer();
-				RedTimer.PauseTimer();
-				GreenTimer.PauseTimer();	
-			}
-			else if(!_isBroken && Time.deltaTime != 0)
+			if(!_isBroken && Time.deltaTime != 0)
 			{
 				if(OnPagePrinted != null)
 					OnPagePrinted(this.gameObject);

@@ -23,6 +23,7 @@ public class InkController : MonoBehaviour
     private InkCartridge _greenInk;
     private InkCartridge _blueInk;
 	private InkCartridge _blackInk;
+	private int _emptyCartridgesAmount = 0;
 	private GameObject _errorSiren;
 	private bool _tasksEnabled = false;
 	private bool _inkSelected = false;
@@ -39,7 +40,7 @@ public class InkController : MonoBehaviour
 		GestureManager.OnSwipeRight += RotateRight;
 		GestureManager.OnTap += InsertInk;
 		InkCartridge.OnInkCartridgeError += StartSiren;
-		InkCartridge.OnInkCartridgeRefilled += StopSiren;
+		InkCartridge.OnInkCartridgeRefilledFromEmpty += StopSiren;
 		InventoryController.OnInkSelect += GetInkFromInv;
 	}
 	
@@ -51,7 +52,7 @@ public class InkController : MonoBehaviour
 		GestureManager.OnSwipeRight -= RotateRight;
 		GestureManager.OnTap -= InsertInk;
 		InkCartridge.OnInkCartridgeError -= StartSiren;
-		InkCartridge.OnInkCartridgeRefilled -= StopSiren;
+		InkCartridge.OnInkCartridgeRefilledFromEmpty -= StopSiren;
 		InventoryController.OnInkSelect -= GetInkFromInv;
 	}
 	#endregion
@@ -64,7 +65,7 @@ public class InkController : MonoBehaviour
 		_blueInk = GameObject.FindGameObjectWithTag("InkBlue").GetComponent<InkCartridge>();
 		_blackInk = GameObject.FindGameObjectWithTag("InkBlack").GetComponent<InkCartridge>();
 		
-		_redInk.InitializeInkCartridge(Color.red, 10f);
+		_redInk.InitializeInkCartridge(Color.red);
         _greenInk.InitializeInkCartridge(Color.green);
         _blueInk.InitializeInkCartridge(Color.blue);
 		_blackInk.InitializeInkCartridge(Color.black);
@@ -186,6 +187,10 @@ public class InkController : MonoBehaviour
 					
 					_inkSelected = false;
 					break;
+				case "InkBlack":
+					//if( inkColorSelected == Color.black)
+						_blackInk.RefillInk();
+					break;
 				default:
 					_inkSelected = false;
 					break;
@@ -194,17 +199,21 @@ public class InkController : MonoBehaviour
 		}
 	}
 	
-	// TODO: Indkommenter og fix
 	private void StartSiren(GameObject go)
 	{
+		_emptyCartridgesAmount++;
 		_sirenEnabled = true;
 		_errorSiren.renderer.material.SetFloat("_Progress", 0.05f);
 	}
 	
 	private void StopSiren(GameObject go)
 	{
-		_sirenEnabled = false;
-		_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
+		_emptyCartridgesAmount--;
+		if(_emptyCartridgesAmount == 0)
+		{
+			_sirenEnabled = false;
+			_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
+		}
 	}
 	
 	private void GetInkFromInv(Color col)

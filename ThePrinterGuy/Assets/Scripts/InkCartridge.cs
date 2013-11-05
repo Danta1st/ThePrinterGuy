@@ -9,9 +9,10 @@ public class InkCartridge : MonoBehaviour
 	#endregion
 	
 	#region Private variables
-	private GameObject _smoke;
     private TimerUtilities _inkTimer;
     private bool _isInstantiated = false;
+	private bool _isEmpty = false;
+	private bool _wasEmpty = false;
     private Vector3 _defaultScale;
     private Vector3 _defaultPosition;
 	private Color _inkColor;
@@ -26,6 +27,9 @@ public class InkCartridge : MonoBehaviour
 
     public delegate void InkCartridgeRefilled(GameObject go);
     public static event InkCartridgeRefilled OnInkCartridgeRefilled;
+	
+	public delegate void InkCartridgeRefilledFromEmpty(GameObject go);
+    public static event InkCartridgeRefilledFromEmpty OnInkCartridgeRefilledFromEmpty;
 	#endregion
 	
     void Update()
@@ -38,21 +42,31 @@ public class InkCartridge : MonoBehaviour
             else if (_inkTimer.GetTimeLeft() <= 0 && _inkState != InkStates.ErrorWait)
             {
                 if (OnInkCartridgeError != null)
-                    OnInkCartridgeError(this.gameObject);
+                    OnInkCartridgeError(this.gameObject.transform.root.gameObject);
 				
-				string path = "Prefabs/SmokeParticle";
-				
-                _smoke = (GameObject)Instantiate (Resources.Load(path), this.gameObject.transform.position, Quaternion.identity);
-
+				_isEmpty = true;
                 _inkState = InkStates.ErrorWait;
             }
         }
     }
 	
+	#region OnEnableOnDisable
+	public void OnEnable()
+	{
+		PrinterManager.OnPrinterBroken += PauseTimer;
+		PrinterManager.OnPrinterFixed += ResumeTimer;
+	}
+	public void OnDisable()
+	{
+		PrinterManager.OnPrinterBroken -= PauseTimer;
+		PrinterManager.OnPrinterFixed -= ResumeTimer;
+	}
+	
+	#endregion
+	
 	#region Initialization methods
     public void InitializeInkCartridge(Color color)
     {
-
 		foreach(Transform t in gameObject.transform)
 		{
 			if(t.gameObject.tag == "InkColor")
@@ -61,7 +75,6 @@ public class InkCartridge : MonoBehaviour
 			}
 		}
         
-		
 		_defaultScale = _inkColorObj.transform.localScale;
         _defaultPosition = _inkColorObj.transform.localPosition;
 		
@@ -75,7 +88,6 @@ public class InkCartridge : MonoBehaviour
 
     public void InitializeInkCartridge(Color color, float lifeTime)
     {
-	
 		foreach(Transform t in gameObject.transform)
 		{
 			if(t.gameObject.tag == "InkColor")
@@ -100,15 +112,46 @@ public class InkCartridge : MonoBehaviour
 	#region public methods
     public void RefillInk()
     {
-        _inkTimer.StartTimer(_lifeTime);
-
+        if(_inkTimer.GetTimeLeft() == 0)
+		{
+			_wasEmpty = true;
+		}
+		
         if(OnInkCartridgeRefilled != null)
-            OnInkCartridgeRefilled(this.gameObject);
-
+            OnInkCartridgeRefilled(this.gameObject.transform.root.gameObject);
+		
+		if(OnInkCartridgeRefilledFromEmpty != null && _isEmpty)
+		{
+            OnInkCartridgeRefilledFromEmpty(this.gameObject.transform.root.gameObject);
+			_isEmpty = false;
+		}
+		
+		_inkTimer.StartTimer(_lifeTime);
         _inkState = InkStates.Working;
         RescaleCartridge();
-        Destroy (_smoke);
     }
+	
+	public void PauseTimer(GameObject go)
+	{
+		if(go.Equals(gameObject.transform.root.gameObject))
+		{
+			_inkTimer.PauseTimer();
+		}
+	}
+
+	public void ResumeTimer(GameObject go)
+	{
+		if(go.Equals(gameObject.transform.root.gameObject) && !_isEmpty && !_wasEmpty)
+		{
+			_inkTimer.ResumeTimer();
+		}
+		else if(go.Equals(gameObject.transform.root.gameObject) && _wasEmpty)
+		{
+			_inkTimer.StartTimer(_lifeTime, false);
+			RescaleCartridge();
+			_wasEmpty = false;
+		}
+	}
 
     /*public void RefillInk(float amount)
     {
