@@ -55,6 +55,9 @@ public class GUIGameCamera : MonoBehaviour
 	private GameObject _star1Object;
 	private GameObject _star2Object;
 	private GameObject _star3Object;
+	private bool _isStar1Spawned;
+	private bool _isStar2Spawned;
+	private bool _isStar3Spawned;
     #endregion
 
     #region Delegates and Events
@@ -197,6 +200,11 @@ public class GUIGameCamera : MonoBehaviour
 		}
 		
         EnableGUICamera();
+		
+		_star1Object.SetActive(false);
+		_star2Object.SetActive(false);
+		_star3Object.SetActive(false);
+		
     }
 
     // Update is called once per frame
@@ -204,7 +212,7 @@ public class GUIGameCamera : MonoBehaviour
     {
 		if(Input.GetKeyDown(KeyCode.N))
 		{
-			IncreaseScore(100);
+			IncreaseScore(1000);
 		}
     }
     #endregion
@@ -214,16 +222,71 @@ public class GUIGameCamera : MonoBehaviour
 	{
 		_score += _ammount;	
 		_strScore = _score.ToString();
-		string strAmmount = _ammount.ToString();
-		PopupText(strAmmount);
+		string _strAmmount = _ammount.ToString();
+		PopupText(_strAmmount);
 		ShowScore();
+		ShowStars();
 	}
 	
 	private void ShowScore()
 	{
 		 _scoreValueObject.GetComponent<TextMesh>().text = _strScore;
-		iTween.PunchScale(_scoreValueObject, new Vector3(2f,2f,0f),0.4f);
-		
+		iTween.PunchScale(_scoreValueObject, new Vector3(3f,3f,0f),0.4f);	
+	}
+	
+	private void ShowStars()
+	{
+		if(_score >= 10000 && _score < 25000)
+		{
+			_star1Object.SetActive(true);
+			_star2Object.SetActive(false);
+			_star3Object.SetActive(false);
+			
+			if(_isStar1Spawned)
+			{
+				iTween.PunchScale(_star1Object, new Vector3(20f,20f,0f),1f);
+				_isStar1Spawned = false;
+			}
+			
+		}
+		else if(_score >= 25000 && _score < 40000)
+		{
+			_star1Object.SetActive(true);
+			_star2Object.SetActive(true);
+			_star3Object.SetActive(false);
+			
+			if(_isStar2Spawned)
+			{
+				iTween.PunchScale(_star2Object, new Vector3(20f,20f,0f),1f);
+				_isStar2Spawned = false;
+			}
+			
+		}
+		else if(_score >= 40000)
+		{
+			_star1Object.SetActive(true);
+			_star2Object.SetActive(true);
+			_star3Object.SetActive(true);
+			
+			
+			if(_isStar3Spawned)
+			{
+				iTween.PunchScale(_star3Object, new Vector3(20f,20f,0f),1f);
+				_isStar3Spawned = false;
+			}
+		}
+		else
+		{
+			_star1Object.SetActive(false);
+			_star2Object.SetActive(false);
+			_star3Object.SetActive(false);
+			
+			_isStar1Spawned = true;
+			_isStar2Spawned = true;
+			_isStar3Spawned = true;
+			
+			
+		}
 	}
 	
 	public void PopupText(string _str)
@@ -232,31 +295,30 @@ public class GUIGameCamera : MonoBehaviour
 	}
 	
 	private IEnumerator InstantiatePopup(string _str)
-	{
-		
+	{	
 		float _xPopupPos = Random.Range(0.35f,0.65f);
 		float _yPopupPos = Random.Range(0.3f,0.4f);
-		
-		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
-		_popupTextPos.z = 1f;
-		GameObject _popupTextPrefab = Resources.Load("GUIPopupText") as GameObject;
-		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
-		
 		float _fontSize = 200f;
-		
-		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
-		
-		_popupTextObject.GetComponent<TextMesh>().text = _str;
-		
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 1.2f;
 		float _punchAmmount = -10f;
 		float _moveLength = 600f * _scaleMultiplierY;
 		
+		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
+		_popupTextPos.z = 1f;
+		
+		GameObject _popupTextPrefab = Resources.Load("GUIPopupText") as GameObject;
+		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
+		
+		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
+		_popupTextObject.GetComponent<TextMesh>().text = _str;
+		
 		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
 			_fadeInDuration + _fadeOutDuration);
+		
 		iTween.PunchScale(_popupTextObject, new Vector3(_punchAmmount,_punchAmmount,0f), 
 			_fadeOutDuration);
+		
 		iTween.FadeFrom(_popupTextObject, 0f, _fadeInDuration);
 		yield return new WaitForSeconds(_fadeInDuration);
 		iTween.FadeTo(_popupTextObject, 0f, _fadeOutDuration);
