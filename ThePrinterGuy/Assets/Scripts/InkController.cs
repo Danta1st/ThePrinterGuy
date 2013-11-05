@@ -22,6 +22,7 @@ public class InkController : MonoBehaviour
 	private InkCartridge _redInk;
     private InkCartridge _greenInk;
     private InkCartridge _blueInk;
+	private InkCartridge _blackInk;
 	private GameObject _errorSiren;
 	private bool _tasksEnabled = false;
 	private bool _inkSelected = false;
@@ -61,10 +62,12 @@ public class InkController : MonoBehaviour
         _redInk = GameObject.FindGameObjectWithTag("InkRed").GetComponent<InkCartridge>();
 		_greenInk = GameObject.FindGameObjectWithTag("InkGreen").GetComponent<InkCartridge>();
 		_blueInk = GameObject.FindGameObjectWithTag("InkBlue").GetComponent<InkCartridge>();
+		_blackInk = GameObject.FindGameObjectWithTag("InkBlack").GetComponent<InkCartridge>();
 		
-		_redInk.InitializeInkCartridge(Color.red);
+		_redInk.InitializeInkCartridge(Color.red, 10f);
         _greenInk.InitializeInkCartridge(Color.green);
         _blueInk.InitializeInkCartridge(Color.blue);
+		_blackInk.InitializeInkCartridge(Color.black);
 		_errorSiren = GameObject.FindGameObjectWithTag("InkSiren");
     }
 	
@@ -195,13 +198,13 @@ public class InkController : MonoBehaviour
 	private void StartSiren(GameObject go)
 	{
 		_sirenEnabled = true;
-		//_errorSiren.renderer.material.SetFloat("_Progress", 0.5f);
+		_errorSiren.renderer.material.SetFloat("_Progress", 0.05f);
 	}
 	
 	private void StopSiren(GameObject go)
 	{
 		_sirenEnabled = false;
-		//_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
+		_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
 	}
 	
 	private void GetInkFromInv(Color col)

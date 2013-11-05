@@ -52,19 +52,16 @@ public class InkCartridge : MonoBehaviour
 	#region Initialization methods
     public void InitializeInkCartridge(Color color)
     {
-		if(color == Color.red)
+
+		foreach(Transform t in gameObject.transform)
 		{
-			_inkColorObj = GameObject.FindGameObjectWithTag("InkRedColor");
-		}
-		else if(color == Color.green)
-		{
-			_inkColorObj = GameObject.FindGameObjectWithTag("InkGreenColor");
-		}
-		else if(color == Color.blue)
-		{
-			_inkColorObj = GameObject.FindGameObjectWithTag("InkBlueColor");
+			if(t.gameObject.tag == "InkColor")
+			{
+				_inkColorObj = t.gameObject;
+			}
 		}
         
+		
 		_defaultScale = _inkColorObj.transform.localScale;
         _defaultPosition = _inkColorObj.transform.localPosition;
 		
@@ -78,17 +75,13 @@ public class InkCartridge : MonoBehaviour
 
     public void InitializeInkCartridge(Color color, float lifeTime)
     {
-     	if(color == Color.red)
+	
+		foreach(Transform t in gameObject.transform)
 		{
-			_inkColorObj = GameObject.FindGameObjectWithTag("InkRedColor");
-		}
-		else if(color == Color.green)
-		{
-			_inkColorObj = GameObject.FindGameObjectWithTag("InkGreenColor");
-		}
-		else if(color == Color.blue)
-		{
-			_inkColorObj = GameObject.FindGameObjectWithTag("InkBlueColor");
+			if(t.gameObject.tag == "InkColor")
+			{
+				_inkColorObj = t.gameObject;
+			}
 		}
         
 		_defaultScale = _inkColorObj.transform.localScale;

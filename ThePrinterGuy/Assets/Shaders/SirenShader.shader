@@ -4,7 +4,7 @@ Properties {
 	_BackgroundTex ("Background (RGBA)", 2D) = "white" {}
 	_ForegroundTex ("Foreground (RGBA)", 2D) = "white" {}
 	_PositionAndScale ("Position and Scale", Vector) = (0,0,1,1)
-	_Progress ("Progress", Range(0.0,1.0)) = 0.0
+	_Progress ("Progress", Range(0.0,1.0)) = 1.0
 }
 
 SubShader {
