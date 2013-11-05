@@ -24,6 +24,10 @@ public class PaperJam : MonoBehaviour
     private int _paperJamMaxRate = 100;
     [SerializeField]
     private int _paperJamChance = 1;
+    [SerializeField]
+    private float _litRotation = 0.0f;
+    [SerializeField]
+    private float _litRotationTime = 2.0f;
     #endregion
 
     #region Privates
@@ -35,6 +39,8 @@ public class PaperJam : MonoBehaviour
     private GameObject _particleHolder;
     private GameObject _paperJamHolder;
     private bool _isJammed;
+    private float _lidStartRotation;
+    private bool _litOpen = false;
     #endregion
 
     #region Delegates
@@ -71,7 +77,6 @@ public class PaperJam : MonoBehaviour
         OnJam += Smoke;
         OnUnjammed += JamStopped;
         PrinterManager.OnPagePrinted += OnPaperPrint;
-
         GestureManager.OnTap += ResolvePaperJam;
     }
 
@@ -99,7 +104,6 @@ public class PaperJam : MonoBehaviour
     void JamStopped()
     {
         iTween.Stop(gameObject);
-        transform.rotation = _startRotation;
     }
     #endregion
 
@@ -113,20 +117,55 @@ public class PaperJam : MonoBehaviour
             if(OnJam != null)
                 _isJammed = true;
                 OnJam();
+                Vector3 tmpPos = transform.position;
+                tmpPos.y += 2;
+                tmpPos.z += 1;
+                _paperJam.transform.position = tmpPos;
+
+                //preplace with paper model
+                _paperJam.transform.localScale = new Vector3(1.5f, 0.15f, 1.5f);
+
                 _paperJamHolder = (GameObject)Instantiate(_paperJam);
         }
     }
 
-    void ResolvePaperJam(GameObject thisPaperJam, Vector2 screenPos)
+    void Update()
     {
-        if(thisPaperJam != null && _paperJamHolder != null)
+        OnPaperPrint(gameObject);
+    }
+
+    void ResolvePaperJam(GameObject thisGameObj, Vector2 screenPos)
+    {
+        if(thisGameObj != null)
         {
-            if(thisPaperJam.tag == _paperJamHolder.tag)
+            if(thisGameObj.tag == "JamTask" && !_litOpen && _isJammed)
             {
-                _isJammed = false;
-                OnUnjammed();
-                Destroy(thisPaperJam);
-                _particleHolder.particleSystem.enableEmission = false;
+                Debug.Log("LIT HIT");
+    
+                iTween.Stop(gameObject);
+                transform.rotation = _startRotation;
+
+                _lidStartRotation = thisGameObj.transform.rotation.x;
+                iTween.RotateAdd(thisGameObj, new Vector3(_litRotation, 0, 0), _litRotationTime);
+                _litOpen = true;
+            }
+            else if(thisGameObj.tag == "JamTask" && _litOpen && !_isJammed)
+            {
+                iTween.Stop(gameObject);
+    
+                iTween.RotateAdd(thisGameObj, new Vector3(-_litRotation, 0, 0), _litRotationTime);
+                _litOpen = false;
+            }
+    
+            if(thisGameObj != null && _paperJamHolder != null)
+            {
+                if(thisGameObj.tag == _paperJamHolder.tag)
+                {
+                    _isJammed = false;
+                    OnUnjammed();
+                    Destroy(thisGameObj);
+                    _particleHolder.particleSystem.enableEmission = false;
+                }
             }
         }
     }
