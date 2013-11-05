@@ -171,12 +171,12 @@ public class GUIGameCamera : MonoBehaviour
         //--------------------------------------------------//
 		if(GUIMainMenuCamera.languageSetting == "EN")
 		{
-			LocalizationText.SetLanguage(languageSetting);
+			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
 			UpdateText();
 		}
 		else if(GUIMainMenuCamera.languageSetting == "DK")
 		{
-			LocalizationText.SetLanguage(languageSetting);
+			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
 			UpdateText();
 		}
 		
