@@ -22,8 +22,6 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Private Variables
-	private int _score = 0;
-	private string _scoreString;
 	private Camera _guiCamera;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
@@ -49,6 +47,14 @@ public class GUIGameCamera : MonoBehaviour
     private int _toolBoxMaxPageCount;
     private bool _isToolBoxOpen = false;
 	private bool _isToolBoxReady = true;
+	
+	//Highscore Variables.
+	private static int _score = 0;
+	private string _strScore = "0";
+	private GameObject _scoreValueObject;
+	private GameObject _star1Object;
+	private GameObject _star2Object;
+	private GameObject _star3Object;
     #endregion
 
     #region Delegates and Events
@@ -168,6 +174,15 @@ public class GUIGameCamera : MonoBehaviour
                 _toolBoxSelectionObject = _guiObject;
                 _toolBoxSelectionObject.SetActive(false);
             }
+			
+			if(_guiObject.name == "Highscore")
+            {
+                _scoreValueObject = _guiObject.transform.FindChild("ScoreValue").gameObject;
+				_star1Object = _guiObject.transform.FindChild("Star1").gameObject;
+				_star2Object = _guiObject.transform.FindChild("Star2").gameObject;
+				_star3Object = _guiObject.transform.FindChild("Star3").gameObject;
+            }
+			
         }
         //--------------------------------------------------//
 		if(GUIMainMenuCamera.languageSetting == "EN")
@@ -190,7 +205,6 @@ public class GUIGameCamera : MonoBehaviour
 		if(Input.GetKeyDown(KeyCode.N))
 		{
 			IncreaseScore(100);
-			PopupText(_scoreString);
 		}
     }
     #endregion
@@ -199,11 +213,16 @@ public class GUIGameCamera : MonoBehaviour
 	public void IncreaseScore(int _ammount)
 	{
 		_score += _ammount;	
-		_scoreString = _score.ToString();
+		_strScore = _score.ToString();
+		string strAmmount = _ammount.ToString();
+		PopupText(strAmmount);
+		ShowScore();
 	}
 	
 	private void ShowScore()
 	{
+		 _scoreValueObject.GetComponent<TextMesh>().text = _strScore;
+		iTween.PunchScale(_scoreValueObject, new Vector3(2f,2f,0f),0.4f);
 		
 	}
 	
