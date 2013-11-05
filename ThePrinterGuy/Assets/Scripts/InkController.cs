@@ -108,7 +108,7 @@ public class InkController : MonoBehaviour
 	
 	private void InsertInk(GameObject go, Vector2 screenPos)
 	{
-		if(_tasksEnabled)
+		if(_tasksEnabled && go != null)
 		{
 			if(go.tag == "Lid")
 			{
@@ -117,7 +117,7 @@ public class InkController : MonoBehaviour
 				
 				switch(go.name)
 				{
-				case "Lid1":
+				case "lid1":
 					if(_lidOneOpen)
 					{
 						_lidOneOpen = false;
@@ -131,7 +131,7 @@ public class InkController : MonoBehaviour
 						iTween.RotateAdd (go, rotateVector, 1f);
 					}
 					break;
-				case "Lid2":
+				case "lid2":
 					if(_lidTwoOpen)
 					{
 						_lidTwoOpen = false;
@@ -145,7 +145,7 @@ public class InkController : MonoBehaviour
 						iTween.RotateAdd (go, rotateVector, 1f);
 					}
 					break;
-				case "Lid3":
+				case "lid3":
 					if(_lidThreeOpen)
 					{
 						_lidThreeOpen = false;
@@ -166,18 +166,19 @@ public class InkController : MonoBehaviour
 				switch(go.tag)
 				{
 				case "InkRed":
-					if(_inkColorSelected == Color.red)
+					// TODO: Indkommenter og fix + 4. color
+					//if(_inkColorSelected == Color.red)
 						_redInk.RefillInk();
 					
 					_inkSelected = false;
 					break;
 				case "InkGreen":
-					if(_inkColorSelected == Color.green)
+					//if(_inkColorSelected == Color.green)
 						_greenInk.RefillInk();
 					_inkSelected = false;
 					break;
 				case "InkBlue":
-					if(_inkColorSelected == Color.blue)
+					//if(_inkColorSelected == Color.blue)
 						_blueInk.RefillInk();
 					
 					_inkSelected = false;
@@ -190,17 +191,17 @@ public class InkController : MonoBehaviour
 		}
 	}
 	
-	
+	// TODO: Indkommenter og fix
 	private void StartSiren(GameObject go)
 	{
 		_sirenEnabled = true;
-		_errorSiren.renderer.material.SetFloat("_Progress", 0.5f);
+		//_errorSiren.renderer.material.SetFloat("_Progress", 0.5f);
 	}
 	
 	private void StopSiren(GameObject go)
 	{
 		_sirenEnabled = false;
-		_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
+		//_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
 	}
 	
 	private void GetInkFromInv(Color col)

@@ -150,7 +150,7 @@ public class InkCartridge : MonoBehaviour
         _inkColorObj.transform.localScale = scale;
 
         Vector3 pos = _inkColorObj.transform.localPosition;
-        pos.y = pos.y - (deltaScale * 4);
+        pos.y = pos.y - (deltaScale);
         _inkColorObj.transform.localPosition = pos;
     }
 
