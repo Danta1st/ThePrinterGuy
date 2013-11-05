@@ -48,7 +48,7 @@ public class ZoomHandler : MonoBehaviour
     void Start()
     {
         _zoomCamera = Camera.main;
-		Camera.main.transform.LookAt(Vector3.zero);
+		//Camera.main.transform.LookAt(Vector3.zero);
     }
 
     #region OnEnable / Disable
