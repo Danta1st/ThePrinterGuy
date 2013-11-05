@@ -32,7 +32,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     private Vector3 _optionsPosition;
     private Vector3 _creditsPosition;
 
-    private string _language = "EN";
+    public static string _languageSetting = "EN";
     #endregion
 
     #region Enable and Disable
@@ -214,8 +214,8 @@ public class GUIMainMenuCamera : MonoBehaviour
                             SwitchToMainMenu();
                         }
 
-                        _language = "DK";
-                        LocalizationText.SetLanguage(_language);
+                        _languageSetting = "DK";
+                        LocalizationText.SetLanguage(_languageSetting);
                         UpdateText();
                     }
                     else if(_hit.collider.gameObject.name == "EnglishButton")
@@ -225,8 +225,8 @@ public class GUIMainMenuCamera : MonoBehaviour
                             SwitchToMainMenu();
                         }
 
-                        _language = "EN";
-                        LocalizationText.SetLanguage(_language);
+                        _languageSetting = "EN";
+                        LocalizationText.SetLanguage(_languageSetting);
                         UpdateText();
                     }
                 }
