@@ -48,6 +48,7 @@ public class GUIGameCamera : MonoBehaviour
 	private int _toolBoxCurrentPageCount = 1;
     private int _toolBoxMaxPageCount;
     private bool _isToolBoxOpen = false;
+	private bool _isToolBoxReady = true;
     #endregion
 
     #region Delegates and Events
@@ -349,19 +350,26 @@ public class GUIGameCamera : MonoBehaviour
     #region GUI ToolBox
 	private void OpenToolBox()
 	{
-        if(_isToolBoxOpen)
+        if(_isToolBoxOpen && _isToolBoxReady)
         {
             _isToolBoxOpen = false;
+			_isToolBoxReady = false;
 			iTween.MoveAdd(_toolBoxObject, iTween.Hash("amount", -_toolBoxMoveAmount,
-							"duration", _toolBoxMoveDuration, "easetype", _easeTypeToolBox));
+							"duration", _toolBoxMoveDuration, "easetype", _easeTypeToolBox, "onCompleteTarget", gameObject, "OnComplete", "ToolBoxReady"));
         }
-        else
+        else if(!_isToolBoxOpen && _isToolBoxReady)
         {
             _isToolBoxOpen = true;
+			_isToolBoxReady = false;
 			iTween.MoveAdd(_toolBoxObject, iTween.Hash("amount", _toolBoxMoveAmount,
-							"duration", _toolBoxMoveDuration, "easetype", _easeTypeToolBox));
+							"duration", _toolBoxMoveDuration, "easetype", _easeTypeToolBox, "onCompleteTarget", gameObject, "OnComplete", "ToolBoxReady"));
         }
 		_toolBoxSelectionObject.SetActive(false);
+	}
+	
+	private void ToolBoxReady()
+	{
+		_isToolBoxReady = true;	
 	}
 	
     private void UpdateToolBoxPage(bool _isUp)
