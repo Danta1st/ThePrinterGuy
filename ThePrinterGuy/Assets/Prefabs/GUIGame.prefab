@@ -114,8 +114,9 @@ GameObject:
   - 4: {fileID: 400012}
   - 23: {fileID: 2300010}
   - 102: {fileID: 10200000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
-  m_Name: Premium
+  m_Name: PremiumMenuText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -332,7 +333,7 @@ GameObject:
   - 23: {fileID: 2300024}
   - 102: {fileID: 10200002}
   m_Layer: 0
-  m_Name: HighscoreText
+  m_Name: HighscoreValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -349,7 +350,7 @@ GameObject:
   - 23: {fileID: 2300026}
   - 102: {fileID: 10200004}
   m_Layer: 0
-  m_Name: CurrencyText
+  m_Name: CurrencyValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -400,8 +401,9 @@ GameObject:
   - 4: {fileID: 400046}
   - 23: {fileID: 2300032}
   - 102: {fileID: 10200006}
+  - 114: {fileID: 11400006}
   m_Layer: 0
-  m_Name: Currency
+  m_Name: CurrencyMenuText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -435,8 +437,9 @@ GameObject:
   - 4: {fileID: 400050}
   - 23: {fileID: 2300036}
   - 102: {fileID: 10200008}
+  - 114: {fileID: 11400004}
   m_Layer: 0
-  m_Name: Highscore
+  m_Name: HighscoreMenuText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -471,7 +474,7 @@ GameObject:
   - 23: {fileID: 2300040}
   - 102: {fileID: 10200010}
   m_Layer: 0
-  m_Name: PremiumText
+  m_Name: PremiumValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1611,8 +1614,51 @@ MonoBehaviour:
   - {fileID: 100044}
   _toolBoxPages:
   - {fileID: 100024}
+  _textList:
+  - {fileID: 100046}
+  - {fileID: 100040}
+  - {fileID: 100050}
+  - {fileID: 100038}
+  - {fileID: 100012}
+  - {fileID: 100054}
   _easeTypeToolBox: 24
   _easeTypeIngameMenu: 21
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f672f7e0d3fee5541af57835ebc1caff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stringText: PremiumMenuText
+--- !u!114 &11400004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f672f7e0d3fee5541af57835ebc1caff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stringText: HighscoreMenuText
+--- !u!114 &11400006
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f672f7e0d3fee5541af57835ebc1caff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stringText: CurrencyMenuText
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1

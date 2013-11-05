@@ -169,11 +169,18 @@ public class GUIGameCamera : MonoBehaviour
             }
         }
         //--------------------------------------------------//
-
+		if(GUIMainMenuCamera.languageSetting == "EN")
+		{
+			LocalizationText.SetLanguage(languageSetting);
+			UpdateText();
+		}
+		else if(GUIMainMenuCamera.languageSetting == "DK")
+		{
+			LocalizationText.SetLanguage(languageSetting);
+			UpdateText();
+		}
+		
         EnableGUICamera();
-		
-		
-
     }
 
     // Update is called once per frame
@@ -500,6 +507,14 @@ public class GUIGameCamera : MonoBehaviour
         _guiSaveList.Clear();
     }
     #endregion
-
+	
+	private void UpdateText()
+	{
+		foreach(GameObject _text in _textList)
+        {
+            _text.GetComponent<LocalizationKeywordText>().LocalizeText();
+        }
+	}
+	
     #endregion
 }
