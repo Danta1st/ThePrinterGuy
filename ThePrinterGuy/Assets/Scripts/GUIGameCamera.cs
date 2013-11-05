@@ -20,6 +20,8 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Private Variables
+	private int _score = 0;
+	private string _scoreString;
 	private Camera _guiCamera;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
@@ -177,12 +179,24 @@ public class GUIGameCamera : MonoBehaviour
     {
 		if(Input.GetKeyDown(KeyCode.N))
 		{
-			PopupText("Bonus Points");
+			IncreaseScore(100);
+			PopupText(_scoreString);
 		}
     }
     #endregion
 
     #region Class Methods
+	public void IncreaseScore(int _ammount)
+	{
+		_score += _ammount;	
+		_scoreString = _score.ToString();
+	}
+	
+	private void ShowScore()
+	{
+		
+	}
+	
 	public void PopupText(string _str)
 	{
 		StartCoroutine("InstantiatePopup", _str);
