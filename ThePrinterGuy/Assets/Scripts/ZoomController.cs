@@ -6,6 +6,8 @@ public class ZoomController : MonoBehaviour
     #region Editor Publics
     [SerializeField]
     private float _zoomFieldOfView = 20.0f;
+	[SerializeField]
+	private bool _disableBoxOnFocus = false;
     #endregion
 
     #region Privates
@@ -57,6 +59,10 @@ public class ZoomController : MonoBehaviour
 			
             iTween.MoveTo(_lookTarget, iTween.Hash("position", transform.position, "time", zoomTime, 
 														"easetype", iTween.EaseType.easeInOutCubic));
+			if(_disableBoxOnFocus)
+			{
+				gameObject.collider.enabled = false;	
+			}
         }
     }
 
@@ -74,6 +80,10 @@ public class ZoomController : MonoBehaviour
 
             iTween.MoveTo(_lookTarget, iTween.Hash("position", transform.parent.position, "time", zoomTime, 
 														"easetype", iTween.EaseType.easeInOutCubic));
+			if(_disableBoxOnFocus)
+			{
+				gameObject.collider.enabled = true;	
+			}
         }
     }
 	

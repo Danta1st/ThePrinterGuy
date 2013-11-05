@@ -57,9 +57,11 @@ GameObject:
   - 4: {fileID: 400006}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
+  - 114: {fileID: 11400014}
+  - 65: {fileID: 6500006}
   m_Layer: 0
   m_Name: popOutUraniumTube3
-  m_TagString: Untagged
+  m_TagString: Popout
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -74,9 +76,11 @@ GameObject:
   - 4: {fileID: 400008}
   - 33: {fileID: 3300002}
   - 23: {fileID: 2300002}
+  - 114: {fileID: 11400016}
+  - 65: {fileID: 6500008}
   m_Layer: 0
   m_Name: popOutUraniumTube2
-  m_TagString: Untagged
+  m_TagString: Popout
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91,9 +95,11 @@ GameObject:
   - 4: {fileID: 400010}
   - 33: {fileID: 3300004}
   - 23: {fileID: 2300004}
+  - 114: {fileID: 11400012}
+  - 65: {fileID: 6500010}
   m_Layer: 0
   m_Name: popOutUraniumTube1
-  m_TagString: Untagged
+  m_TagString: Popout
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1959,6 +1965,7 @@ GameObject:
   - 23: {fileID: 2300076}
   - 65: {fileID: 6500000}
   - 114: {fileID: 11400002}
+  - 114: {fileID: 11400018}
   m_Layer: 0
   m_Name: papirTray
   m_TagString: TrayTask
@@ -2212,6 +2219,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 400266}
   - 95: {fileID: 9500000}
+  - 114: {fileID: 11400010}
+  - 114: {fileID: 11400008}
   m_Layer: 0
   m_Name: BigBerthaExportForTest
   m_TagString: Untagged
@@ -2474,7 +2483,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: .477711529, y: -.470439762, z: .0854760632, w: .737002015}
-  m_LocalPosition: {x: .124949932, y: .522141933, z: 1.26090813}
+  m_LocalPosition: {x: -.511309147, y: -.293844938, z: 1.36590815}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -2485,7 +2494,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: .477711529, y: -.470439762, z: .0854760632, w: .737002015}
-  m_LocalPosition: {x: .301095486, y: .314704657, z: -.167064905}
+  m_LocalPosition: {x: -.472006798, y: -.676780462, z: -.0394825935}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -2496,7 +2505,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
   m_LocalRotation: {x: .591314912, y: -.373992473, z: -.147657156, w: .699051976}
-  m_LocalPosition: {x: .135191441, y: .686808586, z: -1.92734289}
+  m_LocalPosition: {x: -1.17902899, y: -.662780762, z: -1.88786316}
   m_LocalScale: {x: .86541599, y: .865415871, z: .865415871}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -6929,6 +6938,42 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.47000003, y: 2.42000008, z: 4.55000019}
   m_Center: {x: 0, y: .100000001, z: 0}
+--- !u!65 &6500006
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: .944045007, y: .896584928, z: 2.1338706}
+  m_Center: {x: 2.86102295e-06, y: 2.98023224e-07, z: -9.53674316e-07}
+--- !u!65 &6500008
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100008}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: .944045007, y: .896584928, z: 2.1338706}
+  m_Center: {x: 2.38418579e-06, y: -1.11758709e-07, z: -1.43051147e-06}
+--- !u!65 &6500010
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.84139669, y: 1.49756634, z: 2.85783839}
+  m_Center: {x: 1.43051147e-06, y: 3.57627869e-07, z: -2.38418579e-06}
 --- !u!95 &9500000
 Animator:
   m_ObjectHideFlags: 1
@@ -6953,6 +6998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zoomFieldOfView: 25
+  _disableBoxOnFocus: 0
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6965,6 +7011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zoomFieldOfView: 20
+  _disableBoxOnFocus: 0
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6977,6 +7024,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zoomFieldOfView: 20
+  _disableBoxOnFocus: 0
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6989,6 +7037,102 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zoomFieldOfView: 20
+  _disableBoxOnFocus: 1
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f712a21d5243f464dab44952e3294289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeToPrintPage: .200000003
+  _stressDecreasePerSecond: 1
+  _stressIncreasePerFill: 10
+  _stressThresholdPerPenalty: 50
+  _isBroken: 0
+--- !u!114 &11400010
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecaf289c2e59041449a0dd872ea76196, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11400012
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1c033a08c9492240a01c0c9276970a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popoutEaseType: 27
+  _popoutLength: 2
+  _popoutDuration: .400000006
+  _hammerInEaseType: 16
+  _hammerHitsReq: 10
+  _hammerInDuration: .100000001
+--- !u!114 &11400014
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1c033a08c9492240a01c0c9276970a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popoutEaseType: 27
+  _popoutLength: 1
+  _popoutDuration: .400000006
+  _hammerInEaseType: 16
+  _hammerHitsReq: 5
+  _hammerInDuration: .100000001
+--- !u!114 &11400016
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1c033a08c9492240a01c0c9276970a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popoutEaseType: 27
+  _popoutLength: 1
+  _popoutDuration: .400000006
+  _hammerInEaseType: 16
+  _hammerHitsReq: 5
+  _hammerInDuration: .100000001
+--- !u!114 &11400018
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: feb227c7014ec6148a63338723918ce8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _paperlimit: 500
+  _currentPapercount: 500
+  _stressDecreasePerSecond: 1
+  _stressIncreasePerFill: 10
+  _stressThresholdPerPenalty: 50
+  _paperStackSize: 8
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1

@@ -27,8 +27,6 @@ public class PrinterManager : MonoBehaviour
 	
 	#region Private variables
 	[SerializeField]
-	private int _papercount = 500;
-	[SerializeField]
 	private bool _isBroken = false;
 	
 	private int _printedPapers = 0;

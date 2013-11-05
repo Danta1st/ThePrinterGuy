@@ -6,7 +6,7 @@ public class Popout: MonoBehaviour {
     [SerializeField]
     private iTween.EaseType _popoutEaseType = iTween.EaseType.easeOutBack;
     [SerializeField]
-    private float _popoutLength = 5;
+    private float _popoutLength = 2;
     [SerializeField]
     private float _popoutDuration = 0.4f;
     [SerializeField]
@@ -33,6 +33,7 @@ public class Popout: MonoBehaviour {
     #region Methods
     void OnEnable()
 	{
+		gameObject.transform.collider.enabled = false;
         ZoomHandler.onPopout += PopoutFocus;
 		ZoomHandler.OnFreeroam += FreeRoamMode;
     }
@@ -51,10 +52,12 @@ public class Popout: MonoBehaviour {
 	
 	public void PopoutFocus()
 	{
+		gameObject.transform.collider.enabled = true;
 		GestureManager.OnTap += HitCylinder;
 	}
 	public void FreeRoamMode()
 	{
+		gameObject.transform.collider.enabled = false;
 		GestureManager.OnTap -= HitCylinder;
 	}
 	
@@ -66,7 +69,7 @@ public class Popout: MonoBehaviour {
             _animationInProcess = true;
             float _hammerInAmount = -(_popoutLength / _hammerHitsReq);
 			
-            iTween.MoveAdd(go, iTween.Hash("y", _hammerInAmount, "time", _hammerInDuration, 
+            iTween.MoveAdd(go, iTween.Hash("z", -(_hammerInAmount), "time", _hammerInDuration, 
 											"easeType", _hammerInEaseType, "onComplete", "AnimationStopped"));
             _hammerHitsTaken++;
         }
@@ -78,6 +81,10 @@ public class Popout: MonoBehaviour {
             {
                 OnCylinderHammeredIn(gameObject.transform.root.gameObject);
             }
+			foreach(ParticleSystem ps in gameObject.GetComponentsInChildren<ParticleSystem>())
+			{
+				ps.Stop();	
+			}
         }
     }
 
@@ -88,8 +95,13 @@ public class Popout: MonoBehaviour {
             _animationInProcess = true;
             _isOut = true;
 			
-            iTween.MoveAdd(gameObject, iTween.Hash("y", _popoutLength, "time", _popoutDuration, 
+            iTween.MoveAdd(gameObject, iTween.Hash("z", -(_popoutLength), "time", _popoutDuration, 
 													"easeType", _popoutEaseType, "onComplete", "AnimationStopped"));
+			
+			foreach(ParticleSystem ps in gameObject.GetComponentsInChildren<ParticleSystem>())
+			{
+				ps.Play();	
+			}
         }
     }
 
