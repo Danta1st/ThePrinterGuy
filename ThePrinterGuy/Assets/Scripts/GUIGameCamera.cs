@@ -14,6 +14,8 @@ public class GUIGameCamera : MonoBehaviour
     [SerializeField]
     private GameObject[] _toolBoxPages;
 	[SerializeField]
+    private GameObject[] _textList;
+	[SerializeField]
 	private iTween.EaseType _easeTypeToolBox;
 	[SerializeField]
 	private iTween.EaseType _easeTypeIngameMenu;
