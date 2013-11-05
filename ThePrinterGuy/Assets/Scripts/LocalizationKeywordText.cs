@@ -20,6 +20,6 @@ public class LocalizationKeywordText : MonoBehaviour {
 
     public void LocalizeText()
     {
-        gameObject.GetComponent<TextMesh>().text = _stringText;
+        gameObject.GetComponent<TextMesh>().text = LocalizationText.GetText(_stringText);
     }
 }

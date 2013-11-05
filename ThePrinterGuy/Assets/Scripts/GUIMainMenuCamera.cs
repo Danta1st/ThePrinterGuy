@@ -32,7 +32,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     private Vector3 _optionsPosition;
     private Vector3 _creditsPosition;
 
-    private string _language = "";
+    private string _language = "EN";
     #endregion
 
     #region Enable and Disable
@@ -199,19 +199,11 @@ public class GUIMainMenuCamera : MonoBehaviour
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
                 {
-                    if(_hit.collider.gameObject.name == "PauseButton")
+                    if(_hit.collider.gameObject.name == "SoundButton")
                     {
 
                     }
-                    else if(_hit.collider.gameObject.name == "ResumeButton")
-                    {
-
-                    }
-                    else if(_hit.collider.gameObject.name == "ResumeButton")
-                    {
-
-                    }
-                    else if(_hit.collider.gameObject.name == "ResumeButton")
+                    else if(_hit.collider.gameObject.name == "MusicButton")
                     {
 
                     }
@@ -222,7 +214,9 @@ public class GUIMainMenuCamera : MonoBehaviour
                             SwitchToMainMenu();
                         }
 
-                        _language = "Danish";
+                        _language = "DK";
+                        LocalizationText.SetLanguage(_language);
+                        UpdateText();
                     }
                     else if(_hit.collider.gameObject.name == "EnglishButton")
                     {
@@ -231,7 +225,9 @@ public class GUIMainMenuCamera : MonoBehaviour
                             SwitchToMainMenu();
                         }
 
-                        _language = "English";
+                        _language = "EN";
+                        LocalizationText.SetLanguage(_language);
+                        UpdateText();
                     }
                 }
                 //-----------------------------------------------------------------------//
@@ -280,6 +276,14 @@ public class GUIMainMenuCamera : MonoBehaviour
         {
             _guiCameraStage = "MainMenuStage";
             iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
+        }
+    }
+
+    private void UpdateText()
+    {
+        foreach(GameObject _text in _textList)
+        {
+            _text.GetComponent<LocalizationKeywordText>().LocalizeText();
         }
     }
     #endregion
