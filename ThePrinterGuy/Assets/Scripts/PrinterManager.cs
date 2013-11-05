@@ -50,6 +50,8 @@ public class PrinterManager : MonoBehaviour
 	#region Public methods
 	public void OnEnable()
 	{
+		PaperJam.OnJam += PrinterBroken;
+		PaperJam.OnUnjammed += PrinterFixed;
 		PaperTray.OnEmptyTray += PrinterBroken;
 		PaperTray.OnTrayRefilledFromEmpty += PrinterFixed;
 		InkCartridge.OnInkCartridgeError += PrinterBroken;
@@ -59,6 +61,8 @@ public class PrinterManager : MonoBehaviour
 	}
 	public void OnDisable()
 	{
+		PaperJam.OnJam -= PrinterBroken;
+		PaperJam.OnUnjammed -= PrinterFixed;
 		PaperTray.OnEmptyTray -= PrinterBroken;
 		PaperTray.OnTrayRefilledFromEmpty -= PrinterFixed;
 		PaperTray.OnPaperTrayPenalty -= OnPaperTrayPenalty;

@@ -41,10 +41,10 @@ public class PaperJam : MonoBehaviour
     #endregion
 
     #region Delegates
-    public delegate void OnJamAction();
+    public delegate void OnJamAction(GameObject go);
     public static event OnJamAction OnJam;
 	
-    public delegate void OnUnjammedAction();
+    public delegate void OnUnjammedAction(GameObject go);
     public static event OnUnjammedAction OnUnjammed;
     #endregion
 	
@@ -66,16 +66,12 @@ public class PaperJam : MonoBehaviour
     #region Enable/Disable
     void OnEnable()
     {
-        OnJam += Shake;
-        OnUnjammed += JamStopped;
         PrinterManager.OnPagePrinted += OnPaperPrint;
         GestureManager.OnTap += ResolvePaperJam;
     }
 
     void OnDisable()
     {
-        OnJam -= Shake;
-        OnUnjammed -= JamStopped;
         PrinterManager.OnPagePrinted -= OnPaperPrint;
         GestureManager.OnTap -= ResolvePaperJam;
     }
@@ -103,7 +99,8 @@ public class PaperJam : MonoBehaviour
             if(OnJam != null)
 			{
                 _isJammed = true;
-                OnJam();
+                OnJam(gameObject.transform.root.gameObject);
+				Shake();
                 Vector3 tmpPos = new Vector3(transform.position.x, transform.position.y+2, transform.position.z+1);
 			
                 _jammedItem.transform.position = tmpPos;
@@ -142,7 +139,9 @@ public class PaperJam : MonoBehaviour
                 if(thisGameObj.name == _paperJamHolder.name)
                 {
                     _isJammed = false;
-                    OnUnjammed();
+                    OnUnjammed(gameObject.transform.root.gameObject);
+					JamStopped();
+					
                     Destroy(thisGameObj);
                 }
             }
