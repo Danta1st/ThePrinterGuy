@@ -12,6 +12,9 @@ public class InkController : MonoBehaviour
 	private float _rotationAmount = 75f;
 	[SerializeField]
 	private float _sirenRotationSpeed = 50f;
+	private bool _lidOneOpen = false;
+	private bool _lidTwoOpen = false;
+	private bool _lidThreeOpen = false;
 	#endregion
 	
 	#region Private Variables
@@ -107,7 +110,58 @@ public class InkController : MonoBehaviour
 	{
 		if(_tasksEnabled)
 		{
-			if (_inkSelected)
+			if(go.tag == "Lid")
+			{
+				float rotateAmount = 90f;
+				Vector3 rotateVector;
+				
+				switch(go.name)
+				{
+				case "Lid1":
+					if(_lidOneOpen)
+					{
+						_lidOneOpen = false;
+						rotateVector = new Vector3(rotateAmount, 0, 0);
+						iTween.RotateAdd (go, rotateVector, 1f);
+					}
+					else
+					{
+						_lidOneOpen = true;
+						rotateVector = new Vector3(-rotateAmount, 0, 0);
+						iTween.RotateAdd (go, rotateVector, 1f);
+					}
+					break;
+				case "Lid2":
+					if(_lidTwoOpen)
+					{
+						_lidTwoOpen = false;
+						rotateVector = new Vector3(rotateAmount, 0, 0);
+						iTween.RotateAdd (go, rotateVector, 1f);
+					}
+					else
+					{
+						_lidTwoOpen = true;
+						rotateVector = new Vector3(-rotateAmount, 0, 0);
+						iTween.RotateAdd (go, rotateVector, 1f);
+					}
+					break;
+				case "Lid3":
+					if(_lidThreeOpen)
+					{
+						_lidThreeOpen = false;
+						rotateVector = new Vector3(rotateAmount, 0, 0);
+						iTween.RotateAdd (go, rotateVector, 1f);
+					}
+					else
+					{
+						_lidThreeOpen = true;
+						rotateVector = new Vector3(-rotateAmount, 0, 0);
+						iTween.RotateAdd (go, rotateVector, 1f);
+					}
+					break;
+				}
+			}
+			else if (_inkSelected)
 			{
 				switch(go.tag)
 				{
