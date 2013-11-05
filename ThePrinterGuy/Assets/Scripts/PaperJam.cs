@@ -56,11 +56,11 @@ public class PaperJam : MonoBehaviour
         _shakePrint = new Vector3(_shakeRotate, _shakeLeftRight, _shakeInOut);
     }
 	
-    void Update()
-    {
-		if(Input.anyKey)
-        	OnPaperPrint(gameObject);
-    }
+//    void Update()
+//    {
+//		if(Input.anyKey)
+//        	OnPaperPrint(gameObject);
+//    }
 	#endregion
 
     #region Enable/Disable
@@ -121,8 +121,6 @@ public class PaperJam : MonoBehaviour
 			//Open or Close the lid
             if(thisGameObj.tag == "JamTask" && !_litOpen && _isJammed)
             {
-                Debug.Log("LIT HIT");
-    
                 iTween.Stop(gameObject);
                 transform.rotation = _startRotation;
 
