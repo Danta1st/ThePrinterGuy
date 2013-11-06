@@ -38,8 +38,6 @@ public class InkController : MonoBehaviour
 	void OnEnable()
 	{
 		ZoomHandler.OnInk += EnableInkTask;
-		ZoomHandler.OnGoingFreeroam += DisableInkTask;
-		GestureManager.OnSwipeLeft += RotateLeft;
 		GestureManager.OnSwipeRight += RotateRight;
 		InkCartridge.OnInkCartridgeError += StartSiren;
 		InkCartridge.OnInkCartridgeRefilledFromEmpty += StopSiren;
@@ -49,9 +47,6 @@ public class InkController : MonoBehaviour
 	void OnDisable()
 	{
 		ZoomHandler.OnInk -= EnableInkTask;
-		ZoomHandler.OnGoingFreeroam -= DisableInkTask;
-		GestureManager.OnSwipeLeft -= RotateLeft;
-		GestureManager.OnSwipeRight -= RotateRight;
 		GestureManager.OnTap -= InsertInk;
 		InkCartridge.OnInkCartridgeError -= StartSiren;
 		InkCartridge.OnInkCartridgeRefilledFromEmpty -= StopSiren;
@@ -98,12 +93,17 @@ public class InkController : MonoBehaviour
 	#region Delegate methods
 	private void EnableInkTask()
 	{
-		GestureManager.OnTap += InsertInk;		
+		GestureManager.OnTap += InsertInk;
+		ZoomHandler.OnGoingFreeroam += DisableInkTask;
+		GestureManager.OnSwipeLeft += RotateLeft;
 	}
 	
 	private void DisableInkTask()
 	{
 		GestureManager.OnTap -= InsertInk;
+		ZoomHandler.OnGoingFreeroam -= DisableInkTask;
+		GestureManager.OnSwipeLeft -= RotateLeft;
+		GestureManager.OnSwipeRight -= RotateRight;
 	}
 	
 	private void RotateLeft()
