@@ -100,11 +100,19 @@ public class InkController : MonoBehaviour
 	#region Delegate methods
 	private void EnableInkTask()
 	{
+		foreach(InkCartridge ic in _inkList)
+		{
+			ic.collider.enabled = true;	
+		}
 		_tasksEnabled = true;		
 	}
 	
 	private void DisableInkTask()
 	{
+		foreach(InkCartridge ic in _inkList)
+		{
+			ic.collider.enabled = false;	
+		}
 		_tasksEnabled = false;
 	}
 	
