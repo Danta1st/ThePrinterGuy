@@ -12,9 +12,13 @@ public class InkController : MonoBehaviour
 	private float _rotationAmount = 75f;
 	[SerializeField]
 	private float _sirenRotationSpeed = 50f;
+	[SerializeField]
+	private Color[] _cartridgeColor;
 	private bool _lidOneOpen = false;
 	private bool _lidTwoOpen = false;
 	private bool _lidThreeOpen = false;
+	private System.Collections.Generic.List<InkCartridge> _inkList = new System.Collections.Generic.List<InkCartridge>();
+	private GameObject _inkHouse;
 	#endregion
 	
 	#region Private Variables
@@ -60,15 +64,27 @@ public class InkController : MonoBehaviour
 	#region Initializatio of InkCartridges
     void Start()
     {
-        _redInk = GameObject.FindGameObjectWithTag("InkRed").GetComponent<InkCartridge>();
-		_greenInk = GameObject.FindGameObjectWithTag("InkGreen").GetComponent<InkCartridge>();
-		_blueInk = GameObject.FindGameObjectWithTag("InkBlue").GetComponent<InkCartridge>();
-		_blackInk = GameObject.FindGameObjectWithTag("InkBlack").GetComponent<InkCartridge>();
+		int index = 0;
+		foreach(Transform t in transform)
+		{
+			if(t.gameObject.tag == "Ink" && index < _cartridgeColor.Length)
+			{
+				_inkList.Add(t.gameObject.GetComponent<InkCartridge>());
+				_inkList[index].InitializeInkCartridge(_cartridgeColor[index]);
+				index++;
+			}
+		}
 		
-		_redInk.InitializeInkCartridge(Color.red);
-        _greenInk.InitializeInkCartridge(Color.green);
-        _blueInk.InitializeInkCartridge(Color.blue);
-		_blackInk.InitializeInkCartridge(Color.black);
+		_inkHouse = GameObject.FindGameObjectWithTag("InkTask");
+//        _redInk = GameObject.FindGameObjectWithTag("InkRed").GetComponent<InkCartridge>();
+//		_greenInk = GameObject.FindGameObjectWithTag("InkGreen").GetComponent<InkCartridge>();
+//		_blueInk = GameObject.FindGameObjectWithTag("InkBlue").GetComponent<InkCartridge>();
+//		_blackInk = GameObject.FindGameObjectWithTag("InkBlack").GetComponent<InkCartridge>();
+//		
+//		_redInk.InitializeInkCartridge(Color.red);
+//        _greenInk.InitializeInkCartridge(Color.green);
+//        _blueInk.InitializeInkCartridge(Color.blue);
+//		_blackInk.InitializeInkCartridge(Color.black);
 		_errorSiren = GameObject.FindGameObjectWithTag("InkSiren");
     }
 	
@@ -96,7 +112,7 @@ public class InkController : MonoBehaviour
 	{
 		if (_tasksEnabled)
 		{
-			iTween.RotateAdd(this.gameObject, iTween.Hash("amount", new Vector3(0, _rotationAmount, 0),
+			iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, _rotationAmount, 0),
 					"time", _animationSpeed, "easetype", _easeType));
 		}
 	}
@@ -105,7 +121,7 @@ public class InkController : MonoBehaviour
 	{
 		if (_tasksEnabled)
 		{
-			iTween.RotateAdd(this.gameObject, iTween.Hash("amount", new Vector3(0, -_rotationAmount, 0),
+			iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, -_rotationAmount, 0),
 					"time", _animationSpeed, "easetype", _easeType));
 		}
 	}
@@ -167,34 +183,42 @@ public class InkController : MonoBehaviour
 			}
 			else if (_inkSelected)
 			{
-				switch(go.tag)
+				//Debug.Log("test");
+				foreach(InkCartridge ink in _inkList)
 				{
-				case "InkRed":
-					// TODO: Indkommenter og fix + 4. color
-					//if(_inkColorSelected == Color.red)
-						_redInk.RefillInk();
-					
-					_inkSelected = false;
-					break;
-				case "InkGreen":
-					//if(_inkColorSelected == Color.green)
-						_greenInk.RefillInk();
-					_inkSelected = false;
-					break;
-				case "InkBlue":
-					//if(_inkColorSelected == Color.blue)
-						_blueInk.RefillInk();
-					
-					_inkSelected = false;
-					break;
-				case "InkBlack":
-					//if( inkColorSelected == Color.black)
-						_blackInk.RefillInk();
-					break;
-				default:
-					_inkSelected = false;
-					break;
+					if(go.name == ink.name)
+					{
+						ink.RefillInk();
+					}
 				}
+//				switch(go.tag)
+//				{
+//				case "InkRed":
+//					// TODO: Indkommenter og fix + 4. color
+//					//if(_inkColorSelected == Color.red)
+//						_redInk.RefillInk();
+//					
+//					_inkSelected = false;
+//					break;
+//				case "InkGreen":
+//					//if(_inkColorSelected == Color.green)
+//						_greenInk.RefillInk();
+//					_inkSelected = false;
+//					break;
+//				case "InkBlue":
+//					//if(_inkColorSelected == Color.blue)
+//						_blueInk.RefillInk();
+//					
+//					_inkSelected = false;
+//					break;
+//				case "InkBlack":
+//					//if( inkColorSelected == Color.black)
+//						_blackInk.RefillInk();
+//					break;
+//				default:
+//					_inkSelected = false;
+//					break;
+//				}
 			}
 		}
 	}
