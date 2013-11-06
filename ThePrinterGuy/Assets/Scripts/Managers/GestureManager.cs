@@ -136,7 +136,7 @@ public class GestureManager : MonoBehaviour
 
 
 
-    #if UNITY_ANDROID
+    //#if UNITY_ANDROID
         UpdateTouchBeginGameObject();
 
         UpdateTouchBeginTimes();
@@ -273,9 +273,9 @@ public class GestureManager : MonoBehaviour
 
             //TODO: Implement twofinger Press & tap
         }
-    #endif
+    //#endif
 
-    #if UNITY_EDITOR
+    /*#if UNITY_EDITOR
          if(Input.GetMouseButtonDown(0))
          {
              var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
@@ -359,14 +359,14 @@ public class GestureManager : MonoBehaviour
             if(OnSpread != null)
                 OnSpread(1.3f);
         }
-    #endif
+    #endif*/
 
     }
 
     #region Methods
     void UpdateTouchBeginGameObject()
     {
-	#if UNITY_ANDROID
+	//#if UNITY_ANDROID
         foreach(Touch t in Input.touches)
         {
             if(t.fingerId == 0 && t.phase == TouchPhase.Began)
@@ -381,8 +381,8 @@ public class GestureManager : MonoBehaviour
                 }
             }
         }
-	#endif
-	#if UNITY_EDITOR
+	//#endif
+	/*#if UNITY_EDITOR
         if(Input.GetMouseButtonDown(0))
         {
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);
@@ -394,7 +394,7 @@ public class GestureManager : MonoBehaviour
             }
         }
 		
-	#endif
+	#endif*/
     }
 
     void UpdateTouchBeginTimes()
