@@ -9,7 +9,7 @@ public class InkController : MonoBehaviour
 	[SerializeField]
 	private float _animationSpeed = 0.5f;
 	[SerializeField]
-	private float _rotationAmount = 75f;
+	private float _rotationAmount = 90f;
 	[SerializeField]
 	private float _sirenRotationSpeed = 50f;
 	[SerializeField]
@@ -29,7 +29,6 @@ public class InkController : MonoBehaviour
 	private InkCartridge _blackInk;
 	private int _emptyCartridgesAmount = 0;
 	private GameObject _errorSiren;
-	private bool _tasksEnabled = false;
 	private bool _inkSelected = false;
 	private Color _inkColorSelected;
 	private bool _sirenEnabled = false;
@@ -42,7 +41,6 @@ public class InkController : MonoBehaviour
 		ZoomHandler.OnGoingFreeroam += DisableInkTask;
 		GestureManager.OnSwipeLeft += RotateLeft;
 		GestureManager.OnSwipeRight += RotateRight;
-		GestureManager.OnTap += InsertInk;
 		InkCartridge.OnInkCartridgeError += StartSiren;
 		InkCartridge.OnInkCartridgeRefilledFromEmpty += StopSiren;
 		InventoryController.OnInkSelect += GetInkFromInv;
@@ -100,35 +98,29 @@ public class InkController : MonoBehaviour
 	#region Delegate methods
 	private void EnableInkTask()
 	{
-		_tasksEnabled = true;		
+		GestureManager.OnTap += InsertInk;		
 	}
 	
 	private void DisableInkTask()
 	{
-		_tasksEnabled = false;
+		GestureManager.OnTap -= InsertInk;
 	}
 	
 	private void RotateLeft()
 	{
-		if (_tasksEnabled)
-		{
-			iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, _rotationAmount, 0),
+		iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, _rotationAmount, 0),
 					"time", _animationSpeed, "easetype", _easeType));
-		}
 	}
 	
 	private void RotateRight()
 	{
-		if (_tasksEnabled)
-		{
-			iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, -_rotationAmount, 0),
+		iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, -_rotationAmount, 0),
 					"time", _animationSpeed, "easetype", _easeType));
-		}
 	}
 	
 	private void InsertInk(GameObject go, Vector2 screenPos)
 	{
-		if(_tasksEnabled && go != null)
+		if(go != null)
 		{
 			if(go.tag == "Lid")
 			{
