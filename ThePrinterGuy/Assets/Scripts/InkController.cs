@@ -91,6 +91,10 @@ public class InkController : MonoBehaviour
 	#region Delegate methods
 	private void EnableInkTask()
 	{
+		foreach(InkCartridge ic in _inkList)
+		{
+			ic.collider.enabled = true;	
+		}
 		GestureManager.OnTap += InsertInk;
 		ZoomHandler.OnGoingFreeroam += DisableInkTask;
 		GestureManager.OnSwipeRight += RotateRight;
@@ -99,6 +103,10 @@ public class InkController : MonoBehaviour
 	
 	private void DisableInkTask()
 	{
+		foreach(InkCartridge ic in _inkList)
+		{
+			ic.collider.enabled = false;	
+		}
 		GestureManager.OnTap -= InsertInk;
 		ZoomHandler.OnGoingFreeroam -= DisableInkTask;
 		GestureManager.OnSwipeLeft -= RotateLeft;
