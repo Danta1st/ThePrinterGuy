@@ -642,7 +642,7 @@ GameObject:
   - 136: {fileID: 140570461}
   m_Layer: 0
   m_Name: ink2
-  m_TagString: InkGreen
+  m_TagString: Ink
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2559,7 +2559,7 @@ GameObject:
   - 136: {fileID: 323687262}
   m_Layer: 0
   m_Name: ink3
-  m_TagString: InkBlue
+  m_TagString: Ink
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10207,7 +10207,11 @@ MonoBehaviour:
   _animationSpeed: .5
   _rotationAmount: 75
   _sirenRotationSpeed: 50
-  _cartridgeColor: []
+  _cartridgeColor:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 1, g: 0, b: 0, a: 0}
+  - {r: 0, g: 1, b: .00689649582, a: 0}
+  - {r: .117241859, g: 0, b: 1, a: 0}
 --- !u!1 &975000322
 GameObject:
   m_ObjectHideFlags: 0
@@ -10246,7 +10250,7 @@ GameObject:
   - 136: {fileID: 989434322}
   m_Layer: 0
   m_Name: ink4
-  m_TagString: InkBlack
+  m_TagString: Ink
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13955,6 +13959,22 @@ Prefab:
     - target: {fileID: 11400030, guid: bbdb81898bd7b9b41bb4068154ba207f, type: 2}
       propertyPath: _lifeTime
       value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 100020, guid: bbdb81898bd7b9b41bb4068154ba207f, type: 2}
+      propertyPath: m_TagString
+      value: Ink
+      objectReference: {fileID: 0}
+    - target: {fileID: 100044, guid: bbdb81898bd7b9b41bb4068154ba207f, type: 2}
+      propertyPath: m_TagString
+      value: Ink
+      objectReference: {fileID: 0}
+    - target: {fileID: 100142, guid: bbdb81898bd7b9b41bb4068154ba207f, type: 2}
+      propertyPath: m_TagString
+      value: Ink
+      objectReference: {fileID: 0}
+    - target: {fileID: 100304, guid: bbdb81898bd7b9b41bb4068154ba207f, type: 2}
+      propertyPath: m_TagString
+      value: Ink
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11400028, guid: bbdb81898bd7b9b41bb4068154ba207f, type: 2}
@@ -19820,7 +19840,7 @@ GameObject:
   - 136: {fileID: 2132639251}
   m_Layer: 0
   m_Name: ink1
-  m_TagString: InkRed
+  m_TagString: Ink
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
