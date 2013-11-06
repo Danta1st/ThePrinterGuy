@@ -7,7 +7,7 @@ public class JamSmoke : MonoBehaviour {
 	
 	void Awake()
 	{
-		_smokes = gameObject.GetComponents<ParticleSystem>();
+		_smokes = gameObject.GetComponentsInChildren<ParticleSystem>();
 	}
 	
 	void OnEnable()
@@ -22,7 +22,7 @@ public class JamSmoke : MonoBehaviour {
 	
 	private void Smoke(GameObject go)
 	{
-		if(go.transform == gameObject.transform.root)
+		if(go.Equals(transform.root.gameObject))
 		{
 			foreach(ParticleSystem p in _smokes)
 				p.Play();

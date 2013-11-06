@@ -18,6 +18,7 @@ public class TimerUtilities : MonoBehaviour
     private float _timeLeft;
     private bool _isPaused = false;
 	private bool _manualTimer;
+	private float testTimeDOTtime;
 	
     private float _pauseTime;
     private float _pauseOffset = 0f;
@@ -29,6 +30,7 @@ public class TimerUtilities : MonoBehaviour
     {
         if(_timeLeft > 0 && !_isPaused && !_manualTimer)
         {
+			testTimeDOTtime = Time.time;
             _timeLeft = _endTime - (Time.time * _tickRate) + _pauseOffset * _tickRate;
             if(_timeLeft < 0)
             {
@@ -75,6 +77,25 @@ public class TimerUtilities : MonoBehaviour
         _startTime = Time.time;
         _endTime = _startTime + _duration;
         _timeLeft = duration;
+		_pauseOffset = 0f;
+		if(_isPaused)
+		{
+			PauseTimer();	
+		}
+    }
+	
+	public void StartTimer(float duration, bool pause)
+    {
+        _duration = duration;
+        _startTime = Time.time;
+        _endTime = _startTime + _duration;
+        _timeLeft = duration;
+		_pauseOffset = 0f;
+		_isPaused = pause;
+		if(_isPaused)
+		{
+			PauseTimer();	
+		}
     }
 	
 	public void StartTimer(float duration, float tickrate)
@@ -84,6 +105,11 @@ public class TimerUtilities : MonoBehaviour
         _startTime = Time.time;
         _endTime = _startTime + _duration;
         _timeLeft = duration;
+		_pauseOffset = 0f;
+		if(_isPaused)
+		{
+			PauseTimer();	
+		}
     }
 
     public void StartTimer()
@@ -91,6 +117,11 @@ public class TimerUtilities : MonoBehaviour
         _startTime = Time.time;
         _endTime = _startTime + _duration;
         _timeLeft = _duration;
+		_pauseOffset = 0f;
+		if(_isPaused)
+		{
+			PauseTimer();	
+		}
     }
 
     public void PauseTimer()
