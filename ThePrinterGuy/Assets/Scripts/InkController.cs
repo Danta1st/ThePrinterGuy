@@ -38,7 +38,6 @@ public class InkController : MonoBehaviour
 	void OnEnable()
 	{
 		ZoomHandler.OnInk += EnableInkTask;
-		GestureManager.OnSwipeRight += RotateRight;
 		InkCartridge.OnInkCartridgeError += StartSiren;
 		InkCartridge.OnInkCartridgeRefilledFromEmpty += StopSiren;
 		InventoryController.OnInkSelect += GetInkFromInv;
@@ -47,7 +46,6 @@ public class InkController : MonoBehaviour
 	void OnDisable()
 	{
 		ZoomHandler.OnInk -= EnableInkTask;
-		GestureManager.OnTap -= InsertInk;
 		InkCartridge.OnInkCartridgeError -= StartSiren;
 		InkCartridge.OnInkCartridgeRefilledFromEmpty -= StopSiren;
 		InventoryController.OnInkSelect -= GetInkFromInv;
@@ -95,6 +93,7 @@ public class InkController : MonoBehaviour
 	{
 		GestureManager.OnTap += InsertInk;
 		ZoomHandler.OnGoingFreeroam += DisableInkTask;
+		GestureManager.OnSwipeRight += RotateRight;
 		GestureManager.OnSwipeLeft += RotateLeft;
 	}
 	
