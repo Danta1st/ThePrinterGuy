@@ -53,6 +53,7 @@ public class InkCartridge : MonoBehaviour
 	#region OnEnableOnDisable
 	public void OnEnable()
 	{
+		collider.enabled = false;
 		PrinterManager.OnPrinterBroken += PauseTimer;
 		PrinterManager.OnPrinterFixed += ResumeTimer;
 	}

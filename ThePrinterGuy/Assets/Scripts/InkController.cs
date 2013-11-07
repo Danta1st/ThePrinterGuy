@@ -9,7 +9,7 @@ public class InkController : MonoBehaviour
 	[SerializeField]
 	private float _animationSpeed = 0.5f;
 	[SerializeField]
-	private float _rotationAmount = 75f;
+	private float _rotationAmount = 90f;
 	[SerializeField]
 	private float _sirenRotationSpeed = 50f;
 	[SerializeField]
@@ -29,7 +29,6 @@ public class InkController : MonoBehaviour
 	private InkCartridge _blackInk;
 	private int _emptyCartridgesAmount = 0;
 	private GameObject _errorSiren;
-	private bool _tasksEnabled = false;
 	private bool _inkSelected = false;
 	private Color _inkColorSelected;
 	private bool _sirenEnabled = false;
@@ -39,10 +38,6 @@ public class InkController : MonoBehaviour
 	void OnEnable()
 	{
 		ZoomHandler.OnInk += EnableInkTask;
-		ZoomHandler.OnGoingFreeroam += DisableInkTask;
-		GestureManager.OnSwipeLeft += RotateLeft;
-		GestureManager.OnSwipeRight += RotateRight;
-		GestureManager.OnTap += InsertInk;
 		InkCartridge.OnInkCartridgeError += StartSiren;
 		InkCartridge.OnInkCartridgeRefilledFromEmpty += StopSiren;
 		InventoryController.OnInkSelect += GetInkFromInv;
@@ -51,10 +46,6 @@ public class InkController : MonoBehaviour
 	void OnDisable()
 	{
 		ZoomHandler.OnInk -= EnableInkTask;
-		ZoomHandler.OnGoingFreeroam -= DisableInkTask;
-		GestureManager.OnSwipeLeft -= RotateLeft;
-		GestureManager.OnSwipeRight -= RotateRight;
-		GestureManager.OnTap -= InsertInk;
 		InkCartridge.OnInkCartridgeError -= StartSiren;
 		InkCartridge.OnInkCartridgeRefilledFromEmpty -= StopSiren;
 		InventoryController.OnInkSelect -= GetInkFromInv;
@@ -100,35 +91,43 @@ public class InkController : MonoBehaviour
 	#region Delegate methods
 	private void EnableInkTask()
 	{
-		_tasksEnabled = true;		
+		foreach(InkCartridge ic in _inkList)
+		{
+			ic.collider.enabled = true;	
+		}
+		GestureManager.OnTap += InsertInk;
+		ZoomHandler.OnGoingFreeroam += DisableInkTask;
+		GestureManager.OnSwipeRight += RotateRight;
+		GestureManager.OnSwipeLeft += RotateLeft;
 	}
 	
 	private void DisableInkTask()
 	{
-		_tasksEnabled = false;
+		foreach(InkCartridge ic in _inkList)
+		{
+			ic.collider.enabled = false;	
+		}
+		GestureManager.OnTap -= InsertInk;
+		ZoomHandler.OnGoingFreeroam -= DisableInkTask;
+		GestureManager.OnSwipeLeft -= RotateLeft;
+		GestureManager.OnSwipeRight -= RotateRight;
 	}
 	
 	private void RotateLeft()
 	{
-		if (_tasksEnabled)
-		{
-			iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, _rotationAmount, 0),
+		iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, _rotationAmount, 0),
 					"time", _animationSpeed, "easetype", _easeType));
-		}
 	}
 	
 	private void RotateRight()
 	{
-		if (_tasksEnabled)
-		{
-			iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, -_rotationAmount, 0),
+		iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, -_rotationAmount, 0),
 					"time", _animationSpeed, "easetype", _easeType));
-		}
 	}
 	
 	private void InsertInk(GameObject go, Vector2 screenPos)
 	{
-		if(_tasksEnabled && go != null)
+		if(go != null)
 		{
 			if(go.tag == "Lid")
 			{
