@@ -19,16 +19,6 @@ public class PopoutManager : MonoBehaviour
         Popouts = GameObject.FindGameObjectsWithTag("Popout");
     }
 
-    void OnEnable()
-    {
-        PaperTray.OnPaperTrayPenalty += PopoutCylinderHandler;
-    }
-
-    void OnDisable()
-    {
-        PaperTray.OnPaperTrayPenalty -= PopoutCylinderHandler;
-    }
-
     private void PopoutCylinderHandler(GameObject rootPrinter)
     {
         if(rootPrinter != null && gameObject.transform.root.gameObject.Equals(rootPrinter))

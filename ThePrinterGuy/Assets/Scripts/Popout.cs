@@ -34,14 +34,14 @@ public class Popout: MonoBehaviour {
     void OnEnable()
 	{
 		gameObject.transform.collider.enabled = false;
-        ZoomHandler.onPopout += PopoutFocus;
-		ZoomHandler.OnFreeroam += FreeRoamMode;
+//        ZoomHandler.onPopout += PopoutFocus;
+//		ZoomHandler.OnFreeroam += FreeRoamMode;
     }
 
     void OnDisable()
 	{
-		ZoomHandler.onPopout -= PopoutFocus;
-		ZoomHandler.OnFreeroam -= FreeRoamMode;
+//		ZoomHandler.onPopout -= PopoutFocus;
+//		ZoomHandler.OnFreeroam -= FreeRoamMode;
         GestureManager.OnTap -= HitCylinder;
     }
 

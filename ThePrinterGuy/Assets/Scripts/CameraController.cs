@@ -24,11 +24,6 @@ public class CameraController : MonoBehaviour
         GestureManager.OnSwipeRight += CameraRotationLeft;
         GestureManager.OnSwipeLeft += CameraRotationRight;
         GestureManager.OnSwipeDown += CameraRotationUp;
-		ZoomHandler.OnTray += FocusedMode;
-		ZoomHandler.onPopout += FocusedMode;
-		ZoomHandler.OnJam += FocusedMode;
-		ZoomHandler.OnInk += FocusedMode;
-		ZoomHandler.OnFreeroam += FreeRoamMode;
     }
 
     void OnDisable()
@@ -36,11 +31,6 @@ public class CameraController : MonoBehaviour
         GestureManager.OnSwipeRight -= CameraRotationLeft;
         GestureManager.OnSwipeLeft -= CameraRotationRight;
         GestureManager.OnSwipeDown -= CameraRotationUp;
-		ZoomHandler.OnTray -= FocusedMode;
-		ZoomHandler.onPopout -= FocusedMode;
-		ZoomHandler.OnJam -= FocusedMode;
-		ZoomHandler.OnInk -= FocusedMode;
-		ZoomHandler.OnFreeroam -= FreeRoamMode;
     }
     #endregion
 
