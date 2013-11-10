@@ -1,81 +1,119 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class InkController : MonoBehaviour
 {
-	#region Variables Editable in Editor
+	#region editor variables
 	[SerializeField]
-	private iTween.EaseType _lidSmoothing = iTween.EaseType.easeOutBack;
+	private Color[] _inkColor;
 	[SerializeField]
-	private float _animationSpeed = 0.5f;
-	[SerializeField]
-	private Color[] _cartridgeColor;
+	private float _doorDelay = 0.5f;
 	#endregion
 	
 	#region Private Variables
-	private System.Collections.Generic.List<InkCartridge> _inkList = new System.Collections.Generic.List<InkCartridge> ();
+	private List<InkCartridge> _printInks = new List<InkCartridge>();
+	private List<InkCartridge> _guiInks = new List<InkCartridge>();
+	private List<InkLid> _inkLids = new List<InkLid>();
 	#endregion
+	
+	
 	
 	#region Setup of Delegates
 	void OnEnable ()
 	{
 		//ZoomHandler.OnInk += EnableInkTask;
+		GestureManager.OnSwipeRight += InsertInk;;
 	}
 	
 	void OnDisable ()
 	{
 		//ZoomHandler.OnInk -= EnableInkTask;
+		GestureManager.OnSwipeRight -= InsertInk;
 	}
-	#endregion
 	
-	#region Initializatio of InkCartridges
-	void Start ()
+	void Start()
 	{
 		int index = 0;
-		foreach (Transform t in transform) {
-			if (t.gameObject.tag == "Ink" && index < _cartridgeColor.Length) {
-				_inkList.Add (t.gameObject.GetComponent<InkCartridge> ());
-				_inkList [index].InitializeInkCartridge (_cartridgeColor [index]);
+		foreach(GameObject g in GameObject.FindGameObjectsWithTag("GuiInk"))
+		{
+			if(index < _inkColor.Length) {
+				_guiInks.Add(g.GetComponent<InkCartridge>());
+				_guiInks[index].SetColor(_inkColor[index]);
 				index++;
 			}
 		}
+		
+		index = 0;
+		foreach(GameObject g in GameObject.FindGameObjectsWithTag("Ink"))
+		{
+			if(index < _inkColor.Length) {
+				_printInks.Add(g.GetComponent<InkCartridge>());
+				_printInks[index].SetColor(_inkColor[index]);
+				index++;
+			}
+		}
+		
+		index = 0;
+		foreach(GameObject g in GameObject.FindGameObjectsWithTag("InkLid"))
+		{
+			if(index < _inkColor.Length)
+			{
+				_inkLids.Add(g.GetComponent<InkLid>());
+				index++;
+			}
+		}
+		
+		EnableInkTask();
 	}
 	#endregion
 	
-	#region Delegate methods
-	private void EnableInkTask ()
+	#region delegate methods
+	private void EnableInkTask()
 	{
-		foreach (InkCartridge ic in _inkList) {
-			ic.collider.enabled = true;	
+		foreach(InkCartridge i in _guiInks)
+		{
+			i.EnableCollider();
+			i.EnableRenderer();
 		}
-//		ZoomHandler.OnGoingFreeroam += DisableInkTask;
-		GestureManager.OnSwipeRight += RotateRight;
-	}
-	
-	private void DisableInkTask ()
-	{
-		foreach (InkCartridge ic in _inkList) {
-			ic.collider.enabled = false;	
+		
+		foreach(InkCartridge i in _printInks)
+		{
+			i.EnableCollider();
 		}
-//		ZoomHandler.OnGoingFreeroam -= DisableInkTask;
-		GestureManager.OnSwipeRight -= RotateRight;
+		
+		StartCoroutine("SwapLidStatus");
 	}
 	
-	private void RotateLeft ()
+	private void DisableInkTask()
 	{
+		foreach(InkCartridge i in _guiInks)
+		{
+			i.DisableCollider();
+			i.DisableRenderer();
+		}
+		
+		foreach(InkCartridge i in _printInks)
+		{
+			i.DisableCollider();
+		}
+		
+		StopCoroutine("SwapLidStatus");
 	}
 	
-	private void RotateRight ()
+	private void InsertInk()
 	{
 	}
+	#endregion
 	
-	private void InsertInk (GameObject go, Vector2 screenPos)
+	#region coroutines
+	IEnumerator SwapLidStatus()
 	{
-		if (go != null) {
-			foreach (InkCartridge ink in _inkList) {
-				if (go.name == ink.name)
-					ink.RefillInk ();
-			}
+		while(true)
+		{
+			
+			
+			yield return new WaitForSeconds(_doorDelay);
 		}
 	}
 	#endregion
