@@ -124,7 +124,11 @@ public class GestureManager : MonoBehaviour
     public delegate void SpreadAction(float deltaDistance);
     public static event SpreadAction OnSpread;
     #endregion
-
+	
+	void Start()
+	{
+		Screen.sleepTimeout = SleepTimeout.SystemSetting;
+	}
 
     void Update()
     {
