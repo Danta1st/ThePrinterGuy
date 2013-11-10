@@ -65,7 +65,7 @@ public class InkController : MonoBehaviour
 	{
 	}
 	
-	private void RotateRight ()
+	private void RotateRight (GameObject go)
 	{
 	}
 	

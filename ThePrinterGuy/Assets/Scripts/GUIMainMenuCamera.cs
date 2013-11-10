@@ -252,7 +252,7 @@ public class GUIMainMenuCamera : MonoBehaviour
         EnableGUIElement("Credits");
     }
 
-    private void CheckLeft()
+    private void CheckLeft(GameObject go)
     {
         if(_guiCameraStage == "MainMenuStage")
         {
@@ -266,7 +266,7 @@ public class GUIMainMenuCamera : MonoBehaviour
         }
     }
 
-    private void CheckRight()
+    private void CheckRight(GameObject go)
     {
         if(_guiCameraStage == "MainMenuStage")
         {

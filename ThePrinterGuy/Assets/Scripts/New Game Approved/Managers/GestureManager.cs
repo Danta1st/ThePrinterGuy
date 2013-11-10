@@ -103,16 +103,16 @@ public class GestureManager : MonoBehaviour
     public delegate void PressAction(GameObject go, Vector2 screenPosition);
     public static event PressAction OnPress;
 
-    public delegate void SwipeRightAction();
+    public delegate void SwipeRightAction(GameObject go);
     public static event SwipeRightAction OnSwipeRight;
 
-    public delegate void SwipeLeftAction();
+    public delegate void SwipeLeftAction(GameObject go);
     public static event SwipeLeftAction OnSwipeLeft;
 
-    public delegate void SwipeUpAction();
+    public delegate void SwipeUpAction(GameObject go);
     public static event SwipeUpAction OnSwipeUp;
 
-    public delegate void SwipeDownAction();
+    public delegate void SwipeDownAction(GameObject go);
     public static event SwipeDownAction OnSwipeDown;
 
     public delegate void DragAction(GameObject go, Vector2 screenPosition, Vector2 deltaPosition);
@@ -193,7 +193,7 @@ public class GestureManager : MonoBehaviour
                 {
                     //SwipeRight Event
                     if(OnSwipeRight != null)
-                        OnSwipeRight();
+                        OnSwipeRight(_touchBeganObject);
 
                 }
                 else if(primaryFinger.deltaPosition.x <= _swipeThreshold * -1.0f &&
@@ -201,7 +201,7 @@ public class GestureManager : MonoBehaviour
                 {
                     //SwipeLeft Event
                     if(OnSwipeLeft != null)
-                        OnSwipeLeft();
+                        OnSwipeLeft(_touchBeganObject);
 
                 }
 
@@ -211,14 +211,14 @@ public class GestureManager : MonoBehaviour
                 {
                     //SwipeUp Event
                     if(OnSwipeUp != null)
-                        OnSwipeUp();
+                        OnSwipeUp(_touchBeganObject);
                 }
                 else if(primaryFinger.deltaPosition.y <= _swipeThreshold * -1.0f &&
                          Mathf.Abs(primaryFinger.deltaPosition.x) <= _swipeOffset)
                 {
                     //SwipeDown Event
                     if(OnSwipeDown != null)
-                        OnSwipeDown();
+                        OnSwipeDown(_touchBeganObject);
                 }
             }
             
@@ -324,28 +324,28 @@ public class GestureManager : MonoBehaviour
         {
             //SwipeRight Event
             if(OnSwipeRight != null)
-                OnSwipeRight();
+                OnSwipeRight(_touchBeganObject);
         }
 
         if(Input.GetKeyDown(KeyCode.LeftArrow))
         {
             //SwipeLeft Event
             if(OnSwipeLeft != null)
-                OnSwipeLeft();
+                OnSwipeLeft(_touchBeganObject);
         }
 
         if(Input.GetKeyDown(KeyCode.UpArrow))
         {
             //SwipeUp Event
             if(OnSwipeUp != null)
-                OnSwipeUp();
+                OnSwipeUp(_touchBeganObject);
         }
 
         if(Input.GetKeyDown(KeyCode.DownArrow))
         {
             //SwipeDown Event
             if(OnSwipeDown != null)
-                OnSwipeDown();
+                OnSwipeDown(_touchBeganObject);
         }
 
         if(Input.GetKey(KeyCode.KeypadMinus))
