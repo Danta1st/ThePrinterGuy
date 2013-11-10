@@ -48,7 +48,7 @@ public class CameraController : MonoBehaviour
         GestureManager.OnSwipeDown -= CameraRotationUp;
 	}
 	
-    public void CameraRotationLeft()
+    public void CameraRotationLeft(GameObject go)
     {
         if(RotationInProcess == false && _inFreeRoam)
         {
@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void CameraRotationRight()
+    public void CameraRotationRight(GameObject go)
     {
         if(RotationInProcess == false && _inFreeRoam)
         {
@@ -64,7 +64,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void CameraRotationUp()
+    public void CameraRotationUp(GameObject go)
     {
         if(RotationInProcess == false && _inFreeRoam)
         {
@@ -76,7 +76,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public void CameraRotationDown()
+    public void CameraRotationDown(GameObject go)
     {
         if(RotationInProcess == false && _inFreeRoam)
         {
