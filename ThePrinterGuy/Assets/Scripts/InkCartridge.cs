@@ -19,6 +19,11 @@ public class InkCartridge : MonoBehaviour
 		this.gameObject.renderer.material.color = _color;
 	}
 	
+	public Color GetColor()
+	{
+		return _color;
+	}
+	
 	public void EnableCollider()
 	{
 		gameObject.collider.enabled = true;

@@ -23,14 +23,15 @@ public class InkController : MonoBehaviour
 	void OnEnable ()
 	{
 		//ZoomHandler.OnInk += EnableInkTask;
-		GestureManager.OnSwipeRight += InsertInk;;
+
 	}
 	
 	void OnDisable ()
 	{
 		//ZoomHandler.OnInk -= EnableInkTask;
-		GestureManager.OnSwipeRight -= InsertInk;
+//		
 	}
+	
 	
 	void Start()
 	{
@@ -60,6 +61,7 @@ public class InkController : MonoBehaviour
 			if(index < _inkColor.Length)
 			{
 				_inkLids.Add(g.GetComponent<InkLid>());
+				_inkLids[index].InitializeLid(false);
 				index++;
 			}
 		}
@@ -71,6 +73,9 @@ public class InkController : MonoBehaviour
 	#region delegate methods
 	private void EnableInkTask()
 	{
+		//GestureManager.OnSwipeRight += InsertInk;
+		GestureManager.OnTap += InsertInk;
+		
 		foreach(InkCartridge i in _guiInks)
 		{
 			i.EnableCollider();
@@ -87,6 +92,9 @@ public class InkController : MonoBehaviour
 	
 	private void DisableInkTask()
 	{
+		//GestureManager.OnSwipeRight -= InsertInk;
+		GestureManager.OnTap -= InsertInk;
+		
 		foreach(InkCartridge i in _guiInks)
 		{
 			i.DisableCollider();
@@ -101,8 +109,14 @@ public class InkController : MonoBehaviour
 		StopCoroutine("SwapLidStatus");
 	}
 	
-	private void InsertInk()
+	private void InsertInk(GameObject go, Vector2 screenPos)
 	{
+	
+		if(go != null)
+		{
+			Color colorInserted = go.GetComponent<InkCartridge>().GetColor();
+			Debug.Log(colorInserted);
+		}
 	}
 	#endregion
 	
@@ -111,9 +125,12 @@ public class InkController : MonoBehaviour
 	{
 		while(true)
 		{
+			foreach(InkLid i in _inkLids)
+			{
+				i.SwapLidState();
+			}
 			
-			
-			yield return new WaitForSeconds(_doorDelay);
+			yield return new WaitForSeconds(2);
 		}
 	}
 	#endregion
