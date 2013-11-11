@@ -158,10 +158,9 @@ public class InkController : MonoBehaviour
 					if(_inkLids[_emptyInk].IsOpen())
 					{
 						i.EnableRenderer();
-						if(OnInkInsertedSuccess != null)
-							OnInkInsertedSuccess();
 						
-						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed));
+						
+						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "MoveBack"));
 					}
 					else
 					{
@@ -172,7 +171,7 @@ public class InkController : MonoBehaviour
 						values.Add("moveObj", go);
 						values.Add ("target", go.transform.position);
 						
-						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "MoveBack",
+						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "OnInkSuccess",
 							"oncompletetarget", this.gameObject, "oncompleteparams", values));
 					}
 				}
@@ -196,6 +195,12 @@ public class InkController : MonoBehaviour
 	#endregion
 	
 	#region private methods
+	private void OnInkSuccess()
+	{
+		if(OnInkInsertedSuccess != null)
+			OnInkInsertedSuccess();
+	}
+	
 	private void MoveBack(object values)
 	{
 		Hashtable ht = (Hashtable)values;
