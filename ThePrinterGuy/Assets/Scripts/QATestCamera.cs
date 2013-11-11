@@ -37,10 +37,7 @@ public class QATestCamera : MonoBehaviour
     void OnEnable()
     {
 		GUIList = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
-		InkController.OnInkInsertedSuccess += ScoreIncreaseWithSwipeDisabled;
-		PaperInsertion.OnCorrectPaperInserted += ScoreIncrease;
-		Barometer.OnBarometerFixed += ScoreIncrease;
-		UraniumRods.OnRodHammered += ScoreIncrease;
+		
         GestureManager.OnSwipeRight += CameraRotationLeft;
         GestureManager.OnSwipeLeft += CameraRotationRight;
 		StartCoroutine_Auto(StartFirstTask());
@@ -48,10 +45,6 @@ public class QATestCamera : MonoBehaviour
 
     void OnDisable()
     {
-		InkController.OnInkInsertedSuccess -= ScoreIncreaseWithSwipeDisabled;
-		PaperInsertion.OnCorrectPaperInserted -= ScoreIncrease;
-		Barometer.OnBarometerFixed -= ScoreIncrease;
-		UraniumRods.OnRodHammered -= ScoreIncrease;
         GestureManager.OnSwipeRight -= CameraRotationLeft;
         GestureManager.OnSwipeLeft -= CameraRotationRight;
     }
