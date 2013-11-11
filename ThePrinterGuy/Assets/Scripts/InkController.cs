@@ -135,7 +135,6 @@ public class InkController : MonoBehaviour
 	
 	private void InsertInk(GameObject go)
 	{
-		
 		if(go != null && go.tag == "GuiInk")
 		{
 			Color colorInserted = go.GetComponent<InkCartridge>().GetColor();
@@ -148,8 +147,7 @@ public class InkController : MonoBehaviour
 					{
 						i.EnableRenderer();
 						
-						
-						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "MoveBack"));
+						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "OnInkSuccess", "oncompletetarget", this.gameObject));
 					}
 					else
 					{
@@ -160,7 +158,7 @@ public class InkController : MonoBehaviour
 						values.Add("moveObj", go);
 						values.Add ("target", go.transform.position);
 						
-						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "OnInkSuccess",
+						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "MoveBack",
 							"oncompletetarget", this.gameObject, "oncompleteparams", values));
 					}
 				}
@@ -184,7 +182,7 @@ public class InkController : MonoBehaviour
 	#endregion
 	
 	#region private methods
-	private void OnInkSuccess()
+	public void OnInkSuccess()
 	{
 		if(OnInkInsertedSuccess != null)
 			OnInkInsertedSuccess();
