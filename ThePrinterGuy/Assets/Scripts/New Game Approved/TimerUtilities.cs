@@ -20,6 +20,7 @@ public class TimerUtilities : MonoBehaviour
 	private bool _manualTimer;
 	private float testTimeDOTtime;
 	
+	private float _timeLeftBeforePause;
     private float _pauseTime;
     private float _pauseOffset = 0f;
 	
@@ -53,7 +54,14 @@ public class TimerUtilities : MonoBehaviour
 
     public float GetTimeLeft()
     {
-        return _timeLeft;
+		if(!_isPaused)
+		{
+        	return _timeLeft;
+		}
+		else
+		{
+			return _timeLeftBeforePause;	
+		}
     }
 
     public void DestroyTimer()
@@ -126,14 +134,18 @@ public class TimerUtilities : MonoBehaviour
 
     public void PauseTimer()
     {
+		_timeLeftBeforePause = _timeLeft;
         _pauseTime = Time.time;
         _isPaused = true;
     }
 
     public void ResumeTimer()
     {
-        _pauseOffset = _pauseOffset + (Time.time - _pauseTime);
-        _isPaused = false;
+		if(_isPaused)
+		{
+	        _pauseOffset = _pauseOffset + (Time.time - _pauseTime);
+	        _isPaused = false;
+		}
     }
 
     public float GetTimeLeftInPctDecimal()

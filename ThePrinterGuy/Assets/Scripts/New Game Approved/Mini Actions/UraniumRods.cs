@@ -25,19 +25,21 @@ public class UraniumRods : MonoBehaviour
     #endregion
 
     //TODO: Bind to correct events.
-//    void OnEnable()
-//    {
+    void OnEnable()
+    {
+		QATestCamera.OnUranRods += TriggerSpring;
 //        GestureManager.OnSwipeUp += TriggerSpring;
-//        GestureManager.OnTap += TriggerHammer;
+        GestureManager.OnTap += TriggerHammer;
 //        GestureManager.OnSwipeLeft += Reset;
-//    }
-//
-//    void OnDisable()
-//    {
+    }
+
+    void OnDisable()
+    {
+		QATestCamera.OnUranRods -= TriggerSpring;
 //        GestureManager.OnSwipeUp -= TriggerSpring;
-//        GestureManager.OnTap -= TriggerHammer;
+        GestureManager.OnTap -= TriggerHammer;
 //        GestureManager.OnSwipeLeft -= Reset;
-//    }
+    }
 
     void Start()
     {
