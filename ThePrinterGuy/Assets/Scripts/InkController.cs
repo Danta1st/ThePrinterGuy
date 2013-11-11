@@ -135,6 +135,7 @@ public class InkController : MonoBehaviour
 		{
 			i.DisableCollider();
 			i.DisableRenderer();
+			i.gameObject.transform.position = i.GetStartPos();
 		}
 		
 		foreach(InkLid l in _inkLids)

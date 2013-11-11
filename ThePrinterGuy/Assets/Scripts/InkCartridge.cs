@@ -4,9 +4,18 @@ using System.Collections;
 public class InkCartridge : MonoBehaviour
 {
 	private Color _color;
-	
+	private Vector3 _defPos;
 	//private GameObject _lid;
-
+	
+	void Start()
+	{
+		_defPos = this.gameObject.transform.position;
+	}
+	
+	public Vector3 GetStartPos()
+	{
+		return _defPos;
+	}
 
 	public void SetColor(Color col)
 	{
