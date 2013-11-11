@@ -72,7 +72,7 @@ public class PathManager : MonoBehaviour {
         else if(_lookingAt == _uraniumFocus)
             Move("UraniumBarometer", _barometerFocus);
         else if(_lookingAt == _inkFocus)
-            MoveReversed("BarometerInk", _inkFocus);
+            MoveReversed("BarometerInk", _barometerFocus);
     }
 
     private void TriggerMovePaper(GameObject go)
