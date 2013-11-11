@@ -182,12 +182,21 @@ public class GUIGameCamera : MonoBehaviour
     #region Class Methods
 
     #region Highscore
-	public void IncreaseScore(int _ammount)
+	public void IncreaseScore(int _amount, string popUpText)
 	{
-		_score += _ammount;	
+		_score += _amount;
 		_strScore = _score.ToString();
-		string _strAmmount = _ammount.ToString();
-		PopupText(_strAmmount);
+		PopupText(popUpText);
+		ShowScore();
+		ShowStars();
+	}
+	
+	public void IncreaseScore(int _amount)
+	{
+		_score += _amount;
+		_strScore = _score.ToString();
+		string _strAmount = _amount.ToString();
+		PopupText(_strAmount);
 		ShowScore();
 		ShowStars();
 	}

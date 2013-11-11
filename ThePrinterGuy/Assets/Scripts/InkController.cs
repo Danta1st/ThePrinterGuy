@@ -26,11 +26,11 @@ public class InkController : MonoBehaviour
 	
 	
 	#region delegates
-	private delegate void InkInsertedSuccessfully();
-	private static event InkInsertedSuccessfully OnInkInsertedSuccess;
+	public delegate void InkInsertedSuccessfully();
+	public static event InkInsertedSuccessfully OnInkInsertedSuccess;
 
-	private delegate void InkInsertedUnsuccessfully();
-	private static event InkInsertedUnsuccessfully OnInkInsertedFailed;
+	public delegate void InkInsertedUnsuccessfully();
+	public static event InkInsertedUnsuccessfully OnInkInsertedFailed;
 	#endregion
 	
 
@@ -38,12 +38,16 @@ public class InkController : MonoBehaviour
 	#region Setup of Delegates
 	void OnEnable ()
 	{
+		QATestCamera.OnInk += EnableInkTask;
+		QATestCamera.OnInkOff += DisableInkTask;
 		//ZoomHandler.OnInk += EnableInkTask;
 
 	}
 	
 	void OnDisable ()
 	{
+		QATestCamera.OnInk -= EnableInkTask;
+		QATestCamera.OnInkOff -= DisableInkTask;
 		//ZoomHandler.OnInk -= EnableInkTask;
 //		
 	}

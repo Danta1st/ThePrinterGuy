@@ -13,6 +13,7 @@ public class QATestCamera : MonoBehaviour
 
     #region Privates
     private bool MoveInProcess = false;
+	private GUIGameCamera GUIList;
 	[SerializeField]
 	private int CurrLocation = 1;
 	
@@ -24,11 +25,22 @@ public class QATestCamera : MonoBehaviour
 	
 	public delegate void OnUranRodsAction();
 	public static event OnUranRodsAction OnUranRods;
+	
+	public delegate void OnInkAction();
+	public static event OnInkAction OnInk;
+	
+	public delegate void OnInkOffAction();
+	public static event OnInkOffAction OnInkOff;
     #endregion
 
     #region OnEnableOnDisable
     void OnEnable()
     {
+		GUIList = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
+		InkController.OnInkInsertedSuccess += ScoreIncreaseWithSwipeDisabled;
+		PaperInsertion.OnCorrectPaperInserted += ScoreIncrease;
+		Barometer.OnBarometerFixed += ScoreIncrease;
+		UraniumRods.OnRodHammered += ScoreIncrease;
         GestureManager.OnSwipeRight += CameraRotationLeft;
         GestureManager.OnSwipeLeft += CameraRotationRight;
 		StartCoroutine_Auto(StartFirstTask());
@@ -36,12 +48,37 @@ public class QATestCamera : MonoBehaviour
 
     void OnDisable()
     {
+		InkController.OnInkInsertedSuccess -= ScoreIncreaseWithSwipeDisabled;
+		PaperInsertion.OnCorrectPaperInserted -= ScoreIncrease;
+		Barometer.OnBarometerFixed -= ScoreIncrease;
+		UraniumRods.OnRodHammered -= ScoreIncrease;
         GestureManager.OnSwipeRight -= CameraRotationLeft;
         GestureManager.OnSwipeLeft -= CameraRotationRight;
     }
     #endregion
 
     #region Methods
+	public void ScoreIncrease()
+	{
+		StartCoroutine_Auto(GOCRAZY());
+	}
+	
+	public void ScoreIncreaseWithSwipeDisabled()
+	{
+		StartCoroutine_Auto(GOCRAZY());
+		GestureManager.OnSwipeRight += CameraRotationLeft;
+        GestureManager.OnSwipeLeft += CameraRotationRight;
+		
+	}
+	
+	IEnumerator GOCRAZY()
+	{
+		GUIList.IncreaseScore(100, "SUPER!");
+		yield return new WaitForSeconds(0.2f);
+		GUIList.IncreaseScore(0, "MEGA!");
+		yield return new WaitForSeconds(0.2f);
+		GUIList.IncreaseScore(0, "AWESOME!");
+	}
 	
 	IEnumerator StartFirstTask()
 	{
@@ -68,6 +105,15 @@ public class QATestCamera : MonoBehaviour
 					OnBarometerBreak();
             	MoveCamera(-13, 0, 0);
 			}
+			else if(CurrLocation == 3)
+			{
+				CurrLocation = 2;
+				if(OnInkOff != null)
+					OnInkOff();
+				if(OnUranRods != null)
+					OnUranRods();
+            	MoveCamera(-23, 0, 0);	
+			}
         }
     }
 
@@ -88,6 +134,17 @@ public class QATestCamera : MonoBehaviour
 				if(OnUranRods != null)
 					OnUranRods();
             	MoveCamera(13, 0, 0);
+			}
+			else if(CurrLocation == 2)
+			{
+				CurrLocation = 3;
+				if(OnInk != null)
+				{
+					OnInk();
+					GestureManager.OnSwipeRight -= CameraRotationLeft;
+        			GestureManager.OnSwipeLeft -= CameraRotationRight;
+				}
+				MoveCamera(23, 0, 0);
 			}
 		}
     }
