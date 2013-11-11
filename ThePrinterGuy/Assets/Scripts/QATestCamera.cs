@@ -105,7 +105,7 @@ public class QATestCamera : MonoBehaviour
 					OnBarometerBreak();
             	MoveCamera(-13, 0, 0);
 			}
-			else if(CurrLocation == 3)
+			/*else if(CurrLocation == 3)
 			{
 				CurrLocation = 2;
 				if(OnInkOff != null)
@@ -113,7 +113,7 @@ public class QATestCamera : MonoBehaviour
 				if(OnUranRods != null)
 					OnUranRods();
             	MoveCamera(-23, 0, 0);	
-			}
+			}*/
         }
     }
 
@@ -135,7 +135,7 @@ public class QATestCamera : MonoBehaviour
 					OnUranRods();
             	MoveCamera(13, 0, 0);
 			}
-			else if(CurrLocation == 2)
+			/*else if(CurrLocation == 2)
 			{
 				CurrLocation = 3;
 				if(OnInk != null)
@@ -145,7 +145,7 @@ public class QATestCamera : MonoBehaviour
         			GestureManager.OnSwipeLeft -= CameraRotationRight;
 				}
 				MoveCamera(23, 0, 0);
-			}
+			}*/
 		}
     }
 
