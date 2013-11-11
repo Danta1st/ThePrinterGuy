@@ -7,7 +7,8 @@ public class GUISpeechText : MonoBehaviour
 	private int _currentPosition = 0;
 	private float _delay = 0.01f;
 	private string _text = "";
-	public string[] additionalLines;
+	[SerializeField]
+	private string[] _additionalLines;
 	private float _scaleMultiplierY;
 	
 
@@ -26,6 +27,11 @@ public class GUISpeechText : MonoBehaviour
 		if(Input.GetKeyDown(KeyCode.M))
 		{
 			WriteText("This is the first line bla bla bla bla \nthis is the second line bla bla bla bla \nbla bla bla bla maybe a third?");
+			
+		}
+		if(Input.GetKeyDown(KeyCode.A))
+		{
+			WriteText("heje hej");
 		}
 	}
 	
@@ -41,7 +47,7 @@ public class GUISpeechText : MonoBehaviour
 	IEnumerator Loopy()
 	{
 		
-		foreach(string _s in additionalLines)
+		foreach(string _s in _additionalLines)
 		{
 			//Debug.Log("HFRUWE!");
 			_text += "\n" + _s;
