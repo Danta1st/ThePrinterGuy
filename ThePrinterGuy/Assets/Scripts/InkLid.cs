@@ -37,7 +37,7 @@ public class InkLid : MonoBehaviour {
 		_isOpen = isOpen;
 		_isInit = true;
 		
-		_startRot = this.gameObject.transform.rotation;
+		_startRot = this.gameObject.transform.parent.gameObject.transform.rotation;
 		
 		if(_isOpen)
 		{
@@ -95,7 +95,7 @@ public class InkLid : MonoBehaviour {
 	
 	public void StopLid()
 	{
-		this.gameObject.transform.rotation = _startRot;
+		this.gameObject.transform.parent.gameObject.transform.rotation = _startRot;
 		StopCoroutine("OpenCloseLid");
 	}
 	

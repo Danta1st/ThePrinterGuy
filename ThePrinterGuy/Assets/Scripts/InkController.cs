@@ -81,7 +81,6 @@ public class InkController : MonoBehaviour
 			if(index < _inkColor.Length)
 			{
 				_inkLids.Add(g.GetComponent<InkLid>());
-				_inkLids[index].InitializeLid(false);
 				index++;
 			}
 		}
@@ -97,6 +96,11 @@ public class InkController : MonoBehaviour
 		foreach(InkCartridge i in _guiInks)
 		{
 			i.EnableCollider();
+			i.EnableRenderer();
+		}
+		
+		foreach(InkCartridge i in _printInks)
+		{
 			i.EnableRenderer();
 		}
 		
