@@ -19,6 +19,7 @@ public class GUIGameCamera : MonoBehaviour
 	private iTween.EaseType _easeTypeToolBox;
 	[SerializeField]
 	private iTween.EaseType _easeTypeIngameMenu;
+	[SerializeField] GameObject _popupTextPrefab;
     #endregion
 
     #region Private Variables
@@ -307,7 +308,6 @@ public class GUIGameCamera : MonoBehaviour
 		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
 		
-		GameObject _popupTextPrefab = Resources.Load("GUIPopupText") as GameObject;
 		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
