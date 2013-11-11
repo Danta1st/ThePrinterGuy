@@ -5,13 +5,8 @@ public class InkCartridge : MonoBehaviour
 {
 	private Color _color;
 	
-	public void EnableCartridge()
-	{
-	}
-	
-	public void DisableCartridge()
-	{
-	}
+	//private GameObject _lid;
+
 
 	public void SetColor(Color col)
 	{
