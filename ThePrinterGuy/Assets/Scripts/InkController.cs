@@ -15,12 +15,17 @@ public class InkController : MonoBehaviour
 	private float _inkMoveSpeed = 0.5f;
 	[SerializeField]
 	private float[] _lidStartTime;
+	[SerializeField]
+	private InkCartridge[] _printInks;
+	[SerializeField]
+	private InkCartridge[] _guiInks;
+	[SerializeField]
+	private InkLid[] _inkLids;
 	#endregion
 	
 	#region Private Variables
-	private List<InkCartridge> _printInks = new List<InkCartridge>();
-	private List<InkCartridge> _guiInks = new List<InkCartridge>();
-	private List<InkLid> _inkLids = new List<InkLid>();
+	
+	
 	private int _emptyInk;
 	#endregion
 	
@@ -52,35 +57,19 @@ public class InkController : MonoBehaviour
 	void Start()
 	{
 		int index = 0;
-		foreach(GameObject g in GameObject.FindGameObjectsWithTag("GuiInk"))
+		foreach(InkCartridge i in _guiInks)
 		{
-			if(index < _inkColor.Length) {
-				_guiInks.Add(g.GetComponent<InkCartridge>());
-				_guiInks[index].SetColor(_inkColor[index]);
-				index++;
-			}
-		}
-		
-		index = _inkColor.Length - 1;
-		foreach(GameObject g in GameObject.FindGameObjectsWithTag("Ink"))
-		{
-			if(index >= 0) {
-				_printInks.Add(g.GetComponent<InkCartridge>());
-				_printInks[_printInks.Count - 1].SetColor(_inkColor[index]);
-				index--;
-			}
+			i.SetColor(_inkColor[index]);
+			index++;
 		}
 		
 		index = 0;
-		foreach(GameObject g in GameObject.FindGameObjectsWithTag("InkLid"))
+		foreach(InkCartridge i in _printInks)
 		{
-			if(index < _inkColor.Length)
-			{
-				_inkLids.Add(g.GetComponent<InkLid>());
-				index++;
-			}
+			i.SetColor(_inkColor[index]);
+			index++;
 		}
-		
+	
 	}
 	#endregion
 	
