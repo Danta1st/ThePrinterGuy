@@ -10,13 +10,8 @@ public class GUIGameCamera : MonoBehaviour
     //List of all gui elements.
     [SerializeField]
     private GameObject[] _guiList;
-    //List of tool box pages.
-    [SerializeField]
-    private GameObject[] _toolBoxPages;
 	[SerializeField]
     private GameObject[] _textList;
-	[SerializeField]
-	private iTween.EaseType _easeTypeToolBox;
 	[SerializeField]
 	private iTween.EaseType _easeTypeIngameMenu;
 	[SerializeField] GameObject _popupTextPrefab;
@@ -30,7 +25,6 @@ public class GUIGameCamera : MonoBehaviour
     private bool _isGUI = false;
     private bool _canTouch = true;
     private float _timeScale = 0.0f;
-	
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -38,16 +32,6 @@ public class GUIGameCamera : MonoBehaviour
     private GameObject _statsOverviewObject;
     private Vector3 _statsOverviewMoveAmount;
     private float _statsOverviewDuration = 1.0f;
-
-    //Tool box variables.
-    private GameObject _toolBoxSelectionObject;
-    private GameObject _toolBoxObject;
-    private Vector3 _toolBoxMoveAmount;
-	private float _toolBoxMoveDuration = 1.0f;
-	private int _toolBoxCurrentPageCount = 1;
-    private int _toolBoxMaxPageCount;
-    private bool _isToolBoxOpen = false;
-	private bool _isToolBoxReady = true;
 	
 	//Highscore Variables.
 	private static int _score = 0;
@@ -59,11 +43,6 @@ public class GUIGameCamera : MonoBehaviour
 	private bool _isStar1Spawned;
 	private bool _isStar2Spawned;
 	private bool _isStar3Spawned;
-    #endregion
-
-    #region Delegates and Events
-    public delegate void InventoryPress(string buttonName);
-    public static event InventoryPress OnInventoryPress;
     #endregion
 
     #region Enable and Disable
@@ -161,23 +140,6 @@ public class GUIGameCamera : MonoBehaviour
                 _statsOverviewMoveAmount = new Vector3(0, 1100*_scaleMultiplierY, 0);
                 _guiObject.SetActive(false);
             }
-
-            if(_guiObject.name == "ToolBox")
-            {
-                _toolBoxObject = _guiObject;
-
-                Vector3 _tempToolBoxPos = new Vector3(_toolBoxObject.transform.position.x, _toolBoxObject.transform.position.y, 5);
-                _toolBoxObject.transform.position = _tempToolBoxPos;
-    
-                _toolBoxMoveAmount = new Vector3(200*_scaleMultiplierY, 0, 0);
-                _toolBoxMaxPageCount = _toolBoxPages.Length;
-            }
-
-            if(_guiObject.name == "ToolBoxSelection")
-            {
-                _toolBoxSelectionObject = _guiObject;
-                _toolBoxSelectionObject.SetActive(false);
-            }
 			
 			if(_guiObject.name == "Highscore")
             {
@@ -186,7 +148,6 @@ public class GUIGameCamera : MonoBehaviour
 				_star2Object = _guiObject.transform.FindChild("Star2").gameObject;
 				_star3Object = _guiObject.transform.FindChild("Star3").gameObject;
             }
-			
         }
         //--------------------------------------------------//
 		if(GUIMainMenuCamera.languageSetting == "EN")
@@ -219,6 +180,8 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Class Methods
+
+    #region Highscore
 	public void IncreaseScore(int _ammount)
 	{
 		_score += _ammount;	
@@ -326,7 +289,8 @@ public class GUIGameCamera : MonoBehaviour
 		Destroy(_popupTextObject);
 		
 	}
-	
+    #endregion
+
 	private void AdjustCameraSize()
 	{
 		float _aspectRatio = 1920f / 1200f;
@@ -398,111 +362,14 @@ public class GUIGameCamera : MonoBehaviour
 						Settings();
                     }
                 }
-                //ToolBox layer mask.
-                //-----------------------------------------------------------------------//
-                if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUIToolBox"))
-                {
-                    if(_hit.collider.gameObject.name == "ToolBoxButton")
-                    {
-						OpenToolBox();
-                    }
-                    else if(_hit.collider.gameObject.name == "ToolBoxUpButton")
-                    {
-                        UpdateToolBoxPage(true);
-                    }
-                    else if(_hit.collider.gameObject.name == "ToolBoxDownButton")
-                    {
-                        UpdateToolBoxPage(false);
-                    }
-                    else
-                    {
-						UpdateToolBoxSelection(_hit.collider.gameObject);
-                    }
-                }
                 //-----------------------------------------------------------------------//
             }
             else
             {
-                _toolBoxSelectionObject.SetActive(false);
+
             }
         }
     }
-	
-    #region GUI ToolBox
-	private void OpenToolBox()
-	{
-        if(_isToolBoxOpen && _isToolBoxReady)
-        {
-            _isToolBoxOpen = false;
-			_isToolBoxReady = false;
-			iTween.MoveAdd(_toolBoxObject, iTween.Hash("amount", -_toolBoxMoveAmount,
-							"duration", _toolBoxMoveDuration, "easetype", _easeTypeToolBox, "onCompleteTarget", gameObject, "OnComplete", "ToolBoxReady"));
-        }
-        else if(!_isToolBoxOpen && _isToolBoxReady)
-        {
-            _isToolBoxOpen = true;
-			_isToolBoxReady = false;
-			iTween.MoveAdd(_toolBoxObject, iTween.Hash("amount", _toolBoxMoveAmount,
-							"duration", _toolBoxMoveDuration, "easetype", _easeTypeToolBox, "onCompleteTarget", gameObject, "OnComplete", "ToolBoxReady"));
-        }
-		_toolBoxSelectionObject.SetActive(false);
-	}
-	
-	private void ToolBoxReady()
-	{
-		_isToolBoxReady = true;	
-	}
-	
-    private void UpdateToolBoxPage(bool _isUp)
-    {
-		if(_isUp)
-		{
-            _toolBoxCurrentPageCount -= 1;
-            if(_toolBoxCurrentPageCount < 1)
-            {
-                _toolBoxCurrentPageCount = 1;
-            }			
-		}
-		else
-		{
-             _toolBoxCurrentPageCount += 1;
-            if(_toolBoxCurrentPageCount > _toolBoxMaxPageCount)
-            {
-                _toolBoxCurrentPageCount = _toolBoxMaxPageCount;
-            }			
-		}
-		
-        int _index = 0;
-        foreach(GameObject _toolBoxPage in _toolBoxPages)
-        {
-            _index++;
-
-            if(_index == _toolBoxCurrentPageCount)
-            {
-                _toolBoxPage.SetActive(true);
-            }
-            else
-            {
-                _toolBoxPage.SetActive(false);
-            }
-        }
-		
-		_toolBoxSelectionObject.SetActive(false);
-    }
-	
-	private void UpdateToolBoxSelection(GameObject _buttonObject)
-	{
-        if(OnInventoryPress != null)
-        {
-            OnInventoryPress(_buttonObject.name);
-        }
-
-        _toolBoxSelectionObject.SetActive(true);
-        Vector3 _tempPos = _buttonObject.transform.position;
-        _tempPos.z = 6;
-        _toolBoxSelectionObject.transform.position = _tempPos;		
-	}
-    #endregion
 
     #region GUI Ingame Menu
     private void OpenIngameMenu()
