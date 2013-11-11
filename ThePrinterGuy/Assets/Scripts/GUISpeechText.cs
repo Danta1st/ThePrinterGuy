@@ -24,20 +24,24 @@ public class GUISpeechText : MonoBehaviour
 	// Update is called once per frame
 	void Update () {
 	
-		/*if(Input.GetKeyDown(KeyCode.M))
+		if(Input.GetKeyDown(KeyCode.M))
 		{
-			WriteText("This is the first line bla bla bla bla \nthis is the second line bla bla bla bla \nbla bla bla bla maybe a third?");
+			
+			WriteText("SpeechBubbleExample");
 			
 		}
-		if(Input.GetKeyDown(KeyCode.A))
-		{
-			WriteText("heje hej");
-		}*/
 	}
 	
-	void WriteText(string _aText)
+	void WriteText(string _str)
 	{
+		TextMesh _test = GameObject.Find("SpeechText").GetComponent<TextMesh>();
+		
+		_test.text = LocalizationText.GetText(_str);
+		
+		string _aText = _test.text;
+		
 		GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(100f * _scaleMultiplierY);
+		
 		GetComponent<TextMesh>().text = "";
 		_currentPosition = 0;
 		_text = _aText;
