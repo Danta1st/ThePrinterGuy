@@ -82,15 +82,13 @@ public class InkController : MonoBehaviour
 			}
 		}
 		
-		EnableInkTask();
 	}
 	#endregion
 	
 	#region delegate methods
 	private void EnableInkTask()
 	{
-//		GestureManager.OnSwipeRight += InsertInk;
-		GestureManager.OnTap += InsertInk;
+		GestureManager.OnSwipeRight += InsertInk;
 		
 		foreach(InkCartridge i in _guiInks)
 		{
@@ -123,8 +121,7 @@ public class InkController : MonoBehaviour
 	
 	private void DisableInkTask()
 	{
-//		GestureManager.OnSwipeRight -= InsertInk;
-		GestureManager.OnTap -= InsertInk;
+		GestureManager.OnSwipeRight -= InsertInk;
 		
 		foreach(InkCartridge i in _guiInks)
 		{
@@ -132,14 +129,13 @@ public class InkController : MonoBehaviour
 			i.DisableRenderer();
 		}
 		
-		foreach(InkCartridge i in _printInks)
+		foreach(InkLid l in _inkLids)
 		{
-			i.DisableCollider();
+			l.StopLid();
 		}
-		
 	}
 	
-	private void InsertInk(GameObject go, Vector2 screenPos)
+	private void InsertInk(GameObject go)
 	{
 		
 		if(go != null && go.tag == "GuiInk")

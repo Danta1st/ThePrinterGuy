@@ -18,6 +18,7 @@ public class InkLid : MonoBehaviour {
 	private float _timeDelay = 0.5f;
 	private float _initTime;
 	private bool _isInit = false;
+	private Quaternion _startRot;
 
 	void Update()
 	{
@@ -35,6 +36,8 @@ public class InkLid : MonoBehaviour {
 	public void InitializeLid(bool isOpen) {
 		_isOpen = isOpen;
 		_isInit = true;
+		
+		_startRot = this.gameObject.transform.rotation;
 		
 		if(_isOpen)
 		{
@@ -88,6 +91,12 @@ public class InkLid : MonoBehaviour {
 	{
 		_initTime = Time.time;
 		//StartCoroutine("OpenCloseLid");
+	}
+	
+	public void StopLid()
+	{
+		this.gameObject.transform.rotation = _startRot;
+		StopCoroutine("OpenCloseLid");
 	}
 	
 	IEnumerator OpenCloseLid()
