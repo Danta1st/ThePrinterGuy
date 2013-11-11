@@ -1,248 +1,198 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class InkController : MonoBehaviour
 {
-	#region Variables Editable in Editor
+	#region editor variables
 	[SerializeField]
-	private iTween.EaseType _easeType;
+	private Color[] _inkColor;
 	[SerializeField]
-	private float _animationSpeed = 0.5f;
+	private float _doorDelay = 0.5f;
 	[SerializeField]
-	private float _rotationAmount = 90f;
+	private iTween.EaseType _easetype;
 	[SerializeField]
-	private float _sirenRotationSpeed = 50f;
+	private float _inkMoveSpeed = 0.5f;
 	[SerializeField]
-	private Color[] _cartridgeColor;
-	private bool _lidOneOpen = false;
-	private bool _lidTwoOpen = false;
-	private bool _lidThreeOpen = false;
-	private System.Collections.Generic.List<InkCartridge> _inkList = new System.Collections.Generic.List<InkCartridge>();
-	private GameObject _inkHouse;
+	private float[] _lidStartTime;
+	[SerializeField]
+	private InkCartridge[] _printInks;
+	[SerializeField]
+	private InkCartridge[] _guiInks;
+	[SerializeField]
+	private InkLid[] _inkLids;
 	#endregion
 	
 	#region Private Variables
-
-	private InkCartridge _redInk;
-    private InkCartridge _greenInk;
-    private InkCartridge _blueInk;
-	private InkCartridge _blackInk;
-	private int _emptyCartridgesAmount = 0;
-	private GameObject _errorSiren;
-	private bool _inkSelected = false;
-	private Color _inkColorSelected;
-	private bool _sirenEnabled = false;
+	
+	
+	private int _emptyInk;
 	#endregion
+	
+	
+	#region delegates
+	public delegate void InkInsertedSuccessfully();
+	public static event InkInsertedSuccessfully OnInkInsertedSuccess;
+
+	public delegate void InkInsertedUnsuccessfully();
+	public static event InkInsertedUnsuccessfully OnInkInsertedFailed;
+	#endregion
+	
+
 	
 	#region Setup of Delegates
-	void OnEnable()
+	void OnEnable ()
 	{
-		ZoomHandler.OnInk += EnableInkTask;
-		InkCartridge.OnInkCartridgeError += StartSiren;
-		InkCartridge.OnInkCartridgeRefilledFromEmpty += StopSiren;
-		InventoryController.OnInkSelect += GetInkFromInv;
+		QATestCamera.OnInk += EnableInkTask;
+		QATestCamera.OnInkOff += DisableInkTask;
+		//ZoomHandler.OnInk += EnableInkTask;
+
 	}
 	
-	void OnDisable()
+	void OnDisable ()
 	{
-		ZoomHandler.OnInk -= EnableInkTask;
-		InkCartridge.OnInkCartridgeError -= StartSiren;
-		InkCartridge.OnInkCartridgeRefilledFromEmpty -= StopSiren;
-		InventoryController.OnInkSelect -= GetInkFromInv;
+		QATestCamera.OnInk -= EnableInkTask;
+		QATestCamera.OnInkOff -= DisableInkTask;
+		//ZoomHandler.OnInk -= EnableInkTask;
+//		
+	}
+	
+	
+	void Start()
+	{
+		int index = 0;
+		foreach(InkCartridge i in _guiInks)
+		{
+			i.SetColor(_inkColor[index]);
+			index++;
+		}
+		
+		index = 0;
+		foreach(InkCartridge i in _printInks)
+		{
+			i.SetColor(_inkColor[index]);
+			index++;
+		}
+	
 	}
 	#endregion
 	
-	#region Initializatio of InkCartridges
-    void Start()
-    {
-		int index = 0;
-		foreach(Transform t in transform)
+	#region delegate methods
+	private void EnableInkTask()
+	{
+		GestureManager.OnSwipeRight += InsertInk;
+		
+		foreach(InkCartridge i in _guiInks)
 		{
-			if(t.gameObject.tag == "Ink" && index < _cartridgeColor.Length)
+			i.EnableCollider();
+			i.EnableRenderer();
+		}
+		
+		foreach(InkCartridge i in _printInks)
+		{
+			i.EnableRenderer();
+		}
+		
+		int index = 0;
+		foreach(InkLid l in _inkLids)
+		{
+			if(index < _inkColor.Length)
 			{
-				_inkList.Add(t.gameObject.GetComponent<InkCartridge>());
-				_inkList[index].InitializeInkCartridge(_cartridgeColor[index]);
+				l.InitializeLid(false);
+				l.StartTime(_lidStartTime[index]);
 				index++;
+			}
+			else
+			{
+				l.InitializeLid(false);
+				l.StartTime();
 			}
 		}
 		
-		_inkHouse = GameObject.FindGameObjectWithTag("InkTask");
-//        _redInk = GameObject.FindGameObjectWithTag("InkRed").GetComponent<InkCartridge>();
-//		_greenInk = GameObject.FindGameObjectWithTag("InkGreen").GetComponent<InkCartridge>();
-//		_blueInk = GameObject.FindGameObjectWithTag("InkBlue").GetComponent<InkCartridge>();
-//		_blackInk = GameObject.FindGameObjectWithTag("InkBlack").GetComponent<InkCartridge>();
-//		
-//		_redInk.InitializeInkCartridge(Color.red);
-//        _greenInk.InitializeInkCartridge(Color.green);
-//        _blueInk.InitializeInkCartridge(Color.blue);
-//		_blackInk.InitializeInkCartridge(Color.black);
-		_errorSiren = GameObject.FindGameObjectWithTag("InkSiren");
-    }
-	
-	void Update()
-	{
-		if(_sirenEnabled)
-		{
-			_errorSiren.transform.Rotate(Vector3.up * _sirenRotationSpeed * Time.deltaTime);
-		}
-	}
-	#endregion
-	
-	#region Delegate methods
-	private void EnableInkTask()
-	{
-		foreach(InkCartridge ic in _inkList)
-		{
-			ic.collider.enabled = true;	
-		}
-		GestureManager.OnTap += InsertInk;
-		ZoomHandler.OnGoingFreeroam += DisableInkTask;
-		GestureManager.OnSwipeRight += RotateRight;
-		GestureManager.OnSwipeLeft += RotateLeft;
+		_emptyInk = Random.Range(0, _inkColor.Length);
+		
+		_printInks[_emptyInk].DisableRenderer();
+		
+		
 	}
 	
 	private void DisableInkTask()
 	{
-		foreach(InkCartridge ic in _inkList)
+		GestureManager.OnSwipeRight -= InsertInk;
+		
+		foreach(InkCartridge i in _guiInks)
 		{
-			ic.collider.enabled = false;	
+			i.DisableCollider();
+			i.DisableRenderer();
+			i.gameObject.transform.position = i.GetStartPos();
 		}
-		GestureManager.OnTap -= InsertInk;
-		ZoomHandler.OnGoingFreeroam -= DisableInkTask;
-		GestureManager.OnSwipeLeft -= RotateLeft;
-		GestureManager.OnSwipeRight -= RotateRight;
-	}
-	
-	private void RotateLeft()
-	{
-		iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, _rotationAmount, 0),
-					"time", _animationSpeed, "easetype", _easeType));
-	}
-	
-	private void RotateRight()
-	{
-		iTween.RotateAdd(_inkHouse, iTween.Hash("amount", new Vector3(0, -_rotationAmount, 0),
-					"time", _animationSpeed, "easetype", _easeType));
-	}
-	
-	private void InsertInk(GameObject go, Vector2 screenPos)
-	{
-		if(go != null)
+		
+		foreach(InkLid l in _inkLids)
 		{
-			if(go.tag == "Lid")
+			l.StopLid();
+		}
+	}
+	
+	private void InsertInk(GameObject go)
+	{
+		if(go != null && go.tag == "GuiInk")
+		{
+			Color colorInserted = go.GetComponent<InkCartridge>().GetColor();
+			
+			foreach(InkCartridge i in _printInks)
 			{
-				float rotateAmount = 90f;
-				Vector3 rotateVector;
-				
-				switch(go.name)
+				if(colorInserted.Equals(i.GetColor()) && !i.IsEnabled())
 				{
-				case "lid1":
-					if(_lidOneOpen)
+					if(_inkLids[_emptyInk].IsOpen())
 					{
-						_lidOneOpen = false;
-						rotateVector = new Vector3(rotateAmount, 0, 0);
-						iTween.RotateAdd (go, rotateVector, 1f);
+						i.EnableRenderer();
+						
+						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "OnInkSuccess", "oncompletetarget", this.gameObject));
 					}
 					else
 					{
-						_lidOneOpen = true;
-						rotateVector = new Vector3(-rotateAmount, 0, 0);
-						iTween.RotateAdd (go, rotateVector, 1f);
+						if(OnInkInsertedFailed != null)
+							OnInkInsertedFailed();
+						
+						Hashtable values = new Hashtable();
+						values.Add("moveObj", go);
+						values.Add ("target", go.transform.position);
+						
+						iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "MoveBack",
+							"oncompletetarget", this.gameObject, "oncompleteparams", values));
 					}
-					break;
-				case "lid2":
-					if(_lidTwoOpen)
-					{
-						_lidTwoOpen = false;
-						rotateVector = new Vector3(rotateAmount, 0, 0);
-						iTween.RotateAdd (go, rotateVector, 1f);
-					}
-					else
-					{
-						_lidTwoOpen = true;
-						rotateVector = new Vector3(-rotateAmount, 0, 0);
-						iTween.RotateAdd (go, rotateVector, 1f);
-					}
-					break;
-				case "lid3":
-					if(_lidThreeOpen)
-					{
-						_lidThreeOpen = false;
-						rotateVector = new Vector3(rotateAmount, 0, 0);
-						iTween.RotateAdd (go, rotateVector, 1f);
-					}
-					else
-					{
-						_lidThreeOpen = true;
-						rotateVector = new Vector3(-rotateAmount, 0, 0);
-						iTween.RotateAdd (go, rotateVector, 1f);
-					}
+				}
+				else if(colorInserted.Equals(i.GetColor()) && i.IsEnabled())
+				{
+					if(OnInkInsertedFailed != null)
+							OnInkInsertedFailed();
+					
+					Hashtable values = new Hashtable();
+					values.Add("moveObj", go);
+					values.Add ("target", go.transform.position);
+					
+					iTween.MoveTo(go, iTween.Hash("position", i.gameObject.transform.position, "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "MoveBack",
+						"oncompletetarget", this.gameObject, "oncompleteparams", values));
+					
 					break;
 				}
 			}
-			else if (_inkSelected)
-			{
-				//Debug.Log("test");
-				foreach(InkCartridge ink in _inkList)
-				{
-					if(go.name == ink.name)
-					{
-						ink.RefillInk();
-					}
-				}
-//				switch(go.tag)
-//				{
-//				case "InkRed":
-//					// TODO: Indkommenter og fix + 4. color
-//					//if(_inkColorSelected == Color.red)
-//						_redInk.RefillInk();
-//					
-//					_inkSelected = false;
-//					break;
-//				case "InkGreen":
-//					//if(_inkColorSelected == Color.green)
-//						_greenInk.RefillInk();
-//					_inkSelected = false;
-//					break;
-//				case "InkBlue":
-//					//if(_inkColorSelected == Color.blue)
-//						_blueInk.RefillInk();
-//					
-//					_inkSelected = false;
-//					break;
-//				case "InkBlack":
-//					//if( inkColorSelected == Color.black)
-//						_blackInk.RefillInk();
-//					break;
-//				default:
-//					_inkSelected = false;
-//					break;
-//				}
-			}
 		}
-	}
-	
-	private void StartSiren(GameObject go)
-	{
-		_emptyCartridgesAmount++;
-		_sirenEnabled = true;
-		_errorSiren.renderer.material.SetFloat("_Progress", 0.05f);
-	}
-	
-	private void StopSiren(GameObject go)
-	{
-		_emptyCartridgesAmount--;
-		if(_emptyCartridgesAmount == 0)
-		{
-			_sirenEnabled = false;
-			_errorSiren.renderer.material.SetFloat("_Progress", 1.0f);
-		}
-	}
-	
-	private void GetInkFromInv(Color col)
-	{
-		_inkSelected = true;
-		_inkColorSelected = col;
 	}
 	#endregion
+	
+	#region private methods
+	public void OnInkSuccess()
+	{
+		if(OnInkInsertedSuccess != null)
+			OnInkInsertedSuccess();
+	}
+	
+	private void MoveBack(object values)
+	{
+		Hashtable ht = (Hashtable)values;
+		iTween.MoveTo((GameObject)ht["moveObj"], iTween.Hash("position", (Vector3)ht["target"], "easetype", _easetype, "time", _inkMoveSpeed));
+	}
+	#endregion
+	
 }
