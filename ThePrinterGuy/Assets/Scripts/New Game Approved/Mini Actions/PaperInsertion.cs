@@ -40,10 +40,16 @@ public class PaperInsertion : MonoBehaviour
     //TODO: Insert Proper connectivity to the Action Sequencer
     void OnEnable()
     {
+		QATestCamera.OnPaper += TriggerLight;
+		QATestCamera.OnPaper += EnablePaper;
+		GestureManager.OnSwipeUp += TriggerSlide;
         StartGate();
     }
     void OnDisable()
     {
+		GestureManager.OnSwipeUp -= TriggerSlide;
+		QATestCamera.OnPaper -= TriggerLight;
+		QATestCamera.OnPaper -= EnablePaper;
         StopGate();
     }
 
@@ -185,7 +191,7 @@ public class PaperInsertion : MonoBehaviour
         }
     }
 	
-	private void TriggerSlide(GameObject go, Vector2 screenPos)
+	private void TriggerSlide(GameObject go)
 	{
 		if(go != null)
 		{
@@ -209,7 +215,7 @@ public class PaperInsertion : MonoBehaviour
 				TurnOffLight(i);
 				_IsSlideLocked = true;
 				
-				var paper = (GameObject) Instantiate(_paperlightset[i].paper);
+				var paper = (GameObject) Instantiate(_paperlightset[i].paper, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
