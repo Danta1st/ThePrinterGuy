@@ -17,14 +17,14 @@ public class GUISpeechText : MonoBehaviour
 		
 		_scaleMultiplierY = Screen.height / 1200f;
 		
-		StartCoroutine("Loopy");
+		StartCoroutine("LetterWriter");
 		
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
-		if(Input.GetKeyDown(KeyCode.M))
+		/*if(Input.GetKeyDown(KeyCode.M))
 		{
 			WriteText("This is the first line bla bla bla bla \nthis is the second line bla bla bla bla \nbla bla bla bla maybe a third?");
 			
@@ -32,7 +32,7 @@ public class GUISpeechText : MonoBehaviour
 		if(Input.GetKeyDown(KeyCode.A))
 		{
 			WriteText("heje hej");
-		}
+		}*/
 	}
 	
 	void WriteText(string _aText)
@@ -44,7 +44,7 @@ public class GUISpeechText : MonoBehaviour
 		
 	}
 	
-	IEnumerator Loopy()
+	IEnumerator LetterWriter()
 	{
 		
 		foreach(string _s in _additionalLines)
