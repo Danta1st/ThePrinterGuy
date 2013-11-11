@@ -14,9 +14,6 @@ public class InkLid : MonoBehaviour {
 	private float _openRot;
 	private float _closedRot;
 
-	
-	
-	
 	public void InitializeLid(bool isOpen) {
 		_isOpen = isOpen;
 		

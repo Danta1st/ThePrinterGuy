@@ -15,9 +15,17 @@ public class InkController : MonoBehaviour
 	private List<InkCartridge> _printInks = new List<InkCartridge>();
 	private List<InkCartridge> _guiInks = new List<InkCartridge>();
 	private List<InkLid> _inkLids = new List<InkLid>();
+	private int _emptyInk;
 	#endregion
 	
 	
+	#region delegates
+	private delegate void InkInsertedSuccessfully();
+	private static event InkInsertedSuccessfully OnInkInsertedSuccess;
+
+	private delegate void InkInsertedUnsuccessfully();
+	private static event InkInsertedUnsuccessfully OnInkInsertedFailed;
+	#endregion
 	
 	#region Setup of Delegates
 	void OnEnable ()
@@ -66,15 +74,15 @@ public class InkController : MonoBehaviour
 			}
 		}
 		
-		EnableInkTask();
+//		EnableInkTask();
 	}
 	#endregion
 	
 	#region delegate methods
 	private void EnableInkTask()
 	{
-		//GestureManager.OnSwipeRight += InsertInk;
-		GestureManager.OnTap += InsertInk;
+		GestureManager.OnSwipeRight += InsertInk;
+//		GestureManager.OnTap += InsertInk;
 		
 		foreach(InkCartridge i in _guiInks)
 		{
@@ -87,13 +95,17 @@ public class InkController : MonoBehaviour
 			i.EnableCollider();
 		}
 		
+		_emptyInk = Random.Range(0, 3);
+		
+		_printInks[_emptyInk].DisableRenderer();
+		
 		StartCoroutine("SwapLidStatus");
 	}
 	
 	private void DisableInkTask()
 	{
-		//GestureManager.OnSwipeRight -= InsertInk;
-		GestureManager.OnTap -= InsertInk;
+		GestureManager.OnSwipeRight -= InsertInk;
+//		GestureManager.OnTap -= InsertInk;
 		
 		foreach(InkCartridge i in _guiInks)
 		{
@@ -109,13 +121,40 @@ public class InkController : MonoBehaviour
 		StopCoroutine("SwapLidStatus");
 	}
 	
-	private void InsertInk(GameObject go, Vector2 screenPos)
+	private void InsertInk(GameObject go)//, Vector2 screenPos)
 	{
-	
-		if(go != null)
+		
+		if(go != null && go.tag == "GuiInk")
 		{
 			Color colorInserted = go.GetComponent<InkCartridge>().GetColor();
-			Debug.Log(colorInserted);
+			
+			foreach(InkCartridge i in _printInks)
+			{
+				if(colorInserted.Equals(i.GetColor()) && !i.IsEnabled())
+				{
+					if(_inkLids[_emptyInk].IsOpen())
+					{
+						i.EnableRenderer();
+						if(OnInkInsertedSuccess != null)
+							OnInkInsertedSuccess();
+						Debug.Log("success");
+					}
+					else
+					{
+						if(OnInkInsertedFailed != null)
+							OnInkInsertedFailed();
+						Debug.Log ("failed");
+					}
+				}
+				else if(colorInserted.Equals(i.GetColor()) && i.IsEnabled())
+				{
+					if(OnInkInsertedFailed != null)
+							OnInkInsertedFailed();
+						
+					Debug.Log ("failed");
+					break;
+				}
+			}
 		}
 	}
 	#endregion

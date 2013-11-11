@@ -43,4 +43,9 @@ public class InkCartridge : MonoBehaviour
 	{
 		gameObject.renderer.enabled = false;
 	}
+	
+	public bool IsEnabled()
+	{
+		return gameObject.renderer.enabled;
+	}
 }
