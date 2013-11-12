@@ -61,7 +61,9 @@ public class GUIGameCamera : MonoBehaviour
     private Vector3 _spawnMoveAmount;
     private Vector3 _spawnPoint;
     private GameObject _sequencerObject;
+    private GameObject _queuedObject;
     private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
+    private int _zone = 0;
     #endregion
 
     #region Enable and Disable
@@ -69,12 +71,14 @@ public class GUIGameCamera : MonoBehaviour
     {
         GestureManager.OnTap += CheckCollision;
         ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
+        ScoreManager.TaskCompleted += CheckZone;
     }
 
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
         ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
+        ScoreManager.TaskCompleted -= CheckZone;
     }
 
     public void EnableGUICamera()
@@ -203,24 +207,30 @@ public class GUIGameCamera : MonoBehaviour
 		{
 			IncreaseScore(1000);
 		}
+
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            CheckZone();
+        }
     }
     #endregion
 
     #region Class Methods
 
     #region Highscore
-	public void IncreaseScore(int _amount, string popUpText)
+	public void IncreaseScore(float _amount, string popUpText)
 	{
-		_score += _amount;
+		
+		_score += (int)_amount;
 		_strScore = _score.ToString();
 		PopupText(popUpText);
 		ShowScore();
 		ShowStars();
 	}
 	
-	public void IncreaseScore(int _amount)
+	public void IncreaseScore(float _amount)
 	{
-		_score += _amount;
+		_score += (int)_amount;
 		_strScore = _score.ToString();
 		string _strAmount = _amount.ToString();
 		PopupText(_strAmount);
@@ -499,6 +509,32 @@ public class GUIGameCamera : MonoBehaviour
         iTween.MoveAdd(_nodeItem, iTween.Hash("amount", _spawnMoveAmount, "speed", _actionSequencerItemSpeed,
                                                 "easeType", _easeTypeActionSequencerItem));
         _sequencerObjectQueue.Enqueue(_nodeItem);
+    }
+
+    private void CheckZone()
+    {
+        if(_sequencerObjectQueue.Count > 0)
+        {
+            _queuedObject = _sequencerObjectQueue.Peek();
+            ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
+
+            _zone = _actionSequencerItemScript.GetZoneStatus();
+            Debug.Log(_queuedObject.name + " zone: " + _zone);
+            EndZone(_queuedObject);
+        }
+    }
+
+    public void EndZone(GameObject _go)
+    {
+        _sequencerObjectQueue.Dequeue();
+        _sequencerObjectQueue.TrimExcess();
+        Destroy(_go);
+        _queuedObject = null;
+    }
+
+    public int GetZone()
+    {
+        return _zone;
     }
     #endregion
 
