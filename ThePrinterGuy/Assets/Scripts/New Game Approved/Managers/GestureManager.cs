@@ -22,14 +22,15 @@ public class GestureManager : MonoBehaviour
     private bool _isPressing = false;
     private bool _isSwiping = false;
     private GameObject _touchBeganObject;
-
+    #endregion
+	
+	/*Public gesture disable and enable functions
     private bool _canTap = true;
     private bool _canDoubletap = true;
     private bool _canPress = true;
     private bool _canSwipe = true;
     private bool _canPinchSpread = true;
     private bool _canDrag = true;
-    #endregion
 
     #region Properties
     public void DisableTap()
@@ -92,6 +93,7 @@ public class GestureManager : MonoBehaviour
         _canDrag = true;
     }
     #endregion
+    */
 
     #region Delegates & Events
     public delegate void TapAction(GameObject go, Vector2 screenPosition);

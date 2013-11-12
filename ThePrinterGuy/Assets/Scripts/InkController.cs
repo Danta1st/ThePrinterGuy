@@ -7,8 +7,8 @@ public class InkController : MonoBehaviour
 	#region editor variables
 	[SerializeField]
 	private Color[] _inkColor;
-	[SerializeField]
-	private float _doorDelay = 0.5f;
+//	[SerializeField]
+//	private float _doorDelay = 0.5f;
 	[SerializeField]
 	private iTween.EaseType _easetype;
 	[SerializeField]
