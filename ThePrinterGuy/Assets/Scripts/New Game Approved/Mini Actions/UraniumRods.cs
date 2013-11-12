@@ -11,6 +11,14 @@ public class UraniumRods : MonoBehaviour
     private iTween.EaseType _easeTypeIn = iTween.EaseType.easeOutBack;
     [SerializeField]
     private GameObject[] _rods;
+    [SerializeField]
+    private AudioClip clipRod1;
+    [SerializeField]
+    private AudioClip clipRod2;
+    [SerializeField]
+    private AudioClip clipRod3;
+    [SerializeField]
+    private AudioClip clipHammerAction;
     #endregion
 
     #region Privates
@@ -68,6 +76,20 @@ public class UraniumRods : MonoBehaviour
             if(_rodsAndStates[go] == false)
             {
                 Spring(go);
+
+                if(identifier == 0)
+                {
+                    gameObject.audio.PlayOneShot(clipRod1);
+                }
+                else if(identifier == 1)
+                {
+                    gameObject.audio.PlayOneShot(clipRod2);
+                }
+                else if(identifier == 2)
+                {
+                    gameObject.audio.PlayOneShot(clipRod3);
+                }
+
                 _rodsAndStates[go] = true;
                 break;
             }
@@ -92,6 +114,9 @@ public class UraniumRods : MonoBehaviour
             if(pair.Key == go && pair.Value == true)
             {
                 Hammer(go);
+
+                gameObject.audio.PlayOneShot(clipHammerAction);
+
                 _rodsAndStates[go] = false;
 
                 if(OnRodHammered != null)

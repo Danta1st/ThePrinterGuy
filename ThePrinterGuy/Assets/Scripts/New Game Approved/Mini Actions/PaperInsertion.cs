@@ -10,6 +10,8 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
     [SerializeField] private PaperLightSet[] _paperlightset;
+    [SerializeField] private AudioClip clipUp;
+    [SerializeField] private AudioClip clipDown;
     #endregion
 
     #region Privates
@@ -94,6 +96,7 @@ public class PaperInsertion : MonoBehaviour
                                             "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
                                             "oncompletetarget", gameObject));
             _isGateOpen = true;
+            gameObject.audio.PlayOneShot(clipUp);
         }
     }
 
@@ -105,6 +108,7 @@ public class PaperInsertion : MonoBehaviour
                                             "islocal", true, "easetype", _easeTypeClose, "oncomplete", "NextAnimation",
                                             "oncompletetarget", gameObject));
             _isGateOpen = false;
+            gameObject.audio.PlayOneShot(clipDown);
         }
     }
 

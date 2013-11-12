@@ -5,6 +5,9 @@ public class Barometer : MonoBehaviour
 {
     #region Editor Publics
 	[SerializeField] Barometers[] _barometers;
+    [SerializeField] private AudioClip clipBaroTap1;
+    [SerializeField] private AudioClip clipBaroTap2;
+    [SerializeField] private AudioClip clipBaroTap3;
     #endregion
 
     #region Privates
@@ -107,7 +110,21 @@ public class Barometer : MonoBehaviour
         {
 			if(_barometers[i].isBroken == true && _barometers[i].barometer == go)
 			{
-				FixBarometer(i);
+                if(i == 0)
+                {
+                    gameObject.audio.PlayOneShot(clipBaroTap1);
+                }
+                else if(i == 1)
+                {
+                    gameObject.audio.PlayOneShot(clipBaroTap2);
+                }
+                else if(i == 2)
+                {
+                    gameObject.audio.PlayOneShot(clipBaroTap3);
+                }
+
+                FixBarometer(i);
+
 				break;
 			}
         }
