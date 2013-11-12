@@ -41,6 +41,9 @@ public class InkController : MonoBehaviour
 
 	
 	#region Setup of Delegates
+	
+    //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
 	void OnEnable ()
 	{
 		QATestCamera.OnInk += EnableInkTask;

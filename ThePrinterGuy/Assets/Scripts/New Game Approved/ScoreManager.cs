@@ -51,12 +51,6 @@ public class ScoreManager : MonoBehaviour
 		Barometer.OnBarometerFixed -= BarometerSuccess;
 		UraniumRods.OnRodHammered -= RodSuccess;
 	}
-
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.K))
-            InkSuccess();
-    }
 	#endregion
 	
 	#region Public Methods

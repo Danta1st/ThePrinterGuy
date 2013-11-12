@@ -34,17 +34,20 @@ public class ActionSequencerManager : MonoBehaviour {
 
     public delegate void BarometerNodeAction();
     public static event BarometerNodeAction OnBarometerNode;
+	
+	public delegate void FirstNodeSpawnedAction(string itemName);
+	public static event FirstNodeSpawnedAction OnFirstNode;
     #endregion
 
     #region OnEnable and OnDisable
     void OnEnable()
     {
-
+		GUIGameCamera.OnUpdateAction += UpdateItemInFocus;
     }
 
     void OnDisable()
     {
-
+		GUIGameCamera.OnUpdateAction -= UpdateItemInFocus;
     }
     #endregion
 
@@ -88,10 +91,16 @@ public class ActionSequencerManager : MonoBehaviour {
             if(OnCreateNewNode != null && _newItem != "None")
             {
                 OnCreateNewNode(_newItem);
+				
             }
         }
 
         _spawnIndex++;
+		
+		if(_spawnIndex == 1 && OnFirstNode != null)
+			OnFirstNode(_newItem);
+			
+		
         if(_spawnIndex >= _actionSequencerList.Length)
         {
             _spawnIndex = _actionSequencerList.Length;
@@ -100,41 +109,44 @@ public class ActionSequencerManager : MonoBehaviour {
 
     private void UpdateItemInFocus()
     {
-        _focusItem = _actionSequencerList[_focusIndex].actionItem.ToString();
-        if(_focusItem == "Paper")
-        {
-            if(OnPaperNode != null)
-            {
-                OnPaperNode();
-            }
-        }
-        else if(_focusItem == "Ink")
-        {
-            if(OnInkNode != null)
-            {
-                OnInkNode();
-            }
-        }
-        else if(_focusItem == "UraniumRod")
-        {
-            if(OnUraniumRodNode != null)
-            {
-                OnUraniumRodNode();
-            }
-        }
-        else if(_focusItem == "Barometer")
-        {
-            if(OnBarometerNode != null)
-            {
-                OnBarometerNode();
-            }
-        }
+		if(_focusIndex < _actionSequencerList.Length)
+		{
+	        _focusItem = _actionSequencerList[_focusIndex].actionItem.ToString();
+	        if(_focusItem == "Paper")
+	        {
+	            if(OnPaperNode != null)
+	            {
+	                OnPaperNode();
+	            }
+	        }
+	        else if(_focusItem == "Ink")
+	        {
+	            if(OnInkNode != null)
+	            {
+	                OnInkNode();
+	            }
+	        }
+	        else if(_focusItem == "UraniumRod")
+	        {
+	            if(OnUraniumRodNode != null)
+	            {
+	                OnUraniumRodNode();
+	            }
+	        }
+	        else if(_focusItem == "Barometer")
+	        {
+	            if(OnBarometerNode != null)
+	            {
+	                OnBarometerNode();
+	            }
+	        }
+		}
 
         _focusIndex++;
-        if(_focusIndex >= _actionSequencerList.Length)
-        {
-            _focusIndex = _actionSequencerList.Length;
-        }
+//        if(_focusIndex >= _actionSequencerList.Length)
+//        {
+//            _focusIndex = _actionSequencerList.Length;
+//        }
     }
     #endregion
 

@@ -65,6 +65,11 @@ public class GUIGameCamera : MonoBehaviour
     private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
     private int _zone = 0;
     #endregion
+	
+	#region Delegates & Events
+	public delegate void OnUpdateActionAction();
+	public static event OnUpdateActionAction OnUpdateAction;
+	#endregion
 
     #region Enable and Disable
     void OnEnable()
@@ -530,6 +535,9 @@ public class GUIGameCamera : MonoBehaviour
         _sequencerObjectQueue.TrimExcess();
         Destroy(_go);
         _queuedObject = null;
+		
+		if(OnUpdateAction != null)
+			OnUpdateAction();
     }
 
     public int GetZone()

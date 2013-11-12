@@ -22,17 +22,27 @@ public class PathManager : MonoBehaviour {
     //TODO: Make Proper Connectivity to whatever it needs to connect to
     void OnEnable()
     {
-        GestureManager.OnSwipeRight += TriggerMoveBarometer;
-        GestureManager.OnSwipeLeft += TriggerMovePaper;
-        GestureManager.OnSwipeUp += TriggerMoveInk;
-        GestureManager.OnSwipeDown += TriggerMoveUranium;
+//        GestureManager.OnSwipeRight += TriggerMoveBarometer;
+//        GestureManager.OnSwipeLeft += TriggerMovePaper;
+//        GestureManager.OnSwipeUp += TriggerMoveInk;
+//        GestureManager.OnSwipeDown += TriggerMoveUranium;
+		ActionSequencerManager.OnFirstNode += TriggerFirstTask;
+		ActionSequencerManager.OnBarometerNode += TriggerMoveBarometer;
+		ActionSequencerManager.OnInkNode += TriggerMoveInk;
+		ActionSequencerManager.OnPaperNode += TriggerMovePaper;
+		ActionSequencerManager.OnUraniumRodNode += TriggerMoveUranium;
     }
     void OnDisable()
     {
-        GestureManager.OnSwipeRight -= TriggerMoveBarometer;
-        GestureManager.OnSwipeLeft -= TriggerMovePaper;
-        GestureManager.OnSwipeUp -= TriggerMoveInk;
-        GestureManager.OnSwipeDown -= TriggerMoveUranium;
+//        GestureManager.OnSwipeRight -= TriggerMoveBarometer;
+//        GestureManager.OnSwipeLeft -= TriggerMovePaper;
+//        GestureManager.OnSwipeUp -= TriggerMoveInk;
+//        GestureManager.OnSwipeDown -= TriggerMoveUranium;
+		ActionSequencerManager.OnFirstNode -= TriggerFirstTask;
+		ActionSequencerManager.OnBarometerNode -= TriggerMoveBarometer;
+		ActionSequencerManager.OnInkNode -= TriggerMoveInk;
+		ActionSequencerManager.OnPaperNode -= TriggerMovePaper;
+		ActionSequencerManager.OnUraniumRodNode -= TriggerMoveUranium;
     }
 
     #region Monohevaiour Methods
@@ -45,7 +55,28 @@ public class PathManager : MonoBehaviour {
 
     #region Class Methods
     //Trigger Functions
-    private void TriggerMoveUranium(GameObject go)
+	private void TriggerFirstTask(string taskName)
+	{
+		switch(taskName)
+		{
+		case "Ink":
+			TriggerMoveInk();
+			break;
+		case "Paper":
+			TriggerMovePaper();
+			break;
+		case "UraniumRod":
+			TriggerMoveUranium();
+			break;
+		case "Barometer":
+			TriggerMoveBarometer();
+			break;
+		default:
+			break;
+		}
+	}
+	
+    private void TriggerMoveUranium()
     {
         if(_lookingAt == _paperFocus)
             Move("PaperUranium", _uraniumFocus);
@@ -55,7 +86,7 @@ public class PathManager : MonoBehaviour {
             MoveReversed("UraniumInk", _uraniumFocus);
     }
 
-    private void TriggerMoveInk(GameObject go)
+    private void TriggerMoveInk()
     {
        if(_lookingAt == _paperFocus)
             Move("PaperInk", _inkFocus);
@@ -65,7 +96,7 @@ public class PathManager : MonoBehaviour {
             Move("BarometerInk", _inkFocus);
     }
 
-    private void TriggerMoveBarometer(GameObject go)
+    private void TriggerMoveBarometer()
     {
         if(_lookingAt == _paperFocus)
             Move("PaperBarometer", _barometerFocus);
@@ -75,7 +106,7 @@ public class PathManager : MonoBehaviour {
             MoveReversed("BarometerInk", _barometerFocus);
     }
 
-    private void TriggerMovePaper(GameObject go)
+    private void TriggerMovePaper()
     {
         if(_lookingAt == _uraniumFocus)
             MoveReversed("PaperUranium",_paperFocus);

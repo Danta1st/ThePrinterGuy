@@ -385,8 +385,9 @@ public class GestureManager : MonoBehaviour
                 {
                     _touchBeganObject = hit.collider.gameObject;
                 }
+				break;
             }
-        }
+		}
 	#endif
 	#if UNITY_EDITOR
         if(Input.GetMouseButtonDown(0))
@@ -410,6 +411,7 @@ public class GestureManager : MonoBehaviour
             if(t.phase == TouchPhase.Began)
             {
                 _touchBeginTimes[t.fingerId] = Time.time;
+				break;
             }
 //            else if(t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
 //                _touchBeginTimes.Remove(t.fingerId);
