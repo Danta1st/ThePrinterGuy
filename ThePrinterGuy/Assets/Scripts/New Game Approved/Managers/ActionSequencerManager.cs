@@ -55,7 +55,11 @@ public class ActionSequencerManager : MonoBehaviour {
         _timer = gameObject.AddComponent<TimerUtilities>();
         _startTimeStamp = 40;
         _timer.StartTimer(_startTimeStamp, true);
-        UpdateItemInFocus();
+
+        if(_actionSequencerList.Length > 0)
+        {
+            UpdateItemInFocus();
+        }
 
         _timer.ResumeTimer();
 	}
@@ -81,7 +85,7 @@ public class ActionSequencerManager : MonoBehaviour {
         {
             _newItem = _actionSequencerList[_spawnIndex].actionItem.ToString();
 
-            if(OnCreateNewNode != null)
+            if(OnCreateNewNode != null && _newItem != "None")
             {
                 OnCreateNewNode(_newItem);
             }
