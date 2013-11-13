@@ -41,24 +41,20 @@ public class PaperInsertion : MonoBehaviour
 	//TODO: Handle gesture allowance
     void OnEnable()
     {
-		ActionSequencerManager.OnFirstNode += CheckFirst;
 		ActionSequencerManager.OnPaperNode += TriggerLight;
-		
 		ActionSequencerManager.OnPaperNode += EnablePaper;
-		GestureManager.OnSwipeUp += TriggerSlide;
-//		QATestCamera.OnPaper += TriggerLight;
-//		QATestCamera.OnPaper += EnablePaper;
+		ActionSequencerItem.OnFailed += Reset;
+		ActionSequencerManager.OnFirstNode += CheckFirst;
+		
         StartGate();
     }
     void OnDisable()
     {
-		ActionSequencerManager.OnFirstNode -= CheckFirst;
 		ActionSequencerManager.OnPaperNode -= TriggerLight;
-		
 		ActionSequencerManager.OnPaperNode -= EnablePaper;
-		GestureManager.OnSwipeUp -= TriggerSlide;
-//		QATestCamera.OnPaper -= TriggerLight;
-//		QATestCamera.OnPaper -= EnablePaper;
+		ActionSequencerItem.OnFailed -= Reset;
+		ActionSequencerManager.OnFirstNode -= CheckFirst;
+		
         StopGate();
     }
 
@@ -66,11 +62,7 @@ public class PaperInsertion : MonoBehaviour
 	void Awake()
 	{
 		_dynamicObjects = GameObject.Find("Dynamic Objects");	
-	}
-	
-	void Start ()
-    {
-	    InitializeLights();
+		InitializeLights();
 		DisablePaper();
 	}
     #endregion
@@ -204,6 +196,7 @@ public class PaperInsertion : MonoBehaviour
 
     private void EnablePaper()
     {
+		GestureManager.OnSwipeUp += TriggerSlide;
         for(int i = 0; i < _paperlightset.Length; i++)
         {
             _paperlightset[i].paper.SetActive(true);
@@ -243,6 +236,9 @@ public class PaperInsertion : MonoBehaviour
 				
 				if(OnCorrectPaperInserted != null)
 					OnCorrectPaperInserted();
+				
+				//DisablePaper();
+				//TurnOfAllLights();
 			}
 			else
 			{
@@ -269,6 +265,13 @@ public class PaperInsertion : MonoBehaviour
 		_tempPaper.Remove(go);
 		Destroy(go);
 		_IsSlideLocked = false;
+	}
+	
+	public void Reset()
+	{
+		//GestureManager.OnSwipeUp -= TriggerSlide;
+		//DisablePaper();
+		//TurnOfAllLights();
 	}
     #endregion
 

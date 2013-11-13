@@ -46,22 +46,18 @@ public class InkController : MonoBehaviour
 	//TODO: Handle gesture allowance
 	void OnEnable ()
 	{
-		QATestCamera.OnInk += EnableInkTask;
-		QATestCamera.OnInkOff += DisableInkTask;
-		//ZoomHandler.OnInk += EnableInkTask;
-
+		ActionSequencerManager.OnInkNode += EnableInkTask;
+		ActionSequencerItem.OnFailed += DisableInkTask;
 	}
 	
 	void OnDisable ()
 	{
-		QATestCamera.OnInk -= EnableInkTask;
-		QATestCamera.OnInkOff -= DisableInkTask;
-		//ZoomHandler.OnInk -= EnableInkTask;
-//		
+		ActionSequencerManager.OnInkNode -= EnableInkTask;
+		ActionSequencerItem.OnFailed -= DisableInkTask;
 	}
 	
 	
-	void Start()
+	void Awake()
 	{
 		int index = 0;
 		foreach(InkCartridge i in _guiInks)

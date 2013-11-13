@@ -1,20 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ActionSequencerItem : MonoBehaviour {
-
+public class ActionSequencerItem : MonoBehaviour 
+{
     private GUIGameCamera _guiGameCameraScript;
     private ActionSequencerZone _actionSequencerScript;
     private string _statusZone = "";
     private int _zone = 0;
+	
+	public delegate void FailedAction();
+    public static event FailedAction OnFailed;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
 	
 	}
 
@@ -25,9 +30,11 @@ public class ActionSequencerItem : MonoBehaviour {
             _actionSequencerScript = other.gameObject.GetComponent<ActionSequencerZone>();
             _statusZone = _actionSequencerScript.GetZone();
 
-            if(_statusZone == "Dead"){
-                Debug.Log("FAIL");
-                _guiGameCameraScript.EndZone(gameObject);
+            if(_statusZone == "Dead")
+			{
+				if(OnFailed != null)
+					OnFailed();
+				_guiGameCameraScript.EndZone(gameObject);
             }
         }
     }
