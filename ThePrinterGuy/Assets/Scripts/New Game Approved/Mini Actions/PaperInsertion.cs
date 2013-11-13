@@ -38,18 +38,27 @@ public class PaperInsertion : MonoBehaviour
     #endregion
 
     //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
     void OnEnable()
     {
-		QATestCamera.OnPaper += TriggerLight;
-		QATestCamera.OnPaper += EnablePaper;
+		ActionSequencerManager.OnFirstNode += CheckFirst;
+		ActionSequencerManager.OnPaperNode += TriggerLight;
+		
+		ActionSequencerManager.OnPaperNode += EnablePaper;
 		GestureManager.OnSwipeUp += TriggerSlide;
+//		QATestCamera.OnPaper += TriggerLight;
+//		QATestCamera.OnPaper += EnablePaper;
         StartGate();
     }
     void OnDisable()
     {
+		ActionSequencerManager.OnFirstNode -= CheckFirst;
+		ActionSequencerManager.OnPaperNode -= TriggerLight;
+		
+		ActionSequencerManager.OnPaperNode -= EnablePaper;
 		GestureManager.OnSwipeUp -= TriggerSlide;
-		QATestCamera.OnPaper -= TriggerLight;
-		QATestCamera.OnPaper -= EnablePaper;
+//		QATestCamera.OnPaper -= TriggerLight;
+//		QATestCamera.OnPaper -= EnablePaper;
         StopGate();
     }
 
@@ -67,6 +76,16 @@ public class PaperInsertion : MonoBehaviour
     #endregion
 
     #region Class Methods
+	private void CheckFirst(string taskname)
+	{
+		if(taskname == "Paper")
+		{
+			TriggerLight();
+			EnablePaper();
+		}
+	}
+	
+	
     //Gate Methods
     private void StartGate()
     {
