@@ -23,6 +23,9 @@ public class ActionSequencerManager : MonoBehaviour {
     public delegate void CreateNewNodeAction(string itemName);
     public static event CreateNewNodeAction OnCreateNewNode;
 
+    public delegate void LastNodeAction();
+    public static event LastNodeAction OnLastNode;
+
     public delegate void PaperNodeAction();
     public static event PaperNodeAction OnPaperNode;
 
@@ -91,19 +94,23 @@ public class ActionSequencerManager : MonoBehaviour {
             if(OnCreateNewNode != null && _newItem != "None")
             {
                 OnCreateNewNode(_newItem);
-				
             }
         }
 
         _spawnIndex++;
 		
 		if(_spawnIndex == 1 && OnFirstNode != null)
-			OnFirstNode(_newItem);
-			
+        {
+            OnFirstNode(_newItem);
+		}
 		
         if(_spawnIndex >= _actionSequencerList.Length)
         {
             _spawnIndex = _actionSequencerList.Length;
+            if(OnLastNode != null)
+            {
+                OnLastNode();
+            }
         }
     }
 
@@ -143,10 +150,6 @@ public class ActionSequencerManager : MonoBehaviour {
 		}
 
         _focusIndex++;
-//        if(_focusIndex >= _actionSequencerList.Length)
-//        {
-//            _focusIndex = _actionSequencerList.Length;
-//        }
     }
     #endregion
 

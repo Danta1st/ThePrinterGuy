@@ -64,11 +64,15 @@ public class GUIGameCamera : MonoBehaviour
     private GameObject _queuedObject;
     private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
     private int _zone = 0;
+    private bool _isLastNode = false;
     #endregion
 	
 	#region Delegates & Events
 	public delegate void OnUpdateActionAction();
 	public static event OnUpdateActionAction OnUpdateAction;
+
+    public delegate void GameEndedAction();
+    public static event GameEndedAction OnGameEnded;
 	#endregion
 
     #region Enable and Disable
@@ -76,6 +80,7 @@ public class GUIGameCamera : MonoBehaviour
     {
         GestureManager.OnTap += CheckCollision;
         ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
+        ActionSequencerManager.OnLastNode += LastNode;
         ScoreManager.TaskCompleted += CheckZone;
     }
 
@@ -83,6 +88,7 @@ public class GUIGameCamera : MonoBehaviour
     {
         GestureManager.OnTap -= CheckCollision;
         ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
+        ActionSequencerManager.OnLastNode -= LastNode;
         ScoreManager.TaskCompleted -= CheckZone;
     }
 
@@ -489,6 +495,11 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Action Sequencer
+    private void LastNode()
+    {
+        _isLastNode = true;
+    }
+
     private void InstantiateNodeAction(string _itemName)
     {
         if(_itemName == "Paper")
@@ -524,20 +535,29 @@ public class GUIGameCamera : MonoBehaviour
             ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
 
             _zone = _actionSequencerItemScript.GetZoneStatus();
-            Debug.Log(_queuedObject.name + " zone: " + _zone);
             EndZone(_queuedObject);
         }
     }
 
     public void EndZone(GameObject _go)
     {
+        if(OnUpdateAction != null)
+        {
+            OnUpdateAction();
+        }
+
+        if(_isLastNode && _sequencerObjectQueue.Count == 1)
+        {
+            if(OnGameEnded != null)
+            {
+                OnGameEnded();
+            }
+        }
+
         _sequencerObjectQueue.Dequeue();
         _sequencerObjectQueue.TrimExcess();
         Destroy(_go);
         _queuedObject = null;
-		
-		if(OnUpdateAction != null)
-			OnUpdateAction();
     }
 
     public int GetZone()
