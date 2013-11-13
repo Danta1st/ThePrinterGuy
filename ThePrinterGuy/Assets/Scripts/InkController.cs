@@ -24,8 +24,6 @@ public class InkController : MonoBehaviour
 	#endregion
 	
 	#region Private Variables
-	
-	
 	private int _emptyInk;
 	#endregion
 	
@@ -37,8 +35,6 @@ public class InkController : MonoBehaviour
 	public delegate void InkInsertedUnsuccessfully();
 	public static event InkInsertedUnsuccessfully OnInkInsertedFailed;
 	#endregion
-	
-
 	
 	#region Setup of Delegates
 	
@@ -183,6 +179,7 @@ public class InkController : MonoBehaviour
 	#region private methods
 	public void OnInkSuccess()
 	{
+		DisableInkTask();
 		if(OnInkInsertedSuccess != null)
 			OnInkInsertedSuccess();
 	}

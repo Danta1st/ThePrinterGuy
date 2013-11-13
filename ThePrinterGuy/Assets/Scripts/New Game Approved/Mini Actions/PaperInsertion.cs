@@ -269,9 +269,9 @@ public class PaperInsertion : MonoBehaviour
 	
 	public void Reset()
 	{
-		//GestureManager.OnSwipeUp -= TriggerSlide;
-		//DisablePaper();
-		//TurnOfAllLights();
+		GestureManager.OnSwipeUp -= TriggerSlide;
+		DisablePaper();
+		TurnOfAllLights();
 	}
     #endregion
 
