@@ -225,7 +225,14 @@ public class GUIGameCamera : MonoBehaviour
         }
     }
     #endregion
-
+	
+	#region Public methods
+	public int GetQueueCount()
+	{
+		return _sequencerObjectQueue.Count;	
+	}
+	#endregion
+	
     #region Class Methods
 
     #region Highscore
@@ -525,6 +532,13 @@ public class GUIGameCamera : MonoBehaviour
         iTween.MoveAdd(_nodeItem, iTween.Hash("amount", _spawnMoveAmount, "speed", _actionSequencerItemSpeed,
                                                 "easeType", _easeTypeActionSequencerItem));
         _sequencerObjectQueue.Enqueue(_nodeItem);
+		if(_sequencerObjectQueue.Count == 1)
+		{
+			if(OnUpdateAction != null)
+	        {
+	            OnUpdateAction();
+	        }
+		}
     }
 
     private void CheckZone()
@@ -541,23 +555,23 @@ public class GUIGameCamera : MonoBehaviour
 
     public void EndZone(GameObject _go)
     {
+		_sequencerObjectQueue.Dequeue();
+        _sequencerObjectQueue.TrimExcess();
+        Destroy(_go);
+        _queuedObject = null;
+		
         if(OnUpdateAction != null)
         {
             OnUpdateAction();
         }
 
-        if(_isLastNode && _sequencerObjectQueue.Count == 1)
+        if(_isLastNode && _sequencerObjectQueue.Count == 0)
         {
             if(OnGameEnded != null)
             {
                 OnGameEnded();
             }
         }
-
-        _sequencerObjectQueue.Dequeue();
-        _sequencerObjectQueue.TrimExcess();
-        Destroy(_go);
-        _queuedObject = null;
     }
 
     public int GetZone()

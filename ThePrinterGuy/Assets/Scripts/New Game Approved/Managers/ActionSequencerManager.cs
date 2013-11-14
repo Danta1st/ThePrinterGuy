@@ -13,10 +13,11 @@ public class ActionSequencerManager : MonoBehaviour {
     private string _newItem = "";
     private string _focusItem = "";
     private int _spawnIndex = 0;
-    private int _focusIndex = 1;
+    private int _focusIndex = 0;
     private float _startTimeStamp;
     private float _currentTimeStamp;
     private TimerUtilities _timer;
+	private GUIGameCamera _guiGameCam;
     #endregion
 
     #region Delegates and Events
@@ -25,7 +26,10 @@ public class ActionSequencerManager : MonoBehaviour {
 
     public delegate void LastNodeAction();
     public static event LastNodeAction OnLastNode;
-
+	
+	public delegate void DefaultCamPosAction();
+    public static event DefaultCamPosAction OnDefaultCamPos;
+	
     public delegate void PaperNodeAction();
     public static event PaperNodeAction OnPaperNode;
 
@@ -37,9 +41,6 @@ public class ActionSequencerManager : MonoBehaviour {
 
     public delegate void BarometerNodeAction();
     public static event BarometerNodeAction OnBarometerNode;
-	
-	public delegate void FirstNodeSpawnedAction(string itemName);
-	public static event FirstNodeSpawnedAction OnFirstNode;
     #endregion
 
     #region OnEnable and OnDisable
@@ -58,15 +59,10 @@ public class ActionSequencerManager : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+		_guiGameCam = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _timer = gameObject.AddComponent<TimerUtilities>();
         _startTimeStamp = 40;
         _timer.StartTimer(_startTimeStamp, true);
-
-//        if(_actionSequencerList.Length > 0)
-//        {
-//            UpdateItemInFocus();
-//        }
-
         _timer.ResumeTimer();
 	}
 	
@@ -99,11 +95,6 @@ public class ActionSequencerManager : MonoBehaviour {
 
         _spawnIndex++;
 		
-		if(_spawnIndex == 1 && OnFirstNode != null)
-        {
-            OnFirstNode(_newItem);
-		}
-		
         if(_spawnIndex >= _actionSequencerList.Length)
         {
             _spawnIndex = _actionSequencerList.Length;
@@ -116,7 +107,12 @@ public class ActionSequencerManager : MonoBehaviour {
 
     private void UpdateItemInFocus()
     {
-		if(_focusIndex < _actionSequencerList.Length)
+		if(_guiGameCam.GetQueueCount() == 0)
+		{
+			if(OnDefaultCamPos != null)
+				OnDefaultCamPos();
+		}
+		else if(_focusIndex < _actionSequencerList.Length)
 		{
 	        _focusItem = _actionSequencerList[_focusIndex].actionItem.ToString();
 	        if(_focusItem == "Paper")
@@ -147,7 +143,6 @@ public class ActionSequencerManager : MonoBehaviour {
 	                OnBarometerNode();
 	            }
 	        }
-            Debug.Log(_focusItem);
             _focusIndex++;
 		}
     }
