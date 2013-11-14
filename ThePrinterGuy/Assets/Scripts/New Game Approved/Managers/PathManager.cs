@@ -48,12 +48,6 @@ public class PathManager : MonoBehaviour {
     {
         _lookTargetDelay = _transitionTime / 2;
     }
-	
-	void Update()
-	{
-		if(Input.GetKeyDown(KeyCode.U))
-			TriggerFirstTask("UraniumRod");
-	}
     #endregion
 
     #region Class Methods
