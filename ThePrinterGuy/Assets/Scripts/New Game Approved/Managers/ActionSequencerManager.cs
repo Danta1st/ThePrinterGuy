@@ -13,7 +13,7 @@ public class ActionSequencerManager : MonoBehaviour {
     private string _newItem = "";
     private string _focusItem = "";
     private int _spawnIndex = 0;
-    private int _focusIndex = 0;
+    private int _focusIndex = 1;
     private float _startTimeStamp;
     private float _currentTimeStamp;
     private TimerUtilities _timer;
@@ -147,9 +147,9 @@ public class ActionSequencerManager : MonoBehaviour {
 	                OnBarometerNode();
 	            }
 	        }
+            Debug.Log(_focusItem);
+            _focusIndex++;
 		}
-
-        _focusIndex++;
     }
     #endregion
 
