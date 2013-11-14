@@ -44,7 +44,6 @@ public class PaperInsertion : MonoBehaviour
 		ActionSequencerManager.OnPaperNode += TriggerLight;
 		ActionSequencerManager.OnPaperNode += EnablePaper;
 		ActionSequencerItem.OnFailed += Reset;
-		ActionSequencerManager.OnFirstNode += CheckFirst;
 		
         StartGate();
     }
@@ -53,7 +52,6 @@ public class PaperInsertion : MonoBehaviour
 		ActionSequencerManager.OnPaperNode -= TriggerLight;
 		ActionSequencerManager.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
-		ActionSequencerManager.OnFirstNode -= CheckFirst;
 		
         StopGate();
     }
@@ -68,14 +66,14 @@ public class PaperInsertion : MonoBehaviour
     #endregion
 
     #region Class Methods
-	private void CheckFirst(string taskname)
+	/*private void CheckFirst(string taskname)
 	{
 		if(taskname == "Paper")
 		{
 			TriggerLight();
 			EnablePaper();
 		}
-	}
+	}*/
 	
 	
     //Gate Methods
@@ -231,14 +229,14 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
+				Reset();
+				
 				iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 				
 				if(OnCorrectPaperInserted != null)
 					OnCorrectPaperInserted();
 				
-				//DisablePaper();
-				//TurnOfAllLights();
 			}
 			else
 			{
