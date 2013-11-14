@@ -15,11 +15,14 @@ public class Ink : MonoBehaviour
     private bool _isGateAllowedToRun = false;
     private float _openTime     = 0.5f;
     private float _closeTime    = 0.5f;
-    private float _waitTime     = 2f;
+    private float _waitTime     = 1f;
 	
 	//Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private float _inkMoveSpeed		= 0.4f;
+	
+	public delegate void OnInkInsertedAction();
+    public static event OnInkInsertedAction OnCorrectInkInserted;
     #endregion
 
 	void Awake () 
@@ -75,7 +78,7 @@ public class Ink : MonoBehaviour
         {
 			yield return new WaitForSeconds(_waitTime);
 			
-            iTween.MoveTo(go,iTween.Hash("x", go.transform.localPosition.x - 10, "time", _openTime,
+            iTween.MoveTo(go,iTween.Hash("x", go.transform.localPosition.x - 3, "time", _openTime,
                                             "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
                                             "oncompletetarget", gameObject));
             icc.lidIsOpen = true;
@@ -88,11 +91,12 @@ public class Ink : MonoBehaviour
         if(icc.lidIsOpen)
         {
 			yield return new WaitForSeconds(_waitTime);
-            iTween.MoveTo(go,iTween.Hash("x", go.transform.localPosition.x + 10, "time", _closeTime,
+            iTween.MoveTo(go,iTween.Hash("x", go.transform.localPosition.x + 3, "time", _closeTime,
                                             "islocal", true, "easetype", _easeTypeClose, "oncomplete", "NextAnimation",
                                             "oncompletetarget", gameObject));
             icc.lidIsOpen = false;
         }
+		yield break;
     }
 	
 	private void NextAnimation()
@@ -121,28 +125,31 @@ public class Ink : MonoBehaviour
 	#endregion
 	
 	#region Insertable Ink
-	private void ResetCartridges()
+	private void InsertCartridge(GameObject go, Vector2 lol)
 	{
-		
-	}
-	
-	private void InsertCartridge(GameObject go)
-	{
+		if(go == null)
+			return;
 		InkCartridgeClass currIcc = null;
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			if(icc.insertableCartridge.gameObject == go)
 			{
+				
 				currIcc = icc;
 				break;
 			}
 		}
+		
 		if(currIcc == null)
 			return;
+		
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.cartridge.transform.position, 
 						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
+			
+			if(OnCorrectInkInserted != null)
+				OnCorrectInkInserted();
 		}
 		else
 		{
@@ -153,8 +160,9 @@ public class Ink : MonoBehaviour
 	private void InkSuccess(InkCartridgeClass icc)
 	{
 		icc.cartridgeEmpty = false;
-		icc.cartridge.renderer.enabled = true;
-		GestureManager.OnSwipeRight -= InsertCartridge;
+		icc.cartridge.gameObject.SetActive(true);
+		GestureManager.OnTap -= InsertCartridge;
+		//GestureManager.OnSwipeRight -= InsertCartridge;
 		icc.insertableCartridge.position = icc.insertableStartPos;
 		
 	}
@@ -163,12 +171,20 @@ public class Ink : MonoBehaviour
 	{
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
-			InkSuccess(icc);
+			icc.cartridgeEmpty = false;
+			icc.cartridge.gameObject.SetActive(true);
+			icc.insertableCartridge.gameObject.SetActive(false);
 		}
+		GestureManager.OnTap -= InsertCartridge;
+		//GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
 	private void StartInkTask()
 	{
+		foreach(InkCartridgeClass icc in _machineInks)
+		{
+			icc.insertableCartridge.gameObject.SetActive(true);
+		}
 		var identifier = Random.Range(0,_machineInks.Count);
 		
         for(int i = 0; i < _machineInks.Count; i++)
@@ -184,15 +200,15 @@ public class Ink : MonoBehaviour
                 identifier = 0;
         }
 		
-		GestureManager.OnSwipeRight += InsertCartridge;
+		GestureManager.OnTap += InsertCartridge;
+		//GestureManager.OnSwipeRight += InsertCartridge;
 		StartGates();
 	}
 	
 	private void EmptyCartridge(int iccnumber)
 	{
-		Debug.Log(iccnumber);
 		_machineInks[iccnumber].cartridgeEmpty = true;
-		_machineInks[iccnumber].cartridge.renderer.enabled = false;
+		_machineInks[iccnumber].cartridge.gameObject.SetActive(false);
 	}
 	
 	#endregion
