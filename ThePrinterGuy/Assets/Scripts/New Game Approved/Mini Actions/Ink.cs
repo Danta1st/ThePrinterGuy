@@ -78,9 +78,30 @@ public class Ink : MonoBehaviour
         {
 			yield return new WaitForSeconds(_waitTime);
 			
-            iTween.MoveTo(go,iTween.Hash("x", go.transform.localPosition.x - 3, "time", _openTime,
-                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-                                            "oncompletetarget", gameObject));
+			if(icc.lidDirection == OpenDirection.Left)
+			{
+	            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y + 90, "time", _openTime,
+	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
+	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
+			}
+			else if(icc.lidDirection == OpenDirection.Right)
+			{
+	            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y - 90, "time", _openTime,
+	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
+	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
+			}
+			else if(icc.lidDirection == OpenDirection.Up)
+			{
+	            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x - 90, "time", _openTime,
+	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
+	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
+			}
+			if(icc.lidDirection == OpenDirection.Down)
+			{
+	            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x + 90, "time", _openTime,
+	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
+	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
+			}
             icc.lidIsOpen = true;
         }
     }
@@ -91,23 +112,44 @@ public class Ink : MonoBehaviour
         if(icc.lidIsOpen)
         {
 			yield return new WaitForSeconds(_waitTime);
-            iTween.MoveTo(go,iTween.Hash("x", go.transform.localPosition.x + 3, "time", _closeTime,
-                                            "islocal", true, "easetype", _easeTypeClose, "oncomplete", "NextAnimation",
-                                            "oncompletetarget", gameObject));
+            if(icc.lidDirection == OpenDirection.Left)
+			{
+	            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y - 90, "time", _openTime,
+	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
+	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
+			}
+			else if(icc.lidDirection == OpenDirection.Right)
+			{
+	            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y + 90, "time", _openTime,
+	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
+	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
+			}
+			else if(icc.lidDirection == OpenDirection.Up)
+			{
+	            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x + 90, "time", _openTime,
+	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
+	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
+			}
+			if(icc.lidDirection == OpenDirection.Down)
+			{
+	            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x - 90, "time", _openTime,
+	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
+	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
+			}
             icc.lidIsOpen = false;
         }
 		yield break;
     }
 	
-	private void NextAnimation()
+	private void NextAnimation(InkCartridgeClass icc)
     {
         if(_isGateAllowedToRun)
         {
 			foreach(InkCartridgeClass IC in _machineInks)
 			{
-				if(IC.lidIsOpen)
+				if(IC.lidIsOpen && icc == IC)
 	                StartCoroutine_Auto(CloseGate(IC));
-	            else
+	            else if(!IC.lidIsOpen && icc == IC)
 	                StartCoroutine_Auto(OpenGate(IC));
 			}
         }
@@ -223,6 +265,7 @@ public class Ink : MonoBehaviour
         public Texture empty;
         public GameObject lid;
 		public float startWait = 1f;
+		public OpenDirection lidDirection;
 		
 		[HideInInspector]
 		public Vector3 insertableStartPos;
@@ -231,5 +274,13 @@ public class Ink : MonoBehaviour
 		[HideInInspector]
 		public bool cartridgeEmpty = false;
     };
+	
+	public enum OpenDirection
+	{
+		Up,
+		Down,
+		Left,
+		Right
+	}
     #endregion
 }
