@@ -10,6 +10,7 @@ public class GUISpeechText : MonoBehaviour
 	[SerializeField]
 	private string[] _additionalLines;
 	private float _scaleMultiplierY;
+	private float _fontSize = 300f;
 	
 
 	// Use this for initialization
@@ -40,7 +41,7 @@ public class GUISpeechText : MonoBehaviour
 		
 		string _aText = _test.text;
 		
-		GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(100f * _scaleMultiplierY);
+		//GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		
 		GetComponent<TextMesh>().text = "";
 		_currentPosition = 0;
