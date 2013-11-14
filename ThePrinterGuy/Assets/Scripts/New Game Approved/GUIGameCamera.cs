@@ -58,7 +58,7 @@ public class GUIGameCamera : MonoBehaviour
 	private bool _isStar3Spawned;
 
     //Action Sequencer
-    private Vector3 _spawnMoveAmount;
+    private Vector3 _spawnMovePosition;
     private Vector3 _spawnPoint;
     private GameObject _sequencerObject;
     private GameObject _queuedObject;
@@ -192,7 +192,11 @@ public class GUIGameCamera : MonoBehaviour
             if(_guiObject.name == "ActionSequencer")
             {
                 _spawnPoint = _guiObject.transform.FindChild("SpawnZone").gameObject.transform.position;
-                _spawnMoveAmount = new Vector3(0, -1100*_scaleMultiplierY, 0);
+            }
+
+            if(_guiObject.name == "DeadZone" )
+            {
+                _spawnMovePosition = _guiObject.transform.position;
             }
 			
 			if(_guiObject.name == "SpeechBubble")
@@ -546,7 +550,7 @@ public class GUIGameCamera : MonoBehaviour
         _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 1);
         GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
         _nodeItem.transform.localScale *= _scaleMultiplierY;
-        iTween.MoveAdd(_nodeItem, iTween.Hash("amount", _spawnMoveAmount, "speed", _actionSequencerItemSpeed,
+        iTween.MoveTo(_nodeItem, iTween.Hash("position", _spawnMovePosition, "speed", _actionSequencerItemSpeed,
                                                 "easeType", _easeTypeActionSequencerItem));
         _sequencerObjectQueue.Enqueue(_nodeItem);
 		if(_sequencerObjectQueue.Count == 1)

@@ -10,7 +10,8 @@ public class ActionSequencerItem : MonoBehaviour
     private int _zone = 0;
 
     private float _speed = 40.0f;
-    private float _step = 0.0f;
+    private float _startTime;
+    private float _journeyLength;
     private bool _back = false;
     private Vector3 _startSize;
     private Vector3 _newSize;
@@ -27,7 +28,10 @@ public class ActionSequencerItem : MonoBehaviour
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
 
         _startSize = transform.localScale;
-        _newSize = transform.localScale * 1.2f;
+        _newSize = new Vector3(transform.localScale.x*1.2f, transform.lossyScale.y*1.2f, transform.localScale.z);
+
+        _startTime = Time.time;
+        _journeyLength = Vector3.Distance(_startSize, _newSize);
     }
 
     // Update is called once per frame
@@ -56,12 +60,13 @@ public class ActionSequencerItem : MonoBehaviour
 
     private void ScaleSize()
     {
-        _step += _speed * Time.deltaTime;
+        float _distCovered = (Time.time - _startTime) * _speed;
+        float _fracJourney = _distCovered / _journeyLength;
 
-        if(_step > _speed)
+        if(_fracJourney > 1.0f)
         {
-            _step = 0.0f;
-
+            _startTime = Time.time;
+            _fracJourney = 0.0f;
             if(_back)
             {
                 _back = false;
@@ -74,11 +79,11 @@ public class ActionSequencerItem : MonoBehaviour
 
         if(_back)
         {
-            transform.localScale = Vector3.Lerp(_newSize, _startSize, _step);
+            transform.localScale = Vector3.Lerp(_newSize, _startSize, _fracJourney);
         }
         else
         {
-            transform.localScale = Vector3.Lerp(_startSize, _newSize, _step);
+            transform.localScale = Vector3.Lerp(_startSize, _newSize, _fracJourney);
         }
     }
 
