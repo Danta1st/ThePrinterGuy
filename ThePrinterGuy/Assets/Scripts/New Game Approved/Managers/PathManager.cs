@@ -26,7 +26,6 @@ public class PathManager : MonoBehaviour {
 //        GestureManager.OnSwipeLeft += TriggerMovePaper;
 //        GestureManager.OnSwipeUp += TriggerMoveInk;
 //        GestureManager.OnSwipeDown += TriggerMoveUranium;
-		ActionSequencerManager.OnFirstNode += TriggerFirstTask;
 		ActionSequencerManager.OnBarometerNode += TriggerMoveBarometer;
 		ActionSequencerManager.OnInkNode += TriggerMoveInk;
 		ActionSequencerManager.OnPaperNode += TriggerMovePaper;
@@ -38,7 +37,6 @@ public class PathManager : MonoBehaviour {
 //        GestureManager.OnSwipeLeft -= TriggerMovePaper;
 //        GestureManager.OnSwipeUp -= TriggerMoveInk;
 //        GestureManager.OnSwipeDown -= TriggerMoveUranium;
-		ActionSequencerManager.OnFirstNode -= TriggerFirstTask;
 		ActionSequencerManager.OnBarometerNode -= TriggerMoveBarometer;
 		ActionSequencerManager.OnInkNode -= TriggerMoveInk;
 		ActionSequencerManager.OnPaperNode -= TriggerMovePaper;
@@ -50,37 +48,9 @@ public class PathManager : MonoBehaviour {
     {
         _lookTargetDelay = _transitionTime / 2;
     }
-	
-	void Update()
-	{
-		if(Input.GetKeyDown(KeyCode.U))
-			TriggerFirstTask("UraniumRod");
-	}
     #endregion
 
     #region Class Methods
-    //Trigger Functions
-	private void TriggerFirstTask(string taskName)
-	{
-		switch(taskName)
-		{
-		case "Ink":
-			TriggerMoveInk();
-			break;
-		case "Paper":
-			TriggerMovePaper();
-			break;
-		case "UraniumRod":
-			TriggerMoveUranium();
-			break;
-		case "Barometer":
-			TriggerMoveBarometer();
-			break;
-		default:
-			break;
-		}
-	}
-	
     private void TriggerMoveUranium()
     {
 		if(_lookingAt == null)

@@ -22,17 +22,17 @@ public class Barometer : MonoBehaviour
 	//TODO: Handle gesture allowance
     void OnEnable()
     {
-		QATestCamera.OnBarometerBreak += TriggerBreakBarometer;
-		GestureManager.OnDoubleTap += TriggerFixBarometer;
+		ActionSequencerManager.OnBarometerNode += TriggerBreakBarometer;
+		ActionSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
-		QATestCamera.OnBarometerBreak -= TriggerBreakBarometer;
-		GestureManager.OnDoubleTap -= TriggerFixBarometer;
+		ActionSequencerManager.OnBarometerNode -= TriggerBreakBarometer;
+		ActionSequencerItem.OnFailed -= Reset;
     }
 	
 	#region Monobehaviour Functions
-	void Start () 
+	void Awake () 
 	{
 		InitializeBarometers();
 	}
@@ -81,6 +81,7 @@ public class Barometer : MonoBehaviour
 	
 	private void TriggerBreakBarometer()
 	{
+		GestureManager.OnDoubleTap += TriggerFixBarometer;
         var identifier = Random.Range(0,_barometers.Length);
 
         for(int i = 0; i < _barometers.Length; i++)
@@ -110,6 +111,7 @@ public class Barometer : MonoBehaviour
 			if(_barometers[i].isBroken == true && _barometers[i].barometer == go)
 			{
 				FixBarometer(i);
+				GestureManager.OnDoubleTap -= TriggerFixBarometer;
 				break;
 			}
         }
@@ -122,6 +124,19 @@ public class Barometer : MonoBehaviour
 		
 		if(OnBarometerFixed != null)
 			OnBarometerFixed();
+	}
+	
+	private void Reset()
+	{
+		for(int i = 0; i < _barometers.Length; i++)
+        {
+			if(_barometers[i].isBroken == true)
+			{
+				_barometers[i].rotationSpeed = _normalRotationSpeed;
+				_barometers[i].isBroken = false;
+			}
+        }
+		GestureManager.OnDoubleTap -= TriggerFixBarometer;
 	}
 	#endregion
 	

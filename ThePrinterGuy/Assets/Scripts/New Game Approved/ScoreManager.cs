@@ -112,7 +112,7 @@ public class ScoreManager : MonoBehaviour
 		}
 		else
 		{
-			foreach(string s in Feedback)
+			foreach(string s in Feedback.ToArray())
 			{
 				if(pointsGranted)
 				{
