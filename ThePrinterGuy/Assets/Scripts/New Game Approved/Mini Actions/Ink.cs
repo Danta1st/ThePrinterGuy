@@ -17,10 +17,10 @@ public class Ink : MonoBehaviour
     private float _closeTime    = 0.5f;
     private float _waitTime     = 2f;
 	
-	//Paper Slide variables
+	//Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private bool _IsSlideLocked		= false;
-	private float _slideTime		= 0.4f;
+	private float _inkMoveSpeed		= 0.4f;
 	private float _slideWait		= 0.2f;
 	
 	//Whatever
@@ -30,6 +30,10 @@ public class Ink : MonoBehaviour
 	void Awake () 
 	{
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
+		foreach(InkCartridgeClass icc in _machineInks)
+		{
+			icc.insertableStartPos = icc.insertableCartridge.position;
+		}
 	}
 	
 	void Update () 
@@ -39,12 +43,12 @@ public class Ink : MonoBehaviour
 	
 	void OnEnable()
 	{
-		ActionSequencerManager.OnInkNode += StartGates;
+		ActionSequencerManager.OnInkNode += StartInkTask;
 	}
 	
 	void OnDisable()
 	{
-		ActionSequencerManager.OnInkNode -= StartGates;
+		ActionSequencerManager.OnInkNode -= StartInkTask;
 	}
 	
 	#region Private Methods
@@ -52,15 +56,14 @@ public class Ink : MonoBehaviour
 	// Cartridge gate functions
 	private void StartGates()
     {
-		GestureManager.OnSwipeRight += InsertCartridge;
         if(!_isGateAllowedToRun)
         {
             _isGateAllowedToRun = true;
-			foreach(InkCartridgeClass icc in _machineInks)
-			{
-				StartCoroutine_Auto(InitiateInkGates(icc));
-			}
         }
+		foreach(InkCartridgeClass icc in _machineInks)
+		{
+			StartCoroutine_Auto(InitiateInkGates(icc));
+		}
     }
 
     private void StopGates()
@@ -128,7 +131,7 @@ public class Ink : MonoBehaviour
 	
 	private void InsertCartridge(GameObject go)
 	{
-		InkCartridgeClass currIcc;
+		InkCartridgeClass currIcc = null;
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			if(icc.insertableCartridge.gameObject == go)
@@ -137,11 +140,12 @@ public class Ink : MonoBehaviour
 				break;
 			}
 		}
-		
+		if(currIcc == null)
+			return;
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
-			iTween.MoveTo(currIcc.insertableCartridge, iTween.Hash("position", currIcc.cartridge.gameObject.transform.position, 
-						  "easetype", _easetype, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
+			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.cartridge.transform.position, 
+						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 		}
 		else
 		{
@@ -153,13 +157,14 @@ public class Ink : MonoBehaviour
 	{
 		icc.cartridgeEmpty = false;
 		GestureManager.OnSwipeRight -= InsertCartridge;
-		icc.insertableCartridge.position = insertableStartPos;
+		icc.insertableCartridge.position = icc.insertableStartPos;
 		
 	}
 	
 	private void StartInkTask()
 	{
-		
+		_isGateAllowedToRun = true;
+		GestureManager.OnSwipeRight += InsertCartridge;
 	}
 	
 	#endregion
@@ -176,7 +181,7 @@ public class Ink : MonoBehaviour
 		public float startWait = 1f;
 		
 		[HideInInspector]
-		public Vector3 insertableStartPos = insertableCartridge.transform.position;
+		public Vector3 insertableStartPos;
 		[HideInInspector]
         public bool lidIsOpen = false;
 		[HideInInspector]
