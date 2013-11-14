@@ -17,8 +17,7 @@ public class TimerUtilities : MonoBehaviour
 	[SerializeField]
     private float _timeLeft;
     private bool _isPaused = false;
-	private bool _manualTimer;
-	private float testTimeDOTtime;
+//	private float testTimeDOTtime;
 	
 	private float _timeLeftBeforePause;
     private float _pauseTime;
@@ -29,9 +28,9 @@ public class TimerUtilities : MonoBehaviour
     #region Unity Functions
     void Update()
     {
-        if(_timeLeft > 0 && !_isPaused && !_manualTimer)
+        if(_timeLeft > 0 && !_isPaused)
         {
-			testTimeDOTtime = Time.time;
+//			testTimeDOTtime = Time.time;
             _timeLeft = _endTime - (Time.time * _tickRate) + _pauseOffset * _tickRate;
             if(_timeLeft < 0)
             {

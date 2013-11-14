@@ -17,7 +17,9 @@ public class Barometer : MonoBehaviour
 	public static event OnBarometerFixedAction OnBarometerFixed;
     #endregion
 
+    
     //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
     void OnEnable()
     {
 		QATestCamera.OnBarometerBreak += TriggerBreakBarometer;

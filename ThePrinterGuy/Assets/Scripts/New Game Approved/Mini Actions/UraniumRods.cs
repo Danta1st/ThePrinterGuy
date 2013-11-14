@@ -24,7 +24,9 @@ public class UraniumRods : MonoBehaviour
     public static event OnRodHammeredAction OnRodHammered;
     #endregion
 
-    //TODO: Bind to correct events.
+    
+    //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
     void OnEnable()
     {
 		QATestCamera.OnUranRods += TriggerSpring;

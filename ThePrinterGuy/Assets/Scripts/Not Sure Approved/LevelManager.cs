@@ -238,6 +238,12 @@ public class LevelManager : MonoBehaviour
         iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _creditsLookTarget.transform.position, "time", _charMoveTime));
 
         iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", creditsCamPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform));
+
+        if(_selectedStageChar != null)
+        {
+            SilhouetteCharacter(_selectedStageChar);
+            BeginMoveBackAnimation(_selectedStageChar);
+        }
     }
 
     void ChangeViewToOptions()
@@ -250,6 +256,12 @@ public class LevelManager : MonoBehaviour
         iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _optionsLookTarget.transform.position, "time", _charMoveTime));
 
         iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", optionsCamPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform));
+
+        if(_selectedStageChar != null)
+        {
+            SilhouetteCharacter(_selectedStageChar);
+            BeginMoveBackAnimation(_selectedStageChar);
+        }
     }
 
     void ChangeViewToMain()
