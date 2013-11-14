@@ -66,16 +66,6 @@ public class PaperInsertion : MonoBehaviour
     #endregion
 
     #region Class Methods
-	/*private void CheckFirst(string taskname)
-	{
-		if(taskname == "Paper")
-		{
-			TriggerLight();
-			EnablePaper();
-		}
-	}*/
-	
-	
     //Gate Methods
     private void StartGate()
     {
@@ -144,9 +134,9 @@ public class PaperInsertion : MonoBehaviour
 
         for(int i = 0; i < _paperlightset.Length; i++)
         {
-            if(_paperlightset[i].isOn == false)
+            if(_paperlightset[identifier].isOn == false)
             {
-                TurnOnLight(i);
+                TurnOnLight(identifier);
                 break;
             }
             identifier++;
