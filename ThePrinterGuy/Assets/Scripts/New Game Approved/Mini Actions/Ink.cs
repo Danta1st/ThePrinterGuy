@@ -184,7 +184,6 @@ public class Ink : MonoBehaviour
                 identifier = 0;
         }
 		
-		_isGateAllowedToRun = true;
 		GestureManager.OnSwipeRight += InsertCartridge;
 		StartGates();
 	}
