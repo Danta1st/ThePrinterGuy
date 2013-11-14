@@ -62,10 +62,10 @@ public class ActionSequencerManager : MonoBehaviour {
         _startTimeStamp = 40;
         _timer.StartTimer(_startTimeStamp, true);
 
-        if(_actionSequencerList.Length > 0)
-        {
-            UpdateItemInFocus();
-        }
+//        if(_actionSequencerList.Length > 0)
+//        {
+//            UpdateItemInFocus();
+//        }
 
         _timer.ResumeTimer();
 	}
