@@ -6,8 +6,8 @@ public class LevelSelection : MonoBehaviour
     [SerializeField]
     private string _sceneName;
 
-    public void GoToLevel()
+    public string GetSceneName()
     {
-        Application.LoadLevel(_sceneName);
+        return _sceneName;
     }
 }
