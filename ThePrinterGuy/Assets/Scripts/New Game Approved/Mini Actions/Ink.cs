@@ -59,11 +59,12 @@ public class Ink : MonoBehaviour
         if(!_isGateAllowedToRun)
         {
             _isGateAllowedToRun = true;
+			foreach(InkCartridgeClass icc in _machineInks)
+			{
+				StartCoroutine_Auto(InitiateInkGates(icc));
+			}
         }
-		foreach(InkCartridgeClass icc in _machineInks)
-		{
-			StartCoroutine_Auto(InitiateInkGates(icc));
-		}
+		
     }
 
     private void StopGates()
@@ -165,6 +166,7 @@ public class Ink : MonoBehaviour
 	{
 		_isGateAllowedToRun = true;
 		GestureManager.OnSwipeRight += InsertCartridge;
+		StartGates();
 	}
 	
 	#endregion
