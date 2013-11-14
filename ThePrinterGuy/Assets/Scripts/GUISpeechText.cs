@@ -16,7 +16,7 @@ public class GUISpeechText : MonoBehaviour
 	// Use this for initialization
 	void Start () {
 		
-		_scaleMultiplierY = Screen.height / 1200f;
+		//_scaleMultiplierY = Screen.height / 1200f;
 		
 		StartCoroutine("LetterWriter");
 		
@@ -27,13 +27,13 @@ public class GUISpeechText : MonoBehaviour
 	
 		if(Input.GetKeyDown(KeyCode.M))
 		{
-			
+			// Writes "SpeechBubbleExample from the LocalizationText.xml
 			WriteText("SpeechBubbleExample");
 			
 		}
 	}
 	
-	void WriteText(string _str)
+	public void WriteText(string _str)
 	{
 		TextMesh _test = GameObject.Find("SpeechText").GetComponent<TextMesh>();
 		
