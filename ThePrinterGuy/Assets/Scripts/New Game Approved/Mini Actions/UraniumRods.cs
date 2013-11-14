@@ -84,6 +84,7 @@ public class UraniumRods : MonoBehaviour
     //Hammer the rod if it is currently up
     private void TriggerHammer(GameObject go, Vector2 screenPos)
     {
+		int i = 0;
         foreach(KeyValuePair<GameObject, bool> pair in _rodsAndStates)
         {
             if(pair.Key == go && pair.Value == true)
@@ -92,7 +93,7 @@ public class UraniumRods : MonoBehaviour
 
                 if(OnRodHammered != null)
 					OnRodHammered();
-
+				i++;
                 break;
             }
         }
@@ -100,6 +101,7 @@ public class UraniumRods : MonoBehaviour
 
     private void Hammer(GameObject go)
     {
+		GestureManager.OnTap -= TriggerHammer;
         iTween.MoveTo(go, iTween.Hash("y", go.transform.localPosition.y - 1, "time", _inTime,
                                         "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
     }
@@ -111,7 +113,6 @@ public class UraniumRods : MonoBehaviour
     //Reset all the rods
     private void Reset()
     {
-		GestureManager.OnTap -= TriggerHammer;
         foreach(GameObject go in _rods)
         {
             if(_rodsAndStates[go] == true)

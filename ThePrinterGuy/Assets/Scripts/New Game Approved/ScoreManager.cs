@@ -75,7 +75,7 @@ public class ScoreManager : MonoBehaviour
 	{
 		int colorHit = 0;
 		bool pointsGranted = false;
-
+		
 		if(TaskCompleted != null)
 			TaskCompleted();
 
