@@ -19,17 +19,11 @@ public class Ink : MonoBehaviour
 	
 	//Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
-	private bool _IsSlideLocked		= false;
 	private float _inkMoveSpeed		= 0.4f;
-	private float _slideWait		= 0.2f;
-	
-	//Whatever
-	private GameObject _dynamicObjects;
     #endregion
 
 	void Awake () 
 	{
-		_dynamicObjects = GameObject.Find("Dynamic Objects");
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			icc.insertableStartPos = icc.insertableCartridge.position;
@@ -44,11 +38,13 @@ public class Ink : MonoBehaviour
 	void OnEnable()
 	{
 		ActionSequencerManager.OnInkNode += StartInkTask;
+		ActionSequencerItem.OnFailed += InkReset;
 	}
 	
 	void OnDisable()
 	{
 		ActionSequencerManager.OnInkNode -= StartInkTask;
+		ActionSequencerItem.OnFailed += InkReset;
 	}
 	
 	#region Private Methods
@@ -157,16 +153,47 @@ public class Ink : MonoBehaviour
 	private void InkSuccess(InkCartridgeClass icc)
 	{
 		icc.cartridgeEmpty = false;
+		icc.cartridge.renderer.enabled = true;
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		icc.insertableCartridge.position = icc.insertableStartPos;
 		
 	}
 	
+	private void InkReset()
+	{
+		foreach(InkCartridgeClass icc in _machineInks)
+		{
+			InkSuccess(icc);
+		}
+	}
+	
 	private void StartInkTask()
 	{
+		var identifier = Random.Range(0,_machineInks.Count);
+		
+        for(int i = 0; i < _machineInks.Count; i++)
+        {
+            if(_machineInks[identifier].cartridgeEmpty == false)
+            {
+                EmptyCartridge(identifier);
+                break;
+            }
+            identifier++;
+
+            if(identifier == _machineInks.Count)
+                identifier = 0;
+        }
+		
 		_isGateAllowedToRun = true;
 		GestureManager.OnSwipeRight += InsertCartridge;
 		StartGates();
+	}
+	
+	private void EmptyCartridge(int iccnumber)
+	{
+		Debug.Log(iccnumber);
+		_machineInks[iccnumber].cartridgeEmpty = true;
+		_machineInks[iccnumber].cartridge.renderer.enabled = false;
 	}
 	
 	#endregion
