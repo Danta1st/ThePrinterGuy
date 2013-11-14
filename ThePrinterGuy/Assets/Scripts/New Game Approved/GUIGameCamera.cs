@@ -65,6 +65,10 @@ public class GUIGameCamera : MonoBehaviour
     private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
     private int _zone = 0;
     private bool _isLastNode = false;
+	
+	//Speech bubble
+	private GameObject _speechTextObject;
+	private GUISpeechText _guiSpeechTextScript;
     #endregion
 	
 	#region Delegates & Events
@@ -190,6 +194,13 @@ public class GUIGameCamera : MonoBehaviour
                 _spawnPoint = _guiObject.transform.FindChild("SpawnZone").gameObject.transform.position;
                 _spawnMoveAmount = new Vector3(0, -1100*_scaleMultiplierY, 0);
             }
+			
+			if(_guiObject.name == "SpeechBubble")
+			{
+				_guiObject.SetActive(false);
+				_speechTextObject = _guiObject.transform.FindChild("SpeechText").gameObject;
+				_guiSpeechTextScript = _speechTextObject.GetComponent<GUISpeechText>();
+			}
         }
         //--------------------------------------------------//
 		if(GUIMainMenuCamera.languageSetting == "EN")
@@ -223,6 +234,12 @@ public class GUIGameCamera : MonoBehaviour
         {
             CheckZone();
         }
+		if(Input.GetKeyDown(KeyCode.M))
+		{
+			// Writes "SpeechBubbleExample" from the LocalizationText.xml
+			EnableGUIElement("SpeechBubble");
+			_guiSpeechTextScript.WriteText("SpeechBubbleExample");
+		}
     }
     #endregion
 	
