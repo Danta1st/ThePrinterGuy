@@ -17,14 +17,18 @@ public class Barometer : MonoBehaviour
 	public static event OnBarometerFixedAction OnBarometerFixed;
     #endregion
 
+    
     //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
     void OnEnable()
     {
-		
+		QATestCamera.OnBarometerBreak += TriggerBreakBarometer;
+		GestureManager.OnDoubleTap += TriggerFixBarometer;
     }
     void OnDisable()
     {
-		
+		QATestCamera.OnBarometerBreak -= TriggerBreakBarometer;
+		GestureManager.OnDoubleTap -= TriggerFixBarometer;
     }
 	
 	#region Monobehaviour Functions
@@ -75,7 +79,7 @@ public class Barometer : MonoBehaviour
         }
 	}
 	
-	private void TriggerBreakBarometer(GameObject go, Vector2 screenPos)
+	private void TriggerBreakBarometer()
 	{
         var identifier = Random.Range(0,_barometers.Length);
 
@@ -103,7 +107,7 @@ public class Barometer : MonoBehaviour
 	{
         for(int i = 0; i < _barometers.Length; i++)
         {
-			if(_barometers[i].isBroken == true || _barometers[i].barometer == go)
+			if(_barometers[i].isBroken == true && _barometers[i].barometer == go)
 			{
 				FixBarometer(i);
 				break;

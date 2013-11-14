@@ -24,20 +24,24 @@ public class UraniumRods : MonoBehaviour
     public static event OnRodHammeredAction OnRodHammered;
     #endregion
 
-    //TODO: Bind to correct events.
-//    void OnEnable()
-//    {
+    
+    //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
+    void OnEnable()
+    {
+		QATestCamera.OnUranRods += TriggerSpring;
 //        GestureManager.OnSwipeUp += TriggerSpring;
-//        GestureManager.OnTap += TriggerHammer;
+        GestureManager.OnTap += TriggerHammer;
 //        GestureManager.OnSwipeLeft += Reset;
-//    }
-//
-//    void OnDisable()
-//    {
+    }
+
+    void OnDisable()
+    {
+		QATestCamera.OnUranRods -= TriggerSpring;
 //        GestureManager.OnSwipeUp -= TriggerSpring;
-//        GestureManager.OnTap -= TriggerHammer;
+        GestureManager.OnTap -= TriggerHammer;
 //        GestureManager.OnSwipeLeft -= Reset;
-//    }
+    }
 
     void Start()
     {

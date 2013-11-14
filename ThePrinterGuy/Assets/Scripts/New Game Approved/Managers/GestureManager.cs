@@ -11,7 +11,7 @@ public class GestureManager : MonoBehaviour
     [SerializeField]
     private float _pressThreshold = 1.0f;
     [SerializeField]
-    private float _swipeThreshold = 10.0f;
+    private float _swipeThreshold = 5.0f;
     [SerializeField]
     private float _swipeOffset = 2.0f;
     #endregion
@@ -22,14 +22,15 @@ public class GestureManager : MonoBehaviour
     private bool _isPressing = false;
     private bool _isSwiping = false;
     private GameObject _touchBeganObject;
-
+    #endregion
+	
+	/*Public gesture disable and enable functions
     private bool _canTap = true;
     private bool _canDoubletap = true;
     private bool _canPress = true;
     private bool _canSwipe = true;
     private bool _canPinchSpread = true;
     private bool _canDrag = true;
-    #endregion
 
     #region Properties
     public void DisableTap()
@@ -92,6 +93,7 @@ public class GestureManager : MonoBehaviour
         _canDrag = true;
     }
     #endregion
+    */
 
     #region Delegates & Events
     public delegate void TapAction(GameObject go, Vector2 screenPosition);
@@ -383,8 +385,9 @@ public class GestureManager : MonoBehaviour
                 {
                     _touchBeganObject = hit.collider.gameObject;
                 }
+				break;
             }
-        }
+		}
 	#endif
 	#if UNITY_EDITOR
         if(Input.GetMouseButtonDown(0))
@@ -408,6 +411,7 @@ public class GestureManager : MonoBehaviour
             if(t.phase == TouchPhase.Began)
             {
                 _touchBeginTimes[t.fingerId] = Time.time;
+				break;
             }
 //            else if(t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
 //                _touchBeginTimes.Remove(t.fingerId);
@@ -432,25 +436,25 @@ public class GestureManager : MonoBehaviour
     #endregion
 
     //Debug GUI - OnGUI should otherwise be avoided on tablets
-    void OnGUI()
-    {
-        foreach(Touch touch in Input.touches)
-        {
-            GUILayout.BeginVertical();
-            GUILayout.Label("FingerId: " + touch.fingerId.ToString());
-            GUILayout.Label("Position: " + touch.position.ToString());
-            GUILayout.Label("DeltaTime: " + touch.deltaTime);
-            GUILayout.Label("DeltaPosition: " + touch.deltaPosition.ToString());
-            GUILayout.Label("TouchPhase: " + touch.phase.ToString());
-            GUILayout.Label("TapCount: " + touch.tapCount);
-            GUILayout.EndVertical();
-        }
-
-        foreach(var pair in _touchBeginTimes)
-        {
-            GUILayout.BeginVertical();
-            GUILayout.Label("fingerId: " + pair.Key + " Began at: " + pair.Value);
-            GUILayout.EndVertical();
-        }
-    }
+//    void OnGUI()
+//    {
+//        foreach(Touch touch in Input.touches)
+//        {
+//            GUILayout.BeginVertical();
+//            GUILayout.Label("FingerId: " + touch.fingerId.ToString());
+//            GUILayout.Label("Position: " + touch.position.ToString());
+//            GUILayout.Label("DeltaTime: " + touch.deltaTime);
+//            GUILayout.Label("DeltaPosition: " + touch.deltaPosition.ToString());
+//            GUILayout.Label("TouchPhase: " + touch.phase.ToString());
+//            GUILayout.Label("TapCount: " + touch.tapCount);
+//            GUILayout.EndVertical();
+//        }
+//
+//        foreach(var pair in _touchBeginTimes)
+//        {
+//            GUILayout.BeginVertical();
+//            GUILayout.Label("fingerId: " + pair.Key + " Began at: " + pair.Value);
+//            GUILayout.EndVertical();
+//        }
+//    }
 }
