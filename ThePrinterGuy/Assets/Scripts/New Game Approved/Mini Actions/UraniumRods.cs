@@ -11,19 +11,12 @@ public class UraniumRods : MonoBehaviour
     private iTween.EaseType _easeTypeIn = iTween.EaseType.easeOutBack;
     [SerializeField]
     private GameObject[] _rods;
-    [SerializeField]
-    private AudioClip clipRod1;
-    [SerializeField]
-    private AudioClip clipRod2;
-    [SerializeField]
-    private AudioClip clipRod3;
-    [SerializeField]
-    private AudioClip clipHammerAction;
     #endregion
 
     #region Privates
     private float _outTime = 0.5f;
     private float _inTime = 0.2f;
+	private GameObject _currRod;
     private Dictionary<GameObject, bool> _rodsAndStates = new Dictionary<GameObject, bool>();
     #endregion
 
@@ -32,28 +25,22 @@ public class UraniumRods : MonoBehaviour
     public static event OnRodHammeredAction OnRodHammered;
     #endregion
 
-    //TODO: Bind to correct events.
     void OnEnable()
     {
-		QATestCamera.OnUranRods += TriggerSpring;
-//        GestureManager.OnSwipeUp += TriggerSpring;
-        GestureManager.OnTap += TriggerHammer;
-//        GestureManager.OnSwipeLeft += Reset;
+		ActionSequencerManager.OnUraniumRodNode += TriggerSpring;
+		ActionSequencerItem.OnFailed += Reset;
     }
 
     void OnDisable()
     {
-		QATestCamera.OnUranRods -= TriggerSpring;
-//        GestureManager.OnSwipeUp -= TriggerSpring;
-        GestureManager.OnTap -= TriggerHammer;
-//        GestureManager.OnSwipeLeft -= Reset;
+		ActionSequencerManager.OnUraniumRodNode -= TriggerSpring;
+		ActionSequencerItem.OnFailed -= Reset;
     }
 
-    void Start()
+    void Awake()
     {
         SetStates();
     }
-
 
     #region Class Methods
     //Initialise the states for each game object
@@ -68,28 +55,16 @@ public class UraniumRods : MonoBehaviour
     //Trigger a random rod, which is currently not up
     private void TriggerSpring()
     {
+		GestureManager.OnTap += TriggerHammer;
         var identifier = Random.Range(0, _rods.Length);
 
         for(int i = 0; i < _rods.Length; i++)
         {
             var go = _rods[identifier];
+			
             if(_rodsAndStates[go] == false)
             {
                 Spring(go);
-
-                if(identifier == 0)
-                {
-                    gameObject.audio.PlayOneShot(clipRod1);
-                }
-                else if(identifier == 1)
-                {
-                    gameObject.audio.PlayOneShot(clipRod2);
-                }
-                else if(identifier == 2)
-                {
-                    gameObject.audio.PlayOneShot(clipRod3);
-                }
-
                 _rodsAndStates[go] = true;
                 break;
             }
@@ -109,19 +84,16 @@ public class UraniumRods : MonoBehaviour
     //Hammer the rod if it is currently up
     private void TriggerHammer(GameObject go, Vector2 screenPos)
     {
+		int i = 0;
         foreach(KeyValuePair<GameObject, bool> pair in _rodsAndStates)
         {
             if(pair.Key == go && pair.Value == true)
             {
                 Hammer(go);
 
-                gameObject.audio.PlayOneShot(clipHammerAction);
-
-                _rodsAndStates[go] = false;
-
                 if(OnRodHammered != null)
-                    OnRodHammered();
-
+					OnRodHammered();
+				i++;
                 break;
             }
         }
@@ -129,10 +101,15 @@ public class UraniumRods : MonoBehaviour
 
     private void Hammer(GameObject go)
     {
+		GestureManager.OnTap -= TriggerHammer;
         iTween.MoveTo(go, iTween.Hash("y", go.transform.localPosition.y - 1, "time", _inTime,
-                                        "islocal", true, "easetype", _easeTypeIn));
+                                        "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
     }
-
+	
+	private void HammerComplete(GameObject go)
+	{
+		_rodsAndStates[go] = false;
+	}
     //Reset all the rods
     private void Reset()
     {
@@ -141,7 +118,6 @@ public class UraniumRods : MonoBehaviour
             if(_rodsAndStates[go] == true)
             {
                 Hammer(go);
-                _rodsAndStates[go] = false;
             }
         }
     }

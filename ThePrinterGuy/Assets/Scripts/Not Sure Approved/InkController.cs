@@ -7,8 +7,8 @@ public class InkController : MonoBehaviour
 	#region editor variables
 	[SerializeField]
 	private Color[] _inkColor;
-	[SerializeField]
-	private float _doorDelay = 0.5f;
+//	[SerializeField]
+//	private float _doorDelay = 0.5f;
 	[SerializeField]
 	private iTween.EaseType _easetype;
 	[SerializeField]
@@ -24,8 +24,6 @@ public class InkController : MonoBehaviour
 	#endregion
 	
 	#region Private Variables
-	
-	
 	private int _emptyInk;
 	#endregion
 	
@@ -38,27 +36,24 @@ public class InkController : MonoBehaviour
 	public static event InkInsertedUnsuccessfully OnInkInsertedFailed;
 	#endregion
 	
-
-	
 	#region Setup of Delegates
+	
+    //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
 	void OnEnable ()
 	{
-		QATestCamera.OnInk += EnableInkTask;
-		QATestCamera.OnInkOff += DisableInkTask;
-		//ZoomHandler.OnInk += EnableInkTask;
-
+		ActionSequencerManager.OnInkNode += EnableInkTask;
+		ActionSequencerItem.OnFailed += DisableInkTask;
 	}
 	
 	void OnDisable ()
 	{
-		QATestCamera.OnInk -= EnableInkTask;
-		QATestCamera.OnInkOff -= DisableInkTask;
-		//ZoomHandler.OnInk -= EnableInkTask;
-//		
+		ActionSequencerManager.OnInkNode -= EnableInkTask;
+		ActionSequencerItem.OnFailed -= DisableInkTask;
 	}
 	
 	
-	void Start()
+	void Awake()
 	{
 		int index = 0;
 		foreach(InkCartridge i in _guiInks)
@@ -184,6 +179,7 @@ public class InkController : MonoBehaviour
 	#region private methods
 	public void OnInkSuccess()
 	{
+		DisableInkTask();
 		if(OnInkInsertedSuccess != null)
 			OnInkInsertedSuccess();
 	}

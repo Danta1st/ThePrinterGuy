@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GUIMainMenuCamera : MonoBehaviour
 {
@@ -28,26 +29,30 @@ public class GUIMainMenuCamera : MonoBehaviour
     private float _guiCameraDuration = 1.0f;
     private string _guiCameraStage = "LanguageSelectionStage";
 
-    private Vector3 _mainMenuPosition;
-    private Vector3 _optionsPosition;
-    private Vector3 _creditsPosition;
-
     public static string languageSetting = "EN";
+    #endregion
+
+
+    #region Delegates & Events
+    public delegate void MainScreen();
+    public static event MainScreen OnMainScreen;
+
+    public delegate void CreditScreen();
+    public static event CreditScreen OnCreditScreen;
+
+    public delegate void OptionsScreen();
+    public static event OptionsScreen OnOptionsScreen;
     #endregion
 
     #region Enable and Disable
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
-        GestureManager.OnSwipeLeft += CheckLeft;
-        GestureManager.OnSwipeRight += CheckRight;
     }
 
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
-        GestureManager.OnSwipeLeft -= CheckLeft;
-        GestureManager.OnSwipeRight -= CheckRight;
     }
 
     public void EnableGUICamera()
@@ -126,21 +131,36 @@ public class GUIMainMenuCamera : MonoBehaviour
 
             if(_guiObject.name == "MainMenu")
             {
-                _mainMenuPosition = _guiObject.transform.position;
                 _guiObject.SetActive(false);
             }
 
             if(_guiObject.name == "OptionsMenu")
             {
-                _optionsPosition = _guiObject.transform.position;
                 _guiObject.SetActive(false);
             }
 
             if(_guiObject.name == "Credits")
             {
-                _creditsPosition = _guiObject.transform.position;
                 _guiObject.SetActive(false);
             }
+            if(_guiObject.name == "MenuButtonLeft")
+            {
+                _guiObject.SetActive(false);
+            }
+            if(_guiObject.name == "MenuButtonRight")
+            {
+                _guiObject.SetActive(false);
+            }
+            if(_guiObject.name == "CreditsButton")
+            {
+                _guiObject.SetActive(false);
+            }
+            if(_guiObject.name == "OptionsButton")
+            {
+                _guiObject.SetActive(false);
+            }
+
+
         }
         //--------------------------------------------------//
 
@@ -207,6 +227,50 @@ public class GUIMainMenuCamera : MonoBehaviour
                     {
 
                     }
+                    else if(_hit.collider.gameObject.name == "OptionsButton")
+                    {
+                        if(OnOptionsScreen != null)
+                        {
+                            OnOptionsScreen();
+                        }
+
+                        DisableGUIElementAll();
+                        EnableGUIElement("OptionsMenu");
+                        EnableGUIElement("MenuButtonLeft");
+                    }
+                    else if(_hit.collider.gameObject.name == "CreditsButton")
+                    {
+                        if(OnCreditScreen != null)
+                        {
+                            OnCreditScreen();
+                        }
+
+                        DisableGUIElementAll();
+                        EnableGUIElement("Credits");
+                        EnableGUIElement("MenuButtonRight");
+                    }
+                    else if(_hit.collider.gameObject.name == "MenuButtonLeft")
+                    {
+                        if(OnMainScreen != null)
+                        {
+                            OnMainScreen();
+                        }
+
+                        DisableGUIElementAll();
+                        EnableGUIElement("OptionsButton");
+                        EnableGUIElement("CreditsButton");
+                    }
+                    else if(_hit.collider.gameObject.name == "MenuButtonRight")
+                    {
+                        if(OnMainScreen != null)
+                        {
+                            OnMainScreen();
+                        }
+
+                        DisableGUIElementAll();
+                        EnableGUIElement("OptionsButton");
+                        EnableGUIElement("CreditsButton");
+                    }
                     else if(_hit.collider.gameObject.name == "DanishButton")
                     {
                         if(_guiCameraStage == "LanguageSelectionStage")
@@ -237,7 +301,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                 if(_guiCameraStage == "MainMenuStage")
                 {
                     //Load level selection scene.
-                    Application.LoadLevel(1);
+
                 }
             }
         }
@@ -248,37 +312,46 @@ public class GUIMainMenuCamera : MonoBehaviour
         _guiCameraStage = "MainMenuStage";
         DisableGUIElement("LanguageMenu");
         EnableGUIElement("MainMenu");
-        EnableGUIElement("OptionsMenu");
-        EnableGUIElement("Credits");
-    }
+        EnableGUIElement("OptionsButton");
+        EnableGUIElement("CreditsButton");
 
-    private void CheckLeft(GameObject go)
-    {
-        if(_guiCameraStage == "MainMenuStage")
-        {
-            _guiCameraStage = "CreditsStage";
-            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _creditsPosition, "time", _guiCameraDuration));
-        }
-        else if(_guiCameraStage == "OptionsMenuStage")
-        {
-            _guiCameraStage = "MainMenuStage";
-            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
-        }
-    }
+        LevelManager lvlManager = gameObject.GetComponent<LevelManager>();
 
-    private void CheckRight(GameObject go)
-    {
-        if(_guiCameraStage == "MainMenuStage")
+        List<GameObject> stageChars = lvlManager.GetStageCharacters();
+
+        foreach(GameObject go in stageChars)
         {
-            _guiCameraStage = "OptionsMenuStage";
-            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _optionsPosition, "time", _guiCameraDuration));
-        }
-        else if(_guiCameraStage == "CreditsStage")
-        {
-            _guiCameraStage = "MainMenuStage";
-            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
+            go.collider.enabled = true;
         }
     }
+//
+//    private void CheckLeft(GameObject go)
+//    {
+//        if(_guiCameraStage == "MainMenuStage")
+//        {
+//            _guiCameraStage = "CreditsStage";
+//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _creditsPosition, "time", _guiCameraDuration));
+//        }
+//        else if(_guiCameraStage == "OptionsMenuStage")
+//        {
+//            _guiCameraStage = "MainMenuStage";
+//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
+//        }
+//    }
+//
+//    private void CheckRight(GameObject go)
+//    {
+//        if(_guiCameraStage == "MainMenuStage")
+//        {
+//            _guiCameraStage = "OptionsMenuStage";
+//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _optionsPosition, "time", _guiCameraDuration));
+//        }
+//        else if(_guiCameraStage == "CreditsStage")
+//        {
+//            _guiCameraStage = "MainMenuStage";
+//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
+//        }
+//    }
 
     private void UpdateText()
     {

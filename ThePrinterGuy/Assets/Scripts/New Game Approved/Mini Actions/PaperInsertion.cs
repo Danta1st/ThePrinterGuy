@@ -40,18 +40,21 @@ public class PaperInsertion : MonoBehaviour
     #endregion
 
     //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
     void OnEnable()
     {
-		QATestCamera.OnPaper += TriggerLight;
-		QATestCamera.OnPaper += EnablePaper;
-		GestureManager.OnSwipeUp += TriggerSlide;
+		ActionSequencerManager.OnPaperNode += TriggerLight;
+		ActionSequencerManager.OnPaperNode += EnablePaper;
+		ActionSequencerItem.OnFailed += Reset;
+		
         StartGate();
     }
     void OnDisable()
     {
-		GestureManager.OnSwipeUp -= TriggerSlide;
-		QATestCamera.OnPaper -= TriggerLight;
-		QATestCamera.OnPaper -= EnablePaper;
+		ActionSequencerManager.OnPaperNode -= TriggerLight;
+		ActionSequencerManager.OnPaperNode -= EnablePaper;
+		ActionSequencerItem.OnFailed -= Reset;
+		
         StopGate();
     }
 
@@ -59,11 +62,7 @@ public class PaperInsertion : MonoBehaviour
 	void Awake()
 	{
 		_dynamicObjects = GameObject.Find("Dynamic Objects");	
-	}
-	
-	void Start ()
-    {
-	    InitializeLights();
+		InitializeLights();
 		DisablePaper();
 	}
     #endregion
@@ -139,9 +138,9 @@ public class PaperInsertion : MonoBehaviour
 
         for(int i = 0; i < _paperlightset.Length; i++)
         {
-            if(_paperlightset[i].isOn == false)
+            if(_paperlightset[identifier].isOn == false)
             {
-                TurnOnLight(i);
+                TurnOnLight(identifier);
                 break;
             }
             identifier++;
@@ -189,6 +188,7 @@ public class PaperInsertion : MonoBehaviour
 
     private void EnablePaper()
     {
+		GestureManager.OnSwipeUp += TriggerSlide;
         for(int i = 0; i < _paperlightset.Length; i++)
         {
             _paperlightset[i].paper.SetActive(true);
@@ -223,11 +223,14 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
+				Reset();
+				
 				iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 				
 				if(OnCorrectPaperInserted != null)
 					OnCorrectPaperInserted();
+				
 			}
 			else
 			{
@@ -254,6 +257,13 @@ public class PaperInsertion : MonoBehaviour
 		_tempPaper.Remove(go);
 		Destroy(go);
 		_IsSlideLocked = false;
+	}
+	
+	public void Reset()
+	{
+		GestureManager.OnSwipeUp -= TriggerSlide;
+		DisablePaper();
+		TurnOfAllLights();
 	}
     #endregion
 

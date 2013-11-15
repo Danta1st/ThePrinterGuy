@@ -5,9 +5,6 @@ public class Barometer : MonoBehaviour
 {
     #region Editor Publics
 	[SerializeField] Barometers[] _barometers;
-    [SerializeField] private AudioClip clipBaroTap1;
-    [SerializeField] private AudioClip clipBaroTap2;
-    [SerializeField] private AudioClip clipBaroTap3;
     #endregion
 
     #region Privates
@@ -20,20 +17,22 @@ public class Barometer : MonoBehaviour
 	public static event OnBarometerFixedAction OnBarometerFixed;
     #endregion
 
+    
     //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
     void OnEnable()
     {
-		QATestCamera.OnBarometerBreak += TriggerBreakBarometer;
-		GestureManager.OnDoubleTap += TriggerFixBarometer;
+		ActionSequencerManager.OnBarometerNode += TriggerBreakBarometer;
+		ActionSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
-		QATestCamera.OnBarometerBreak -= TriggerBreakBarometer;
-		GestureManager.OnDoubleTap -= TriggerFixBarometer;
+		ActionSequencerManager.OnBarometerNode -= TriggerBreakBarometer;
+		ActionSequencerItem.OnFailed -= Reset;
     }
 	
 	#region Monobehaviour Functions
-	void Start () 
+	void Awake () 
 	{
 		InitializeBarometers();
 	}
@@ -82,6 +81,7 @@ public class Barometer : MonoBehaviour
 	
 	private void TriggerBreakBarometer()
 	{
+		GestureManager.OnDoubleTap += TriggerFixBarometer;
         var identifier = Random.Range(0,_barometers.Length);
 
         for(int i = 0; i < _barometers.Length; i++)
@@ -110,21 +110,8 @@ public class Barometer : MonoBehaviour
         {
 			if(_barometers[i].isBroken == true && _barometers[i].barometer == go)
 			{
-                if(i == 0)
-                {
-                    gameObject.audio.PlayOneShot(clipBaroTap1);
-                }
-                else if(i == 1)
-                {
-                    gameObject.audio.PlayOneShot(clipBaroTap2);
-                }
-                else if(i == 2)
-                {
-                    gameObject.audio.PlayOneShot(clipBaroTap3);
-                }
-
-                FixBarometer(i);
-
+				FixBarometer(i);
+				GestureManager.OnDoubleTap -= TriggerFixBarometer;
 				break;
 			}
         }
@@ -137,6 +124,19 @@ public class Barometer : MonoBehaviour
 		
 		if(OnBarometerFixed != null)
 			OnBarometerFixed();
+	}
+	
+	private void Reset()
+	{
+		for(int i = 0; i < _barometers.Length; i++)
+        {
+			if(_barometers[i].isBroken == true)
+			{
+				_barometers[i].rotationSpeed = _normalRotationSpeed;
+				_barometers[i].isBroken = false;
+			}
+        }
+		GestureManager.OnDoubleTap -= TriggerFixBarometer;
 	}
 	#endregion
 	
