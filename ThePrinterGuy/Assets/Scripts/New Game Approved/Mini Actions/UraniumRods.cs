@@ -11,12 +11,15 @@ public class UraniumRods : MonoBehaviour
     private iTween.EaseType _easeTypeIn = iTween.EaseType.easeOutBack;
     [SerializeField]
     private GameObject[] _rods;
+	[SerializeField]
+	private ParticleSystem _particleSystem;
     #endregion
 
     #region Privates
     private float _outTime = 0.5f;
     private float _inTime = 0.2f;
 	private GameObject _currRod;
+	private bool failed = false;
     private Dictionary<GameObject, bool> _rodsAndStates = new Dictionary<GameObject, bool>();
     #endregion
 
@@ -89,6 +92,7 @@ public class UraniumRods : MonoBehaviour
         {
             if(pair.Key == go && pair.Value == true)
             {
+				failed = false;
                 Hammer(go);
 				GestureManager.OnTap -= TriggerHammer;
                 if(OnRodHammered != null)
@@ -104,12 +108,26 @@ public class UraniumRods : MonoBehaviour
 		if(go == null)
 			return;
 		GestureManager.OnTap -= TriggerHammer;
+		
         iTween.MoveTo(go, iTween.Hash("y", go.transform.localPosition.y - 1, "time", _inTime,
                                         "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
     }
 	
 	private void HammerComplete(GameObject go)
 	{
+		if(!failed)
+		{
+			foreach(Transform child in go.transform)
+			{
+				if(child.name.Equals("ParticlePos"))
+				{
+					ParticleSystem ps = (ParticleSystem)Instantiate(_particleSystem, child.position, child.rotation);
+					ps.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+					ps.Emit(10);
+				}
+			}
+		}
+		failed = false;
 		_rodsAndStates[go] = false;
 	}
     //Reset all the rods and disables GestureManager (Called on Failed)
@@ -119,6 +137,7 @@ public class UraniumRods : MonoBehaviour
         {
             if(_rodsAndStates[go] == true)
             {
+				failed = true;
                 Hammer(go);
             }
         }

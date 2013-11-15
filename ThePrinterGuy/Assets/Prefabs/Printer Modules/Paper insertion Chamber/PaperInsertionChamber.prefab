@@ -274,6 +274,21 @@ GameObject:
   m_Component:
   - 4: {fileID: 400032}
   m_Layer: 0
+  m_Name: ParticlePos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400034}
+  m_Layer: 0
   m_Name: PaperFocusPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,8 +409,9 @@ Transform:
   - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400008}
-  - {fileID: 400032}
+  - {fileID: 400034}
   - {fileID: 400020}
+  - {fileID: 400032}
   - {fileID: 400028}
   - {fileID: 400006}
   - {fileID: 400004}
@@ -478,6 +494,17 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100032}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.97293329, y: 3.89368486, z: .685556889}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400018}
+--- !u!4 &400034
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100034}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.97293305, y: 3.89368486, z: .685556889}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -808,6 +835,7 @@ MonoBehaviour:
     off: {fileID: 2800000, guid: da88aad3d94c4654bb353183ffd5f602, type: 3}
     paper: {fileID: 100024}
     isOn: 0
+  _particleSystem: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

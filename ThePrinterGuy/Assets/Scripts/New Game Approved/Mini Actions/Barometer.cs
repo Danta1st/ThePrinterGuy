@@ -5,11 +5,13 @@ public class Barometer : MonoBehaviour
 {
     #region Editor Publics
 	[SerializeField] Barometers[] _barometers;
+	[SerializeField] ParticleSystem _particleSystem;
     #endregion
 
     #region Privates
 	private float _normalRotationSpeed = 45;
 	private float _brokenRotationSpeed = 720;
+	
     #endregion
 
     #region Delegates & Events
@@ -121,6 +123,15 @@ public class Barometer : MonoBehaviour
 	{
 		_barometers[i].rotationSpeed = _normalRotationSpeed;
 		_barometers[i].isBroken = false;
+		foreach(Transform child in _barometers[i].barometer.transform)
+		{
+			if(child.name.Equals("ParticlePos"))
+			{
+				ParticleSystem ps = (ParticleSystem)Instantiate(_particleSystem, child.position, child.rotation);
+				ps.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+				ps.Emit(10);
+			}
+		}
 		
 		if(OnBarometerFixed != null)
 			OnBarometerFixed();

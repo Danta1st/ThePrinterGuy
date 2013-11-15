@@ -6,6 +6,7 @@ public class Ink : MonoBehaviour
 {
 	#region Editor Publics
 	[SerializeField] private List<InkCartridgeClass> _machineInks;
+	[SerializeField] private ParticleSystem _particleSystem;
     [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
     #endregion
@@ -211,7 +212,15 @@ public class Ink : MonoBehaviour
 	{
 		icc.cartridgeEmpty = false;
 		icc.cartridge.gameObject.SetActive(true);
-		icc.cartridge.GetComponentInChildren<ParticleSystem>().Emit(10);
+		foreach(Transform child in icc.cartridge.transform)
+		{
+			if(child.name.Equals("ParticlePos"))
+			{
+				ParticleSystem ps = (ParticleSystem)Instantiate(_particleSystem, child.position, child.rotation);
+				ps.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+				ps.Emit(10);
+			}
+		}
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		icc.insertableCartridge.position = icc.insertableStartPos;
 		_canSlide = true;

@@ -10,6 +10,7 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
     [SerializeField] private PaperLightSet[] _paperlightset;
+	[SerializeField] private ParticleSystem _particleSystem;
     #endregion
 
     #region Privates
@@ -224,6 +225,15 @@ public class PaperInsertion : MonoBehaviour
 				iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 				
+				foreach(Transform child in gameObject.transform)
+				{
+					if(child.name.Equals("ParticlePos"))
+					{
+						ParticleSystem ps = (ParticleSystem)Instantiate(_particleSystem, child.position, child.rotation);
+						ps.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+						ps.Emit(50);
+					}
+				}
 				if(OnCorrectPaperInserted != null)
 					OnCorrectPaperInserted();
 				
