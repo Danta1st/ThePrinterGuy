@@ -38,7 +38,7 @@ public class ScoreManager : MonoBehaviour
 	
 	void OnEnable()
 	{
-		InkController.OnInkInsertedSuccess += InkSuccess;
+		Ink.OnCorrectInkInserted += InkSuccess;
 		PaperInsertion.OnCorrectPaperInserted += PaperSuccess;
 		Barometer.OnBarometerFixed += BarometerSuccess;
 		UraniumRods.OnRodHammered += RodSuccess;
@@ -46,7 +46,7 @@ public class ScoreManager : MonoBehaviour
 	
 	void OnDisable()
 	{
-		InkController.OnInkInsertedSuccess -= InkSuccess;
+		Ink.OnCorrectInkInserted -= InkSuccess;
 		PaperInsertion.OnCorrectPaperInserted -= PaperSuccess;
 		Barometer.OnBarometerFixed -= BarometerSuccess;
 		UraniumRods.OnRodHammered -= RodSuccess;
