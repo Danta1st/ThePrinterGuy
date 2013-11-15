@@ -23,16 +23,18 @@ public class LevelManager : MonoBehaviour
 
     void Awake()
     {
-        _camPointDefault = GameObject.Find("CamPoint_Default");
-
         _creditsLookTarget = GameObject.Find("Television");
-
         _optionsLookTarget = GameObject.Find("OptionButtons");
     }
 
     // Use this for initialization
     void Start()
     {
+        #region Camera Positioning Objects
+        _camPointDefault = new GameObject();
+        _camPointDefault.name = "CamLookPosDefault";
+        _camPointDefault.transform.position = new Vector3(0, 0, 12);
+
         _lookTarget = new GameObject();
         _lookTarget.name = "LookTarget";
         _lookTarget.transform.position = _camPointDefault.transform.position;
@@ -40,18 +42,30 @@ public class LevelManager : MonoBehaviour
         _camStartPos = new GameObject();
         _camStartPos.name = "CamStartPosition";
         _camStartPos.transform.position = Camera.main.transform.position;
+        #endregion
 
         foreach(GameObject go in _stageCharacters)
         {
             go.transform.FindChild("stageLevelSelection").gameObject.SetActive(false);
             go.collider.enabled = false;
+
+            StageCharacter thisChar = go.GetComponent<StageCharacter>();
+
+            GameObject thisProjectorHolder = go.transform.parent.FindChild("projectorHolder").gameObject;
+
+            Projector thisProjector = thisProjectorHolder.transform.GetComponent<Projector>();
+
+            Color thisColor = thisProjector.material.color;
+
+            thisColor.a = 1.0f;
+
+            thisProjector.material.SetColor("_Color", thisColor);
+
+            if(thisChar.GetUnlocked())
+            {
+                SilhouetteCharacter(thisProjectorHolder);
+            }
         }
-    }
- 
-    // Update is called once per frame
-    void Update()
-    {
- 
     }
 
     void OnEnable()
@@ -72,19 +86,6 @@ public class LevelManager : MonoBehaviour
         GUIMainMenuCamera.OnOptionsScreen -= ChangeViewToOptions;
     }
 
-    //TODO:
-     /*
-      * Start - Language boxes appear, stageCharacters are visible as shadows in the background
-      * OnTap - Select a language
-      *         After the language is selected the stageCharacters appear
-      *         The stages that are unlocked will appear lit, while the rest are silhouettes
-      * OnTap - Selected stageCharacter moves forward (only on lit characters)
-      *         Camera focus on selected Character
-      *         An animation animates the character to move forward
-      *         The level boxes appear above the character
-      * OnTap - Go to selected levelbox's scene
-      */
-
     public List<GameObject> GetStageCharacters()
     {
         return _stageCharacters;
@@ -97,7 +98,13 @@ public class LevelManager : MonoBehaviour
 
     void SilhouetteCharacter(GameObject go)
     {
+        Projector thisProjector = go.transform.GetComponent<Projector>();
 
+        Color thisColor = thisProjector.material.color;
+
+        thisColor.a = 0.9f;
+
+        thisProjector.material.SetColor("_Color", thisColor);
     }
 
     void SelectStage(GameObject go, Vector2 screenPos)
@@ -114,31 +121,31 @@ public class LevelManager : MonoBehaviour
                         if(_isZoomed)
                         {
                             CameraZoomOut();
-                            SilhouetteCharacter(_selectedStageChar);
+//                            SilhouetteCharacter(_selectedStageChar);
                             BeginMoveBackAnimation(_selectedStageChar);
 
                         }
                         else if(!_isZoomed)
                         {
                             CameraFocusOnStage(go);
-                            IlluminateCharacter(go);
+//                            IlluminateCharacter(go);
                             BeginMoveForwardAnimation(go);
                         }
                     }
                     else if(_selectedStageChar != go)
                     {
                         CameraFocusOnStage(go);
-                        IlluminateCharacter(go);
+//                        IlluminateCharacter(go);
                         BeginMoveForwardAnimation(go);
 
-                        SilhouetteCharacter(_selectedStageChar);
+//                        SilhouetteCharacter(_selectedStageChar);
                         BeginMoveBackAnimation(_selectedStageChar);
                     }
                 }
                 else
                 {
                     CameraFocusOnStage(go);
-                    IlluminateCharacter(go);
+//                    IlluminateCharacter(go);
                     BeginMoveForwardAnimation(go);
                 }
 
@@ -148,7 +155,7 @@ public class LevelManager : MonoBehaviour
         else if(go == null && _selectedStageChar != null)
         {
             CameraZoomOut();
-            SilhouetteCharacter(_selectedStageChar);
+//            SilhouetteCharacter(_selectedStageChar);
             BeginMoveBackAnimation(_selectedStageChar);
         }
     }
@@ -241,7 +248,7 @@ public class LevelManager : MonoBehaviour
 
         if(_selectedStageChar != null)
         {
-            SilhouetteCharacter(_selectedStageChar);
+//            SilhouetteCharacter(_selectedStageChar);
             BeginMoveBackAnimation(_selectedStageChar);
         }
     }
@@ -259,7 +266,7 @@ public class LevelManager : MonoBehaviour
 
         if(_selectedStageChar != null)
         {
-            SilhouetteCharacter(_selectedStageChar);
+//            SilhouetteCharacter(_selectedStageChar);
             BeginMoveBackAnimation(_selectedStageChar);
         }
     }
