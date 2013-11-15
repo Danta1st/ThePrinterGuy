@@ -90,7 +90,7 @@ public class UraniumRods : MonoBehaviour
             if(pair.Key == go && pair.Value == true)
             {
                 Hammer(go);
-
+				GestureManager.OnTap -= TriggerHammer;
                 if(OnRodHammered != null)
 					OnRodHammered();
 				i++;
@@ -101,6 +101,8 @@ public class UraniumRods : MonoBehaviour
 
     private void Hammer(GameObject go)
     {
+		if(go == null)
+			return;
 		GestureManager.OnTap -= TriggerHammer;
         iTween.MoveTo(go, iTween.Hash("y", go.transform.localPosition.y - 1, "time", _inTime,
                                         "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
@@ -110,7 +112,7 @@ public class UraniumRods : MonoBehaviour
 	{
 		_rodsAndStates[go] = false;
 	}
-    //Reset all the rods
+    //Reset all the rods and disables GestureManager (Called on Failed)
     private void Reset()
     {
         foreach(GameObject go in _rods)

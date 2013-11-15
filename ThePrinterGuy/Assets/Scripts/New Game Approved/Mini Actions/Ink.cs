@@ -16,10 +16,12 @@ public class Ink : MonoBehaviour
     private float _openTime     = 0.5f;
     private float _closeTime    = 0.5f;
     private float _waitTime     = 1f;
+	private bool isRealOne = false;
 	
 	//Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private float _inkMoveSpeed		= 0.4f;
+	private bool _canSlide = true;
 	
 	public delegate void OnInkInsertedAction();
     public static event OnInkInsertedAction OnCorrectInkInserted;
@@ -33,13 +35,9 @@ public class Ink : MonoBehaviour
 		}
 	}
 	
-	void Update () 
-	{
-		
-	}
-	
 	void OnEnable()
 	{
+		
 		ActionSequencerManager.OnInkNode += StartInkTask;
 		ActionSequencerItem.OnFailed += InkReset;
 	}
@@ -167,19 +165,28 @@ public class Ink : MonoBehaviour
 	#endregion
 	
 	#region Insertable Ink
-	private void InsertCartridge(GameObject go, Vector2 lol)
+	private void InsertCartridge(GameObject go)
 	{
-		if(go == null)
+		if(go == null || !_canSlide)
 			return;
 		InkCartridgeClass currIcc = null;
-		foreach(InkCartridgeClass icc in _machineInks)
+		InkCartridgeClass icc;
+		int j = 0;
+		for(int i = 0; i < _machineInks.Count; i++)
 		{
+			icc = _machineInks[j];
+			if(icc.cartridge == null)
+			{
+				_machineInks.Remove(icc);
+				_machineInks.TrimExcess();
+				continue;	
+			}
 			if(icc.insertableCartridge.gameObject == go)
 			{
-				
 				currIcc = icc;
 				break;
 			}
+			j++;
 		}
 		
 		if(currIcc == null)
@@ -187,6 +194,7 @@ public class Ink : MonoBehaviour
 		
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
+			_canSlide = false;
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.cartridge.transform.position, 
 						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 			
@@ -203,22 +211,31 @@ public class Ink : MonoBehaviour
 	{
 		icc.cartridgeEmpty = false;
 		icc.cartridge.gameObject.SetActive(true);
-		GestureManager.OnTap -= InsertCartridge;
-		//GestureManager.OnSwipeRight -= InsertCartridge;
+		icc.cartridge.GetComponentInChildren<ParticleSystem>().Emit(10);
+		GestureManager.OnSwipeRight -= InsertCartridge;
 		icc.insertableCartridge.position = icc.insertableStartPos;
-		
+		_canSlide = true;
 	}
 	
 	private void InkReset()
 	{
-		foreach(InkCartridgeClass icc in _machineInks)
+		InkCartridgeClass icc;
+		int j = 0;
+		for(int i = 0; i < _machineInks.Count; i++)
 		{
-			icc.cartridgeEmpty = false;
+			icc = _machineInks[j];
+			if(icc.cartridge == null)
+			{
+				_machineInks.Remove(icc);
+				_machineInks.TrimExcess();
+				continue;	
+			}
 			icc.cartridge.gameObject.SetActive(true);
+			icc.cartridgeEmpty = false;
 			icc.insertableCartridge.gameObject.SetActive(false);
+			j++;
 		}
-		GestureManager.OnTap -= InsertCartridge;
-		//GestureManager.OnSwipeRight -= InsertCartridge;
+		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
 	private void StartInkTask()
@@ -242,8 +259,7 @@ public class Ink : MonoBehaviour
                 identifier = 0;
         }
 		
-		GestureManager.OnTap += InsertCartridge;
-		//GestureManager.OnSwipeRight += InsertCartridge;
+		GestureManager.OnSwipeRight += InsertCartridge;
 		StartGates();
 	}
 	
