@@ -61,7 +61,7 @@ public class ActionSequencerManager : MonoBehaviour {
     {
 		_guiGameCam = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _timer = gameObject.AddComponent<TimerUtilities>();
-        _startTimeStamp = 40;
+        _startTimeStamp = 300;
         _timer.StartTimer(_startTimeStamp, true);
         _timer.ResumeTimer();
 	}
