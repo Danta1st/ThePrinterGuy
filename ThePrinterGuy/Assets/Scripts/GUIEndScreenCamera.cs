@@ -34,7 +34,6 @@ public class GUIEndScreenCamera : MonoBehaviour {
     private bool _canTouch = true;
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
-	private float _delay = 0.5f;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -229,7 +228,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		EnableGUIElementAll();
 		GestureManager.OnTap += CheckCollision;
 		_levelScore = score;
-		
+
 		StartCoroutine("MoveEstimateBar");
 	}
 	
@@ -264,7 +263,6 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	
 	IEnumerator MoveEstimateBar()
 	{
-		bool run = true;
 		
 		Vector3 scoreBarPos = _progressBar.transform.localPosition;
 		Vector3 scoreBarScale = _progressBar.transform.localScale;
@@ -278,25 +276,37 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		_progressBar.transform.localScale = scoreBarScale;
 		_progressBar.transform.localPosition = scoreBarPos;
 		
-		float scoreScale = (float)_levelScore / (float)_targetScores[0];
-		
-		while(run)
-		{	
-			if (scoreBarScale.x != scoreScale)
+		for(int i = 0; i < _levelScore;)
+		{
+			if(((_levelScore - i) / 1000) > 1)
 			{
-				scoreBarScale.x = Mathf.Lerp(startPos, scoreScale, Time.time);
-				deltaScale = scoreBarScale.x - _progressBar.transform.localScale.x;
-				int score =  (int)Mathf.Lerp(0f, _levelScore, Time.time);
-				ShowScore(score);
-				_progressBar.transform.localScale = scoreBarScale;
-				scoreBarPos.x = scoreBarPos.x + deltaScale / 2f;
-				_progressBar.transform.localPosition = scoreBarPos;
+				i += 1000;
+			}
+			else if(((_levelScore - i) / 100) > 1)
+			{
+				i += 100;
+			}
+			else if(((_levelScore - i) / 50) > 1)
+			{
+				i += 50;
 			}
 			else
 			{
-				run = false;
+				i++;
 			}
-			yield return new WaitForSeconds(_delay);
+			ShowScore(i);
+			
+			scoreBarScale.x = (float)i / (float)_targetScores[0];
+			deltaScale = scoreBarScale.x - _progressBar.transform.localScale.x;
+			_progressBar.transform.localScale = scoreBarScale;
+			scoreBarPos.x = scoreBarPos.x + deltaScale / 2f;
+			_progressBar.transform.localPosition = scoreBarPos;
+	
+			yield return new WaitForSeconds(0.1f);
 		}
+		
 	}
+			
+
+
 }
