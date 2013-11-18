@@ -17,6 +17,8 @@ public class ActionSequencerItem : MonoBehaviour
     private ActionSequencerZone _actionSequencerScript;
     private string _statusZone = "";
     private int _zone = 0;
+    private float _timeStamp = 0.0f;
+    private float _delay = 0.0f;
 
     private Vector3 _destinationPosition;
     #endregion
@@ -26,13 +28,21 @@ public class ActionSequencerItem : MonoBehaviour
     public static event FailedAction OnFailed;
     #endregion
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _destinationPosition = GameObject.Find("DeadZone").transform.position;
 
-        ScaleSize();
+        _timeStamp = Time.time;
+        _delay = _timeStamp % _ms;
+
+        StartCoroutine("OnStartTween");
+    }
+
+    // Use this for initialization
+    void Start()
+    {
+
     }
 
     // Update is called once per frame
@@ -59,11 +69,20 @@ public class ActionSequencerItem : MonoBehaviour
         }
     }
 
-    private void ScaleSize()
+    private IEnumerator OnStartTween()
     {
+        Debug.Log(_timeStamp);
+        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms));
+        yield return new WaitForSeconds(_ms+_delay);
+        OnContinueTween();
+    }
+
+    private void OnContinueTween()
+    {
+    Debug.Log(_timeStamp);
         iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms, "looptype", iTween.LoopType.loop));
         iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "speed", _actionSequencerItemSpeed,
-                                                "easeType", _easeTypeActionSequencerItem));
+                                                    "easeType", _easeTypeActionSequencerItem));
     }
 
     public int GetZoneStatus()
