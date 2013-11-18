@@ -148,22 +148,24 @@ public class GenericSoundScript : MonoBehaviour
         _audioSource.pitch = thisEndPitch;
     }
 
-    public void SetPitch(float endPitch, float time)
-    {
-        float thisEndPitch = Mathf.Clamp(endPitch, _pitchMIN, _pitchMAX);
-
-        float i = 0.0f;
-        float rate = 1.0f/time;
-        float currentPitch = _currentPitch;
-
-        while (i < 1.0f)
-        {
-             i += Time.deltaTime * rate;
-             _audioSource.pitch = Mathf.Lerp(currentPitch, thisEndPitch, i);
-             _currentPitch = _audioSource.pitch;
-             break;
-        }
-    }
+//    public void SetPitch(float endPitch, float time)
+//    {
+//        float thisEndPitch = Mathf.Clamp(endPitch, _pitchMIN, _pitchMAX);
+//
+//        float i = 0.0f;
+//        float rate = 1.0f/time;
+//        float currentPitch = _currentPitch;
+//
+//        while (i < 1.0f)
+//        {
+//             i += Time.deltaTime * rate;
+//             _audioSource.pitch = Mathf.Lerp(currentPitch, thisEndPitch, i);
+//             _currentPitch = _audioSource.pitch;
+//             break;
+//        }
+//
+//        Debug.Log(_audioSource.pitch);
+//    }
 
     public void SetPitch(float startPitch, float endPitch, float time)
     {
@@ -198,22 +200,24 @@ public class GenericSoundScript : MonoBehaviour
         _audioSource.volume = thisNewVolume;
     }
 
-    public void SetVolume(float newVolume, float time)
-    {
-        float thisNewVolume = Mathf.Clamp(newVolume, _volumeMIN, _volumeMAX);
-
-        float i = 0.0f;
-        float rate = 1.0f/time;
-        float currentVolume = _currentVolume;
-
-        while (i < 1.0f)
-        {
-             i += Time.deltaTime * rate;
-             _audioSource.volume = Mathf.Lerp(currentVolume, thisNewVolume, i);
-             _currentVolume = _audioSource.volume;
-             break;
-        }
-    }
+//    public void SetVolume(float newVolume, float time)
+//    {
+//        float thisNewVolume = Mathf.Clamp(newVolume, _volumeMIN, _volumeMAX);
+//
+//        float i = 0.0f;
+//        float rate = 1.0f/time;
+//        float currentVolume = _currentVolume;
+//
+//        while (i < 1.0f)
+//        {
+//             i += Time.deltaTime * rate;
+//             _audioSource.volume = Mathf.Lerp(currentVolume, thisNewVolume, i);
+//             _currentVolume = _audioSource.volume;
+//             break;
+//        }
+//
+//        Debug.Log(_audioSource.volume);
+//    }
 
     public void SetVolume(float startVolume, float endVolume, float time)
     {
