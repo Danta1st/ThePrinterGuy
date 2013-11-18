@@ -3,18 +3,22 @@ using System.Collections;
 
 public class ActionSequencerItem : MonoBehaviour
 {
+    #region SerializeField
+    [SerializeField]
+    private float _ms;
+    [SerializeField]
+    private float _actionSequencerItemSpeed;
+    [SerializeField]
+    private iTween.EaseType _easeTypeActionSequencerItem;
+    #endregion
+
     #region Private Variables
     private GUIGameCamera _guiGameCameraScript;
     private ActionSequencerZone _actionSequencerScript;
     private string _statusZone = "";
     private int _zone = 0;
 
-    private float _speed = 40.0f;
-    private float _startTime;
-    private float _journeyLength;
-    private bool _back = false;
-    private Vector3 _startSize;
-    private Vector3 _newSize;
+    private Vector3 _destinationPosition;
     #endregion
 
     #region Delegates and Events
@@ -26,18 +30,15 @@ public class ActionSequencerItem : MonoBehaviour
     void Start()
     {
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
+        _destinationPosition = GameObject.Find("DeadZone").transform.position;
 
-        _startSize = transform.localScale;
-        _newSize = new Vector3(transform.localScale.x*1.2f, transform.lossyScale.y*1.2f, transform.localScale.z);
-
-        _startTime = Time.time;
-        _journeyLength = Vector3.Distance(_startSize, _newSize);
+        ScaleSize();
     }
 
     // Update is called once per frame
     void Update()
     {
-        ScaleSize();
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -60,31 +61,9 @@ public class ActionSequencerItem : MonoBehaviour
 
     private void ScaleSize()
     {
-        float _distCovered = (Time.time - _startTime) * _speed;
-        float _fracJourney = _distCovered / _journeyLength;
-
-        if(_fracJourney > 1.0f)
-        {
-            _startTime = Time.time;
-            _fracJourney = 0.0f;
-            if(_back)
-            {
-                _back = false;
-            }
-            else
-            {
-                _back = true;
-            }
-        }
-
-        if(_back)
-        {
-            transform.localScale = Vector3.Lerp(_newSize, _startSize, _fracJourney);
-        }
-        else
-        {
-            transform.localScale = Vector3.Lerp(_startSize, _newSize, _fracJourney);
-        }
+        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms, "looptype", iTween.LoopType.loop));
+        iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "speed", _actionSequencerItemSpeed,
+                                                "easeType", _easeTypeActionSequencerItem));
     }
 
     public int GetZoneStatus()
