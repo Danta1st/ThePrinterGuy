@@ -10,14 +10,23 @@ public class UraniumRods : MonoBehaviour
     [SerializeField]
     private iTween.EaseType _easeTypeIn = iTween.EaseType.easeOutBack;
     [SerializeField]
-    private GameObject[] _rods;
+    private RodSet[] _rods;
+	[SerializeField]
+	private ParticleSystem _particleSystemStars;
+	[SerializeField]
+	private ParticleSystem _particleSystemSmoke;
     #endregion
 
     #region Privates
     private float _outTime = 0.5f;
     private float _inTime = 0.2f;
 	private GameObject _currRod;
+	private bool failed = false;
+	ParticleSystem _particleSmoke;
+	ParticleSystem _particleStars;
+	private GameObject _dynamicObjects;
     private Dictionary<GameObject, bool> _rodsAndStates = new Dictionary<GameObject, bool>();
+    private GenericSoundScript GSS;
     #endregion
 
     #region Delegates & Events
@@ -39,6 +48,16 @@ public class UraniumRods : MonoBehaviour
 
     void Awake()
     {
+
+		_dynamicObjects = GameObject.Find("Dynamic Objects");
+		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		_particleSmoke.transform.parent = _dynamicObjects.transform;
+		_particleStars.transform.parent = _dynamicObjects.transform;
+
+        GSS = transform.GetComponentInChildren<GenericSoundScript>();
+
         SetStates();
     }
 
@@ -46,9 +65,11 @@ public class UraniumRods : MonoBehaviour
     //Initialise the states for each game object
     private void SetStates()
     {
-        foreach(GameObject go in _rods)
+        for(int i = 0; i < _rods.Length; i++)
         {
-            _rodsAndStates.Add(go, false);
+			_rods[i].startPos = _rods[i].rod.transform.localPosition.y;
+			_rods[i].endPos = _rods[i].rod.transform.localPosition.y + 0.7f;
+            _rodsAndStates.Add(_rods[i].rod, false);
         }
     }
 
@@ -60,12 +81,26 @@ public class UraniumRods : MonoBehaviour
 
         for(int i = 0; i < _rods.Length; i++)
         {
-            var go = _rods[identifier];
+            var go = _rods[identifier].rod;
 			
             if(_rodsAndStates[go] == false)
             {
-                Spring(go);
+
+                Spring(go, identifier);
+
+                GSS.PlayClip(i);
+                Spring(go, identifier);
+
                 _rodsAndStates[go] = true;
+				foreach(Transform child in go.transform)
+				{
+					if(child.name.Equals("ParticlePos"))
+					{
+						_particleSmoke.transform.position = child.position;
+						_particleSmoke.transform.rotation = child.rotation;
+						_particleSmoke.Play();
+					}
+				}
                 break;
             }
             identifier++;
@@ -75,9 +110,9 @@ public class UraniumRods : MonoBehaviour
         }
     }
 
-    private void Spring(GameObject go)
+    private void Spring(GameObject go, int identifier)
     {
-        iTween.MoveTo(go, iTween.Hash("y", go.transform.localPosition.y + 1, "time", _outTime,
+        iTween.MoveTo(go, iTween.Hash("y", _rods[identifier].endPos, "time", _outTime,
                                         "islocal", true, "easetype", _easeTypeOut));
     }
 
@@ -89,6 +124,11 @@ public class UraniumRods : MonoBehaviour
         {
             if(pair.Key == go && pair.Value == true)
             {
+
+				failed = false;
+
+                GSS.PlayClip(3);
+
                 Hammer(go);
 				GestureManager.OnTap -= TriggerHammer;
                 if(OnRodHammered != null)
@@ -104,24 +144,58 @@ public class UraniumRods : MonoBehaviour
 		if(go == null)
 			return;
 		GestureManager.OnTap -= TriggerHammer;
-        iTween.MoveTo(go, iTween.Hash("y", go.transform.localPosition.y - 1, "time", _inTime,
-                                        "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
+		_particleSmoke.Stop();
+		
+		for(int i = 0; i < _rods.Length; i++)
+		{
+			if(_rods[i].rod == go)
+			{
+				iTween.MoveTo(go, iTween.Hash("y", _rods[i].startPos, "time", _inTime,
+                             "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
+			}
+		}
     }
 	
 	private void HammerComplete(GameObject go)
 	{
+		if(!failed)
+		{
+			foreach(Transform child in go.transform)
+			{
+				if(child.name.Equals("ParticlePos"))
+				{
+					_particleStars.transform.position = child.position;
+					_particleStars.transform.rotation = child.rotation;
+					_particleStars.Play();
+				}
+			}
+		}
+		failed = false;
 		_rodsAndStates[go] = false;
 	}
     //Reset all the rods and disables GestureManager (Called on Failed)
     private void Reset()
     {
-        foreach(GameObject go in _rods)
+		GameObject go;
+		for(int i = 0; i < _rods.Length; i++)
         {
+			go = _rods[i].rod;
             if(_rodsAndStates[go] == true)
             {
+				failed = true;
                 Hammer(go);
             }
         }
     }
     #endregion
+	
+	[System.Serializable]
+    public class RodSet
+    {
+        public GameObject rod;
+		[HideInInspector]
+        public float startPos;
+		[HideInInspector]
+		public float endPos;
+    };
 }
