@@ -18,7 +18,6 @@ public class Ink : MonoBehaviour
     private float _openTime     = 0.5f;
     private float _closeTime    = 0.5f;
     private float _waitTime     = 1f;
-	private bool isRealOne = false;
     private GenericSoundScript GSS;
 	
 	//Slide variables
