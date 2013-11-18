@@ -11,6 +11,8 @@ public class PathManager : MonoBehaviour {
     [SerializeField] private Transform _inkFocus;
     [SerializeField] private Transform _barometerFocus;
     [SerializeField] private Transform _paperFocus;
+	
+	[SerializeField] private Transform _overviewFocus;
     #endregion
 
     #region Privates
@@ -51,9 +53,24 @@ public class PathManager : MonoBehaviour {
     #endregion
 
     #region Class Methods
+	private void TriggerMoveBegin()
+	{
+		if(_lookingAt != null)
+		{
+			if(_lookingAt == _paperFocus)
+				MoveReversed("BeginPaper", _overviewFocus);
+			else if(_lookingAt == _uraniumFocus)
+				MoveReversed("BeginUranium", _overviewFocus);
+			else if(_lookingAt == _barometerFocus)
+				MoveReversed("BeginBarometer", _overviewFocus);
+			else if(_lookingAt == _inkFocus)
+				MoveReversed("BeginInk", _overviewFocus);
+		}
+	}
+	
     private void TriggerMoveUranium()
     {
-		if(_lookingAt == null)
+		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginUranium",_uraniumFocus);
         else if(_lookingAt == _paperFocus)
             Move("PaperUranium", _uraniumFocus);
@@ -65,7 +82,7 @@ public class PathManager : MonoBehaviour {
 
     private void TriggerMoveInk()
     {
-		if(_lookingAt == null)
+		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginInk",_inkFocus);
         else if(_lookingAt == _paperFocus)
             Move("PaperInk", _inkFocus);
@@ -77,7 +94,7 @@ public class PathManager : MonoBehaviour {
 
     private void TriggerMoveBarometer()
     {
-		if(_lookingAt == null)
+		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginBarometer",_barometerFocus);
         else if(_lookingAt == _paperFocus)
             Move("PaperBarometer", _barometerFocus);
@@ -89,7 +106,7 @@ public class PathManager : MonoBehaviour {
 
     private void TriggerMovePaper()
     {
-		if(_lookingAt == null)
+		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginPaper",_paperFocus);
         else if(_lookingAt == _uraniumFocus)
             MoveReversed("PaperUranium",_paperFocus);
