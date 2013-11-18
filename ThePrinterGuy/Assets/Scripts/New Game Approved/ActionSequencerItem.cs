@@ -5,25 +5,20 @@ public class ActionSequencerItem : MonoBehaviour
 {
     #region SerializeField
     [SerializeField]
-    private string _moduleName;
+    private float _ms;
+    [SerializeField]
+    private float _actionSequencerItemSpeed;
+    [SerializeField]
+    private iTween.EaseType _easeTypeActionSequencerItem;
     #endregion
 
     #region Private Variables
-    private GameObject _frequencyAnalyzerObject;
-    private FrequencyAnalyzer _frequencyAnalyzerScript;
     private GUIGameCamera _guiGameCameraScript;
     private ActionSequencerZone _actionSequencerScript;
     private string _statusZone = "";
     private int _zone = 0;
 
-    private float _refreshStep = 0.0f;
-    private float _currentFrequency;
-    private float _newFrequency;
-    private float _step = 0.0f;
-    private float _multiplier = 0.0f;
-    private Vector3 _startSize;
-    private Vector3 _newSize;
-    private bool _isBack = false;
+    private Vector3 _destinationPosition;
     #endregion
 
     #region Delegates and Events
@@ -35,44 +30,15 @@ public class ActionSequencerItem : MonoBehaviour
     void Start()
     {
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
+        _destinationPosition = GameObject.Find("DeadZone").transform.position;
 
-        _startSize = transform.localScale;
-        _newSize = transform.localScale;
-
-        _frequencyAnalyzerObject = GameObject.Find(_moduleName).gameObject;
-
-        if(_frequencyAnalyzerObject != null)
-        {
-            _frequencyAnalyzerScript = _frequencyAnalyzerObject.GetComponent<FrequencyAnalyzer>();
-
-            _newFrequency = _frequencyAnalyzerScript.GetPitch() / 900f;
-            _currentFrequency = _newFrequency;
-        }
+        ScaleSize();
     }
 
     // Update is called once per frame
     void Update()
     {
-        _refreshStep += Time.deltaTime;
 
-        if(_frequencyAnalyzerObject != null && _refreshStep > 0.25f)
-        {
-            _refreshStep = 0.0f;
-            //_multiplier = _frequencyAnalyzerScript.GetPitch() / 900f;
-
-//            if(_multiplier < 0.5f)
-//            {
-//                _multiplier = 0.5f;
-//            }
-            _newFrequency = _frequencyAnalyzerScript.GetPitch();
-        }
-
-        if(_frequencyAnalyzerObject != null)
-        {
-            //_newSize = new Vector3(_startSize.x*_multiplier, _startSize.y, _startSize.z);
-            Debug.Log(_frequencyAnalyzerScript.GetPitch());
-            ScaleSize();
-        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -95,43 +61,10 @@ public class ActionSequencerItem : MonoBehaviour
 
     private void ScaleSize()
     {
-        _step += Time.deltaTime;
-
-        if(_step > 0.25f)
-        {
-            _step = 0.0f;
-            _currentFrequency = _newFrequency;
-        }
-
-        //transform.localScale =
+        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms, "looptype", iTween.LoopType.loop));
+        iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "speed", _actionSequencerItemSpeed,
+                                                "easeType", _easeTypeActionSequencerItem));
     }
-
-//    private void ScaleSize()
-//    {
-//        _step += Time.deltaTime;
-//
-//        if(_step > 1.0f)
-//        {
-//            _step = 0.0f;
-//            if(_isBack)
-//            {
-//                _isBack = false;
-//            }
-//            else
-//            {
-//                _isBack = true;
-//            }
-//        }
-//
-//        if(_isBack)
-//        {
-//            transform.localScale = Vector3.Lerp(_newSize, _startSize, _step);
-//        }
-//        else
-//        {
-//            transform.localScale = Vector3.Lerp(_startSize, _newSize, _step);
-//        }
-//    }
 
     public int GetZoneStatus()
     {
