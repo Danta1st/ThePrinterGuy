@@ -17,6 +17,7 @@ public class Ink : MonoBehaviour
     private float _closeTime    = 0.5f;
     private float _waitTime     = 1f;
 	private bool isRealOne = false;
+    private GenericSoundScript GSS;
 	
 	//Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
@@ -29,6 +30,8 @@ public class Ink : MonoBehaviour
 
 	void Awake () 
 	{
+        GSS = transform.GetComponentInChildren<GenericSoundScript>();
+
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			icc.insertableStartPos = icc.insertableCartridge.position;
@@ -71,6 +74,7 @@ public class Ink : MonoBehaviour
 	
 	IEnumerator OpenGate(InkCartridgeClass icc)
     {
+        GSS.PlayClip(Random.Range(0,3));
 		GameObject go = icc.lid;
         if(!icc.lidIsOpen)
         {

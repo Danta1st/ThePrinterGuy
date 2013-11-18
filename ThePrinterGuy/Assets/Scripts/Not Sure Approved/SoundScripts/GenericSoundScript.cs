@@ -103,12 +103,15 @@ public class GenericSoundScript : MonoBehaviour
 
     public void PlayClip(int index)
     {
-        if(_randomPitchOnPlay)
+        if(_audioSource != null)
         {
-            RandomPitch();
-        }
+            if(_randomPitchOnPlay)
+            {
+                RandomPitch();
+            }
 
-        _audioSource.PlayOneShot(_audioClips[index]);
+            _audioSource.PlayOneShot(_audioClips[index]);
+        }
     }
 
     private IEnumerator PlayLoopingClip(AudioClip thisClip)

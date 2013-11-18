@@ -10,6 +10,7 @@ public class Barometer : MonoBehaviour
     #region Privates
 	private float _normalRotationSpeed = 45;
 	private float _brokenRotationSpeed = 720;
+    private GenericSoundScript GSS;
     #endregion
 
     #region Delegates & Events
@@ -34,6 +35,7 @@ public class Barometer : MonoBehaviour
 	#region Monobehaviour Functions
 	void Awake () 
 	{
+        GSS = transform.GetComponentInChildren<GenericSoundScript>();
 		InitializeBarometers();
 	}
 	
@@ -119,6 +121,7 @@ public class Barometer : MonoBehaviour
 	
 	private void FixBarometer(int i)
 	{
+        GSS.PlayClip(i);
 		_barometers[i].rotationSpeed = _normalRotationSpeed;
 		_barometers[i].isBroken = false;
 		
