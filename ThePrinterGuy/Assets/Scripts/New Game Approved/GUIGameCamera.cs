@@ -73,7 +73,7 @@ public class GUIGameCamera : MonoBehaviour
 	public delegate void OnUpdateActionAction();
 	public static event OnUpdateActionAction OnUpdateAction;
 
-    public delegate void GameEndedAction();
+    public delegate void GameEndedAction(int score);
     public static event GameEndedAction OnGameEnded;
 	#endregion
 
@@ -591,7 +591,7 @@ public class GUIGameCamera : MonoBehaviour
         {
             if(OnGameEnded != null)
             {
-                OnGameEnded();
+                OnGameEnded(_score);
             }
         }
     }
