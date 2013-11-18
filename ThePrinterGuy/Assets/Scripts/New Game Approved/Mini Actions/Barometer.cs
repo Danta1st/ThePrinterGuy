@@ -5,11 +5,17 @@ public class Barometer : MonoBehaviour
 {
     #region Editor Publics
 	[SerializeField] Barometers[] _barometers;
+	[SerializeField] ParticleSystem _particleSystemStars;
+	[SerializeField] ParticleSystem _particleSystemSmoke;
     #endregion
 
     #region Privates
 	private float _normalRotationSpeed = 45;
 	private float _brokenRotationSpeed = 720;
+	private ParticleSystem _particleStars;
+	private ParticleSystem _particleSmoke;
+	private GameObject _dynamicObjects;
+	
     #endregion
 
     #region Delegates & Events
@@ -17,21 +23,29 @@ public class Barometer : MonoBehaviour
 	public static event OnBarometerFixedAction OnBarometerFixed;
     #endregion
 
+    
     //TODO: Insert Proper connectivity to the Action Sequencer
+	//TODO: Handle gesture allowance
     void OnEnable()
     {
-		QATestCamera.OnBarometerBreak += TriggerBreakBarometer;
-		GestureManager.OnDoubleTap += TriggerFixBarometer;
+		ActionSequencerManager.OnBarometerNode += TriggerBreakBarometer;
+		ActionSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
-		QATestCamera.OnBarometerBreak -= TriggerBreakBarometer;
-		GestureManager.OnDoubleTap -= TriggerFixBarometer;
+		ActionSequencerManager.OnBarometerNode -= TriggerBreakBarometer;
+		ActionSequencerItem.OnFailed -= Reset;
     }
 	
 	#region Monobehaviour Functions
-	void Start () 
+	void Awake () 
 	{
+		_dynamicObjects = GameObject.Find("Dynamic Objects");
+		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		_particleSmoke.transform.parent = _dynamicObjects.transform;
+		_particleStars.transform.parent = _dynamicObjects.transform;
 		InitializeBarometers();
 	}
 	
@@ -79,6 +93,7 @@ public class Barometer : MonoBehaviour
 	
 	private void TriggerBreakBarometer()
 	{
+		GestureManager.OnDoubleTap += TriggerFixBarometer;
         var identifier = Random.Range(0,_barometers.Length);
 
         for(int i = 0; i < _barometers.Length; i++)
@@ -97,6 +112,15 @@ public class Barometer : MonoBehaviour
 	
 	private void BreakBarometer(int i)
 	{
+		foreach(Transform child in _barometers[i].barometer.transform)
+		{
+			if(child.name.Equals("ParticlePos"))
+			{
+				_particleSmoke.transform.position = child.position;
+				_particleSmoke.transform.rotation = child.rotation;
+				_particleSmoke.Play();
+			}
+		}
 		_barometers[i].rotationSpeed = _brokenRotationSpeed;
 		_barometers[i].isBroken = true;
 	}
@@ -108,6 +132,7 @@ public class Barometer : MonoBehaviour
 			if(_barometers[i].isBroken == true && _barometers[i].barometer == go)
 			{
 				FixBarometer(i);
+				GestureManager.OnDoubleTap -= TriggerFixBarometer;
 				break;
 			}
         }
@@ -117,9 +142,31 @@ public class Barometer : MonoBehaviour
 	{
 		_barometers[i].rotationSpeed = _normalRotationSpeed;
 		_barometers[i].isBroken = false;
+		foreach(Transform child in _barometers[i].barometer.transform)
+		{
+			if(child.name.Equals("ParticlePos"))
+			{
+				_particleStars.transform.position = child.position;
+				_particleStars.transform.rotation = child.rotation;
+				_particleStars.Play();
+			}
+		}
 		
 		if(OnBarometerFixed != null)
 			OnBarometerFixed();
+	}
+	
+	private void Reset()
+	{
+		for(int i = 0; i < _barometers.Length; i++)
+        {
+			if(_barometers[i].isBroken == true)
+			{
+				_barometers[i].rotationSpeed = _normalRotationSpeed;
+				_barometers[i].isBroken = false;
+			}
+        }
+		GestureManager.OnDoubleTap -= TriggerFixBarometer;
 	}
 	#endregion
 	

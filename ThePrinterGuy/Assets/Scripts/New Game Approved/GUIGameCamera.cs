@@ -14,7 +14,16 @@ public class GUIGameCamera : MonoBehaviour
     private GameObject[] _textList;
 	[SerializeField]
 	private iTween.EaseType _easeTypeIngameMenu;
-	[SerializeField] GameObject _popupTextPrefab;
+	[SerializeField]
+    private GameObject _popupTextPrefab;
+    [SerializeField]
+    private GameObject _inkPrefab;
+    [SerializeField]
+    private GameObject _paperPrefab;
+    [SerializeField]
+    private GameObject _uraniumRodPrefab;
+    [SerializeField]
+    private GameObject _barometerPrefab;
     #endregion
 
     #region Private Variables
@@ -43,17 +52,43 @@ public class GUIGameCamera : MonoBehaviour
 	private bool _isStar1Spawned;
 	private bool _isStar2Spawned;
 	private bool _isStar3Spawned;
+
+    //Action Sequencer
+    private Vector3 _spawnPoint;
+    private GameObject _sequencerObject;
+    private GameObject _queuedObject;
+    private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
+    private int _zone = 0;
+    private bool _isLastNode = false;
+	
+	//Speech bubble
+	private GameObject _speechTextObject;
+	private GUISpeechText _guiSpeechTextScript;
     #endregion
+	
+	#region Delegates & Events
+	public delegate void OnUpdateActionAction();
+	public static event OnUpdateActionAction OnUpdateAction;
+
+    public delegate void GameEndedAction();
+    public static event GameEndedAction OnGameEnded;
+	#endregion
 
     #region Enable and Disable
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
+        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
+        ActionSequencerManager.OnLastNode += LastNode;
+        ScoreManager.TaskCompleted += CheckZone;
     }
 
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
+        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
+        ActionSequencerManager.OnLastNode -= LastNode;
+        ScoreManager.TaskCompleted -= CheckZone;
     }
 
     public void EnableGUICamera()
@@ -148,6 +183,18 @@ public class GUIGameCamera : MonoBehaviour
 				_star2Object = _guiObject.transform.FindChild("Star2").gameObject;
 				_star3Object = _guiObject.transform.FindChild("Star3").gameObject;
             }
+
+            if(_guiObject.name == "ActionSequencer")
+            {
+                _spawnPoint = _guiObject.transform.FindChild("SpawnZone").gameObject.transform.position;
+            }
+			
+			if(_guiObject.name == "SpeechBubble")
+			{
+				_guiObject.SetActive(false);
+				_speechTextObject = _guiObject.transform.FindChild("SpeechText").gameObject;
+				_guiSpeechTextScript = _speechTextObject.GetComponent<GUISpeechText>();
+			}
         }
         //--------------------------------------------------//
 		if(GUIMainMenuCamera.languageSetting == "EN")
@@ -176,24 +223,43 @@ public class GUIGameCamera : MonoBehaviour
 		{
 			IncreaseScore(1000);
 		}
+
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            CheckZone();
+        }
+		if(Input.GetKeyDown(KeyCode.M))
+		{
+			// Writes "SpeechBubbleExample" from the LocalizationText.xml
+			EnableGUIElement("SpeechBubble");
+			_guiSpeechTextScript.WriteText("SpeechBubbleExample");
+		}
     }
     #endregion
-
+	
+	#region Public methods
+	public int GetQueueCount()
+	{
+		return _sequencerObjectQueue.Count;	
+	}
+	#endregion
+	
     #region Class Methods
 
     #region Highscore
-	public void IncreaseScore(int _amount, string popUpText)
+	public void IncreaseScore(float _amount, string popUpText)
 	{
-		_score += _amount;
+		
+		_score += (int)_amount;
 		_strScore = _score.ToString();
 		PopupText(popUpText);
 		ShowScore();
 		ShowStars();
 	}
 	
-	public void IncreaseScore(int _amount)
+	public void IncreaseScore(float _amount)
 	{
-		_score += _amount;
+		_score += (int)_amount;
 		_strScore = _score.ToString();
 		string _strAmount = _amount.ToString();
 		PopupText(_strAmount);
@@ -444,6 +510,83 @@ public class GUIGameCamera : MonoBehaviour
 	{
 		//Settings for level.	
 	}
+    #endregion
+
+    #region Action Sequencer
+    private void LastNode()
+    {
+        _isLastNode = true;
+    }
+
+    private void InstantiateNodeAction(string _itemName)
+    {
+        if(_itemName == "Paper")
+        {
+            _sequencerObject = _paperPrefab;
+        }
+        else if(_itemName == "Ink")
+        {
+            _sequencerObject = _inkPrefab;
+        }
+        else if(_itemName == "UraniumRod")
+        {
+            _sequencerObject = _uraniumRodPrefab;
+        }
+        else if(_itemName == "Barometer")
+        {
+            _sequencerObject = _barometerPrefab;
+        }
+
+        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 1);
+        GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
+        _nodeItem.transform.localScale *= _scaleMultiplierY;
+        _sequencerObjectQueue.Enqueue(_nodeItem);
+		if(_sequencerObjectQueue.Count == 1)
+		{
+			if(OnUpdateAction != null)
+	        {
+	            OnUpdateAction();
+	        }
+		}
+    }
+
+    private void CheckZone()
+    {
+        if(_sequencerObjectQueue.Count > 0)
+        {
+            _queuedObject = _sequencerObjectQueue.Peek();
+            ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
+
+            _zone = _actionSequencerItemScript.GetZoneStatus();
+            EndZone(_queuedObject);
+        }
+    }
+
+    public void EndZone(GameObject _go)
+    {
+		_sequencerObjectQueue.Dequeue();
+        _sequencerObjectQueue.TrimExcess();
+        Destroy(_go);
+        _queuedObject = null;
+		
+        if(OnUpdateAction != null)
+        {
+            OnUpdateAction();
+        }
+
+        if(_isLastNode && _sequencerObjectQueue.Count == 0)
+        {
+            if(OnGameEnded != null)
+            {
+                OnGameEnded();
+            }
+        }
+    }
+
+    public int GetZone()
+    {
+        return _zone;
+    }
     #endregion
 
     #region GUI Save and Load
