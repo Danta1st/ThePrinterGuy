@@ -281,13 +281,26 @@ public class Ink : MonoBehaviour
 		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
-	private void StartInkTask()
+	private void StartInkTask(int itemNumber)
 	{
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			icc.insertableCartridge.gameObject.SetActive(true);
 		}
-		var identifier = Random.Range(0,_machineInks.Count);
+		if(_machineInks[itemNumber] == null)
+		{
+			if(OnCorrectInkInserted != null)
+				OnCorrectInkInserted();
+			Debug.Log("ERROR INK: Number out of index!");
+			return;
+		}
+		
+		if(_machineInks[itemNumber].cartridgeEmpty == false)
+        {
+            EmptyCartridge(itemNumber);
+        }
+		
+		/*var identifier = Random.Range(0,_machineInks.Count);
 		
         for(int i = 0; i < _machineInks.Count; i++)
         {
@@ -300,7 +313,7 @@ public class Ink : MonoBehaviour
 
             if(identifier == _machineInks.Count)
                 identifier = 0;
-        }
+        }*/
 		
 		GestureManager.OnSwipeRight += InsertCartridge;
 		StartGates();

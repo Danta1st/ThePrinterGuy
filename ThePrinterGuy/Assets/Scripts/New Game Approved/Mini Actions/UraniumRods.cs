@@ -85,10 +85,36 @@ public class UraniumRods : MonoBehaviour
     }
 
     //Trigger a random rod, which is currently not up
-    private void TriggerSpring()
+    private void TriggerSpring(int itemNumber)
     {
+		if(_rods[itemNumber] == null)
+		{
+			if(OnRodHammered != null)
+				OnRodHammered();
+			Debug.Log("ERROR RODS: Number out of index!");
+			return;
+		}
 		GestureManager.OnTap += TriggerHammer;
-        var identifier = Random.Range(0, _rods.Length);
+        
+		var go = _rods[itemNumber].rod;
+		if(_rodsAndStates[go] == false)
+        {
+            GSS.PlayClip(itemNumber);
+            Spring(go, itemNumber);
+
+            _rodsAndStates[go] = true;
+			foreach(Transform child in go.transform)
+			{
+				if(child.name.Equals("ParticlePos") && _particleSmoke != null)
+				{
+					_particleSmoke.transform.position = child.position;
+					_particleSmoke.transform.rotation = child.rotation;
+					_particleSmoke.Play();
+				}
+			}
+        }
+		
+		/*var identifier = Random.Range(0, _rods.Length);
 
         for(int i = 0; i < _rods.Length; i++)
         {
@@ -115,7 +141,7 @@ public class UraniumRods : MonoBehaviour
 
             if(identifier == _rods.Length)
                 identifier = 0;
-        }
+        }*/
     }
 
     private void Spring(GameObject go, int identifier)

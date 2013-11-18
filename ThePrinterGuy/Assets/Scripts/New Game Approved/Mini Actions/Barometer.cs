@@ -102,10 +102,24 @@ public class Barometer : MonoBehaviour
         }
 	}
 	
-	private void TriggerBreakBarometer()
+	private void TriggerBreakBarometer(int itemNumber)
 	{
+		if(_barometers[itemNumber] == null)
+		{
+			if(OnBarometerFixed != null)
+				OnBarometerFixed();
+			Debug.Log("ERROR: Number out of index!");
+			return;
+		}
+			
 		GestureManager.OnDoubleTap += TriggerFixBarometer;
-        var identifier = Random.Range(0,_barometers.Length);
+		
+		if(_barometers[itemNumber].isBroken == false)
+        {
+            BreakBarometer(itemNumber);
+        }
+		
+        /* var identifier = Random.Range(0,_barometers.Length);
 
         for(int i = 0; i < _barometers.Length; i++)
         {
@@ -118,7 +132,7 @@ public class Barometer : MonoBehaviour
 
             if(identifier == _barometers.Length)
                 identifier = 0;
-        }
+        }*/
 	}
 	
 	private void BreakBarometer(int i)

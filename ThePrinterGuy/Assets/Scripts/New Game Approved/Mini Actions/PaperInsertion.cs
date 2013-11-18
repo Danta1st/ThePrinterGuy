@@ -166,8 +166,15 @@ public class PaperInsertion : MonoBehaviour
         }
     }
 
-    private void TriggerLight() //Trigger 1 random light
+    private void TriggerLight(int itemNumber)
     {
+		if(_paperlightset[itemNumber] == null)
+		{
+			if(OnCorrectPaperInserted != null)
+				OnCorrectPaperInserted();
+			Debug.Log("ERROR PAPER: Number out of index!");
+			return;
+		}
 		foreach(Transform child in gameObject.transform)
 		{
 			if(child.name.Equals("ParticlePos") && _particleSmoke != null)
@@ -177,7 +184,13 @@ public class PaperInsertion : MonoBehaviour
 				_particleSmoke.Play();
 			}
 		}
-        var identifier = Random.Range(0,_paperlightset.Length);
+		if(_paperlightset[itemNumber].isOn == false)
+        {
+            GSS.PlayClip(Random.Range(3, 4));
+            TurnOnLight(itemNumber);
+        }
+        
+		/*var identifier = Random.Range(0,_paperlightset.Length);
 
         for(int i = 0; i < _paperlightset.Length; i++)
         {
@@ -191,7 +204,7 @@ public class PaperInsertion : MonoBehaviour
 
             if(identifier == _paperlightset.Length)
                 identifier = 0;
-        }
+        }*/
     }
 
     private void TurnOnLight(int i)
@@ -230,7 +243,7 @@ public class PaperInsertion : MonoBehaviour
         }
     }
 
-    private void EnablePaper()
+    private void EnablePaper(int temp)
     {
 		GestureManager.OnSwipeUp += TriggerSlide;
         for(int i = 0; i < _paperlightset.Length; i++)
