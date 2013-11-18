@@ -68,7 +68,7 @@ public class PathManager : MonoBehaviour {
 		}
 	}
 	
-    private void TriggerMoveUranium()
+    private void TriggerMoveUranium(int itemNumber)
     {
 		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginUranium",_uraniumFocus);
@@ -80,7 +80,7 @@ public class PathManager : MonoBehaviour {
             MoveReversed("UraniumInk", _uraniumFocus);
     }
 
-    private void TriggerMoveInk()
+    private void TriggerMoveInk(int itemNumber)
     {
 		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginInk",_inkFocus);
@@ -92,7 +92,7 @@ public class PathManager : MonoBehaviour {
             Move("BarometerInk", _inkFocus);
     }
 
-    private void TriggerMoveBarometer()
+    private void TriggerMoveBarometer(int itemNumber)
     {
 		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginBarometer",_barometerFocus);
@@ -104,7 +104,7 @@ public class PathManager : MonoBehaviour {
             MoveReversed("BarometerInk", _barometerFocus);
     }
 
-    private void TriggerMovePaper()
+    private void TriggerMovePaper(int itemNumber)
     {
 		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginPaper",_paperFocus);
