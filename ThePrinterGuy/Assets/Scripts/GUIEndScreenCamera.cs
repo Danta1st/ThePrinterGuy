@@ -157,9 +157,6 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		
 		DisableGUICamera();
 		DisableGUIElementAll();
-		
-//		DisplayEndScreenWin(100000);
-
 	}
 	
 	
@@ -246,6 +243,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		EnableGUICamera();
 		EnableGUIElementAll();
 		GestureManager.OnTap += CheckCollision;
+
 		_levelScore = score;
 		_isWin = true;
 		StartCoroutine("MoveEstimateBar");
@@ -318,28 +316,9 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		_progressBar.transform.localScale = scoreBarScale;
 		_progressBar.transform.localPosition = scoreBarPos;
 		
-		for(int i = 0; i < _levelScore;)
+		for(int i = 0; i <= _levelScore;)
 		{
-			if(((_levelScore - i) / 1000) > 1)
-			{
-				i += 1000;
-			}
-			else if(((_levelScore - i) / 100) > 1)
-			{
-				i += 100;
-			}
-			else if(((_levelScore - i) / 50) > 1)
-			{
-				i += 50;
-			}
-			else if(((_levelScore - i) / 10) > 1)
-			{
-				i += 10;
-			}
-			else
-			{
-				i++;
-			}
+			
 			ShowScore(i);
 			
 			if(i >= _targetScore.starScoreThree)
@@ -369,6 +348,27 @@ public class GUIEndScreenCamera : MonoBehaviour {
 				_progressBar.transform.localScale = scoreBarScale;
 				scoreBarPos.x = scoreBarPos.x + deltaScale / 2f;
 				_progressBar.transform.localPosition = scoreBarPos;
+			}
+			
+			if(((_levelScore - i) / 1000) > 1)
+			{
+				i += 1000;
+			}
+			else if(((_levelScore - i) / 100) > 1)
+			{
+				i += 100;
+			}
+			else if(((_levelScore - i) / 50) > 1)
+			{
+				i += 50;
+			}
+			else if(((_levelScore - i) / 10) > 1)
+			{
+				i += 10;
+			}
+			else
+			{
+				i++;
 			}
 	
 			yield return new WaitForSeconds(0.1f);
