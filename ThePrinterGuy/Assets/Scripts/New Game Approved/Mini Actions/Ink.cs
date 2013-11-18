@@ -6,6 +6,8 @@ public class Ink : MonoBehaviour
 {
 	#region Editor Publics
 	[SerializeField] private List<InkCartridgeClass> _machineInks;
+	[SerializeField] private ParticleSystem _particleSystemStars;
+	[SerializeField] private ParticleSystem _particleSystemSmoke;
     [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
     #endregion
@@ -24,13 +26,28 @@ public class Ink : MonoBehaviour
 	private float _inkMoveSpeed		= 0.4f;
 	private bool _canSlide = true;
 	
+	// Particlesystem
+	private ParticleSystem _particleStars;
+	private ParticleSystem _particleSmoke;
+	
+	private GameObject _dynamicObjects;
+	
 	public delegate void OnInkInsertedAction();
     public static event OnInkInsertedAction OnCorrectInkInserted;
     #endregion
 
 	void Awake () 
 	{
+
+		_dynamicObjects = GameObject.Find("Dynamic Objects");
+		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		_particleSmoke.transform.parent = _dynamicObjects.transform;
+		_particleStars.transform.parent = _dynamicObjects.transform;
+
         GSS = transform.GetComponentInChildren<GenericSoundScript>();
+
 
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
@@ -215,7 +232,16 @@ public class Ink : MonoBehaviour
 	{
 		icc.cartridgeEmpty = false;
 		icc.cartridge.gameObject.SetActive(true);
-		icc.cartridge.GetComponentInChildren<ParticleSystem>().Emit(10);
+		_particleSmoke.Stop();
+		foreach(Transform child in icc.cartridge.transform)
+		{
+			if(child.name.Equals("ParticlePos"))
+			{
+				_particleStars.transform.position = child.position;
+				_particleStars.transform.rotation = child.rotation;
+				_particleStars.Play();
+			}
+		}
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		icc.insertableCartridge.position = icc.insertableStartPos;
 		_canSlide = true;
@@ -224,6 +250,7 @@ public class Ink : MonoBehaviour
 	private void InkReset()
 	{
 		InkCartridgeClass icc;
+		_particleSmoke.Stop();
 		int j = 0;
 		for(int i = 0; i < _machineInks.Count; i++)
 		{
@@ -269,6 +296,15 @@ public class Ink : MonoBehaviour
 	
 	private void EmptyCartridge(int iccnumber)
 	{
+		foreach(Transform child in _machineInks[iccnumber].cartridge.transform)
+		{
+			if(child.name.Equals("ParticlePos"))
+			{
+				_particleSmoke.transform.position = child.position;
+				_particleSmoke.transform.rotation = child.rotation;
+				_particleSmoke.Play();
+			}
+		}
 		_machineInks[iccnumber].cartridgeEmpty = true;
 		_machineInks[iccnumber].cartridge.gameObject.SetActive(false);
 	}

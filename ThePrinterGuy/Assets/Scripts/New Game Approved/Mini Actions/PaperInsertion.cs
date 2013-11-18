@@ -10,8 +10,13 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
     [SerializeField] private PaperLightSet[] _paperlightset;
+
+	[SerializeField] private ParticleSystem _particleSystemStars;
+	[SerializeField] private ParticleSystem _particleSystemSmoke;
+
 //    [SerializeField] private AudioClip clipUp;
 //    [SerializeField] private AudioClip clipDown;
+
     #endregion
 
     #region Privates
@@ -31,8 +36,13 @@ public class PaperInsertion : MonoBehaviour
 	
 	//Whatever
 	private GameObject _dynamicObjects;
+
+	private ParticleSystem _particleSmoke;
+	private ParticleSystem _particleStars;    
+
     private GenericSoundScript GSS;
     #endregion
+
 
     #region Delegates & Events
     public delegate void OnPaperInsertedAction();
@@ -62,8 +72,17 @@ public class PaperInsertion : MonoBehaviour
     #region Monobehaviour Functions
 	void Awake()
 	{
+
+		_dynamicObjects = GameObject.Find("Dynamic Objects");
+		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		_particleSmoke.transform.parent = _dynamicObjects.transform;
+		_particleStars.transform.parent = _dynamicObjects.transform;
+
         GSS = transform.GetComponentInChildren<GenericSoundScript>();
 		_dynamicObjects = GameObject.Find("Dynamic Objects");	
+
 		InitializeLights();
 		DisablePaper();
 	}
@@ -138,6 +157,16 @@ public class PaperInsertion : MonoBehaviour
 
     private void TriggerLight() //Trigger 1 random light
     {
+		foreach(Transform child in gameObject.transform)
+		{
+			if(child.name.Equals("ParticlePos"))
+			{
+				
+				_particleSmoke.transform.position = child.position;
+				_particleSmoke.transform.rotation = child.rotation;
+				_particleSmoke.Play();
+			}
+		}
         var identifier = Random.Range(0,_paperlightset.Length);
 
         for(int i = 0; i < _paperlightset.Length; i++)
@@ -234,6 +263,15 @@ public class PaperInsertion : MonoBehaviour
 				iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 				
+				foreach(Transform child in gameObject.transform)
+				{
+					if(child.name.Equals("ParticlePos"))
+					{
+						_particleStars.transform.position = child.position;
+						_particleStars.transform.rotation = child.rotation;
+						_particleStars.Play();
+					}
+				}
 				if(OnCorrectPaperInserted != null)
 					OnCorrectPaperInserted();
 				
