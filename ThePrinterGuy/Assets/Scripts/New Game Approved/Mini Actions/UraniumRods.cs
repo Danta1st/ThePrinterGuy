@@ -50,9 +50,20 @@ public class UraniumRods : MonoBehaviour
     {
 
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
-		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
-		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
-		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		if(_particleSystemSmoke != null)
+		{
+			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		}
+		else
+			Debug.Log("Smoke Particle not loaded for UranRods");
+		if(_particleSystemStars != null)
+		{
+			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		}
+		else
+			Debug.Log("Star Particle not loaded for UranRods");
+		
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 
@@ -85,16 +96,13 @@ public class UraniumRods : MonoBehaviour
 			
             if(_rodsAndStates[go] == false)
             {
-
-                Spring(go, identifier);
-
                 GSS.PlayClip(i);
                 Spring(go, identifier);
 
                 _rodsAndStates[go] = true;
 				foreach(Transform child in go.transform)
 				{
-					if(child.name.Equals("ParticlePos"))
+					if(child.name.Equals("ParticlePos") && _particleSmoke != null)
 					{
 						_particleSmoke.transform.position = child.position;
 						_particleSmoke.transform.rotation = child.rotation;
@@ -124,7 +132,6 @@ public class UraniumRods : MonoBehaviour
         {
             if(pair.Key == go && pair.Value == true)
             {
-
 				failed = false;
 
                 GSS.PlayClip(3);
@@ -144,7 +151,8 @@ public class UraniumRods : MonoBehaviour
 		if(go == null)
 			return;
 		GestureManager.OnTap -= TriggerHammer;
-		_particleSmoke.Stop();
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
 		
 		for(int i = 0; i < _rods.Length; i++)
 		{
@@ -162,7 +170,7 @@ public class UraniumRods : MonoBehaviour
 		{
 			foreach(Transform child in go.transform)
 			{
-				if(child.name.Equals("ParticlePos"))
+				if(child.name.Equals("ParticlePos") && _particleStars != null)
 				{
 					_particleStars.transform.position = child.position;
 					_particleStars.transform.rotation = child.rotation;

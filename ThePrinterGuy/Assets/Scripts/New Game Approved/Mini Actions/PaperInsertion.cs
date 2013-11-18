@@ -74,9 +74,20 @@ public class PaperInsertion : MonoBehaviour
 	{
 
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
-		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
-		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
-		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		if(_particleSystemSmoke != null)
+		{
+			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		}
+		else
+			Debug.Log("Smoke Particle not loaded for Paper");
+		if(_particleSystemStars != null)
+		{
+			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		}
+		else
+			Debug.Log("Star Particle not loaded for Paper");
+		
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 
@@ -159,9 +170,8 @@ public class PaperInsertion : MonoBehaviour
     {
 		foreach(Transform child in gameObject.transform)
 		{
-			if(child.name.Equals("ParticlePos"))
+			if(child.name.Equals("ParticlePos") && _particleSmoke != null)
 			{
-				
 				_particleSmoke.transform.position = child.position;
 				_particleSmoke.transform.rotation = child.rotation;
 				_particleSmoke.Play();
@@ -265,13 +275,16 @@ public class PaperInsertion : MonoBehaviour
 				
 				foreach(Transform child in gameObject.transform)
 				{
-					if(child.name.Equals("ParticlePos"))
+					if(child.name.Equals("ParticlePos") && _particleStars != null)
 					{
 						_particleStars.transform.position = child.position;
 						_particleStars.transform.rotation = child.rotation;
 						_particleStars.Play();
 					}
 				}
+				if(_particleSmoke != null && _particleSmoke.isPlaying)
+					_particleSmoke.Stop();
+				
 				if(OnCorrectPaperInserted != null)
 					OnCorrectPaperInserted();
 				
@@ -305,6 +318,8 @@ public class PaperInsertion : MonoBehaviour
 	
 	public void Reset()
 	{
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
 		GestureManager.OnSwipeUp -= TriggerSlide;
 		DisablePaper();
 		TurnOfAllLights();

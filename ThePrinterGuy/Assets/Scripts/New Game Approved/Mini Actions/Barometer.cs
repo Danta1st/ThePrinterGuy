@@ -41,9 +41,20 @@ public class Barometer : MonoBehaviour
 	void Awake () 
 	{
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
-		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
-		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
-		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		if(_particleSystemSmoke != null)
+		{
+			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		}
+		else
+			Debug.Log("Smoke Particle not loaded for Barometer");
+		if(_particleSystemStars != null)
+		{
+			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		}
+		else
+			Debug.Log("Star Particle not loaded for Barometer");
+		
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 		InitializeBarometers();
@@ -114,7 +125,7 @@ public class Barometer : MonoBehaviour
 	{
 		foreach(Transform child in _barometers[i].barometer.transform)
 		{
-			if(child.name.Equals("ParticlePos"))
+			if(child.name.Equals("ParticlePos") && _particleSmoke != null)
 			{
 				_particleSmoke.transform.position = child.position;
 				_particleSmoke.transform.rotation = child.rotation;
@@ -142,9 +153,11 @@ public class Barometer : MonoBehaviour
 	{
 		_barometers[i].rotationSpeed = _normalRotationSpeed;
 		_barometers[i].isBroken = false;
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
 		foreach(Transform child in _barometers[i].barometer.transform)
 		{
-			if(child.name.Equals("ParticlePos"))
+			if(child.name.Equals("ParticlePos") && _particleStars != null)
 			{
 				_particleStars.transform.position = child.position;
 				_particleStars.transform.rotation = child.rotation;
@@ -166,6 +179,8 @@ public class Barometer : MonoBehaviour
 				_barometers[i].isBroken = false;
 			}
         }
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
 		GestureManager.OnDoubleTap -= TriggerFixBarometer;
 	}
 	#endregion
