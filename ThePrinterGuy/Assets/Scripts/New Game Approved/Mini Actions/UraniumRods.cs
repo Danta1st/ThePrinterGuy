@@ -89,7 +89,7 @@ public class UraniumRods : MonoBehaviour
                 Spring(go, identifier);
 
                 GSS.PlayClip(i);
-                Spring(go);
+                Spring(go, identifier);
 
                 _rodsAndStates[go] = true;
 				foreach(Transform child in go.transform)

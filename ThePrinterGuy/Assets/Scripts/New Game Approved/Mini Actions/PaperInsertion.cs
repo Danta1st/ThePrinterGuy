@@ -39,7 +39,6 @@ public class PaperInsertion : MonoBehaviour
 
 	private ParticleSystem _particleSmoke;
 	private ParticleSystem _particleStars;    
-	#endregion
 
     private GenericSoundScript GSS;
     #endregion
