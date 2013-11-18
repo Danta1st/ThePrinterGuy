@@ -22,7 +22,11 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	[SerializeField]
 	private GameObject _progressBar;
 	[SerializeField]
-	private TargetScores[] _targetScore;
+	private TargetScores _targetScore;
+	[SerializeField]
+	private ParticleSystem _particle;
+	[SerializeField]
+	private int _levelOffset = 0;
     #endregion
 	
 	[System.Serializable]
@@ -42,11 +46,13 @@ public class GUIEndScreenCamera : MonoBehaviour {
     private bool _canTouch = true;
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
+	private TextMesh _speechText;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
 	private int _levelScore = 0;
 	private int _currentLevel = 0;
+	private int _levelHighscore = 0;
     #endregion
 	
     #region Enable and Disable
@@ -131,6 +137,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
 				_scoreText = _textObject.GetComponent<TextMesh>();
 			else if(_textObject.name == "HighScoreText")
 				_highScoreText = _textObject.GetComponent<TextMesh>();
+			else if(_textObject.name == "SpeechText")
+				_speechText = _textObject.GetComponent<TextMesh>();
         }
         //--------------------------------------------------//
 		if(GUIMainMenuCamera.languageSetting == "EN")
@@ -149,7 +157,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		DisableGUICamera();
 		DisableGUIElementAll();
 		
-		DisplayEndScreen(30000);
+		DisplayEndScreen(100000);
 
 	}
 	
@@ -231,6 +239,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	
 	private void DisplayEndScreen(int score)
 	{
+		GetCurrentLevel();
 		_mainCam.camera.enabled = false;
 		_guiCam.camera.enabled = false;
 		EnableGUICamera();
@@ -243,15 +252,20 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	
 	private void PlaceTargetStars()
 	{
+		foreach(GameObject s in _stars)
+		{
+			s.SetActive(false);
+		}
+		
 		Vector3 pos = _stars[0].transform.localPosition;
 		float startX = -0.5f;
 		float posOffset = 1;
 		
-		pos.x = startX + (float)_targetScore[_currentLevel].starScoreOne / (float)_targetScore[_currentLevel].starScoreThree;
+		pos.x = startX + (float)_targetScore.starScoreOne / (float)_targetScore.starScoreThree;
 		_stars[0].transform.localPosition = pos;
-		pos.x = startX + (float)_targetScore[_currentLevel].starScoreTwo / (float)_targetScore[_currentLevel].starScoreThree;
+		pos.x = startX + (float)_targetScore.starScoreTwo / (float)_targetScore.starScoreThree;
 		_stars[1].transform.localPosition = pos;
-		pos.x = startX + (float)_targetScore[_currentLevel].starScoreThree / (float)_targetScore[_currentLevel].starScoreThree;
+		pos.x = startX + (float)_targetScore.starScoreThree / (float)_targetScore.starScoreThree;
 		_stars[2].transform.localPosition = pos;
 	}
 	
@@ -260,9 +274,26 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		_scoreText.text = score.ToString();
 	}
 	
-	private void FindHighScore()
+	private void ShowHighscore(int score)
 	{
-		//TODO	
+		_highScoreText.text = score.ToString();
+	}
+	
+	private void FindHighscore()
+	{
+		int currency = SaveGame.GetPlayerCurrency();
+		int premiumCurrency = SaveGame.GetPlayerPremiumCurrency();
+		int[] highScores = SaveGame.GetPlayerHighscores();
+		_levelHighscore = highScores[_currentLevel - _levelOffset];
+		
+		if(_levelScore > _levelHighscore)
+		{
+			highScores[_currentLevel - _levelOffset] = _levelScore;
+			_levelHighscore = _levelScore;
+			SaveGame.SavePlayerData(currency, premiumCurrency, highScores);
+		}
+		
+		ShowHighscore(_levelHighscore);
 	}
 	
 	private void RestartGame()
@@ -273,7 +304,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	
 	IEnumerator MoveEstimateBar()
 	{
-		
+		bool isScaling = true;
 		Vector3 scoreBarPos = _progressBar.transform.localPosition;
 		Vector3 scoreBarScale = _progressBar.transform.localScale;
 		
@@ -310,19 +341,48 @@ public class GUIEndScreenCamera : MonoBehaviour {
 			}
 			ShowScore(i);
 			
-			scoreBarScale.x = (float)i / (float)_targetScore[_currentLevel].starScoreThree;
-			deltaScale = scoreBarScale.x - _progressBar.transform.localScale.x;
-			_progressBar.transform.localScale = scoreBarScale;
-			scoreBarPos.x = scoreBarPos.x + deltaScale / 2f;
-			_progressBar.transform.localPosition = scoreBarPos;
+			if(i >= _targetScore.starScoreThree)
+			{
+				_particle.transform.position = _stars[2].transform.position;
+				_particle.Play();
+				_stars[2].SetActive(true);
+			}
+			else if(i >= _targetScore.starScoreTwo)
+			{
+				_particle.transform.position = _stars[1].transform.position;
+				_particle.Play();
+				_stars[1].SetActive(true);
+			}
+			else if(i >= _targetScore.starScoreOne)
+			{
+				_particle.transform.position = _stars[0].transform.position;
+				_particle.Play();
+				_stars[0].SetActive(true);
+			}
+			
+			if(isScaling) {
+				if(i >= _targetScore.starScoreThree)
+					isScaling = false;
+				scoreBarScale.x = (float)i / (float)_targetScore.starScoreThree;
+				deltaScale = scoreBarScale.x - _progressBar.transform.localScale.x;
+				_progressBar.transform.localScale = scoreBarScale;
+				scoreBarPos.x = scoreBarPos.x + deltaScale / 2f;
+				_progressBar.transform.localPosition = scoreBarPos;
+			}
 	
 			yield return new WaitForSeconds(0.1f);
 		}
-		
+		InsertSpeechText();
+		FindHighscore();
 	}
 			
-	private void getCurrentLevel()
+	private void GetCurrentLevel()
 	{
+		_currentLevel = Application.loadedLevel;
 	}
-
+	
+	private void InsertSpeechText()
+	{
+		_speechText.text = "Nice work, are\n you ready for the\n next challenge?";
+	}
 }
