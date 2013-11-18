@@ -10,9 +10,11 @@ public class UraniumRods : MonoBehaviour
     [SerializeField]
     private iTween.EaseType _easeTypeIn = iTween.EaseType.easeOutBack;
     [SerializeField]
-    private GameObject[] _rods;
+    private RodSet[] _rods;
 	[SerializeField]
-	private ParticleSystem _particleSystem;
+	private ParticleSystem _particleSystemStars;
+	[SerializeField]
+	private ParticleSystem _particleSystemSmoke;
     #endregion
 
     #region Privates
@@ -20,6 +22,9 @@ public class UraniumRods : MonoBehaviour
     private float _inTime = 0.2f;
 	private GameObject _currRod;
 	private bool failed = false;
+	ParticleSystem _smokeParticle;
+	ParticleSystem _starParticle;
+	float _currentMoveY;
     private Dictionary<GameObject, bool> _rodsAndStates = new Dictionary<GameObject, bool>();
     #endregion
 
@@ -42,6 +47,9 @@ public class UraniumRods : MonoBehaviour
 
     void Awake()
     {
+		_smokeParticle = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		_starParticle = (ParticleSystem)Instantiate(_particleSystemStars);
+		_starParticle.renderer.material.shader = Shader.Find("Transparent/Diffuse");
         SetStates();
     }
 
@@ -49,9 +57,11 @@ public class UraniumRods : MonoBehaviour
     //Initialise the states for each game object
     private void SetStates()
     {
-        foreach(GameObject go in _rods)
+        for(int i = 0; i < _rods.Length; i++)
         {
-            _rodsAndStates.Add(go, false);
+			_rods[i].startPos = _rods[i].rod.transform.localPosition.y;
+			_rods[i].endPos = _rods[i].rod.transform.localPosition.y + 0.7f;
+            _rodsAndStates.Add(_rods[i].rod, false);
         }
     }
 
@@ -63,12 +73,21 @@ public class UraniumRods : MonoBehaviour
 
         for(int i = 0; i < _rods.Length; i++)
         {
-            var go = _rods[identifier];
+            var go = _rods[identifier].rod;
 			
             if(_rodsAndStates[go] == false)
             {
-                Spring(go);
+                Spring(go, identifier);
                 _rodsAndStates[go] = true;
+				foreach(Transform child in go.transform)
+				{
+					if(child.name.Equals("ParticlePos"))
+					{
+						_smokeParticle.transform.position = child.position;
+						_smokeParticle.transform.rotation = child.rotation;
+						_smokeParticle.Play();
+					}
+				}
                 break;
             }
             identifier++;
@@ -78,9 +97,9 @@ public class UraniumRods : MonoBehaviour
         }
     }
 
-    private void Spring(GameObject go)
+    private void Spring(GameObject go, int identifier)
     {
-        iTween.MoveTo(go, iTween.Hash("y", go.transform.localPosition.y + 1, "time", _outTime,
+        iTween.MoveTo(go, iTween.Hash("y", _rods[identifier].endPos, "time", _outTime,
                                         "islocal", true, "easetype", _easeTypeOut));
     }
 
@@ -108,9 +127,16 @@ public class UraniumRods : MonoBehaviour
 		if(go == null)
 			return;
 		GestureManager.OnTap -= TriggerHammer;
+		_smokeParticle.Stop();
 		
-        iTween.MoveTo(go, iTween.Hash("y", go.transform.localPosition.y - 1, "time", _inTime,
-                                        "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
+		for(int i = 0; i < _rods.Length; i++)
+		{
+			if(_rods[i].rod == go)
+			{
+				iTween.MoveTo(go, iTween.Hash("y", _rods[i].startPos, "time", _inTime,
+                             "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
+			}
+		}
     }
 	
 	private void HammerComplete(GameObject go)
@@ -121,9 +147,9 @@ public class UraniumRods : MonoBehaviour
 			{
 				if(child.name.Equals("ParticlePos"))
 				{
-					ParticleSystem ps = (ParticleSystem)Instantiate(_particleSystem, child.position, child.rotation);
-					ps.renderer.material.shader = Shader.Find("Transparent/Diffuse");
-					ps.Emit(10);
+					_starParticle.transform.position = child.position;
+					_starParticle.transform.rotation = child.rotation;
+					_starParticle.Emit(10);
 				}
 			}
 		}
@@ -133,8 +159,10 @@ public class UraniumRods : MonoBehaviour
     //Reset all the rods and disables GestureManager (Called on Failed)
     private void Reset()
     {
-        foreach(GameObject go in _rods)
+		GameObject go;
+		for(int i = 0; i < _rods.Length; i++)
         {
+			go = _rods[i].rod;
             if(_rodsAndStates[go] == true)
             {
 				failed = true;
@@ -143,4 +171,14 @@ public class UraniumRods : MonoBehaviour
         }
     }
     #endregion
+	
+	[System.Serializable]
+    public class RodSet
+    {
+        public GameObject rod;
+		[HideInInspector]
+        public float startPos;
+		[HideInInspector]
+		public float endPos;
+    };
 }
