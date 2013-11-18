@@ -47,6 +47,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
+	private bool _isWin = false;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -58,12 +59,12 @@ public class GUIEndScreenCamera : MonoBehaviour {
     #region Enable and Disable
     void OnEnable()
     {
-		GUIGameCamera.OnGameEnded += DisplayEndScreen;
+		GUIGameCamera.OnGameEnded += DisplayEndScreenWin;
     }
 
     void OnDisable()
     {
-		GUIGameCamera.OnGameEnded -= DisplayEndScreen;
+		GUIGameCamera.OnGameEnded -= DisplayEndScreenWin;
     }
 
     public void EnableGUICamera()
@@ -157,7 +158,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		DisableGUICamera();
 		DisableGUIElementAll();
 		
-		DisplayEndScreen(100000);
+//		DisplayEndScreenWin(100000);
 
 	}
 	
@@ -237,7 +238,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 //        }
 //	}
 	
-	private void DisplayEndScreen(int score)
+	private void DisplayEndScreenWin(int score)
 	{
 		GetCurrentLevel();
 		_mainCam.camera.enabled = false;
@@ -246,7 +247,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		EnableGUIElementAll();
 		GestureManager.OnTap += CheckCollision;
 		_levelScore = score;
-
+		_isWin = true;
 		StartCoroutine("MoveEstimateBar");
 	}
 	
@@ -372,7 +373,11 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	
 			yield return new WaitForSeconds(0.1f);
 		}
-		InsertSpeechText();
+		if(_isWin)
+			InsertSpeechText("Nice work, are\n you ready for the\n next challenge?");
+		else
+			InsertSpeechText("You're fired.\n never mind now\n get back to work.");
+		
 		FindHighscore();
 	}
 			
@@ -381,8 +386,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		_currentLevel = Application.loadedLevel;
 	}
 	
-	private void InsertSpeechText()
+	private void InsertSpeechText(string text)
 	{
-		_speechText.text = "Nice work, are\n you ready for the\n next challenge?";
+		_speechText.text = text;
 	}
 }
