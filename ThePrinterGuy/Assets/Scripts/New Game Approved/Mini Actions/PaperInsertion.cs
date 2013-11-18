@@ -10,8 +10,13 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
     [SerializeField] private PaperLightSet[] _paperlightset;
+
 	[SerializeField] private ParticleSystem _particleSystemStars;
 	[SerializeField] private ParticleSystem _particleSystemSmoke;
+
+//    [SerializeField] private AudioClip clipUp;
+//    [SerializeField] private AudioClip clipDown;
+
     #endregion
 
     #region Privates
@@ -31,9 +36,14 @@ public class PaperInsertion : MonoBehaviour
 	
 	//Whatever
 	private GameObject _dynamicObjects;
+
 	private ParticleSystem _particleSmoke;
 	private ParticleSystem _particleStars;    
 	#endregion
+
+    private GenericSoundScript GSS;
+    #endregion
+
 
     #region Delegates & Events
     public delegate void OnPaperInsertedAction();
@@ -63,12 +73,17 @@ public class PaperInsertion : MonoBehaviour
     #region Monobehaviour Functions
 	void Awake()
 	{
+
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
 		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
 		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
 		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
+
+        GSS = transform.GetComponentInChildren<GenericSoundScript>();
+		_dynamicObjects = GameObject.Find("Dynamic Objects");	
+
 		InitializeLights();
 		DisablePaper();
 	}
@@ -98,10 +113,12 @@ public class PaperInsertion : MonoBehaviour
     {
         if(!_isGateOpen)
         {
+            GSS.PlayClip(0);
             iTween.MoveTo(_gate,iTween.Hash("y", _gate.transform.localPosition.y + 3, "time", _openTime,
                                             "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
                                             "oncompletetarget", gameObject));
             _isGateOpen = true;
+//            gameObject.audio.PlayOneShot(clipUp);
         }
     }
 
@@ -109,10 +126,12 @@ public class PaperInsertion : MonoBehaviour
     {
         if(_isGateOpen)
         {
+            GSS.PlayClip(1);
             iTween.MoveTo(_gate,iTween.Hash("y", _gate.transform.localPosition.y - 3, "time", _closeTime,
                                             "islocal", true, "easetype", _easeTypeClose, "oncomplete", "NextAnimation",
                                             "oncompletetarget", gameObject));
             _isGateOpen = false;
+//            gameObject.audio.PlayOneShot(clipDown);
         }
     }
 
@@ -155,6 +174,7 @@ public class PaperInsertion : MonoBehaviour
         {
             if(_paperlightset[identifier].isOn == false)
             {
+                GSS.PlayClip(Random.Range(3, 4));
                 TurnOnLight(identifier);
                 break;
             }
@@ -218,6 +238,7 @@ public class PaperInsertion : MonoBehaviour
 	        {
 	            if(_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
 				{
+                    GSS.PlayClip(Random.Range(5, 8));
 					SlidePaper(i);
 					break;
 				}

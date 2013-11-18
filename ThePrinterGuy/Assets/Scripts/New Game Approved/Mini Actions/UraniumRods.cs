@@ -26,6 +26,7 @@ public class UraniumRods : MonoBehaviour
 	ParticleSystem _particleStars;
 	private GameObject _dynamicObjects;
     private Dictionary<GameObject, bool> _rodsAndStates = new Dictionary<GameObject, bool>();
+    private GenericSoundScript GSS;
     #endregion
 
     #region Delegates & Events
@@ -47,12 +48,16 @@ public class UraniumRods : MonoBehaviour
 
     void Awake()
     {
+
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
 		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
 		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
 		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
+
+        GSS = transform.GetComponentInChildren<GenericSoundScript>();
+
         SetStates();
     }
 
@@ -80,7 +85,12 @@ public class UraniumRods : MonoBehaviour
 			
             if(_rodsAndStates[go] == false)
             {
+
                 Spring(go, identifier);
+
+                GSS.PlayClip(i);
+                Spring(go);
+
                 _rodsAndStates[go] = true;
 				foreach(Transform child in go.transform)
 				{
@@ -114,7 +124,11 @@ public class UraniumRods : MonoBehaviour
         {
             if(pair.Key == go && pair.Value == true)
             {
+
 				failed = false;
+
+                GSS.PlayClip(3);
+
                 Hammer(go);
 				GestureManager.OnTap -= TriggerHammer;
                 if(OnRodHammered != null)
