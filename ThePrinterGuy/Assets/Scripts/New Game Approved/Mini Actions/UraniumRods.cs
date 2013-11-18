@@ -18,6 +18,7 @@ public class UraniumRods : MonoBehaviour
     private float _inTime = 0.2f;
 	private GameObject _currRod;
     private Dictionary<GameObject, bool> _rodsAndStates = new Dictionary<GameObject, bool>();
+    private GenericSoundScript GSS;
     #endregion
 
     #region Delegates & Events
@@ -39,6 +40,7 @@ public class UraniumRods : MonoBehaviour
 
     void Awake()
     {
+        GSS = transform.GetComponentInChildren<GenericSoundScript>();
         SetStates();
     }
 
@@ -64,6 +66,7 @@ public class UraniumRods : MonoBehaviour
 			
             if(_rodsAndStates[go] == false)
             {
+                GSS.PlayClip(i);
                 Spring(go);
                 _rodsAndStates[go] = true;
                 break;
@@ -89,6 +92,7 @@ public class UraniumRods : MonoBehaviour
         {
             if(pair.Key == go && pair.Value == true)
             {
+                GSS.PlayClip(3);
                 Hammer(go);
 				GestureManager.OnTap -= TriggerHammer;
                 if(OnRodHammered != null)
