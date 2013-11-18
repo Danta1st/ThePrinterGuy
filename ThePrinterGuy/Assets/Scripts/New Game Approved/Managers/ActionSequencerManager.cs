@@ -119,28 +119,28 @@ public class ActionSequencerManager : MonoBehaviour {
 	        {
 	            if(OnPaperNode != null)
 	            {
-	                OnPaperNode(_actionSequencerList[_focusIndex].itemNumber);
+	                OnPaperNode(_actionSequencerList[_focusIndex].itemNumber - 1);
 	            }
 	        }
 	        else if(_focusItem == "Ink")
 	        {
 	            if(OnInkNode != null)
 	            {
-	                OnInkNode(_actionSequencerList[_focusIndex].itemNumber);
+	                OnInkNode(_actionSequencerList[_focusIndex].itemNumber - 1);
 	            }
 	        }
 	        else if(_focusItem == "UraniumRod")
 	        {
 	            if(OnUraniumRodNode != null)
 	            {
-	                OnUraniumRodNode(_actionSequencerList[_focusIndex].itemNumber);
+	                OnUraniumRodNode(_actionSequencerList[_focusIndex].itemNumber - 1);
 	            }
 	        }
 	        else if(_focusItem == "Barometer")
 	        {
 	            if(OnBarometerNode != null)
 	            {
-	                OnBarometerNode(_actionSequencerList[_focusIndex].itemNumber);
+	                OnBarometerNode(_actionSequencerList[_focusIndex].itemNumber - 1);
 	            }
 	        }
             _focusIndex++;
