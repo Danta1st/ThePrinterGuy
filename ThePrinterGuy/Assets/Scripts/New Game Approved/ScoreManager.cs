@@ -28,6 +28,18 @@ public class ScoreManager : MonoBehaviour
 	#region Delegates and Events
 	public delegate void OnTaskCompleted();
 	public static event OnTaskCompleted TaskCompleted;
+
+    public delegate void TaskRed();
+    public static event TaskRed OnTaskRed;
+
+    public delegate void TaskYellow();
+    public static event TaskYellow OnTaskYellow;
+
+    public delegate void TaskGreen();
+    public static event TaskGreen OnTaskGreen;
+
+    public delegate void TaskZone();
+    public static event TaskZone OnTaskZone;
 	#endregion
 	
 	#region Unity Methods
@@ -86,22 +98,51 @@ public class ScoreManager : MonoBehaviour
 			case 0:
                 Feedback.Clear();
                 Feedback.Add("Not in a Zone!");
+
+                if(OnTaskZone != null)
+                {
+                    OnTaskZone();
+                }
+
 				break;
+
             case 1:
+
                 Feedback.Clear();
                 Feedback.Add("Red Zone!");
+
+                if(OnTaskRed != null)
+                {
+                    OnTaskRed();
+                }
+
                 break;
+
 			case 2:
                 Feedback.Clear();
                 Feedback.Add("Yellow Zone!");
 				amount = amount * YellowZoneModifier;
+
+                if(OnTaskYellow != null)
+                {
+                    OnTaskYellow();
+                }
+
 				break;
+
 			case 3:
                 Feedback.Clear();
                 Feedback.Add("Green Zone!");
                 Feedback.Add("Perfect!");
 				amount = amount * GreenZoneModifier;
+
+                if(OnTaskGreen != null)
+                {
+                    OnTaskGreen();
+                }
+
 				break;
+
 			default:
 				break;
 		}
