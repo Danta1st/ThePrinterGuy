@@ -168,7 +168,7 @@ public class PaperInsertion : MonoBehaviour
 
     private void TriggerLight(int itemNumber)
     {
-		if(_paperlightset[itemNumber] == null)
+		if(_paperlightset.Length < itemNumber)
 		{
 			if(OnCorrectPaperInserted != null)
 				OnCorrectPaperInserted();

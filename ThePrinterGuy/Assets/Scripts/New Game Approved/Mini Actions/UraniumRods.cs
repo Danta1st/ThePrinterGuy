@@ -87,7 +87,7 @@ public class UraniumRods : MonoBehaviour
     //Trigger a random rod, which is currently not up
     private void TriggerSpring(int itemNumber)
     {
-		if(_rods[itemNumber] == null)
+		if(_rods.Length < itemNumber)
 		{
 			if(OnRodHammered != null)
 				OnRodHammered();

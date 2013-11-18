@@ -287,7 +287,7 @@ public class Ink : MonoBehaviour
 		{
 			icc.insertableCartridge.gameObject.SetActive(true);
 		}
-		if(_machineInks[itemNumber] == null)
+		if(_machineInks.Count < itemNumber)
 		{
 			if(OnCorrectInkInserted != null)
 				OnCorrectInkInserted();

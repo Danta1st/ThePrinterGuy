@@ -155,7 +155,7 @@ public class ActionSequencerManager : MonoBehaviour {
         public float timeStamp;
         public ActionItem actionItem = ActionItem.None;
 		[Range(1,5)]
-		public int itemNumber;
+		public int itemNumber = 1;
 
         public enum ActionItem
         {
