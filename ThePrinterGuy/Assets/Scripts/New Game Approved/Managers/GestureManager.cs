@@ -7,7 +7,7 @@ public class GestureManager : MonoBehaviour
 
     #region Editor Publics
     [SerializeField]
-    private float _tapThreshold = 0.1f;
+    private float _tapThreshold = 0.3f;
     [SerializeField]
     private float _pressThreshold = 1.0f;
     [SerializeField]
@@ -22,6 +22,8 @@ public class GestureManager : MonoBehaviour
     private bool _isPressing = false;
     private bool _isSwiping = false;
     private GameObject _touchBeganObject;
+	private Vector2 _lastPosition;
+	private float _allowedDistanceInPx = 50f;
     #endregion
 	
 	/*Public gesture disable and enable functions
@@ -148,15 +150,16 @@ public class GestureManager : MonoBehaviour
         UpdateTouchBeginTimes();
 
         UpdateTouchBeginPositions();
-
+		
         if(Input.touchCount == 1)
         {
+
             var primaryFinger = Input.GetTouch(0);
 
             //Single Tap
             if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1)
             {
-                if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) < _tapThreshold)
+                if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) < _tapThreshold && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) < _allowedDistanceInPx)
                 {
                     //Single Tap Event
                     if(OnTap != null)
@@ -241,9 +244,12 @@ public class GestureManager : MonoBehaviour
                 if(OnDrag != null)
                     OnDrag(_touchBeganObject, primaryFinger.position, primaryFinger.deltaPosition);
             }
+			_lastPosition = primaryFinger.position;
+			if(TouchPhase.Ended)
+			{
+				RemoveTouch();
+			}
         }
-
-
 
         if(Input.touchCount == 2)
         {
@@ -279,6 +285,7 @@ public class GestureManager : MonoBehaviour
 
             //TODO: Implement twofinger Press & tap
         }
+		
     #endif
 
     #if UNITY_EDITOR
@@ -427,12 +434,20 @@ public class GestureManager : MonoBehaviour
             {
                 _touchBeginPositions[t.fingerId] = t.position;
             }
-            else if(t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
+
+        }
+    }
+	
+	void RemoveTouch()
+	{
+		foreach(Touch t in Input.touches)
+        {
+            if(t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled)
             {
                 _touchBeginPositions.Remove(t.fingerId);
             }
         }
-    }
+	}
     #endregion
 
     //Debug GUI - OnGUI should otherwise be avoided on tablets
