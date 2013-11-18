@@ -190,6 +190,8 @@ public class PaperInsertion : MonoBehaviour
             TurnOnLight(itemNumber);
         }
         
+		//Method for randomisation
+		
 		/*var identifier = Random.Range(0,_paperlightset.Length);
 
         for(int i = 0; i < _paperlightset.Length; i++)
@@ -245,14 +247,15 @@ public class PaperInsertion : MonoBehaviour
 
     private void EnablePaper(int temp)
     {
-		GestureManager.OnSwipeUp += TriggerSlide;
+		//GestureManager.OnSwipeUp += TriggerSlide;
+		GestureManager.OnTap += TriggerSlide;
         for(int i = 0; i < _paperlightset.Length; i++)
         {
             _paperlightset[i].paper.SetActive(true);
         }
     }
 	
-	private void TriggerSlide(GameObject go)
+	private void TriggerSlide(GameObject go, Vector2 screenPosition)
 	{
 		if(go != null)
 		{
@@ -333,7 +336,8 @@ public class PaperInsertion : MonoBehaviour
 	{
 		if(_particleSmoke != null && _particleSmoke.isPlaying)
 			_particleSmoke.Stop();
-		GestureManager.OnSwipeUp -= TriggerSlide;
+		//GestureManager.OnSwipeUp -= TriggerSlide;
+		GestureManager.OnTap += TriggerSlide;
 		DisablePaper();
 		TurnOfAllLights();
 	}
