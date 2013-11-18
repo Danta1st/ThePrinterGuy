@@ -148,7 +148,7 @@ public class Barometer : MonoBehaviour
 			{
 				_particleStars.transform.position = child.position;
 				_particleStars.transform.rotation = child.rotation;
-				_particleStars.Emit(10);
+				_particleStars.Play();
 			}
 		}
 		

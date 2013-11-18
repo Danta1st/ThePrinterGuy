@@ -249,7 +249,7 @@ public class PaperInsertion : MonoBehaviour
 					{
 						_particleStars.transform.position = child.position;
 						_particleStars.transform.rotation = child.rotation;
-						_particleStars.Emit(50);
+						_particleStars.Play();
 					}
 				}
 				if(OnCorrectPaperInserted != null)

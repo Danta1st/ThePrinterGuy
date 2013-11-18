@@ -22,9 +22,9 @@ public class UraniumRods : MonoBehaviour
     private float _inTime = 0.2f;
 	private GameObject _currRod;
 	private bool failed = false;
-	ParticleSystem _smokeParticle;
-	ParticleSystem _starParticle;
-	float _currentMoveY;
+	ParticleSystem _particleSmoke;
+	ParticleSystem _particleStars;
+	private GameObject _dynamicObjects;
     private Dictionary<GameObject, bool> _rodsAndStates = new Dictionary<GameObject, bool>();
     #endregion
 
@@ -47,9 +47,12 @@ public class UraniumRods : MonoBehaviour
 
     void Awake()
     {
-		_smokeParticle = (ParticleSystem)Instantiate(_particleSystemSmoke);
-		_starParticle = (ParticleSystem)Instantiate(_particleSystemStars);
-		_starParticle.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		_dynamicObjects = GameObject.Find("Dynamic Objects");
+		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		_particleSmoke.transform.parent = _dynamicObjects.transform;
+		_particleStars.transform.parent = _dynamicObjects.transform;
         SetStates();
     }
 
@@ -83,9 +86,9 @@ public class UraniumRods : MonoBehaviour
 				{
 					if(child.name.Equals("ParticlePos"))
 					{
-						_smokeParticle.transform.position = child.position;
-						_smokeParticle.transform.rotation = child.rotation;
-						_smokeParticle.Play();
+						_particleSmoke.transform.position = child.position;
+						_particleSmoke.transform.rotation = child.rotation;
+						_particleSmoke.Play();
 					}
 				}
                 break;
@@ -127,7 +130,7 @@ public class UraniumRods : MonoBehaviour
 		if(go == null)
 			return;
 		GestureManager.OnTap -= TriggerHammer;
-		_smokeParticle.Stop();
+		_particleSmoke.Stop();
 		
 		for(int i = 0; i < _rods.Length; i++)
 		{
@@ -147,9 +150,9 @@ public class UraniumRods : MonoBehaviour
 			{
 				if(child.name.Equals("ParticlePos"))
 				{
-					_starParticle.transform.position = child.position;
-					_starParticle.transform.rotation = child.rotation;
-					_starParticle.Emit(10);
+					_particleStars.transform.position = child.position;
+					_particleStars.transform.rotation = child.rotation;
+					_particleStars.Play();
 				}
 			}
 		}
