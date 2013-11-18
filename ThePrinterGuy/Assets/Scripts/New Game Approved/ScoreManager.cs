@@ -79,7 +79,7 @@ public class ScoreManager : MonoBehaviour
 		if(TaskCompleted != null)
 			TaskCompleted();
 
-		colorHit = guiGameCameraScript.GetZone(); // INDSÆT CALL FOR AT SE HVILKEN FARVE ER RAMT - SÆT colorHit til denne
+		colorHit = guiGameCameraScript.GetZone();
 
 		switch (colorHit)
 		{
@@ -99,7 +99,7 @@ public class ScoreManager : MonoBehaviour
 			case 3:
                 Feedback.Clear();
                 Feedback.Add("Green Zone!");
-                Feedback.Add("Fucking perfect!");
+                Feedback.Add("Perfect!");
 				amount = amount * GreenZoneModifier;
 				break;
 			default:
