@@ -81,7 +81,6 @@ public class FrequencyAnalyzer : MonoBehaviour {
 
         //Convert index to frequency
         _pitchValue = _fregN * (_fSample/2) / _qSamples;
-        Debug.Log(_pitchValue);
     }
     #endregion
 }
