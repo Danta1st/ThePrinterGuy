@@ -19,6 +19,8 @@ public class GUIGameCamera : MonoBehaviour
     [SerializeField]
     private float _actionSequencerItemSpeed;
 	[SerializeField]
+    private GameObject _popupPrefab;
+	[SerializeField]
     private GameObject _popupTextPrefab;
     [SerializeField]
     private GameObject _inkPrefab;
@@ -356,12 +358,16 @@ public class GUIGameCamera : MonoBehaviour
 		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
 		
+		GameObject _popupObject = (GameObject)Instantiate(_popupPrefab, _popupTextPos , Quaternion.identity);
 		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
 		
 		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			_fadeInDuration + _fadeOutDuration);
+		
+		iTween.MoveTo(_popupObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
 			_fadeInDuration + _fadeOutDuration);
 		
 		iTween.PunchScale(_popupTextObject, new Vector3(_punchAmmount,_punchAmmount,0f), 
@@ -372,6 +378,7 @@ public class GUIGameCamera : MonoBehaviour
 		iTween.FadeTo(_popupTextObject, 0f, _fadeOutDuration);
 		yield return new WaitForSeconds(_fadeOutDuration);
 		Destroy(_popupTextObject);
+		Destroy(_popupObject);
 		
 	}
     #endregion
