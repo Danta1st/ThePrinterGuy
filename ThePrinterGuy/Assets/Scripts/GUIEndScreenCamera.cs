@@ -22,8 +22,16 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	[SerializeField]
 	private GameObject _progressBar;
 	[SerializeField]
-	private int[] _targetScores;
+	private TargetScores[] _targetScore;
     #endregion
+	
+	[System.Serializable]
+	public class TargetScores {
+		public int starScoreOne;
+		public int starScoreTwo;
+		public int starScoreThree;
+		
+	}
 	
     #region Private Variables
     private Camera _guiCamera;
@@ -38,6 +46,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
 	private int _levelScore = 0;
+	private int _currentLevel = 0;
     #endregion
 	
     #region Enable and Disable
@@ -238,11 +247,12 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		float startX = -0.5f;
 		float posOffset = 1;
 		
-		for(int i = 0, j = _targetScores.Length - 1; i < _stars.Length; i++)
-		{
-			pos.x = startX + (float)_targetScores[j] / (float)_targetScores[i];
-			_stars[i].transform.localPosition = pos;
-		}
+		pos.x = startX + (float)_targetScore[_currentLevel].starScoreOne / (float)_targetScore[_currentLevel].starScoreThree;
+		_stars[0].transform.localPosition = pos;
+		pos.x = startX + (float)_targetScore[_currentLevel].starScoreTwo / (float)_targetScore[_currentLevel].starScoreThree;
+		_stars[1].transform.localPosition = pos;
+		pos.x = startX + (float)_targetScore[_currentLevel].starScoreThree / (float)_targetScore[_currentLevel].starScoreThree;
+		_stars[2].transform.localPosition = pos;
 	}
 	
 	private void ShowScore(int score)
@@ -290,13 +300,17 @@ public class GUIEndScreenCamera : MonoBehaviour {
 			{
 				i += 50;
 			}
+			else if(((_levelScore - i) / 10) > 1)
+			{
+				i += 10;
+			}
 			else
 			{
 				i++;
 			}
 			ShowScore(i);
 			
-			scoreBarScale.x = (float)i / (float)_targetScores[0];
+			scoreBarScale.x = (float)i / (float)_targetScore[_currentLevel].starScoreThree;
 			deltaScale = scoreBarScale.x - _progressBar.transform.localScale.x;
 			_progressBar.transform.localScale = scoreBarScale;
 			scoreBarPos.x = scoreBarPos.x + deltaScale / 2f;
@@ -307,6 +321,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		
 	}
 			
-
+	private void getCurrentLevel()
+	{
+	}
 
 }
