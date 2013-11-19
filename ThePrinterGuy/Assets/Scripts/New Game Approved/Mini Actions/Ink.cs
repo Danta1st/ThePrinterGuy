@@ -18,7 +18,6 @@ public class Ink : MonoBehaviour
     private float _openTime     = 0.5f;
     private float _closeTime    = 0.5f;
     private float _waitTime     = 1f;
-	private bool isRealOne = false;
     private GenericSoundScript GSS;
 	
 	//Slide variables
@@ -40,14 +39,24 @@ public class Ink : MonoBehaviour
 	{
 
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
-		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
-		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
-		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		if(_particleSystemSmoke != null)
+		{
+			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		}
+		else
+			Debug.Log("Smoke Particle not loaded for Ink");
+		if(_particleSystemStars != null)
+		{
+			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		}
+		else
+			Debug.Log("Star Particle not loaded for Ink");
+		
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 
         GSS = transform.GetComponentInChildren<GenericSoundScript>();
-
 
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
@@ -232,10 +241,11 @@ public class Ink : MonoBehaviour
 	{
 		icc.cartridgeEmpty = false;
 		icc.cartridge.gameObject.SetActive(true);
-		_particleSmoke.Stop();
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
 		foreach(Transform child in icc.cartridge.transform)
 		{
-			if(child.name.Equals("ParticlePos"))
+			if(child.name.Equals("ParticlePos") && _particleStars != null)
 			{
 				_particleStars.transform.position = child.position;
 				_particleStars.transform.rotation = child.rotation;
@@ -250,7 +260,8 @@ public class Ink : MonoBehaviour
 	private void InkReset()
 	{
 		InkCartridgeClass icc;
-		_particleSmoke.Stop();
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
 		int j = 0;
 		for(int i = 0; i < _machineInks.Count; i++)
 		{
@@ -269,13 +280,26 @@ public class Ink : MonoBehaviour
 		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
-	private void StartInkTask()
+	private void StartInkTask(int itemNumber)
 	{
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			icc.insertableCartridge.gameObject.SetActive(true);
 		}
-		var identifier = Random.Range(0,_machineInks.Count);
+		if(_machineInks.Count < itemNumber)
+		{
+			if(OnCorrectInkInserted != null)
+				OnCorrectInkInserted();
+			Debug.Log("ERROR INK: Number out of index!");
+			return;
+		}
+		
+		if(_machineInks[itemNumber].cartridgeEmpty == false)
+        {
+            EmptyCartridge(itemNumber);
+        }
+		
+		/*var identifier = Random.Range(0,_machineInks.Count);
 		
         for(int i = 0; i < _machineInks.Count; i++)
         {
@@ -288,7 +312,7 @@ public class Ink : MonoBehaviour
 
             if(identifier == _machineInks.Count)
                 identifier = 0;
-        }
+        }*/
 		
 		GestureManager.OnSwipeRight += InsertCartridge;
 		StartGates();
@@ -298,7 +322,7 @@ public class Ink : MonoBehaviour
 	{
 		foreach(Transform child in _machineInks[iccnumber].cartridge.transform)
 		{
-			if(child.name.Equals("ParticlePos"))
+			if(child.name.Equals("ParticlePos") && _particleSmoke != null)
 			{
 				_particleSmoke.transform.position = child.position;
 				_particleSmoke.transform.rotation = child.rotation;

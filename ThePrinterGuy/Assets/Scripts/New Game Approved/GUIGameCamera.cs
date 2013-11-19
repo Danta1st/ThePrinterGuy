@@ -15,6 +15,8 @@ public class GUIGameCamera : MonoBehaviour
 	[SerializeField]
 	private iTween.EaseType _easeTypeIngameMenu;
 	[SerializeField]
+    private GameObject _popupPrefab;
+	[SerializeField]
     private GameObject _popupTextPrefab;
     [SerializeField]
     private GameObject _inkPrefab;
@@ -34,6 +36,7 @@ public class GUIGameCamera : MonoBehaviour
     private bool _isGUI = false;
     private bool _canTouch = true;
     private float _timeScale = 0.0f;
+	private ParticleSystem[] _particleSystems;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -70,7 +73,7 @@ public class GUIGameCamera : MonoBehaviour
 	public delegate void OnUpdateActionAction();
 	public static event OnUpdateActionAction OnUpdateAction;
 
-    public delegate void GameEndedAction();
+    public delegate void GameEndedAction(int score);
     public static event GameEndedAction OnGameEnded;
 	#endregion
 
@@ -252,7 +255,7 @@ public class GUIGameCamera : MonoBehaviour
 		
 		_score += (int)_amount;
 		_strScore = _score.ToString();
-		PopupText(popUpText);
+		PopupText(popUpText, 12f, 100f);
 		ShowScore();
 		ShowStars();
 	}
@@ -262,7 +265,7 @@ public class GUIGameCamera : MonoBehaviour
 		_score += (int)_amount;
 		_strScore = _score.ToString();
 		string _strAmount = _amount.ToString();
-		PopupText(_strAmount);
+		PopupText(_strAmount, 12f, 100f);
 		ShowScore();
 		ShowStars();
 	}
@@ -328,12 +331,12 @@ public class GUIGameCamera : MonoBehaviour
 		}
 	}
 	
-	public void PopupText(string _str)
+	public void PopupText(string _str, float _circles, float _starTrail)
 	{
-		StartCoroutine("InstantiatePopup", _str);
+		StartCoroutine(InstantiatePopup(_str, _circles, _starTrail));
 	}
 	
-	private IEnumerator InstantiatePopup(string _str)
+	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail)
 	{	
 		float _xPopupPos = Random.Range(0.35f,0.65f);
 		float _yPopupPos = Random.Range(0.3f,0.4f);
@@ -346,12 +349,21 @@ public class GUIGameCamera : MonoBehaviour
 		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
 		
+		GameObject _popupObject = (GameObject)Instantiate(_popupPrefab, _popupTextPos , Quaternion.identity);
 		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
 		
+		_particleSystems = _popupObject.GetComponentsInChildren<ParticleSystem>();
+		
+		_particleSystems[0].particleSystem.emissionRate = _starTrail;
+		_particleSystems[1].particleSystem.emissionRate = _circles;
+		
 		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			_fadeInDuration + _fadeOutDuration);
+		
+		iTween.MoveTo(_popupObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
 			_fadeInDuration + _fadeOutDuration);
 		
 		iTween.PunchScale(_popupTextObject, new Vector3(_punchAmmount,_punchAmmount,0f), 
@@ -362,6 +374,7 @@ public class GUIGameCamera : MonoBehaviour
 		iTween.FadeTo(_popupTextObject, 0f, _fadeOutDuration);
 		yield return new WaitForSeconds(_fadeOutDuration);
 		Destroy(_popupTextObject);
+		Destroy(_popupObject);
 		
 	}
     #endregion
@@ -578,7 +591,7 @@ public class GUIGameCamera : MonoBehaviour
         {
             if(OnGameEnded != null)
             {
-                OnGameEnded();
+                OnGameEnded(_score);
             }
         }
     }
