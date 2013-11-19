@@ -28,18 +28,6 @@ public class ScoreManager : MonoBehaviour
 	#region Delegates and Events
 	public delegate void OnTaskCompleted();
 	public static event OnTaskCompleted TaskCompleted;
-
-    public delegate void TaskRed();
-    public static event TaskRed OnTaskRed;
-
-    public delegate void TaskYellow();
-    public static event TaskYellow OnTaskYellow;
-
-    public delegate void TaskGreen();
-    public static event TaskGreen OnTaskGreen;
-
-    public delegate void TaskZone();
-    public static event TaskZone OnTaskZone;
 	#endregion
 	
 	#region Unity Methods
@@ -47,11 +35,13 @@ public class ScoreManager : MonoBehaviour
 	{
 		guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
 	}
-
-    void Update()
-    {
-        
-    }
+	/*void Update()
+	{
+		if(Input.GetKeyDown(KeyCode.C))
+		{
+			InkSuccess();
+		}
+	}*/
 	
 	void OnEnable()
 	{
@@ -92,6 +82,7 @@ public class ScoreManager : MonoBehaviour
 	{
 		int colorHit = 0;
 		bool pointsGranted = false;
+		int popupSize = 1;
 		
 		if(TaskCompleted != null)
 			TaskCompleted();
@@ -102,52 +93,26 @@ public class ScoreManager : MonoBehaviour
 		{
 			case 0:
                 Feedback.Clear();
-                Feedback.Add("Not in a Zone!");
-
-                if(OnTaskZone != null)
-                {
-                    OnTaskZone();
-                }
-
+                Feedback.Add("Not bad!");
+				popupSize = 3;
 				break;
-
             case 1:
-
                 Feedback.Clear();
-                Feedback.Add("Red Zone!");
-
-                if(OnTaskRed != null)
-                {
-                    OnTaskRed();
-                }
-
+                Feedback.Add("Good!");
+				popupSize = 3;
                 break;
-
 			case 2:
                 Feedback.Clear();
-                Feedback.Add("Yellow Zone!");
+                Feedback.Add("Great!");
+				popupSize = 2;
 				amount = amount * YellowZoneModifier;
-
-                if(OnTaskYellow != null)
-                {
-                    OnTaskYellow();
-                }
-
 				break;
-
 			case 3:
                 Feedback.Clear();
-                Feedback.Add("Green Zone!");
                 Feedback.Add("Perfect!");
+				popupSize = 1;
 				amount = amount * GreenZoneModifier;
-
-                if(OnTaskGreen != null)
-                {
-                    OnTaskGreen();
-                }
-
 				break;
-
 			default:
 				break;
 		}
@@ -164,7 +129,26 @@ public class ScoreManager : MonoBehaviour
 				{
 					amount = 0;	
 				}
-				guiGameCameraScript.IncreaseScore(amount, s);
+				
+				guiGameCameraScript.IncreaseScore(amount);
+				
+				if(popupSize == 1)
+				{
+					guiGameCameraScript.PopupTextBig(s);
+				}
+				else if(popupSize == 2)
+				{
+					guiGameCameraScript.PopupTextMedium(s);
+				}
+				else if(popupSize == 3)
+				{
+					guiGameCameraScript.PopupTextSmall(s);
+				}
+				else
+				{
+					guiGameCameraScript.PopupTextSmall(s);
+				}
+				
 				pointsGranted = true;
 				yield return new WaitForSeconds(0.2f);
 			}
