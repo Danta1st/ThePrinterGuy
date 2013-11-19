@@ -233,7 +233,17 @@ public class Ink : MonoBehaviour
 		}
 		else
 		{
-			// Hit the wall lid and go back?
+			foreach(Transform t in currIcc.lid.transform)
+			{
+				if(t.name == "InkCrashObj")
+				{
+					GameObject target = t.gameObject;
+					iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", target.transform.position, 
+							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
+				}
+			}
+				
+			
 		}
 	}
 	
@@ -255,6 +265,20 @@ public class Ink : MonoBehaviour
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		icc.insertableCartridge.position = icc.insertableStartPos;
 		_canSlide = true;
+	}
+	
+	private IEnumerator InkFailed(InkCartridgeClass icc)
+	{
+//		GameObject fallingIcc = (GameObject)Instantiate(icc.insertableCartridge.gameObject, icc.insertableCartridge.position, icc.insertableCartridge.rotation);
+//		icc.insertableCartridge.position = icc.insertableStartPos;
+//		//iTween.MoveTo(fallingIcc, iTween.Hash("y", -1000f, 
+//							 // "easetype", _easeTypeSlide, "time", 20f, "oncomplete", "InkDestroy", "oncompletetarget", this.gameObject, "oncompleteparams", fallingIcc));
+		yield return new WaitForSeconds(0.2f);
+//		_canSlide = true;
+	}
+	
+	private void InkDestroy(GameObject go)
+	{
 	}
 	
 	private void InkReset()
