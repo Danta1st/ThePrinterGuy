@@ -246,4 +246,11 @@ public class GenericSoundScript : MonoBehaviour
         return _audioSource.volume;
     }
     #endregion
+
+    #region Set Pan
+    public void SetPanLevel(float newPanLevel)
+    {
+        _audioSource.panLevel = newPanLevel;
+    }
+    #endregion
 }
