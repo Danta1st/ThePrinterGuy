@@ -14,6 +14,7 @@ public class PaperInsertion : MonoBehaviour
 	[SerializeField] private ParticleSystem _particleSystemStars;
 	[SerializeField] private ParticleSystem _particleSystemSmoke;
 
+
 //    [SerializeField] private AudioClip clipUp;
 //    [SerializeField] private AudioClip clipDown;
 
@@ -264,14 +265,20 @@ public class PaperInsertion : MonoBehaviour
 	            if(_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
 				{
                     GSS.PlayClip(Random.Range(5, 8));
-					SlidePaper(i);
+					SlidePaper(i, true);
+					break;
+				}
+				else if(!_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
+				{
+                    GSS.PlayClip(Random.Range(5, 8));
+					SlidePaper(i, false);
 					break;
 				}
 	        }
 		}
 	}
 
-    private void SlidePaper(int i)
+    private void SlidePaper(int i, bool colorMatch)
     {
 		if(_IsSlideLocked == false)
 		{
@@ -286,8 +293,17 @@ public class PaperInsertion : MonoBehaviour
 				
 				Reset();
 				
-				iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+				if(colorMatch)
+					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+				else
+				{
+					Hashtable iTweenParams = new Hashtable();
+					iTweenParams.Add("go", paper);
+					iTweenParams.Add("index", i);
+					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+													"oncomplete", "CrushPaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));
+				}
 				
 				foreach(Transform child in gameObject.transform)
 				{
@@ -301,7 +317,7 @@ public class PaperInsertion : MonoBehaviour
 				if(_particleSmoke != null && _particleSmoke.isPlaying)
 					_particleSmoke.Stop();
 				
-				if(OnCorrectPaperInserted != null)
+				if(OnCorrectPaperInserted != null && colorMatch)
 					OnCorrectPaperInserted();
 				
 			}
@@ -313,8 +329,11 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
+				Hashtable iTweenParams = new Hashtable();
+				iTweenParams.Add("go", paper);
+				iTweenParams.Add("index", i);
 				iTween.MoveTo(paper, iTween.Hash("position", _gate.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));			
+													"oncomplete", "CrushPaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));			
 			}
 		}
     }
@@ -329,6 +348,21 @@ public class PaperInsertion : MonoBehaviour
 		yield return new WaitForSeconds(_slideWait);
 		_tempPaper.Remove(go);
 		Destroy(go);
+		_IsSlideLocked = false;
+	}
+	
+	IEnumerator CrushPaper(object obj)
+	{
+		Hashtable ht = (Hashtable)obj;
+		GameObject go = (GameObject)ht["go"];
+		int index = (int)ht["index"];
+		GameObject crushedPaper = (GameObject)Instantiate(_paperlightset[index].crumbledPaperPrefab, go.transform.position, Quaternion.identity); 
+		_tempPaper.Remove(go);
+		Destroy(go);
+		_tempPaper.Add (crushedPaper);
+		yield return new WaitForSeconds(_slideWait);
+		iTween.MoveTo(crushedPaper, iTween.Hash("position", Camera.main.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+													"oncomplete", "DestroyPaper", "oncompleteparams", crushedPaper, "oncompletetarget", gameObject));
 		_IsSlideLocked = false;
 	}
 	
@@ -351,6 +385,7 @@ public class PaperInsertion : MonoBehaviour
         public Texture on;
         public Texture off;
         public GameObject paper;
+		public GameObject crumbledPaperPrefab;
         public bool isOn = false;
     };
     #endregion
