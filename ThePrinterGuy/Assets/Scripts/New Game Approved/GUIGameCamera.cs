@@ -224,16 +224,17 @@ public class GUIGameCamera : MonoBehaviour
     {
 		if(Input.GetKeyDown(KeyCode.N))
 		{
-			IncreaseScore(1000);
+			IncreaseScorePopup(1000);
 		}
 		if(Input.GetKeyDown(KeyCode.B))
 		{
-			IncreaseScore(2000);
+			IncreaseScorePopup(2000);
 		}
 		if(Input.GetKeyDown(KeyCode.V))
 		{
-			IncreaseScore(10000);
+			IncreaseScorePopup(10000);
 		}
+		
 
         if(Input.GetKeyDown(KeyCode.L))
         {
@@ -258,17 +259,16 @@ public class GUIGameCamera : MonoBehaviour
     #region Class Methods
 
     #region Highscore
-	public void IncreaseScore(float _amount, string popUpText)
+	public void IncreaseScore(float _amount)
 	{
 		
 		_score += (int)_amount;
 		_strScore = _score.ToString();
-		PopupTextMedium(popUpText);
 		ShowScore();
 		ShowStars();
 	}
 	
-	public void IncreaseScore(float _amount)
+	public void IncreaseScorePopup(float _amount)
 	{
 		_score += (int)_amount;
 		_strScore = _score.ToString();
@@ -374,8 +374,8 @@ public class GUIGameCamera : MonoBehaviour
 	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
 	{	
 		float _xPopupPos = Random.Range(0.35f,0.65f);
-		float _yPopupPos = Random.Range(0.3f,0.4f);
-		float _fontSize = 200f;
+		float _yPopupPos = Random.Range(0.35f,0.45f);
+		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 1.2f;
 		float _punchAmmount = -10f;
