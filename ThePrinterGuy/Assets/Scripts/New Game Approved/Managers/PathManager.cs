@@ -122,6 +122,7 @@ public class PathManager : MonoBehaviour {
     {
         if(_isMoving == false)
         {
+			_lookingAt = lookTarget;
 			_queuedMoveTo = null;
             _isMoving = true;
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPath(pathName),
@@ -143,6 +144,7 @@ public class PathManager : MonoBehaviour {
     {
         if(_isMoving == false)
         {
+			_lookingAt = lookTarget;
 			_queuedMoveTo = null;
             _isMoving = true;
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPathReversed(pathName),
@@ -163,7 +165,6 @@ public class PathManager : MonoBehaviour {
     private void AdjustLookingAt(Transform tf)
     {
         _isMoving = false;
-        _lookingAt = tf;
 		if(_queuedMoveTo != null)
 		{
 			MoveToQueuedTarget();
@@ -187,6 +188,10 @@ public class PathManager : MonoBehaviour {
 		else if(_queuedMoveTo == _uraniumFocus)
 		{
 			TriggerMoveUranium(0);
+		}
+		else if(_queuedMoveTo == _overviewFocus)
+		{
+			TriggerMoveBegin();
 		}
 		_queuedMoveTo = null;
 	}
