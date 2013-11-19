@@ -14,10 +14,8 @@ public class GUIGameCamera : MonoBehaviour
     private GameObject[] _textList;
 	[SerializeField]
 	private iTween.EaseType _easeTypeIngameMenu;
-    [SerializeField]
-    private iTween.EaseType _easeTypeActionSequencerItem;
-    [SerializeField]
-    private float _actionSequencerItemSpeed;
+	[SerializeField]
+    private GameObject _popupPrefab;
 	[SerializeField]
     private GameObject _popupTextPrefab;
     [SerializeField]
@@ -38,6 +36,7 @@ public class GUIGameCamera : MonoBehaviour
     private bool _isGUI = false;
     private bool _canTouch = true;
     private float _timeScale = 0.0f;
+	private ParticleSystem[] _particleSystems;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -58,20 +57,23 @@ public class GUIGameCamera : MonoBehaviour
 	private bool _isStar3Spawned;
 
     //Action Sequencer
-    private Vector3 _spawnMoveAmount;
     private Vector3 _spawnPoint;
     private GameObject _sequencerObject;
     private GameObject _queuedObject;
     private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
     private int _zone = 0;
     private bool _isLastNode = false;
+	
+	//Speech bubble
+	private GameObject _speechTextObject;
+	private GUISpeechText _guiSpeechTextScript;
     #endregion
 	
 	#region Delegates & Events
 	public delegate void OnUpdateActionAction();
 	public static event OnUpdateActionAction OnUpdateAction;
 
-    public delegate void GameEndedAction();
+    public delegate void GameEndedAction(int score);
     public static event GameEndedAction OnGameEnded;
 	#endregion
 
@@ -188,8 +190,14 @@ public class GUIGameCamera : MonoBehaviour
             if(_guiObject.name == "ActionSequencer")
             {
                 _spawnPoint = _guiObject.transform.FindChild("SpawnZone").gameObject.transform.position;
-                _spawnMoveAmount = new Vector3(0, -1100*_scaleMultiplierY, 0);
             }
+			
+			if(_guiObject.name == "SpeechBubble")
+			{
+				_guiObject.SetActive(false);
+				_speechTextObject = _guiObject.transform.FindChild("SpeechText").gameObject;
+				_guiSpeechTextScript = _speechTextObject.GetComponent<GUISpeechText>();
+			}
         }
         //--------------------------------------------------//
 		if(GUIMainMenuCamera.languageSetting == "EN")
@@ -216,13 +224,28 @@ public class GUIGameCamera : MonoBehaviour
     {
 		if(Input.GetKeyDown(KeyCode.N))
 		{
-			IncreaseScore(1000);
+			IncreaseScorePopup(1000);
 		}
+		if(Input.GetKeyDown(KeyCode.B))
+		{
+			IncreaseScorePopup(2000);
+		}
+		if(Input.GetKeyDown(KeyCode.V))
+		{
+			IncreaseScorePopup(10000);
+		}
+		
 
         if(Input.GetKeyDown(KeyCode.L))
         {
             CheckZone();
         }
+		if(Input.GetKeyDown(KeyCode.M))
+		{
+			// Writes "SpeechBubbleExample" from the LocalizationText.xml
+			EnableGUIElement("SpeechBubble");
+			_guiSpeechTextScript.WriteText("SpeechBubbleExample");
+		}
     }
     #endregion
 	
@@ -236,22 +259,33 @@ public class GUIGameCamera : MonoBehaviour
     #region Class Methods
 
     #region Highscore
-	public void IncreaseScore(float _amount, string popUpText)
+	public void IncreaseScore(float _amount)
 	{
 		
 		_score += (int)_amount;
 		_strScore = _score.ToString();
-		PopupText(popUpText);
 		ShowScore();
 		ShowStars();
 	}
 	
-	public void IncreaseScore(float _amount)
+	public void IncreaseScorePopup(float _amount)
 	{
 		_score += (int)_amount;
 		_strScore = _score.ToString();
 		string _strAmount = _amount.ToString();
-		PopupText(_strAmount);
+		if(_amount <= 1000)
+		{
+			PopupTextSmall(_strAmount);
+		}
+		else if(_amount > 1000 && _amount < 10000)
+		{
+			PopupTextMedium(_strAmount);
+		}
+		else
+		{
+			PopupTextBig(_strAmount);
+		}
+		
 		ShowScore();
 		ShowStars();
 	}
@@ -270,10 +304,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(false);
 			_star3Object.SetActive(false);
 			
-			if(_isStar1Spawned)
+			if(!_isStar1Spawned)
 			{
 				iTween.PunchScale(_star1Object, new Vector3(20f,20f,0f),1f);
-				_isStar1Spawned = false;
+				_isStar1Spawned = true;
 			}
 			
 		}
@@ -283,10 +317,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(true);
 			_star3Object.SetActive(false);
 			
-			if(_isStar2Spawned)
+			if(!_isStar2Spawned)
 			{
 				iTween.PunchScale(_star2Object, new Vector3(20f,20f,0f),1f);
-				_isStar2Spawned = false;
+				_isStar2Spawned = true;
 			}
 			
 		}
@@ -297,10 +331,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star3Object.SetActive(true);
 			
 			
-			if(_isStar3Spawned)
+			if(!_isStar3Spawned)
 			{
 				iTween.PunchScale(_star3Object, new Vector3(20f,20f,0f),1f);
-				_isStar3Spawned = false;
+				_isStar3Spawned = true;
 			}
 		}
 		else
@@ -309,24 +343,39 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(false);
 			_star3Object.SetActive(false);
 			
-			_isStar1Spawned = true;
-			_isStar2Spawned = true;
-			_isStar3Spawned = true;
+			_isStar1Spawned = false;
+			_isStar2Spawned = false;
+			_isStar3Spawned = false;
 			
 			
 		}
 	}
 	
-	public void PopupText(string _str)
+	public void PopupTextSmall(string _str)
 	{
-		StartCoroutine("InstantiatePopup", _str);
+		PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
 	}
 	
-	private IEnumerator InstantiatePopup(string _str)
+	public void PopupTextMedium(string _str)
+	{
+		PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
+	}
+	
+	public void PopupTextBig(string _str)
+	{
+		PopupText(_str, 10f, 100f, new Color(1f ,0.7f ,0f, 1f), new Color(1f ,0.7f ,0f, 0.7f));
+	}
+	
+	public void PopupText(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
+	{
+		StartCoroutine(InstantiatePopup(_str, _circles, _starTrail, _trailColor, _circleColor));
+	}
+	
+	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
 	{	
 		float _xPopupPos = Random.Range(0.35f,0.65f);
-		float _yPopupPos = Random.Range(0.3f,0.4f);
-		float _fontSize = 200f;
+		float _yPopupPos = Random.Range(0.35f,0.45f);
+		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 1.2f;
 		float _punchAmmount = -10f;
@@ -335,12 +384,23 @@ public class GUIGameCamera : MonoBehaviour
 		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
 		
+		GameObject _popupObject = (GameObject)Instantiate(_popupPrefab, _popupTextPos , Quaternion.identity);
 		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
 		
+		_particleSystems = _popupObject.GetComponentsInChildren<ParticleSystem>();
+		
+		_particleSystems[0].particleSystem.emissionRate = _starTrail;
+		_particleSystems[1].particleSystem.emissionRate = _circles;
+		_particleSystems[0].particleSystem.startColor = _trailColor;
+		_particleSystems[1].particleSystem.startColor = _circleColor;
+		
 		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			_fadeInDuration + _fadeOutDuration);
+		
+		iTween.MoveTo(_popupObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
 			_fadeInDuration + _fadeOutDuration);
 		
 		iTween.PunchScale(_popupTextObject, new Vector3(_punchAmmount,_punchAmmount,0f), 
@@ -351,6 +411,7 @@ public class GUIGameCamera : MonoBehaviour
 		iTween.FadeTo(_popupTextObject, 0f, _fadeOutDuration);
 		yield return new WaitForSeconds(_fadeOutDuration);
 		Destroy(_popupTextObject);
+		Destroy(_popupObject);
 		
 	}
     #endregion
@@ -529,8 +590,6 @@ public class GUIGameCamera : MonoBehaviour
         _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 1);
         GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
         _nodeItem.transform.localScale *= _scaleMultiplierY;
-        iTween.MoveAdd(_nodeItem, iTween.Hash("amount", _spawnMoveAmount, "speed", _actionSequencerItemSpeed,
-                                                "easeType", _easeTypeActionSequencerItem));
         _sequencerObjectQueue.Enqueue(_nodeItem);
 		if(_sequencerObjectQueue.Count == 1)
 		{
@@ -569,7 +628,7 @@ public class GUIGameCamera : MonoBehaviour
         {
             if(OnGameEnded != null)
             {
-                OnGameEnded();
+                OnGameEnded(_score);
             }
         }
     }

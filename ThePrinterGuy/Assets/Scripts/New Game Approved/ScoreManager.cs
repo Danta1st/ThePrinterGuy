@@ -35,10 +35,17 @@ public class ScoreManager : MonoBehaviour
 	{
 		guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
 	}
+	/*void Update()
+	{
+		if(Input.GetKeyDown(KeyCode.C))
+		{
+			InkSuccess();
+		}
+	}*/
 	
 	void OnEnable()
 	{
-		InkController.OnInkInsertedSuccess += InkSuccess;
+		Ink.OnCorrectInkInserted += InkSuccess;
 		PaperInsertion.OnCorrectPaperInserted += PaperSuccess;
 		Barometer.OnBarometerFixed += BarometerSuccess;
 		UraniumRods.OnRodHammered += RodSuccess;
@@ -46,7 +53,7 @@ public class ScoreManager : MonoBehaviour
 	
 	void OnDisable()
 	{
-		InkController.OnInkInsertedSuccess -= InkSuccess;
+		Ink.OnCorrectInkInserted -= InkSuccess;
 		PaperInsertion.OnCorrectPaperInserted -= PaperSuccess;
 		Barometer.OnBarometerFixed -= BarometerSuccess;
 		UraniumRods.OnRodHammered -= RodSuccess;
@@ -75,31 +82,35 @@ public class ScoreManager : MonoBehaviour
 	{
 		int colorHit = 0;
 		bool pointsGranted = false;
-
+		int popupSize = 1;
+		
 		if(TaskCompleted != null)
 			TaskCompleted();
 
-		colorHit = guiGameCameraScript.GetZone(); // INDSÆT CALL FOR AT SE HVILKEN FARVE ER RAMT - SÆT colorHit til denne
+		colorHit = guiGameCameraScript.GetZone();
 
 		switch (colorHit)
 		{
 			case 0:
                 Feedback.Clear();
-                Feedback.Add("Not in a Zone!");
+                Feedback.Add("Not bad!");
+				popupSize = 3;
 				break;
             case 1:
                 Feedback.Clear();
-                Feedback.Add("Red Zone!");
+                Feedback.Add("Good!");
+				popupSize = 3;
                 break;
 			case 2:
                 Feedback.Clear();
-                Feedback.Add("Yellow Zone!");
+                Feedback.Add("Great!");
+				popupSize = 2;
 				amount = amount * YellowZoneModifier;
 				break;
 			case 3:
                 Feedback.Clear();
-                Feedback.Add("Green Zone!");
-                Feedback.Add("Fucking perfect!");
+                Feedback.Add("Perfect!");
+				popupSize = 1;
 				amount = amount * GreenZoneModifier;
 				break;
 			default:
@@ -118,7 +129,26 @@ public class ScoreManager : MonoBehaviour
 				{
 					amount = 0;	
 				}
-				guiGameCameraScript.IncreaseScore(amount, s);
+				
+				guiGameCameraScript.IncreaseScore(amount);
+				
+				if(popupSize == 1)
+				{
+					guiGameCameraScript.PopupTextBig(s);
+				}
+				else if(popupSize == 2)
+				{
+					guiGameCameraScript.PopupTextMedium(s);
+				}
+				else if(popupSize == 3)
+				{
+					guiGameCameraScript.PopupTextSmall(s);
+				}
+				else
+				{
+					guiGameCameraScript.PopupTextSmall(s);
+				}
+				
 				pointsGranted = true;
 				yield return new WaitForSeconds(0.2f);
 			}

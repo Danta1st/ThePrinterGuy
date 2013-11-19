@@ -11,12 +11,15 @@ public class PathManager : MonoBehaviour {
     [SerializeField] private Transform _inkFocus;
     [SerializeField] private Transform _barometerFocus;
     [SerializeField] private Transform _paperFocus;
+	
+	[SerializeField] private Transform _overviewFocus;
     #endregion
 
     #region Privates
     private float _lookTargetDelay;
     private Transform _lookingAt;
     private bool _isMoving = false;
+	private Transform _queuedMoveTo;
     #endregion
 
     //TODO: Make Proper Connectivity to whatever it needs to connect to
@@ -51,9 +54,24 @@ public class PathManager : MonoBehaviour {
     #endregion
 
     #region Class Methods
-    private void TriggerMoveUranium()
+	private void TriggerMoveBegin()
+	{
+		if(_lookingAt != null)
+		{
+			if(_lookingAt == _paperFocus)
+				MoveReversed("BeginPaper", _overviewFocus);
+			else if(_lookingAt == _uraniumFocus)
+				MoveReversed("BeginUranium", _overviewFocus);
+			else if(_lookingAt == _barometerFocus)
+				MoveReversed("BeginBarometer", _overviewFocus);
+			else if(_lookingAt == _inkFocus)
+				MoveReversed("BeginInk", _overviewFocus);
+		}
+	}
+	
+    private void TriggerMoveUranium(int itemNumber)
     {
-		if(_lookingAt == null)
+		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginUranium",_uraniumFocus);
         else if(_lookingAt == _paperFocus)
             Move("PaperUranium", _uraniumFocus);
@@ -63,9 +81,9 @@ public class PathManager : MonoBehaviour {
             MoveReversed("UraniumInk", _uraniumFocus);
     }
 
-    private void TriggerMoveInk()
+    private void TriggerMoveInk(int itemNumber)
     {
-		if(_lookingAt == null)
+		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginInk",_inkFocus);
         else if(_lookingAt == _paperFocus)
             Move("PaperInk", _inkFocus);
@@ -75,9 +93,9 @@ public class PathManager : MonoBehaviour {
             Move("BarometerInk", _inkFocus);
     }
 
-    private void TriggerMoveBarometer()
+    private void TriggerMoveBarometer(int itemNumber)
     {
-		if(_lookingAt == null)
+		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginBarometer",_barometerFocus);
         else if(_lookingAt == _paperFocus)
             Move("PaperBarometer", _barometerFocus);
@@ -87,9 +105,9 @@ public class PathManager : MonoBehaviour {
             MoveReversed("BarometerInk", _barometerFocus);
     }
 
-    private void TriggerMovePaper()
+    private void TriggerMovePaper(int itemNumber)
     {
-		if(_lookingAt == null)
+		if(_lookingAt == null || _lookingAt == _overviewFocus)
 			Move("BeginPaper",_paperFocus);
         else if(_lookingAt == _uraniumFocus)
             MoveReversed("PaperUranium",_paperFocus);
@@ -104,6 +122,8 @@ public class PathManager : MonoBehaviour {
     {
         if(_isMoving == false)
         {
+			_lookingAt = lookTarget;
+			_queuedMoveTo = null;
             _isMoving = true;
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPath(pathName),
                                                     "time", _transitionTime,
@@ -114,12 +134,18 @@ public class PathManager : MonoBehaviour {
                                                     "oncompleteparams", lookTarget,
                                                     "oncompletetarget", gameObject));
         }
+		else
+		{
+			_queuedMoveTo = lookTarget;
+		}
     }
 
     private void MoveReversed(string pathName, Transform lookTarget)
     {
         if(_isMoving == false)
         {
+			_lookingAt = lookTarget;
+			_queuedMoveTo = null;
             _isMoving = true;
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPathReversed(pathName),
                                                     "time", _transitionTime,
@@ -130,12 +156,44 @@ public class PathManager : MonoBehaviour {
                                                     "oncompleteparams", lookTarget,
                                                     "oncompletetarget", gameObject));
         }
+		else
+		{
+			_queuedMoveTo = lookTarget;
+		}
     }
 
     private void AdjustLookingAt(Transform tf)
     {
         _isMoving = false;
-        _lookingAt = tf;
+		if(_queuedMoveTo != null)
+		{
+			MoveToQueuedTarget();
+		}
     }
+	
+	private void MoveToQueuedTarget()
+	{
+		if(_queuedMoveTo == _paperFocus)
+		{
+			TriggerMovePaper(0);
+		}
+		else if(_queuedMoveTo == _inkFocus)
+		{
+			TriggerMoveInk(0);
+		}
+		else if(_queuedMoveTo == _barometerFocus)
+		{
+			TriggerMoveBarometer(0);
+		}
+		else if(_queuedMoveTo == _uraniumFocus)
+		{
+			TriggerMoveUranium(0);
+		}
+		else if(_queuedMoveTo == _overviewFocus)
+		{
+			TriggerMoveBegin();
+		}
+		_queuedMoveTo = null;
+	}
     #endregion
 }

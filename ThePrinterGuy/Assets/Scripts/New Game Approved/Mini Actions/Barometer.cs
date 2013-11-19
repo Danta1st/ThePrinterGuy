@@ -5,11 +5,17 @@ public class Barometer : MonoBehaviour
 {
     #region Editor Publics
 	[SerializeField] Barometers[] _barometers;
+	[SerializeField] ParticleSystem _particleSystemStars;
+	[SerializeField] ParticleSystem _particleSystemSmoke;
     #endregion
 
     #region Privates
 	private float _normalRotationSpeed = 45;
 	private float _brokenRotationSpeed = 720;
+	private ParticleSystem _particleStars;
+	private ParticleSystem _particleSmoke;
+	private GameObject _dynamicObjects;
+	
     #endregion
 
     #region Delegates & Events
@@ -34,6 +40,23 @@ public class Barometer : MonoBehaviour
 	#region Monobehaviour Functions
 	void Awake () 
 	{
+		_dynamicObjects = GameObject.Find("Dynamic Objects");
+		if(_particleSystemSmoke != null)
+		{
+			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		}
+		else
+			Debug.Log("Smoke Particle not loaded for Barometer");
+		if(_particleSystemStars != null)
+		{
+			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		}
+		else
+			Debug.Log("Star Particle not loaded for Barometer");
+		
+		_particleSmoke.transform.parent = _dynamicObjects.transform;
+		_particleStars.transform.parent = _dynamicObjects.transform;
 		InitializeBarometers();
 	}
 	
@@ -79,10 +102,24 @@ public class Barometer : MonoBehaviour
         }
 	}
 	
-	private void TriggerBreakBarometer()
+	private void TriggerBreakBarometer(int itemNumber)
 	{
+		if(_barometers.Length < itemNumber)
+		{
+			if(OnBarometerFixed != null)
+				OnBarometerFixed();
+			Debug.Log("ERROR: Number out of index!");
+			return;
+		}
+			
 		GestureManager.OnDoubleTap += TriggerFixBarometer;
-        var identifier = Random.Range(0,_barometers.Length);
+		
+		if(_barometers[itemNumber].isBroken == false)
+        {
+            BreakBarometer(itemNumber);
+        }
+		
+        /* var identifier = Random.Range(0,_barometers.Length);
 
         for(int i = 0; i < _barometers.Length; i++)
         {
@@ -95,11 +132,20 @@ public class Barometer : MonoBehaviour
 
             if(identifier == _barometers.Length)
                 identifier = 0;
-        }
+        }*/
 	}
 	
 	private void BreakBarometer(int i)
 	{
+		foreach(Transform child in _barometers[i].barometer.transform)
+		{
+			if(child.name.Equals("ParticlePos") && _particleSmoke != null)
+			{
+				_particleSmoke.transform.position = child.position;
+				_particleSmoke.transform.rotation = child.rotation;
+				_particleSmoke.Play();
+			}
+		}
 		_barometers[i].rotationSpeed = _brokenRotationSpeed;
 		_barometers[i].isBroken = true;
 	}
@@ -121,6 +167,17 @@ public class Barometer : MonoBehaviour
 	{
 		_barometers[i].rotationSpeed = _normalRotationSpeed;
 		_barometers[i].isBroken = false;
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
+		foreach(Transform child in _barometers[i].barometer.transform)
+		{
+			if(child.name.Equals("ParticlePos") && _particleStars != null)
+			{
+				_particleStars.transform.position = child.position;
+				_particleStars.transform.rotation = child.rotation;
+				_particleStars.Play();
+			}
+		}
 		
 		if(OnBarometerFixed != null)
 			OnBarometerFixed();
@@ -136,6 +193,8 @@ public class Barometer : MonoBehaviour
 				_barometers[i].isBroken = false;
 			}
         }
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
 		GestureManager.OnDoubleTap -= TriggerFixBarometer;
 	}
 	#endregion
