@@ -50,10 +50,7 @@ public class ScoreManager : MonoBehaviour
 
     void Update()
     {
-        if(OnTaskRed != null)
-        {
-            OnTaskRed();
-        }
+        
     }
 	
 	void OnEnable()
