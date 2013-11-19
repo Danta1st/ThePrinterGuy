@@ -356,7 +356,7 @@ public class PaperInsertion : MonoBehaviour
 		Hashtable ht = (Hashtable)obj;
 		GameObject go = (GameObject)ht["go"];
 		int index = (int)ht["index"];
-		GameObject crushedPaper = (GameObject)Instantiate(_paperlightset[index].crumbledPaperPrefab, go.transform.position, Quaternion.identity); 
+		GameObject crushedPaper = (GameObject)Instantiate(_paperlightset[index].crushedPaperPrefab, go.transform.position, Quaternion.identity); 
 		_tempPaper.Remove(go);
 		Destroy(go);
 		_tempPaper.Add (crushedPaper);
@@ -385,7 +385,7 @@ public class PaperInsertion : MonoBehaviour
         public Texture on;
         public Texture off;
         public GameObject paper;
-		public GameObject crumbledPaperPrefab;
+		public GameObject crushedPaperPrefab;
         public bool isOn = false;
     };
     #endregion
