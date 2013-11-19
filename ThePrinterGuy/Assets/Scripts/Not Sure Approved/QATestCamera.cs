@@ -66,11 +66,11 @@ public class QATestCamera : MonoBehaviour
 	
 	IEnumerator GOCRAZY()
 	{
-		GUIList.IncreaseScore(100, "SUPER!");
+		GUIList.IncreaseScore(100/*, "SUPER!"*/);
 		yield return new WaitForSeconds(0.2f);
-		GUIList.IncreaseScore(0, "MEGA!");
+		GUIList.IncreaseScore(0/*, "MEGA!"*/);
 		yield return new WaitForSeconds(0.2f);
-		GUIList.IncreaseScore(0, "AWESOME!");
+		GUIList.IncreaseScore(0/*, "AWESOME!"*/);
 	}
 	
 	IEnumerator StartFirstTask()
