@@ -27,7 +27,6 @@ public class GestureManager : MonoBehaviour
     private bool _isSwiping = false;
     private GameObject _touchBeganObject;
 	private Vector2 _lastPosition;
-	string test;
     #endregion
 	
 	/*Public gesture disable and enable functions
@@ -159,7 +158,6 @@ public class GestureManager : MonoBehaviour
         {
 
             var primaryFinger = Input.GetTouch(0);
-						test = primaryFinger.deltaPosition.ToString();
 
             //Single Tap
             if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1 && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) < _allowedFingerMovementInPx))
@@ -489,25 +487,25 @@ public class GestureManager : MonoBehaviour
     #endregion
 
     //Debug GUI - OnGUI should otherwise be avoided on tablets
-    void OnGUI()
-    {
-//        foreach(Touch touch in Input.touches)
-//        {
-//            GUILayout.BeginVertical();
-//            GUILayout.Label("FingerId: " + touch.fingerId.ToString());
-//            GUILayout.Label("Position: " + touch.position.ToString());
-//            GUILayout.Label("DeltaTime: " + touch.deltaTime);
-            GUILayout.Label("DeltaPosition: " + test);
-//            GUILayout.Label("TouchPhase: " + touch.phase.ToString());
-//            GUILayout.Label("TapCount: " + touch.tapCount);
-//            GUILayout.EndVertical();
-//        }
-//
-//        foreach(var pair in _touchBeginTimes)
-//        {
-//            GUILayout.BeginVertical();
-//            GUILayout.Label("fingerId: " + pair.Key + " Began at: " + pair.Value);
-//            GUILayout.EndVertical();
-//        }
-    }
+//    void OnGUI()
+//    {
+////        foreach(Touch touch in Input.touches)
+////        {
+////            GUILayout.BeginVertical();
+////            GUILayout.Label("FingerId: " + touch.fingerId.ToString());
+////            GUILayout.Label("Position: " + touch.position.ToString());
+////            GUILayout.Label("DeltaTime: " + touch.deltaTime);
+//            GUILayout.Label("DeltaPosition: " + test);
+////            GUILayout.Label("TouchPhase: " + touch.phase.ToString());
+////            GUILayout.Label("TapCount: " + touch.tapCount);
+////            GUILayout.EndVertical();
+////        }
+////
+////        foreach(var pair in _touchBeginTimes)
+////        {
+////            GUILayout.BeginVertical();
+////            GUILayout.Label("fingerId: " + pair.Key + " Began at: " + pair.Value);
+////            GUILayout.EndVertical();
+////        }
+//    }
 }
