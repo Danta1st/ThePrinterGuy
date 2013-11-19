@@ -97,7 +97,7 @@ public class UraniumRods : MonoBehaviour
 		GestureManager.OnTap += TriggerHammer;
         
 		var go = _rods[itemNumber].rod;
-		if(_rodsAndStates[go] == false)
+		//if(_rodsAndStates[go] == false) // QUICKFIX: Enables ability to choose same rod several times in a row
         {
             GSS.PlayClip(itemNumber);
             Spring(go, itemNumber);
