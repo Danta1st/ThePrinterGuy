@@ -13,9 +13,11 @@ public class GestureManager : MonoBehaviour
     [SerializeField]
     private float _swipeThreshold = 5.0f;
     [SerializeField]
-    private float _swipeOffset = 2.0f;
+    private float _swipeOffset = 50f;
 	[SerializeField]
 	private float _allowedFingerMovementInPx = 50f;
+	[SerializeField]
+	private float _minFingerMovementForSwipeInPx = 100f;
     #endregion
 
     #region Privates
@@ -25,7 +27,7 @@ public class GestureManager : MonoBehaviour
     private bool _isSwiping = false;
     private GameObject _touchBeganObject;
 	private Vector2 _lastPosition;
-	
+	string test;
     #endregion
 	
 	/*Public gesture disable and enable functions
@@ -157,11 +159,12 @@ public class GestureManager : MonoBehaviour
         {
 
             var primaryFinger = Input.GetTouch(0);
+						test = primaryFinger.deltaPosition.ToString();
 
             //Single Tap
-            if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1)
+            if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1 && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) < _allowedFingerMovementInPx))
             {
-                if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) < _tapThreshold && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) < _allowedFingerMovementInPx))
+                if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) < _tapThreshold)
                 {
                     //Single Tap Event
                     if(OnTap != null)
@@ -194,21 +197,20 @@ public class GestureManager : MonoBehaviour
             }
 
             //Swipes
-            else if(primaryFinger.phase == TouchPhase.Moved &&
-                    (Time.time - _touchBeginTimes[primaryFinger.fingerId]) > _tapThreshold)
+            else if((primaryFinger.phase == TouchPhase.Moved || primaryFinger.phase == TouchPhase.Ended) && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) >= _minFingerMovementForSwipeInPx))
             {
                 _isSwiping = true;
                 //Horizontal swipes
-                if(primaryFinger.deltaPosition.x >= _swipeThreshold &&
-                    Mathf.Abs(primaryFinger.deltaPosition.y) <= _swipeOffset)
+                if(primaryFinger.position.x >= _touchBeginPositions[primaryFinger.fingerId].x &&
+                    Mathf.Abs(primaryFinger.position.y - _touchBeginPositions[primaryFinger.fingerId].y) <= _swipeOffset)
                 {
                     //SwipeRight Event
                     if(OnSwipeRight != null)
                         OnSwipeRight(_touchBeganObject);
 
                 }
-                else if(primaryFinger.deltaPosition.x <= _swipeThreshold * -1.0f &&
-                         Mathf.Abs(primaryFinger.deltaPosition.y) <= _swipeOffset)
+                else if(primaryFinger.position.x <= _touchBeginPositions[primaryFinger.fingerId].x &&
+                         Mathf.Abs(primaryFinger.position.y - _touchBeginPositions[primaryFinger.fingerId].y) <= _swipeOffset)
                 {
                     //SwipeLeft Event
                     if(OnSwipeLeft != null)
@@ -217,15 +219,15 @@ public class GestureManager : MonoBehaviour
                 }
 
                 //Vertical swipes
-                if(primaryFinger.deltaPosition.y >= _swipeThreshold &&
-                    Mathf.Abs(primaryFinger.deltaPosition.x) <= _swipeOffset)
+                if(primaryFinger.position.y >= _touchBeginPositions[primaryFinger.fingerId].y &&
+                    Mathf.Abs(primaryFinger.position.x - _touchBeginPositions[primaryFinger.fingerId].x) <= _swipeOffset)
                 {
                     //SwipeUp Event
                     if(OnSwipeUp != null)
                         OnSwipeUp(_touchBeganObject);
                 }
-                else if(primaryFinger.deltaPosition.y <= _swipeThreshold * -1.0f &&
-                         Mathf.Abs(primaryFinger.deltaPosition.x) <= _swipeOffset)
+                else if(primaryFinger.position.y >= _touchBeginPositions[primaryFinger.fingerId].y &&
+                         Mathf.Abs(primaryFinger.position.x - _touchBeginPositions[primaryFinger.fingerId].x) <= _swipeOffset)
                 {
                     //SwipeDown Event
                     if(OnSwipeDown != null)
@@ -233,6 +235,40 @@ public class GestureManager : MonoBehaviour
                 }
             }
             
+//			if(primaryFinger.deltaPosition.x >= _swipeThreshold &&
+//                    Mathf.Abs(primaryFinger.deltaPosition.y) <= _swipeOffset)
+//                {
+//                    //SwipeRight Event
+//                    if(OnSwipeRight != null)
+//                        OnSwipeRight(_touchBeganObject);
+//
+//                }
+//                else if(primaryFinger.deltaPosition.x <= _swipeThreshold * -1.0f &&
+//                         Mathf.Abs(primaryFinger.deltaPosition.y) <= _swipeOffset)
+//                {
+//                    //SwipeLeft Event
+//                    if(OnSwipeLeft != null)
+//                        OnSwipeLeft(_touchBeganObject);
+//
+//                }
+//
+//                //Vertical swipes
+//                if(primaryFinger.deltaPosition.y >= _swipeThreshold &&
+//                    Mathf.Abs(primaryFinger.deltaPosition.x) <= _swipeOffset)
+//                {
+//                    //SwipeUp Event
+//                    if(OnSwipeUp != null)
+//                        OnSwipeUp(_touchBeganObject);
+//                }
+//                else if(primaryFinger.deltaPosition.y <= _swipeThreshold * -1.0f &&
+//                         Mathf.Abs(primaryFinger.deltaPosition.x) <= _swipeOffset)
+//                {
+//                    //SwipeDown Event
+//                    if(OnSwipeDown != null)
+//                        OnSwipeDown(_touchBeganObject);
+//                }
+//            }
+			
 			_lastPosition = primaryFinger.position;
 
 			if(primaryFinger.phase == TouchPhase.Ended)
@@ -453,15 +489,15 @@ public class GestureManager : MonoBehaviour
     #endregion
 
     //Debug GUI - OnGUI should otherwise be avoided on tablets
-//    void OnGUI()
-//    {
+    void OnGUI()
+    {
 //        foreach(Touch touch in Input.touches)
 //        {
 //            GUILayout.BeginVertical();
 //            GUILayout.Label("FingerId: " + touch.fingerId.ToString());
 //            GUILayout.Label("Position: " + touch.position.ToString());
 //            GUILayout.Label("DeltaTime: " + touch.deltaTime);
-//            GUILayout.Label("DeltaPosition: " + touch.deltaPosition.ToString());
+            GUILayout.Label("DeltaPosition: " + test);
 //            GUILayout.Label("TouchPhase: " + touch.phase.ToString());
 //            GUILayout.Label("TapCount: " + touch.tapCount);
 //            GUILayout.EndVertical();
@@ -473,5 +509,5 @@ public class GestureManager : MonoBehaviour
 //            GUILayout.Label("fingerId: " + pair.Key + " Began at: " + pair.Value);
 //            GUILayout.EndVertical();
 //        }
-//    }
+    }
 }
