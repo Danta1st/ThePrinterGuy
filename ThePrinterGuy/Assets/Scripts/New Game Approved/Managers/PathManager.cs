@@ -19,6 +19,7 @@ public class PathManager : MonoBehaviour {
     private float _lookTargetDelay;
     private Transform _lookingAt;
     private bool _isMoving = false;
+	private Transform _queuedMoveTo;
     #endregion
 
     //TODO: Make Proper Connectivity to whatever it needs to connect to
@@ -121,6 +122,7 @@ public class PathManager : MonoBehaviour {
     {
         if(_isMoving == false)
         {
+			_queuedMoveTo = null;
             _isMoving = true;
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPath(pathName),
                                                     "time", _transitionTime,
@@ -131,12 +133,17 @@ public class PathManager : MonoBehaviour {
                                                     "oncompleteparams", lookTarget,
                                                     "oncompletetarget", gameObject));
         }
+		else
+		{
+			_queuedMoveTo = lookTarget;
+		}
     }
 
     private void MoveReversed(string pathName, Transform lookTarget)
     {
         if(_isMoving == false)
         {
+			_queuedMoveTo = null;
             _isMoving = true;
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPathReversed(pathName),
                                                     "time", _transitionTime,
@@ -147,12 +154,41 @@ public class PathManager : MonoBehaviour {
                                                     "oncompleteparams", lookTarget,
                                                     "oncompletetarget", gameObject));
         }
+		else
+		{
+			_queuedMoveTo = lookTarget;
+		}
     }
 
     private void AdjustLookingAt(Transform tf)
     {
         _isMoving = false;
         _lookingAt = tf;
+		if(_queuedMoveTo != null)
+		{
+			MoveToQueuedTarget();
+		}
     }
+	
+	private void MoveToQueuedTarget()
+	{
+		if(_queuedMoveTo == _paperFocus)
+		{
+			TriggerMovePaper(0);
+		}
+		else if(_queuedMoveTo == _inkFocus)
+		{
+			TriggerMoveInk(0);
+		}
+		else if(_queuedMoveTo == _barometerFocus)
+		{
+			TriggerMoveBarometer(0);
+		}
+		else if(_queuedMoveTo == _uraniumFocus)
+		{
+			TriggerMoveUranium(0);
+		}
+		_queuedMoveTo = null;
+	}
     #endregion
 }
