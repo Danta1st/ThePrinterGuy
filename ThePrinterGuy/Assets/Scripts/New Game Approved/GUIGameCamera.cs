@@ -259,12 +259,11 @@ public class GUIGameCamera : MonoBehaviour
     #region Class Methods
 
     #region Highscore
-	public void IncreaseScore(float _amount/*, string popUpText*/)
+	public void IncreaseScore(float _amount)
 	{
 		
 		_score += (int)_amount;
 		_strScore = _score.ToString();
-//		PopupTextMedium(popUpText);
 		ShowScore();
 		ShowStars();
 	}
