@@ -17,8 +17,11 @@ public class ActionSequencerItem : MonoBehaviour
     private ActionSequencerZone _actionSequencerScript;
     private string _statusZone = "";
     private int _zone = 0;
-    private float _delay = 0.0f;
 
+    private bool _once = false;
+    private bool _isTween = false;
+    private float _startTime;
+    private float _delay;
     private Vector3 _destinationPosition;
     #endregion
 
@@ -32,19 +35,23 @@ public class ActionSequencerItem : MonoBehaviour
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _destinationPosition = GameObject.Find("DeadZone").transform.position;
 
-
+        _startTime = Time.time;
+        _delay = _ms - (Time.time % _ms);
     }
 
     // Use this for initialization
     void Start()
     {
-        StartCoroutine("OnStartTween");
+
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-
+        if(_once == false)
+        {
+            CheckTween();
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -65,29 +72,28 @@ public class ActionSequencerItem : MonoBehaviour
         }
     }
 
-    private IEnumerator OnStartTween()
+    private void CheckTween()
     {
-        _delay = _ms - (Time.time % _ms);
-        Debug.Log(Time.time);
-        Debug.Log("Delay: " + _delay);
-        yield return new WaitForSeconds(_delay);
-        OnContinueTween();
+        Debug.Log("time before: "+Time.time);
+        if(Time.time >= _startTime+_delay)
+        {
+            Debug.Log("delay: " + (float)(_startTime+_delay));
+            Debug.Log("time after: " + Time.time);
+            _isTween = true;
+            _once = true;
+        }
 
-        Debug.Log(Time.time);
+        if(_isTween == true)
+        {
+            StartTween();
+        }
+    }
+
+    private void StartTween()
+    {
         iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms, "looptype", iTween.LoopType.loop));
         iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "speed", _actionSequencerItemSpeed,
                                                     "easeType", _easeTypeActionSequencerItem));
-                                                    Debug.Log(Time.time);
-                                                    Debug.Log("Time: " + (float)(Time.time + _delay + _ms));
-//        double temp = _delay + Time.time + _ms;
-//        Debug.Log("Expected time: " + temp);
-//        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms, "delay", _delay,
-//                                                    "onComplete", "OnContinueTween", "onCompleteTarget", gameObject));
-    }
-
-    private void OnContinueTween()
-    {
-
     }
 
     public int GetZoneStatus()
