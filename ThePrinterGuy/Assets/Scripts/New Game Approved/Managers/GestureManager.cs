@@ -17,7 +17,7 @@ public class GestureManager : MonoBehaviour
 	[SerializeField]
 	private float _allowedFingerMovementInPx = 50f;
 	[SerializeField]
-	private float _minFingerMovementForSwipeInPx = 100f;
+	private float _minFingerMovementForSwipeInPx = 75f;
     #endregion
 
     #region Privates
