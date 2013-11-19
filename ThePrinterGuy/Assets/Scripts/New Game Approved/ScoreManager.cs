@@ -47,6 +47,14 @@ public class ScoreManager : MonoBehaviour
 	{
 		guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
 	}
+
+    void Update()
+    {
+        if(OnTaskRed != null)
+        {
+            OnTaskRed();
+        }
+    }
 	
 	void OnEnable()
 	{

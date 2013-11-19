@@ -32,7 +32,7 @@ public class StressOMeter : MonoBehaviour
     #region Give Points
     void GivePointsRed()
     {
-        _rotationScale += 2.5f;
+        _rotationScale += 0.05f;
         UpdateRotation();
     }
 
