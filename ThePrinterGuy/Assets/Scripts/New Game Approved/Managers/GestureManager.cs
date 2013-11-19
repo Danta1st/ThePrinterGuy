@@ -14,6 +14,8 @@ public class GestureManager : MonoBehaviour
     private float _swipeThreshold = 5.0f;
     [SerializeField]
     private float _swipeOffset = 2.0f;
+	[SerializeField]
+	private float _allowedFingerMovementInPx = 50f;
     #endregion
 
     #region Privates
@@ -23,7 +25,7 @@ public class GestureManager : MonoBehaviour
     private bool _isSwiping = false;
     private GameObject _touchBeganObject;
 	private Vector2 _lastPosition;
-	private float _allowedDistanceInPx = 50f;
+	
     #endregion
 	
 	/*Public gesture disable and enable functions
@@ -159,7 +161,7 @@ public class GestureManager : MonoBehaviour
             //Single Tap
             if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1)
             {
-                if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) < _tapThreshold && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) < _allowedDistanceInPx)
+                if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) < _tapThreshold && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) < _allowedFingerMovementInPx))
                 {
                     //Single Tap Event
                     if(OnTap != null)
@@ -231,10 +233,13 @@ public class GestureManager : MonoBehaviour
                 }
             }
             
+			_lastPosition = primaryFinger.position;
+
 			if(primaryFinger.phase == TouchPhase.Ended)
             {
                 _isSwiping = false;
                 _touchBeganObject = null;
+				RemoveTouch();
             }
 
             //Drag
@@ -245,10 +250,7 @@ public class GestureManager : MonoBehaviour
                     OnDrag(_touchBeganObject, primaryFinger.position, primaryFinger.deltaPosition);
             }
 			_lastPosition = primaryFinger.position;
-			if(TouchPhase.Ended)
-			{
-				RemoveTouch();
-			}
+		
         }
 
         if(Input.touchCount == 2)
@@ -430,7 +432,7 @@ public class GestureManager : MonoBehaviour
     {
         foreach(Touch t in Input.touches)
         {
-            if(t.phase == TouchPhase.Began || t.phase == TouchPhase.Stationary)
+            if(t.phase == TouchPhase.Began) // || t.phase == TouchPhase.Stationary)
             {
                 _touchBeginPositions[t.fingerId] = t.position;
             }
