@@ -73,7 +73,7 @@ public class InkController : MonoBehaviour
 	#endregion
 	
 	#region delegate methods
-	private void EnableInkTask()
+	private void EnableInkTask(int temp)
 	{
 		GestureManager.OnSwipeRight += InsertInk;
 		

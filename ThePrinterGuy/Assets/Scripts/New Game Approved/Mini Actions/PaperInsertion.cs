@@ -74,9 +74,20 @@ public class PaperInsertion : MonoBehaviour
 	{
 
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
-		_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
-		_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
-		_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		if(_particleSystemSmoke != null)
+		{
+			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
+		}
+		else
+			Debug.Log("Smoke Particle not loaded for Paper");
+		if(_particleSystemStars != null)
+		{
+			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
+			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		}
+		else
+			Debug.Log("Star Particle not loaded for Paper");
+		
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 
@@ -155,19 +166,33 @@ public class PaperInsertion : MonoBehaviour
         }
     }
 
-    private void TriggerLight() //Trigger 1 random light
+    private void TriggerLight(int itemNumber)
     {
+		if(_paperlightset.Length < itemNumber)
+		{
+			if(OnCorrectPaperInserted != null)
+				OnCorrectPaperInserted();
+			Debug.Log("ERROR PAPER: Number out of index!");
+			return;
+		}
 		foreach(Transform child in gameObject.transform)
 		{
-			if(child.name.Equals("ParticlePos"))
+			if(child.name.Equals("ParticlePos") && _particleSmoke != null)
 			{
-				
 				_particleSmoke.transform.position = child.position;
 				_particleSmoke.transform.rotation = child.rotation;
 				_particleSmoke.Play();
 			}
 		}
-        var identifier = Random.Range(0,_paperlightset.Length);
+		if(_paperlightset[itemNumber].isOn == false)
+        {
+            GSS.PlayClip(Random.Range(3, 4));
+            TurnOnLight(itemNumber);
+        }
+        
+		//Method for randomisation
+		
+		/*var identifier = Random.Range(0,_paperlightset.Length);
 
         for(int i = 0; i < _paperlightset.Length; i++)
         {
@@ -181,7 +206,7 @@ public class PaperInsertion : MonoBehaviour
 
             if(identifier == _paperlightset.Length)
                 identifier = 0;
-        }
+        }*/
     }
 
     private void TurnOnLight(int i)
@@ -220,16 +245,17 @@ public class PaperInsertion : MonoBehaviour
         }
     }
 
-    private void EnablePaper()
+    private void EnablePaper(int temp)
     {
-		GestureManager.OnSwipeUp += TriggerSlide;
+		//GestureManager.OnSwipeUp += TriggerSlide;
+		GestureManager.OnTap += TriggerSlide;
         for(int i = 0; i < _paperlightset.Length; i++)
         {
             _paperlightset[i].paper.SetActive(true);
         }
     }
 	
-	private void TriggerSlide(GameObject go)
+	private void TriggerSlide(GameObject go, Vector2 screenPosition)
 	{
 		if(go != null)
 		{
@@ -265,13 +291,16 @@ public class PaperInsertion : MonoBehaviour
 				
 				foreach(Transform child in gameObject.transform)
 				{
-					if(child.name.Equals("ParticlePos"))
+					if(child.name.Equals("ParticlePos") && _particleStars != null)
 					{
 						_particleStars.transform.position = child.position;
 						_particleStars.transform.rotation = child.rotation;
 						_particleStars.Play();
 					}
 				}
+				if(_particleSmoke != null && _particleSmoke.isPlaying)
+					_particleSmoke.Stop();
+				
 				if(OnCorrectPaperInserted != null)
 					OnCorrectPaperInserted();
 				
@@ -305,7 +334,10 @@ public class PaperInsertion : MonoBehaviour
 	
 	public void Reset()
 	{
-		GestureManager.OnSwipeUp -= TriggerSlide;
+		if(_particleSmoke != null && _particleSmoke.isPlaying)
+			_particleSmoke.Stop();
+		//GestureManager.OnSwipeUp -= TriggerSlide;
+		GestureManager.OnTap += TriggerSlide;
 		DisablePaper();
 		TurnOfAllLights();
 	}
