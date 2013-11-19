@@ -13,10 +13,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
     private GameObject[] _textList;
     [SerializeField]
     private iTween.EaseType _easeTypeCamera;
-	[SerializeField]
 	private GameObject _guiCam;
-	[SerializeField]
-	private GameObject _mainCam;
 	[SerializeField]
 	private GameObject[] _stars;
 	[SerializeField]
@@ -123,6 +120,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
+        _guiCam = GameObject.Find("GUI Camera");
         transform.position = _guiCamera.transform.position;
 
         _scaleMultiplierX = Screen.width / 1920f;
@@ -238,7 +236,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private void DisplayEndScreenWin(int score)
 	{
 		GetCurrentLevel();
-		_mainCam.camera.enabled = false;
+		Camera.main.enabled = false;
 		_guiCam.camera.enabled = false;
 		EnableGUICamera();
 		EnableGUIElementAll();
