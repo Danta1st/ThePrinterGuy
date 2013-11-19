@@ -97,8 +97,6 @@ public class LevelManager : MonoBehaviour
 
     void SilhouetteCharacter(GameObject go)
     {
-        go.animation.CrossFade("Selection");
-        go.animation.CrossFadeQueued("Idle");
     }
 
     void SelectStage(GameObject go, Vector2 screenPos)
@@ -108,6 +106,9 @@ public class LevelManager : MonoBehaviour
         {
             if(_stageCharacters.Contains(go))
             {
+                GameObject selectedChar = go.transform.FindChild("bossChar").gameObject;
+                selectedChar.animation.CrossFade("SelectionFast");
+                selectedChar.animation.CrossFadeQueued("Idle");
                 if(_selectedStageChar != null)
                 {
                     if(_selectedStageChar == go)
