@@ -315,6 +315,51 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100038
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400038}
+  m_Layer: 0
+  m_Name: UraniumRod1MoveTo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100040
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400040}
+  m_Layer: 0
+  m_Name: UraniumRod2MoveTo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100042
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400042}
+  m_Layer: 0
+  m_Name: UraniumRod0MoveTo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -541,7 +586,43 @@ Transform:
   - {fileID: 400016}
   - {fileID: 400014}
   - {fileID: 400012}
+  - {fileID: 400042}
+  - {fileID: 400038}
+  - {fileID: 400040}
   m_Father: {fileID: 400000}
+--- !u!4 &400038
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100038}
+  m_LocalRotation: {x: .251741141, y: 0, z: -0, w: .967794657}
+  m_LocalPosition: {x: -.11140465, y: .651520729, z: .498684764}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!4 &400040
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100040}
+  m_LocalRotation: {x: .251741141, y: 0, z: -0, w: .967794657}
+  m_LocalPosition: {x: -.89276886, y: .758408546, z: .365890145}
+  m_LocalScale: {x: .948720098, y: .948720098, z: .948720098}
+  m_Children: []
+  m_Father: {fileID: 400036}
+--- !u!4 &400042
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100042}
+  m_LocalRotation: {x: .251741141, y: 0, z: -0, w: .967794657}
+  m_LocalPosition: {x: .819606841, y: .497088432, z: .357836127}
+  m_LocalScale: {x: .708618999, y: .708618999, z: .708618999}
+  m_Children: []
+  m_Father: {fileID: 400036}
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -970,14 +1051,14 @@ MonoBehaviour:
   _easeTypeIn: 27
   _rods:
   - rod: {fileID: 100018}
-    startPos: 0
-    endPos: 0
+    rodMoveTo: {fileID: 100042}
+    startPos: {x: 0, y: 0, z: 0}
   - rod: {fileID: 100020}
-    startPos: 0
-    endPos: 0
+    rodMoveTo: {fileID: 100038}
+    startPos: {x: 0, y: 0, z: 0}
   - rod: {fileID: 100016}
-    startPos: 0
-    endPos: 0
+    rodMoveTo: {fileID: 100040}
+    startPos: {x: 0, y: 0, z: 0}
   _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
     type: 2}
   _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
