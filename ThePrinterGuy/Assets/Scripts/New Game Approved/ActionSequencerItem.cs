@@ -11,9 +11,18 @@ public class ActionSequencerItem : MonoBehaviour
     #endregion
 
     #region Private Variables
+    //Prepare for hack!
+    private Vector3 _deadZonePosition;
+    private Vector3 _bufferZonePosition;
+    private Vector3 _greenZonePosition;
+    private Vector3 _yellowZonePosition;
+    private Vector3 _redZonePosition;
+    //---------------------//
+    
     private GUIGameCamera _guiGameCameraScript;
     private ActionSequencerZone _actionSequencerScript;
     private TempoManager _tempoManagerScript;
+    private GreenZone _greenZoneScript;
     private string _statusZone = "";
     private int _zone = 0;
 	
@@ -72,6 +81,14 @@ public class ActionSequencerItem : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+    	_deadZonePosition = GameObject.Find("DeadZone").transform.position;
+    	_bufferZonePosition = GameObject.Find("BufferZone").transform.position;
+    	_greenZonePosition = GameObject.Find("GreenZone").transform.position;
+    	_yellowZonePosition = GameObject.Find("YellowZone").transform.position;
+    	_redZonePosition = GameObject.Find("RedZone").transform.position;
+    	
+    	_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
+    
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _tempoManagerScript = GameObject.Find("GUI List").GetComponent<TempoManager>();
         _destinationPosition = GameObject.Find("DeadZone").transform.position;
@@ -101,26 +118,55 @@ public class ActionSequencerItem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+		if(transform.position.x < _bufferZonePosition.x)
+		{
+			_statusZone = "Buffer";
+		}
+		if(transform.position.x < _redZonePosition.x)
+		{
+			_statusZone = "Red";
+		}
+		if(transform.position.x < _yellowZonePosition.x)
+		{
+			_statusZone = "Yellow";
+		}
+		if(transform.position.x < _greenZonePosition.x)
+		{
+			_statusZone = "Green";
+			_greenZoneScript.GreenOn();
+		}
+		if(transform.position.x < _greenZonePosition.x-20)
+		{
+			_greenZoneScript.GreenOff();
+		}
+		if(transform.position.x <= _deadZonePosition.x)
+		{
+			_statusZone = "Dead";
+			if(OnFailed != null)
+			{
+				OnFailed();
+			}
+			_guiGameCameraScript.EndZone(gameObject);
+		}
     }
 
-    void OnCollisionEnter(Collision other)
-    {
-        if(other.gameObject.tag == "SequencerZone")
-        {
-            _actionSequencerScript = other.gameObject.GetComponent<ActionSequencerZone>();
-            _statusZone = _actionSequencerScript.GetZone();
-
-            if(_statusZone == "Dead")
-            {
-                if(OnFailed != null)
-                {
-                    OnFailed();
-                }
-                _guiGameCameraScript.EndZone(gameObject);
-            }
-        }
-    }
+//    void OnTriggerEnter(Collider other)
+//    {
+//        if(other.gameObject.tag == "SequencerZone")
+//        {
+//            _actionSequencerScript = other.gameObject.GetComponent<ActionSequencerZone>();
+//            _statusZone = _actionSequencerScript.GetZone();
+//
+//            if(_statusZone == "Dead")
+//            {
+//                if(OnFailed != null)
+//                {
+//                    OnFailed();
+//                }
+//                _guiGameCameraScript.EndZone(gameObject);
+//            }
+//        }
+//    }
 
     public void StartTween()
     {
@@ -133,11 +179,6 @@ public class ActionSequencerItem : MonoBehaviour
                                                     "easeType", _easeTypeActionSequencerItem));
 //    	}
     }
-	
-	public void SetZoneStatus(string _str)
-	{
-		_statusZone = _str;
-	}
 	
     public int GetZoneStatus()
     {

@@ -33,4 +33,14 @@ public class GreenZone : MonoBehaviour {
 			renderer.material.mainTexture = _greenOff;
 		}
 	}
+	
+	public void GreenOn()
+	{
+		renderer.material.mainTexture = _greenOn;
+	}
+	
+	public void GreenOff()
+	{
+		renderer.material.mainTexture = _greenOff;
+	}
 }

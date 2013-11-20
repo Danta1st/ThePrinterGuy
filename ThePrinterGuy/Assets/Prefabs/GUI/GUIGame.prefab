@@ -299,6 +299,7 @@ GameObject:
   - 4: {fileID: 400034}
   - 114: {fileID: 11400000}
   - 114: {fileID: 11400024}
+  - 114: {fileID: 11400018}
   m_Layer: 0
   m_Name: GUI List
   m_TagString: Untagged
@@ -680,7 +681,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: -.707106829, w: .707106829}
-  m_LocalPosition: {x: -240, y: 455, z: 1}
+  m_LocalPosition: {x: -215.565857, y: 455, z: 1}
   m_LocalScale: {x: 120, y: 50, z: 1}
   m_Children: []
   m_Father: {fileID: 400034}
@@ -702,7 +703,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 38, y: -400, z: 9}
+  m_LocalPosition: {x: 38.0000458, y: -350.546967, z: 9}
   m_LocalScale: {x: 120, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
@@ -764,7 +765,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100018}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 38, y: -300, z: 9}
+  m_LocalPosition: {x: 38.0000267, y: -200.012817, z: 9}
   m_LocalScale: {x: 120, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
@@ -839,8 +840,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100030}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 38, y: 100.000015, z: 9}
-  m_LocalScale: {x: 120, y: 700, z: 1}
+  m_LocalPosition: {x: 38, y: 390, z: 9}
+  m_LocalScale: {x: 120, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 400026}
 --- !u!4 &400032
@@ -2129,6 +2130,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _zone: Red
+--- !u!114 &11400018
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3343526bc15e494c8910b32eec16f6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inkMs: .5
+  _inkTime: 8
+  _paperMs: 1
+  _paperTime: 8
+  _uraniumRodMs: .666999996
+  _uraniumRodTime: 8
+  _barometerMs: .333000004
+  _barometerTime: 8
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1
