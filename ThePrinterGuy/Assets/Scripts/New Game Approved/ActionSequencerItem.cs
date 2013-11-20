@@ -24,10 +24,10 @@ public class ActionSequencerItem : MonoBehaviour
     private Vector3 _destinationPosition;
     #endregion
 
-//    #region Delegates and Events
-//    public delegate void FailedAction();
-//    public static event FailedAction OnFailed;
-//    #endregion
+    #region Delegates and Events
+    public delegate void FailedAction();
+    public static event FailedAction OnFailed;
+    #endregion
 	
 	void OnEnable()
 	{
@@ -104,23 +104,23 @@ public class ActionSequencerItem : MonoBehaviour
 
     }
 
-//    void OnTriggerEnter(Collider other)
-//    {
-//        if(other.gameObject.tag == "SequencerZone")
-//        {
-//            _actionSequencerScript = other.gameObject.GetComponent<ActionSequencerZone>();
-//            _statusZone = _actionSequencerScript.GetZone();
-//
-//            if(_statusZone == "Dead")
-//            {
-//                if(OnFailed != null)
-//                {
-//                    OnFailed();
-//                }
-//                _guiGameCameraScript.EndZone(gameObject);
-//            }
-//        }
-//    }
+    void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject.tag == "SequencerZone")
+        {
+            _actionSequencerScript = other.gameObject.GetComponent<ActionSequencerZone>();
+            _statusZone = _actionSequencerScript.GetZone();
+
+            if(_statusZone == "Dead")
+            {
+                if(OnFailed != null)
+                {
+                    OnFailed();
+                }
+                _guiGameCameraScript.EndZone(gameObject);
+            }
+        }
+    }
 
     public void StartTween()
     {
