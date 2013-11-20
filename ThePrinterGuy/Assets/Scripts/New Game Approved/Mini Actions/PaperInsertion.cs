@@ -9,7 +9,7 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
-    [SerializeField] private PaperLightSet[] _paperlightset;
+    [SerializeField] private List<PaperLightSet> _paperlightset;
 
 	[SerializeField] private ParticleSystem _particleSystemStars;
 	[SerializeField] private ParticleSystem _particleSystemSmoke;
@@ -161,7 +161,7 @@ public class PaperInsertion : MonoBehaviour
     //Light Methods
     private void InitializeLights()
     {
-        for(int i = 0; i < _paperlightset.Length; i++)
+        for(int i = 0; i < _paperlightset.Count; i++)
         {
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].off;
         }
@@ -169,7 +169,7 @@ public class PaperInsertion : MonoBehaviour
 
     private void TriggerLight(int itemNumber)
     {
-		if(_paperlightset.Length < itemNumber)
+		if(_paperlightset.Count < itemNumber)
 		{
 			if(OnCorrectPaperInserted != null)
 				OnCorrectPaperInserted();
@@ -230,7 +230,7 @@ public class PaperInsertion : MonoBehaviour
 
     private void TurnOfAllLights()
     {
-        for(int i = 0; i < _paperlightset.Length; i++)
+        for(int i = 0; i < _paperlightset.Count; i++)
         {
             TurnOffLight(i);
         }
@@ -240,7 +240,7 @@ public class PaperInsertion : MonoBehaviour
 	//TODO: Paper animations
     private void DisablePaper()
     {
-        for(int i = 0; i < _paperlightset.Length; i++)
+        for(int i = 0; i < _paperlightset.Count; i++)
         {
             _paperlightset[i].paper.SetActive(false);
         }
@@ -250,7 +250,7 @@ public class PaperInsertion : MonoBehaviour
     {
 		//GestureManager.OnSwipeUp += TriggerSlide;
 		GestureManager.OnTap += TriggerSlide;
-        for(int i = 0; i < _paperlightset.Length; i++)
+        for(int i = 0; i < _paperlightset.Count; i++)
         {
             _paperlightset[i].paper.SetActive(true);
         }
@@ -258,9 +258,25 @@ public class PaperInsertion : MonoBehaviour
 	
 	private void TriggerSlide(GameObject go, Vector2 screenPosition)
 	{
+		
 		if(go != null)
 		{
-	        for(int i = 0; i < _paperlightset.Length; i++)
+			int j = 0;
+			PaperLightSet paper;
+			int count = _paperlightset.Count;
+			for(int i = 0; i < count; i++)
+			{
+				paper = _paperlightset[j];
+				if(paper.paper == null)
+				{
+					_paperlightset.Remove(paper);
+					_paperlightset.TrimExcess();
+					continue;
+				}
+				j++;
+			}
+			
+	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 	            if(_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
 				{
@@ -291,11 +307,13 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
-				Reset();
 				
-				if(colorMatch)
+				if(colorMatch) 
+				{
+					Reset();
 					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+				}
 				else
 				{
 					Hashtable iTweenParams = new Hashtable();
@@ -314,7 +332,7 @@ public class PaperInsertion : MonoBehaviour
 						_particleStars.Play();
 					}
 				}
-				if(_particleSmoke != null && _particleSmoke.isPlaying)
+				if(_particleSmoke != null && _particleSmoke.isPlaying && colorMatch)
 					_particleSmoke.Stop();
 				
 				if(OnCorrectPaperInserted != null && colorMatch)
@@ -362,8 +380,14 @@ public class PaperInsertion : MonoBehaviour
 		_tempPaper.Add (crushedPaper);
 		yield return new WaitForSeconds(_slideWait);
 		iTween.MoveTo(crushedPaper, iTween.Hash("position", Camera.main.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "DestroyPaper", "oncompleteparams", crushedPaper, "oncompletetarget", gameObject));
+													"oncomplete", "DestroyCrushedPaper", "oncompleteparams", crushedPaper, "oncompletetarget", gameObject));
 		_IsSlideLocked = false;
+	}
+	
+	void DestroyCrushedPaper(GameObject go)
+	{
+		_tempPaper.Remove(go);
+		Destroy (go);
 	}
 	
 	public void Reset()

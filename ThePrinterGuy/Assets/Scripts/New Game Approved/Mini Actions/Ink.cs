@@ -8,6 +8,7 @@ public class Ink : MonoBehaviour
 	[SerializeField] private List<InkCartridgeClass> _machineInks;
 	[SerializeField] private ParticleSystem _particleSystemStars;
 	[SerializeField] private ParticleSystem _particleSystemSmoke;
+	[SerializeField] private ParticleSystem _particleSystemExplosion;
     [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
     #endregion
@@ -61,6 +62,18 @@ public class Ink : MonoBehaviour
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			icc.insertableStartPos = icc.insertableCartridge.position;
+		}
+		
+		foreach(InkCartridgeClass icc in _machineInks)
+		{
+			
+			foreach(Transform t in icc.lid.transform) {
+				if(t.name == "InkCrashObj") {
+					GameObject crashPos;
+					crashPos = t.gameObject;
+					icc.inkCollisionPosition = crashPos.transform.position;
+				}
+			}
 		}
 	}
 	
@@ -202,7 +215,8 @@ public class Ink : MonoBehaviour
 		InkCartridgeClass currIcc = null;
 		InkCartridgeClass icc;
 		int j = 0;
-		for(int i = 0; i < _machineInks.Count; i++)
+		int count = _machineInks.Count;
+		for(int i = 0; i < count; i++)
 		{
 			icc = _machineInks[j];
 			if(icc.cartridge == null)
@@ -233,15 +247,17 @@ public class Ink : MonoBehaviour
 		}
 		else
 		{
-			foreach(Transform t in currIcc.lid.transform)
-			{
-				if(t.name == "InkCrashObj")
-				{
-					GameObject target = t.gameObject;
-					iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", target.transform.position, 
-							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
-				}
-			}
+			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.inkCollisionPosition, 
+							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));			
+//				foreach(Transform t in currIcc.lid.transform)
+//			{
+//				if(t.name == "InkCrashObj")
+//				{
+//					GameObject target = t.gameObject;
+//					iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", target.transform.position, 
+//							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
+//				}
+//			}
 				
 			
 		}
@@ -269,16 +285,11 @@ public class Ink : MonoBehaviour
 	
 	private IEnumerator InkFailed(InkCartridgeClass icc)
 	{
-//		GameObject fallingIcc = (GameObject)Instantiate(icc.insertableCartridge.gameObject, icc.insertableCartridge.position, icc.insertableCartridge.rotation);
-//		icc.insertableCartridge.position = icc.insertableStartPos;
-//		//iTween.MoveTo(fallingIcc, iTween.Hash("y", -1000f, 
-//							 // "easetype", _easeTypeSlide, "time", 20f, "oncomplete", "InkDestroy", "oncompletetarget", this.gameObject, "oncompleteparams", fallingIcc));
-		yield return new WaitForSeconds(0.2f);
-//		_canSlide = true;
-	}
-	
-	private void InkDestroy(GameObject go)
-	{
+		ParticleSystem explosion = (ParticleSystem)Instantiate (_particleSystemExplosion);
+		explosion.transform.position = icc.insertableCartridge.position;
+		icc.insertableCartridge.transform.position = icc.insertableStartPos;
+		yield return new WaitForSeconds(_particleSystemExplosion.startLifetime);
+		_canSlide = true;
 	}
 	
 	private void InkReset()
@@ -377,6 +388,8 @@ public class Ink : MonoBehaviour
         public bool lidIsOpen = false;
 		[HideInInspector]
 		public bool cartridgeEmpty = false;
+		[HideInInspector]
+		public Vector3 inkCollisionPosition;
     };
 	
 	public enum OpenDirection
