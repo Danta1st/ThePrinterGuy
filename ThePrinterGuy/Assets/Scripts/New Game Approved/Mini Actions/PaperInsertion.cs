@@ -13,6 +13,7 @@ public class PaperInsertion : MonoBehaviour
 
 	[SerializeField] private ParticleSystem _particleSystemStars;
 	[SerializeField] private ParticleSystem _particleSystemSmoke;
+	[SerializeField] private ParticleSystem _particleSystemIncinerate;
 
 
 //    [SerializeField] private AudioClip clipUp;
@@ -27,6 +28,7 @@ public class PaperInsertion : MonoBehaviour
     private float _openTime     = 0.5f;
     private float _closeTime    = 0.5f;
     private float _waitTime     = 0.2f;
+	private float _burnTime 	= 0.5f;
 	
 	//Paper Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
@@ -320,7 +322,7 @@ public class PaperInsertion : MonoBehaviour
 					iTweenParams.Add("go", paper);
 					iTweenParams.Add("index", i);
 					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "CrushPaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));
+													"oncomplete", "IncineratePaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));
 				}
 				
 				foreach(Transform child in gameObject.transform)
@@ -351,7 +353,7 @@ public class PaperInsertion : MonoBehaviour
 				iTweenParams.Add("go", paper);
 				iTweenParams.Add("index", i);
 				iTween.MoveTo(paper, iTween.Hash("position", _gate.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "CrushPaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));			
+													"oncomplete", "IncineratePaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));			
 			}
 		}
     }
@@ -369,18 +371,19 @@ public class PaperInsertion : MonoBehaviour
 		_IsSlideLocked = false;
 	}
 	
-	IEnumerator CrushPaper(object obj)
+	IEnumerator IncineratePaper(object obj)
 	{
 		Hashtable ht = (Hashtable)obj;
 		GameObject go = (GameObject)ht["go"];
 		int index = (int)ht["index"];
-		GameObject crushedPaper = (GameObject)Instantiate(_paperlightset[index].crushedPaperPrefab, go.transform.position, Quaternion.identity); 
+		ParticleSystem burnPaper = (ParticleSystem)Instantiate (_particleSystemIncinerate);
+		burnPaper.transform.position = go.transform.position;
+		burnPaper.Play ();
+		yield return new WaitForSeconds(_burnTime);
+		burnPaper.Stop ();
 		_tempPaper.Remove(go);
 		Destroy(go);
-		_tempPaper.Add (crushedPaper);
-		yield return new WaitForSeconds(_slideWait);
-		iTween.MoveTo(crushedPaper, iTween.Hash("position", Camera.main.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "DestroyCrushedPaper", "oncompleteparams", crushedPaper, "oncompletetarget", gameObject));
+		Destroy (burnPaper);
 		_IsSlideLocked = false;
 	}
 	
