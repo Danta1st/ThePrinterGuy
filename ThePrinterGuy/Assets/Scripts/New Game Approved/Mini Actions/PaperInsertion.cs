@@ -42,7 +42,8 @@ public class PaperInsertion : MonoBehaviour
 	private GameObject _dynamicObjects;
 
 	private ParticleSystem _particleSmoke;
-	private ParticleSystem _particleStars;    
+	private ParticleSystem _particleStars;  
+	private ParticleSystem _particleFlames;
 
     private GenericSoundScript GSS;
     #endregion
@@ -93,7 +94,10 @@ public class PaperInsertion : MonoBehaviour
 		}
 		else
 			Debug.Log("Star Particle not loaded for Paper");
-		
+		if(_particleSystemIncinerate != null)
+		{
+			_particleFlames = (ParticleSystem)Instantiate (_particleSystemIncinerate);
+		}
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 
@@ -348,14 +352,14 @@ public class PaperInsertion : MonoBehaviour
 			{
 				_IsSlideLocked = true;
 				
-				var paper = (GameObject) Instantiate(_paperlightset[i].paper);
+				var paper = (GameObject) Instantiate(_paperlightset[i].paper, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
 				Hashtable iTweenParams = new Hashtable();
 				iTweenParams.Add("go", paper);
 				iTweenParams.Add("index", i);
-				iTween.MoveTo(paper, iTween.Hash("position", _gate.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+				iTween.MoveTo(paper, iTween.Hash("position", _gate.gameObject.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "IncineratePaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));			
 			}
 		}
@@ -379,14 +383,13 @@ public class PaperInsertion : MonoBehaviour
 		Hashtable ht = (Hashtable)obj;
 		GameObject go = (GameObject)ht["go"];
 		int index = (int)ht["index"];
-		ParticleSystem burnPaper = (ParticleSystem)Instantiate (_particleSystemIncinerate);
-		burnPaper.transform.position = go.transform.position;
-		burnPaper.Play ();
+		_particleFlames.transform.position = go.transform.position;
+		if(_particleFlames != null && _particleFlames.isPlaying)
+			_particleFlames.Stop();
+		_particleFlames.Play ();
 		yield return new WaitForSeconds(_burnTime);
-		burnPaper.Stop ();
 		_tempPaper.Remove(go);
 		Destroy(go);
-		Destroy (burnPaper);
 		_IsSlideLocked = false;
 	}
 	
