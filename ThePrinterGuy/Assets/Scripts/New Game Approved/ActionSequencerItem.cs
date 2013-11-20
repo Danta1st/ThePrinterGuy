@@ -18,6 +18,10 @@ public class ActionSequencerItem : MonoBehaviour
     private string _statusZone = "";
     private int _zone = 0;
 
+    private bool _once = false;
+    private bool _isTween = false;
+    private float _startTime;
+    private float _delay;
     private Vector3 _destinationPosition;
     #endregion
 
@@ -26,19 +30,22 @@ public class ActionSequencerItem : MonoBehaviour
     public static event FailedAction OnFailed;
     #endregion
 
-    // Use this for initialization
-    void Start()
+    void Awake()
     {
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _destinationPosition = GameObject.Find("DeadZone").transform.position;
+    }
 
-        ScaleSize();
+    // Use this for initialization
+    void Start()
+    {
+		StartTween();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-
+    
     }
 
     void OnTriggerEnter(Collider other)
@@ -59,11 +66,19 @@ public class ActionSequencerItem : MonoBehaviour
         }
     }
 
-    private void ScaleSize()
+    private void CheckTween()
     {
-        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms, "looptype", iTween.LoopType.loop));
-        iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "speed", _actionSequencerItemSpeed,
-                                                "easeType", _easeTypeActionSequencerItem));
+
+    }
+
+    private void StartTween()
+    {
+        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", _ms, "looptype", iTween.LoopType.loop));
+        iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "time", _actionSequencerItemSpeed,
+                                                    "easeType", _easeTypeActionSequencerItem));
+                                                    
+//        iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "speed", _actionSequencerItemSpeed,
+//                                                    "easeType", _easeTypeActionSequencerItem));
     }
 
     public int GetZoneStatus()
