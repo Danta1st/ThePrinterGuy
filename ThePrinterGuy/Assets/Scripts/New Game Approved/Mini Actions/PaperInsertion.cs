@@ -65,6 +65,8 @@ public class PaperInsertion : MonoBehaviour
 		ActionSequencerManager.OnPaperNode -= TriggerLight;
 		ActionSequencerManager.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
+        GestureManager.OnTap -= TriggerSlide;
+
 		
         StopGate();
     }
@@ -168,7 +170,7 @@ public class PaperInsertion : MonoBehaviour
 
     private void TriggerLight(int itemNumber)
     {
-		if(_paperlightset.Length < itemNumber)
+		if(_paperlightset.Length < itemNumber + 1)
 		{
 			if(OnCorrectPaperInserted != null)
 				OnCorrectPaperInserted();
