@@ -17,6 +17,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private List<bool> _gameLevelsUnlocked = new List<bool>();
 
+
     private GameObject _selectedStageChar;
     private GameObject _lookTarget;
     private GameObject _creditsLookTarget;
@@ -117,7 +118,7 @@ public class LevelManager : MonoBehaviour
 
         Color thisColor = thisProjector.material.color;
 
-        thisColor.a = 0.9f;
+        thisColor.a = 0.3f;
 
         thisProjector.material.SetColor("_Color", thisColor);
     }
@@ -197,6 +198,9 @@ public class LevelManager : MonoBehaviour
         iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveForwardAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
 
         LevelBoxesAppear(go);
+        GameObject character = go.transform.FindChild("bossChar").gameObject;
+        character.animation.CrossFade("SelectionFast");
+        character.animation.CrossFadeQueued("Idle");
     }
 
     void OnMoveForwardAnimationEnd(GameObject go)
@@ -208,9 +212,9 @@ public class LevelManager : MonoBehaviour
     {
         int indexChar = _stageCharacters.IndexOf(go);
 
-        int minIndex = indexChar * 5;
+        int minIndex = indexChar * 3;
 
-        for(int i = minIndex; i < (minIndex + 5); i++)
+        for(int i = minIndex; i < (minIndex + 3); i++)
         {
             if(_gameLevelsUnlocked[i])
             {
@@ -241,9 +245,9 @@ public class LevelManager : MonoBehaviour
 
         int indexChar = _stageCharacters.IndexOf(go);
 
-        int minIndex = indexChar * 5;
+        int minIndex = indexChar * 3;
 
-        for(int i = minIndex; i < (minIndex + 5); i++)
+        for(int i = minIndex; i < (minIndex + 3); i++)
         {
             if(_gameLevelsUnlocked[i])
             {

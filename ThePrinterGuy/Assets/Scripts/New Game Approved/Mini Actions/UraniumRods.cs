@@ -78,8 +78,7 @@ public class UraniumRods : MonoBehaviour
     {
         for(int i = 0; i < _rods.Length; i++)
         {
-			_rods[i].startPos = _rods[i].rod.transform.localPosition.y;
-			_rods[i].endPos = _rods[i].rod.transform.localPosition.y + 0.7f;
+			_rods[i].startPos = _rods[i].rod.transform.localPosition;
             _rodsAndStates.Add(_rods[i].rod, false);
         }
     }
@@ -87,7 +86,7 @@ public class UraniumRods : MonoBehaviour
     //Trigger a random rod, which is currently not up
     private void TriggerSpring(int itemNumber)
     {
-		if(_rods.Length < itemNumber)
+		if(_rods.Length < itemNumber + 1)
 		{
 			if(OnRodHammered != null)
 				OnRodHammered();
@@ -146,8 +145,8 @@ public class UraniumRods : MonoBehaviour
 
     private void Spring(GameObject go, int identifier)
     {
-        iTween.MoveTo(go, iTween.Hash("y", _rods[identifier].endPos, "time", _outTime,
-                                        "islocal", true, "easetype", _easeTypeOut));
+        iTween.MoveTo(go, iTween.Hash("position", _rods[identifier].rodMoveTo.transform.position, "time", _outTime,
+                                        "easetype", _easeTypeOut));
     }
 
     //Hammer the rod if it is currently up
@@ -184,7 +183,7 @@ public class UraniumRods : MonoBehaviour
 		{
 			if(_rods[i].rod == go)
 			{
-				iTween.MoveTo(go, iTween.Hash("y", _rods[i].startPos, "time", _inTime,
+				iTween.MoveTo(go, iTween.Hash("position", _rods[i].startPos, "time", _inTime,
                              "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
 			}
 		}
@@ -227,9 +226,8 @@ public class UraniumRods : MonoBehaviour
     public class RodSet
     {
         public GameObject rod;
+		public GameObject rodMoveTo;
 		[HideInInspector]
-        public float startPos;
-		[HideInInspector]
-		public float endPos;
+        public Vector3 startPos;
     };
 }

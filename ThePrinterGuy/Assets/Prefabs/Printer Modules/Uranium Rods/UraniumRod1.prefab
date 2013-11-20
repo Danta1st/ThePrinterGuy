@@ -181,6 +181,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100022
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400022}
+  m_Layer: 0
+  m_Name: UraniumRod0MoveTo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -311,7 +326,19 @@ Transform:
   - {fileID: 400004}
   - {fileID: 400010}
   - {fileID: 400008}
+  - {fileID: 400022}
   m_Father: {fileID: 400000}
+--- !u!4 &400022
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100022}
+  m_LocalRotation: {x: .251741141, y: 0, z: -0, w: .967794657}
+  m_LocalPosition: {x: .0322087258, y: .81071806, z: .519224763}
+  m_LocalScale: {x: .948720098, y: .948720098, z: .948720098}
+  m_Children: []
+  m_Father: {fileID: 400020}
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -566,11 +593,11 @@ MonoBehaviour:
   _easeTypeIn: 27
   _rods:
   - rod: {fileID: 100008}
-    startPos: 0
-    endPos: 0
+    rodMoveTo: {fileID: 100022}
+    startPos: {x: 0, y: 0, z: 0}
   _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
     type: 2}
-  _particleSystemSmoke: {fileID: 19800000, guid: e109dfea7003ee9408c3b5752b441f1e,
+  _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
     type: 2}
 --- !u!1001 &100100000
 Prefab:
