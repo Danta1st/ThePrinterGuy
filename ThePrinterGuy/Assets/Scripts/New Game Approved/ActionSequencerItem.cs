@@ -73,7 +73,7 @@ public class ActionSequencerItem : MonoBehaviour
 
     private void StartTween()
     {
-        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms, "looptype", iTween.LoopType.loop));
+        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", _ms, "looptype", iTween.LoopType.loop));
         iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "time", _actionSequencerItemSpeed,
                                                     "easeType", _easeTypeActionSequencerItem));
                                                     
