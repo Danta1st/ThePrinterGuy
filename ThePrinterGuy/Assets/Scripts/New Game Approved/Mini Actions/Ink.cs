@@ -15,9 +15,9 @@ public class Ink : MonoBehaviour
 	#region Privates
 	//Gate Variables
     private bool _isGateAllowedToRun = false;
-    private float _openTime     = 0.5f;
-    private float _closeTime    = 0.5f;
-    private float _waitTime     = 1f;
+    private float _openTime     = 0.250f;
+    private float _closeTime    = 0.250f;
+    private float _waitTime     = 0.500f;
     private GenericSoundScript GSS;
 	
 	//Slide variables
@@ -98,13 +98,13 @@ public class Ink : MonoBehaviour
         _isGateAllowedToRun = false;
     }
 	
-	IEnumerator OpenGate(InkCartridgeClass icc)
+	private void OpenGate(InkCartridgeClass icc)
     {
         GSS.PlayClip(Random.Range(0,3));
 		GameObject go = icc.lid;
         if(!icc.lidIsOpen)
         {
-			yield return new WaitForSeconds(_waitTime);
+			//yield return new WaitForSeconds(_waitTime);
 			
 			if(icc.lidDirection == OpenDirection.Left)
 			{
@@ -178,7 +178,7 @@ public class Ink : MonoBehaviour
 				if(IC.lidIsOpen && icc == IC)
 	                StartCoroutine_Auto(CloseGate(IC));
 	            else if(!IC.lidIsOpen && icc == IC)
-	                StartCoroutine_Auto(OpenGate(IC));
+	                OpenGate(IC);
 			}
         }
     }
@@ -190,7 +190,7 @@ public class Ink : MonoBehaviour
 		if(icc.lidIsOpen)
             StartCoroutine_Auto(CloseGate(icc));
         else
-            StartCoroutine_Auto(OpenGate(icc));
+            OpenGate(icc);
 	}
 	#endregion
 	
