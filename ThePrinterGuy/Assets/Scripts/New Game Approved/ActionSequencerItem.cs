@@ -34,24 +34,18 @@ public class ActionSequencerItem : MonoBehaviour
     {
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _destinationPosition = GameObject.Find("DeadZone").transform.position;
-
-        _startTime = Time.time;
-        _delay = _ms - (Time.time % _ms);
     }
 
     // Use this for initialization
     void Start()
     {
-
+		StartTween();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(_once == false)
-        {
-            CheckTween();
-        }
+    
     }
 
     void OnTriggerEnter(Collider other)
@@ -74,26 +68,17 @@ public class ActionSequencerItem : MonoBehaviour
 
     private void CheckTween()
     {
-        Debug.Log("time before: "+Time.time);
-        if(Time.time >= _startTime+_delay)
-        {
-            Debug.Log("delay: " + (float)(_startTime+_delay));
-            Debug.Log("time after: " + Time.time);
-            _isTween = true;
-            _once = true;
-        }
 
-        if(_isTween == true)
-        {
-            StartTween();
-        }
     }
 
     private void StartTween()
     {
         iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(20,0,0), "time", _ms, "looptype", iTween.LoopType.loop));
-        iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "speed", _actionSequencerItemSpeed,
+        iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "time", _actionSequencerItemSpeed,
                                                     "easeType", _easeTypeActionSequencerItem));
+                                                    
+//        iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "speed", _actionSequencerItemSpeed,
+//                                                    "easeType", _easeTypeActionSequencerItem));
     }
 
     public int GetZoneStatus()
