@@ -6,29 +6,28 @@ public class StressOMeter : MonoBehaviour
 {
     #region Editor Publics
     [SerializeField]
-    private float _outOfZonePoints = -10.0f;
+    private float _inZonePoints = 12.5f;
     [SerializeField]
-    private float _inZonePoints = 10.0f;
-    [SerializeField]
-    private float _failedPoints = -20.0f;
+    private float _failedPoints = -25.0f;
 
     /*Paper
      *Ink
      *Uranium Rods
      *(Barometer)
      */
-    [SerializeField]
-    private List<GameObject> _audioObjects = new List<GameObject>();
+//    [SerializeField]
+//    private List<GameObject> _audioObjects = new List<GameObject>();
     #endregion
 
     #region Privates#
     private float _rotationScale = 0.0f;
-    private float _stressMIN = -40.0f;
-    private float _stressMAX = 60.0f;
+    private float _stressMIN = -50.0f;
+    private float _stressMAX = 50.0f;
     private Vector3 _thisRotation;
-    private float _rotationTime = 0.2f;
+    private float _rotationTime = 0.5f;
     private Vector3 _shakeRotation;
     private float _shakeTime = 0.05f;
+    private bool _canDie = false;
 
     private bool _paperCounter = false;
     private bool _inkCounter = false;
@@ -55,7 +54,6 @@ public class StressOMeter : MonoBehaviour
     #endregion
     
     public delegate void GameFailed();
-
     public static event GameFailed OnGameFailed;
 
     void Start()
@@ -64,6 +62,12 @@ public class StressOMeter : MonoBehaviour
         _guiGameCamScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _thisRotation = new Vector3(0.0f, 0.0f, 0.0f);
         _shakeRotation = new Vector3(0.0f, 0.0f, 1.0f);
+        SlightMovement();
+    }
+
+    void Update()
+    {
+
     }
 
     #region MonoBehaviour
@@ -77,7 +81,6 @@ public class StressOMeter : MonoBehaviour
 //        PathManager.OnCamPosChangedBeginAction += GiveNewPanLevel;
 
         ActionSequencerItem.OnFailed += ReductPointsFailed;
-        ScoreManager.OnTaskGreen += GivePointsGreen;
     }
 
     void OnDisable()
@@ -90,14 +93,13 @@ public class StressOMeter : MonoBehaviour
 //        PathManager.OnCamPosChangedBeginAction -= GiveNewPanLevel;
 
         ActionSequencerItem.OnFailed -= ReductPointsFailed;
-        ScoreManager.OnTaskGreen -= GivePointsGreen;
     }
     #endregion
 
     //ToDO: Make the functions give a small boost over time / Subtract the needle over time, instead of doing instantly
 
     #region Give Points
-    void GivePointsGreen()
+    void GivePoints()
     {
         _rotationScale -= _inZonePoints;
         UpdateRotation();
@@ -105,19 +107,15 @@ public class StressOMeter : MonoBehaviour
     #endregion
 
     #region Reduct Point
-    void ReductPointsZone()
-    {
-        _rotationScale -= _outOfZonePoints;
-        UpdateRotation();
-    }
-
     void ReductPointsFailed()
     {
+         _paperAudioStreak = 0.0f;
         _rotationScale -= _failedPoints;
         UpdateRotation();
     }
     #endregion
 
+    #region Counting CRAP
     private void StreakReset()
     {
         _paperCounter = false;
@@ -156,12 +154,7 @@ public class StressOMeter : MonoBehaviour
 
             _paperCounter = true;
             _paperAudioStreak++;
-
-            break;
-        case 4:
-                //Failed
-
-            _paperAudioStreak = 0.0f;
+            GivePoints();
 
             break;
         default:
@@ -199,12 +192,7 @@ public class StressOMeter : MonoBehaviour
 
             _inkCounter = true;
             _inkAudioStreak++;
-
-            break;
-        case 4:
-                //Failed
-
-            _inkAudioStreak = 0.0f;
+            GivePoints();
 
             break;
         default:
@@ -242,12 +230,7 @@ public class StressOMeter : MonoBehaviour
 
             _uraniumCounter = true;
             _rodAudioStreak++;
-
-            break;
-        case 4:
-                //Failed
-
-            _rodAudioStreak = 0.0f;
+            GivePoints();
 
             break;
         default:
@@ -285,12 +268,7 @@ public class StressOMeter : MonoBehaviour
 
             _barometerCounter = true;
             _barometerAudioStreak++;
-
-            break;
-        case 4:
-                //Failed
-
-            _barometerAudioStreak = 0.0f;
+            GivePoints();
 
             break;
         default:
@@ -313,44 +291,48 @@ public class StressOMeter : MonoBehaviour
         _audioStreak++;
     }
 
-    private float CalculateAudioStreak()
-    {
-        _streakArray.Add(_paperStreak);
-        _streakArray.Add(_inkStreak);
-        _streakArray.Add(_rodStreak);
-        _streakArray.Add(_barometerStreak);
 
-        for(int i = 0; i < _streakArray.Count; i++)
-        {
-            if(_audioPanLevel < _streakArray[i])
-            {
-                _audioPanLevel = _streakArray[i];
-                _panLevelIndex = i;
-            }
-        }
-
-        _audioPanLevel = 1 - _audioPanLevel;
-
-        return _audioPanLevel;
-    }
-
-    //ToDO: HookUp with event from PathManager... && Update other related brances and merge with this...
-    private void GiveNewPanLevel()
-    {
-        GenericSoundScript thisAudioScript = _audioObjects[_panLevelIndex].GetComponent<GenericSoundScript>();
-//        thisAudioScript.SetPanLevel()CalculateAudioStreak());
-
-        StreakReset();
-
-        _paperStreak = 0;
-        _inkStreak = 0;
-        _rodStreak = 0;
-        _barometerStreak = 0;
-    }
+//    private float CalculateAudioStreak()
+//    {
+//        _streakArray.Add(_paperStreak);
+//        _streakArray.Add(_inkStreak);
+//        _streakArray.Add(_rodStreak);
+//        _streakArray.Add(_barometerStreak);
+//
+//        for(int i = 0; i < _streakArray.Count; i++)
+//        {
+//            if(_audioPanLevel < _streakArray[i])
+//            {
+//                _audioPanLevel = _streakArray[i];
+//                _panLevelIndex = i;
+//            }
+//        }
+//
+//        _audioPanLevel = 1 - _audioPanLevel;
+//
+//        return _audioPanLevel;
+//    }
+//
+//    //ToDO: HookUp with event from PathManager... && Update other related brances and merge with this...
+//    private void GiveNewPanLevel()
+//    {
+//        GenericSoundScript thisAudioScript = _audioObjects[_panLevelIndex].GetComponent<GenericSoundScript>();
+////        thisAudioScript.SetPanLevel()CalculateAudioStreak());
+//
+//        StreakReset();
+//
+//        _paperStreak = 0;
+//        _inkStreak = 0;
+//        _rodStreak = 0;
+//        _barometerStreak = 0;
+//    }
+    #endregion
 
     #region Needlemovement functions
     void UpdateRotation()
     {
+        _canDie = true;
+
         _rotationScale = Mathf.Clamp(_rotationScale, _stressMIN, _stressMAX);
 
         float thisRotationScale = 360.0f + _rotationScale;
@@ -365,10 +347,13 @@ public class StressOMeter : MonoBehaviour
 
     void SlightMovement()
     {
-        if(OnGameFailed != null && _rotationScale == _stressMAX)
+        if(OnGameFailed != null && _rotationScale == _stressMAX && _canDie)
         {
+            Debug.Log("GDWDJWHFHGWIFHW");
             OnGameFailed();
         }
+
+        _canDie = false;
 
         iTween.ShakeRotation(gameObject, iTween.Hash("amount", _shakeRotation, "time", _shakeTime, "oncomplete", "SlightMovementBack", "oncompletetarget", gameObject));
     }
