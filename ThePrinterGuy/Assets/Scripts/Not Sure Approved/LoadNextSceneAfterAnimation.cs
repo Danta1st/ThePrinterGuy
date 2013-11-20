@@ -30,11 +30,11 @@ public class LoadNextSceneAfterAnimation : MonoBehaviour {
     public void LoadNextSceneAfterAnimationIfTrue()
     {
         if(!gameObject.animation.isPlaying)
-            Application.LoadLevel("Stage1Level1");
+            Application.LoadLevel("Level1");
     }
 
     public void LoadNextScene(GameObject go, Vector2 screenPosition)
     {
-        Application.LoadLevel("Stage1Level1");
+        Application.LoadLevel("Level1");
     }
 }
