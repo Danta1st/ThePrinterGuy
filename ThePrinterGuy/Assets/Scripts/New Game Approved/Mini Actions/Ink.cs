@@ -29,6 +29,7 @@ public class Ink : MonoBehaviour
 	// Particlesystem
 	private ParticleSystem _particleStars;
 	private ParticleSystem _particleSmoke;
+	private ParticleSystem _particleExplosion;
 	
 	private GameObject _dynamicObjects;
 	
@@ -50,6 +51,10 @@ public class Ink : MonoBehaviour
 		{
 			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
 			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
+		}
+		if(_particleSystemExplosion != null)
+		{
+			_particleExplosion = (ParticleSystem)Instantiate (_particleSystemExplosion);
 		}
 		else
 			Debug.Log("Star Particle not loaded for Ink");
@@ -285,10 +290,13 @@ public class Ink : MonoBehaviour
 	
 	private IEnumerator InkFailed(InkCartridgeClass icc)
 	{
-		ParticleSystem explosion = (ParticleSystem)Instantiate (_particleSystemExplosion);
-		explosion.transform.position = icc.insertableCartridge.position;
+		if(_particleExplosion != null && _particleExplosion.isPlaying)
+			_particleExplosion.Stop();
+		
+		_particleExplosion.Play();
+		_particleExplosion.transform.position = icc.insertableCartridge.position;
 		icc.insertableCartridge.transform.position = icc.insertableStartPos;
-		yield return new WaitForSeconds(_particleSystemExplosion.startLifetime);
+		yield return new WaitForSeconds(_particleExplosion.duration);
 		_canSlide = true;
 	}
 	
