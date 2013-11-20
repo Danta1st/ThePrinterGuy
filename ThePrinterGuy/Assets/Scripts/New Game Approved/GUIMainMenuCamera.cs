@@ -27,7 +27,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
-    private string _guiCameraStage = "LanguageSelectionStage";
+    private string _guiCameraStage = "MainMenuStage";
 
     public static string languageSetting = "EN";
     #endregion
@@ -48,11 +48,17 @@ public class GUIMainMenuCamera : MonoBehaviour
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
+        LevelManager.OnCreditsView += ChangeToCredits;
+        LevelManager.OnMainView += ChangeToMain;
+        LevelManager.OnOptionsView += ChangeToOptions;
     }
 
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
+        LevelManager.OnCreditsView -= ChangeToCredits;
+        LevelManager.OnMainView -= ChangeToMain;
+        LevelManager.OnOptionsView -= ChangeToOptions;
     }
 
     public void EnableGUICamera()
@@ -165,6 +171,8 @@ public class GUIMainMenuCamera : MonoBehaviour
         //--------------------------------------------------//
 
         EnableGUICamera();
+        SwitchToMainMenu();
+
     }
  
     // Update is called once per frame
@@ -232,51 +240,43 @@ public class GUIMainMenuCamera : MonoBehaviour
                         if(OnOptionsScreen != null)
                         {
                             OnOptionsScreen();
-                        }
 
-                        DisableGUIElementAll();
-                        EnableGUIElement("OptionsMenu");
-                        EnableGUIElement("MenuButtonLeft");
+                            DisableGUIElementAll();
+                        }
                     }
                     else if(_hit.collider.gameObject.name == "CreditsButton")
                     {
                         if(OnCreditScreen != null)
                         {
                             OnCreditScreen();
-                        }
 
-                        DisableGUIElementAll();
-                        EnableGUIElement("Credits");
-                        EnableGUIElement("MenuButtonRight");
+                            DisableGUIElementAll();
+                        }
                     }
                     else if(_hit.collider.gameObject.name == "MenuButtonLeft")
                     {
                         if(OnMainScreen != null)
                         {
                             OnMainScreen();
-                        }
 
-                        DisableGUIElementAll();
-                        EnableGUIElement("OptionsButton");
-                        EnableGUIElement("CreditsButton");
+                            DisableGUIElementAll();
+                        }
                     }
                     else if(_hit.collider.gameObject.name == "MenuButtonRight")
                     {
                         if(OnMainScreen != null)
                         {
                             OnMainScreen();
-                        }
 
-                        DisableGUIElementAll();
-                        EnableGUIElement("OptionsButton");
-                        EnableGUIElement("CreditsButton");
+                            DisableGUIElementAll();
+                        }
                     }
                     else if(_hit.collider.gameObject.name == "DanishButton")
                     {
-                        if(_guiCameraStage == "LanguageSelectionStage")
-                        {
-                            SwitchToMainMenu();
-                        }
+//                        if(_guiCameraStage == "LanguageSelectionStage")
+//                        {
+//                            SwitchToMainMenu();
+//                        }
 
                         languageSetting = "DK";
                         LocalizationText.SetLanguage(languageSetting);
@@ -284,10 +284,10 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if(_hit.collider.gameObject.name == "EnglishButton")
                     {
-                        if(_guiCameraStage == "LanguageSelectionStage")
-                        {
-                            SwitchToMainMenu();
-                        }
+//                        if(_guiCameraStage == "LanguageSelectionStage")
+//                        {
+//                            SwitchToMainMenu();
+//                        }
 
                         languageSetting = "EN";
                         LocalizationText.SetLanguage(languageSetting);
@@ -307,10 +307,31 @@ public class GUIMainMenuCamera : MonoBehaviour
         }
     }
 
+    private void ChangeToCredits()
+    {
+        DisableGUIElementAll();
+        EnableGUIElement("Credits");
+        EnableGUIElement("MenuButtonRight");
+    }
+
+    private void ChangeToOptions()
+    {
+        DisableGUIElementAll();
+        EnableGUIElement("OptionsMenu");
+        EnableGUIElement("MenuButtonLeft");
+    }
+
+    private void ChangeToMain()
+    {
+        DisableGUIElementAll();
+        EnableGUIElement("OptionsButton");
+        EnableGUIElement("CreditsButton");
+    }
+
     private void SwitchToMainMenu()
     {
         _guiCameraStage = "MainMenuStage";
-        DisableGUIElement("LanguageMenu");
+//        DisableGUIElement("LanguageMenu");
         EnableGUIElement("MainMenu");
         EnableGUIElement("OptionsButton");
         EnableGUIElement("CreditsButton");

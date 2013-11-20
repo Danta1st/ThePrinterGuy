@@ -21,6 +21,14 @@ public class PathManager : MonoBehaviour {
     private bool _isMoving = false;
 	private Transform _queuedMoveTo;
     #endregion
+	
+	#region Delegates & Events
+	public delegate void OnCamPosChangeEndedAction();
+	public static event OnCamPosChangeEndedAction OnCamPosChangeEnded;
+	
+	public delegate void OnCamPosChangeBeganAction();
+	public static event OnCamPosChangeBeganAction OnCamPosChangeBegan;
+	#endregion
 
     //TODO: Make Proper Connectivity to whatever it needs to connect to
     void OnEnable()
@@ -122,6 +130,10 @@ public class PathManager : MonoBehaviour {
     {
         if(_isMoving == false)
         {
+			//Cam began changing position
+			if(OnCamPosChangeBegan != null)
+				OnCamPosChangeBegan();
+			
 			_lookingAt = lookTarget;
 			_queuedMoveTo = null;
             _isMoving = true;
@@ -144,6 +156,10 @@ public class PathManager : MonoBehaviour {
     {
         if(_isMoving == false)
         {
+			//Cam began changing position
+			if(OnCamPosChangeBegan != null)
+				OnCamPosChangeBegan();
+			
 			_lookingAt = lookTarget;
 			_queuedMoveTo = null;
             _isMoving = true;
@@ -164,6 +180,10 @@ public class PathManager : MonoBehaviour {
 
     private void AdjustLookingAt(Transform tf)
     {
+		//Cam is done changing position
+		if(OnCamPosChangeEnded != null)
+			OnCamPosChangeEnded();
+		
         _isMoving = false;
 		if(_queuedMoveTo != null)
 		{
