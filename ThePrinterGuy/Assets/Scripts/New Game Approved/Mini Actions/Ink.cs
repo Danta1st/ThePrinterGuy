@@ -8,6 +8,7 @@ public class Ink : MonoBehaviour
 	[SerializeField] private List<InkCartridgeClass> _machineInks;
 	[SerializeField] private ParticleSystem _particleSystemStars;
 	[SerializeField] private ParticleSystem _particleSystemSmoke;
+	[SerializeField] private ParticleSystem _particleSystemExplosion;
     [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
     #endregion
@@ -15,9 +16,9 @@ public class Ink : MonoBehaviour
 	#region Privates
 	//Gate Variables
     private bool _isGateAllowedToRun = false;
-    private float _openTime     = 0.5f;
-    private float _closeTime    = 0.5f;
-    private float _waitTime     = 1f;
+    private float _openTime     = 0.250f;
+    private float _closeTime    = 0.250f;
+    private float _waitTime     = 0.500f;
     private GenericSoundScript GSS;
 	
 	//Slide variables
@@ -28,6 +29,7 @@ public class Ink : MonoBehaviour
 	// Particlesystem
 	private ParticleSystem _particleStars;
 	private ParticleSystem _particleSmoke;
+	private ParticleSystem _particleExplosion;
 	
 	private GameObject _dynamicObjects;
 	
@@ -50,6 +52,10 @@ public class Ink : MonoBehaviour
 			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
 			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
 		}
+		if(_particleSystemExplosion != null)
+		{
+			_particleExplosion = (ParticleSystem)Instantiate (_particleSystemExplosion);
+		}
 		else
 			Debug.Log("Star Particle not loaded for Ink");
 		
@@ -61,6 +67,18 @@ public class Ink : MonoBehaviour
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			icc.insertableStartPos = icc.insertableCartridge.position;
+		}
+		
+		foreach(InkCartridgeClass icc in _machineInks)
+		{
+			
+			foreach(Transform t in icc.lid.transform) {
+				if(t.name == "InkCrashObj") {
+					GameObject crashPos;
+					crashPos = t.gameObject;
+					icc.inkCollisionPosition = crashPos.transform.position;
+				}
+			}
 		}
 	}
 	
@@ -98,13 +116,13 @@ public class Ink : MonoBehaviour
         _isGateAllowedToRun = false;
     }
 	
-	IEnumerator OpenGate(InkCartridgeClass icc)
+	private void OpenGate(InkCartridgeClass icc)
     {
         GSS.PlayClip(Random.Range(0,3));
 		GameObject go = icc.lid;
         if(!icc.lidIsOpen)
         {
-			yield return new WaitForSeconds(_waitTime);
+			//yield return new WaitForSeconds(_waitTime);
 			
 			if(icc.lidDirection == OpenDirection.Left)
 			{
@@ -178,7 +196,7 @@ public class Ink : MonoBehaviour
 				if(IC.lidIsOpen && icc == IC)
 	                StartCoroutine_Auto(CloseGate(IC));
 	            else if(!IC.lidIsOpen && icc == IC)
-	                StartCoroutine_Auto(OpenGate(IC));
+	                OpenGate(IC);
 			}
         }
     }
@@ -190,7 +208,7 @@ public class Ink : MonoBehaviour
 		if(icc.lidIsOpen)
             StartCoroutine_Auto(CloseGate(icc));
         else
-            StartCoroutine_Auto(OpenGate(icc));
+            OpenGate(icc);
 	}
 	#endregion
 	
@@ -202,7 +220,8 @@ public class Ink : MonoBehaviour
 		InkCartridgeClass currIcc = null;
 		InkCartridgeClass icc;
 		int j = 0;
-		for(int i = 0; i < _machineInks.Count; i++)
+		int count = _machineInks.Count;
+		for(int i = 0; i < count; i++)
 		{
 			icc = _machineInks[j];
 			if(icc.cartridge == null)
@@ -233,7 +252,19 @@ public class Ink : MonoBehaviour
 		}
 		else
 		{
-			// Hit the wall lid and go back?
+			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.inkCollisionPosition, 
+							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));			
+//				foreach(Transform t in currIcc.lid.transform)
+//			{
+//				if(t.name == "InkCrashObj")
+//				{
+//					GameObject target = t.gameObject;
+//					iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", target.transform.position, 
+//							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
+//				}
+//			}
+				
+			
 		}
 	}
 	
@@ -254,6 +285,18 @@ public class Ink : MonoBehaviour
 		}
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		icc.insertableCartridge.position = icc.insertableStartPos;
+		_canSlide = true;
+	}
+	
+	private IEnumerator InkFailed(InkCartridgeClass icc)
+	{
+		if(_particleExplosion != null && _particleExplosion.isPlaying)
+			_particleExplosion.Stop();
+		
+		_particleExplosion.Play();
+		_particleExplosion.transform.position = icc.insertableCartridge.position;
+		icc.insertableCartridge.transform.position = icc.insertableStartPos;
+		yield return new WaitForSeconds(_particleExplosion.duration);
 		_canSlide = true;
 	}
 	
@@ -353,6 +396,8 @@ public class Ink : MonoBehaviour
         public bool lidIsOpen = false;
 		[HideInInspector]
 		public bool cartridgeEmpty = false;
+		[HideInInspector]
+		public Vector3 inkCollisionPosition;
     };
 	
 	public enum OpenDirection
