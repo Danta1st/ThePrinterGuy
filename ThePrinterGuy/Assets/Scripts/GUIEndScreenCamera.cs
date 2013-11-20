@@ -62,6 +62,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
     void OnDisable()
     {
 		GUIGameCamera.OnGameEnded -= DisplayEndScreenWin;
+        GestureManager.OnTap -= CheckCollision;
     }
 
     public void EnableGUICamera()
