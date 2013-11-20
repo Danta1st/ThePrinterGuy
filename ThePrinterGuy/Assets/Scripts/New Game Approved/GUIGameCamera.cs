@@ -37,6 +37,7 @@ public class GUIGameCamera : MonoBehaviour
     private bool _canTouch = true;
     private float _timeScale = 0.0f;
 	private ParticleSystem[] _particleSystems;
+    private bool _isWin = true;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -84,6 +85,7 @@ public class GUIGameCamera : MonoBehaviour
         ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
         ActionSequencerManager.OnLastNode += LastNode;
         ScoreManager.TaskCompleted += CheckZone;
+        StressOMeter.OnGameFailed += GameLost;
     }
 
     void OnDisable()
@@ -92,6 +94,7 @@ public class GUIGameCamera : MonoBehaviour
         ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
         ActionSequencerManager.OnLastNode -= LastNode;
         ScoreManager.TaskCompleted -= CheckZone;
+        StressOMeter.OnGameFailed -= GameLost;
     }
 
     public void EnableGUICamera()
@@ -624,7 +627,7 @@ public class GUIGameCamera : MonoBehaviour
             OnUpdateAction();
         }
 
-        if(_isLastNode && _sequencerObjectQueue.Count == 0)
+        if(_isLastNode && _sequencerObjectQueue.Count == 0 && _isWin)
         {
             if(OnGameEnded != null)
             {
@@ -636,6 +639,11 @@ public class GUIGameCamera : MonoBehaviour
     public int GetZone()
     {
         return _zone;
+    }
+
+    public int GetScore()
+    {
+        return _score;
     }
     #endregion
 
@@ -673,6 +681,11 @@ public class GUIGameCamera : MonoBehaviour
             _text.GetComponent<LocalizationKeywordText>().LocalizeText();
         }
 	}
+
+    private void GameLost()
+    {
+        _isWin = false;
+    }
 	
     #endregion
 }

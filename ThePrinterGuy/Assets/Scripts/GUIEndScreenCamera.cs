@@ -57,12 +57,14 @@ public class GUIEndScreenCamera : MonoBehaviour {
     void OnEnable()
     {
 		GUIGameCamera.OnGameEnded += DisplayEndScreenWin;
+        StressOMeter.OnGameFailed += DisplayEndScreenLoose;
     }
 
     void OnDisable()
     {
 		GUIGameCamera.OnGameEnded -= DisplayEndScreenWin;
         GestureManager.OnTap -= CheckCollision;
+        StressOMeter.OnGameFailed -= DisplayEndScreenLoose;
     }
 
     public void EnableGUICamera()
@@ -248,17 +250,32 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	
 	private void DisplayEndScreenWin(int score)
 	{
-		GetCurrentLevel();
-		Camera.main.enabled = false;
-		_guiCam.camera.enabled = false;
-		EnableGUICamera();
-		EnableGUIElementAll();
-		GestureManager.OnTap += CheckCollision;
+		    GetCurrentLevel();
+		    //Camera.main.enabled = false;
+		    _guiCam.camera.enabled = false;
+		    EnableGUICamera();
+		    EnableGUIElementAll();
+		    GestureManager.OnTap += CheckCollision;
 
-		_levelScore = score;
-		_isWin = true;
-		StartCoroutine("MoveEstimateBar");
+		    _levelScore = score;
+		    _isWin = true;
+		    StartCoroutine("MoveEstimateBar");
 	}
+
+    private void DisplayEndScreenLoose()
+    {
+        GetCurrentLevel();
+        //Camera.main.enabled = false;
+        _guiCam.camera.enabled = false;
+        EnableGUICamera();
+        EnableGUIElementAll();
+        GestureManager.OnTap += CheckCollision;
+        GUIGameCamera gUIGameCamera =  new GUIGameCamera();
+
+        _levelScore = gUIGameCamera.GetScore();
+        _isWin = false;
+        StartCoroutine("MoveEstimateBar");
+    }
 	
 	private void PlaceTargetStars()
 	{
@@ -296,7 +313,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		int[] highScores = SaveGame.GetPlayerHighscores();
 		_levelHighscore = highScores[_currentLevel - _levelOffset];
 		
-		if(_levelScore > _levelHighscore)
+		if(_levelScore > _levelHighscore && _isWin)
 		{
 			highScores[_currentLevel - _levelOffset] = _levelScore;
 			_levelHighscore = _levelScore;
@@ -386,7 +403,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		if(_isWin)
 			InsertSpeechText("Nice work, are\n you ready for the\n next challenge?");
 		else
-			InsertSpeechText("You're fired.\n never mind now\n get back to work.");
+			InsertSpeechText("You're fired.\n Never mind now\n get back to work.");
 		
 		FindHighscore();
 	}
