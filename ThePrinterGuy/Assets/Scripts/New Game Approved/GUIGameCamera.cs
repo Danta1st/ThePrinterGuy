@@ -224,8 +224,17 @@ public class GUIGameCamera : MonoBehaviour
     {
 		if(Input.GetKeyDown(KeyCode.N))
 		{
-			IncreaseScore(1000);
+			IncreaseScorePopup(1000);
 		}
+		if(Input.GetKeyDown(KeyCode.B))
+		{
+			IncreaseScorePopup(2000);
+		}
+		if(Input.GetKeyDown(KeyCode.V))
+		{
+			IncreaseScorePopup(10000);
+		}
+		
 
         if(Input.GetKeyDown(KeyCode.L))
         {
@@ -250,22 +259,33 @@ public class GUIGameCamera : MonoBehaviour
     #region Class Methods
 
     #region Highscore
-	public void IncreaseScore(float _amount, string popUpText)
+	public void IncreaseScore(float _amount)
 	{
 		
 		_score += (int)_amount;
 		_strScore = _score.ToString();
-		PopupText(popUpText, 12f, 100f);
 		ShowScore();
 		ShowStars();
 	}
 	
-	public void IncreaseScore(float _amount)
+	public void IncreaseScorePopup(float _amount)
 	{
 		_score += (int)_amount;
 		_strScore = _score.ToString();
 		string _strAmount = _amount.ToString();
-		PopupText(_strAmount, 12f, 100f);
+		if(_amount <= 1000)
+		{
+			PopupTextSmall(_strAmount);
+		}
+		else if(_amount > 1000 && _amount < 10000)
+		{
+			PopupTextMedium(_strAmount);
+		}
+		else
+		{
+			PopupTextBig(_strAmount);
+		}
+		
 		ShowScore();
 		ShowStars();
 	}
@@ -284,10 +304,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(false);
 			_star3Object.SetActive(false);
 			
-			if(_isStar1Spawned)
+			if(!_isStar1Spawned)
 			{
 				iTween.PunchScale(_star1Object, new Vector3(20f,20f,0f),1f);
-				_isStar1Spawned = false;
+				_isStar1Spawned = true;
 			}
 			
 		}
@@ -297,10 +317,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(true);
 			_star3Object.SetActive(false);
 			
-			if(_isStar2Spawned)
+			if(!_isStar2Spawned)
 			{
 				iTween.PunchScale(_star2Object, new Vector3(20f,20f,0f),1f);
-				_isStar2Spawned = false;
+				_isStar2Spawned = true;
 			}
 			
 		}
@@ -311,10 +331,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star3Object.SetActive(true);
 			
 			
-			if(_isStar3Spawned)
+			if(!_isStar3Spawned)
 			{
 				iTween.PunchScale(_star3Object, new Vector3(20f,20f,0f),1f);
-				_isStar3Spawned = false;
+				_isStar3Spawned = true;
 			}
 		}
 		else
@@ -323,24 +343,39 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(false);
 			_star3Object.SetActive(false);
 			
-			_isStar1Spawned = true;
-			_isStar2Spawned = true;
-			_isStar3Spawned = true;
+			_isStar1Spawned = false;
+			_isStar2Spawned = false;
+			_isStar3Spawned = false;
 			
 			
 		}
 	}
 	
-	public void PopupText(string _str, float _circles, float _starTrail)
+	public void PopupTextSmall(string _str)
 	{
-		StartCoroutine(InstantiatePopup(_str, _circles, _starTrail));
+		PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
 	}
 	
-	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail)
+	public void PopupTextMedium(string _str)
+	{
+		PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
+	}
+	
+	public void PopupTextBig(string _str)
+	{
+		PopupText(_str, 10f, 100f, new Color(1f ,0.7f ,0f, 1f), new Color(1f ,0.7f ,0f, 0.7f));
+	}
+	
+	public void PopupText(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
+	{
+		StartCoroutine(InstantiatePopup(_str, _circles, _starTrail, _trailColor, _circleColor));
+	}
+	
+	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
 	{	
 		float _xPopupPos = Random.Range(0.35f,0.65f);
-		float _yPopupPos = Random.Range(0.3f,0.4f);
-		float _fontSize = 200f;
+		float _yPopupPos = Random.Range(0.35f,0.45f);
+		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 1.2f;
 		float _punchAmmount = -10f;
@@ -359,6 +394,8 @@ public class GUIGameCamera : MonoBehaviour
 		
 		_particleSystems[0].particleSystem.emissionRate = _starTrail;
 		_particleSystems[1].particleSystem.emissionRate = _circles;
+		_particleSystems[0].particleSystem.startColor = _trailColor;
+		_particleSystems[1].particleSystem.startColor = _circleColor;
 		
 		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
 			_fadeInDuration + _fadeOutDuration);
