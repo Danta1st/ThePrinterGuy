@@ -6,9 +6,11 @@ public class StressOMeter : MonoBehaviour
 {
     #region Editor Publics
     [SerializeField]
-    private float _inZonePoints = 12.5f;
+    private float _inZonePoints = 7.0f;
     [SerializeField]
-    private float _failedPoints = -25.0f;
+    private float _failedPoints = -15.0f;
+    [SerializeField]
+    private float _quoteWaitTime = 10.0f;
 
     /*Paper
      *Ink
@@ -21,13 +23,16 @@ public class StressOMeter : MonoBehaviour
 
     #region Privates#
     private float _rotationScale = 0.0f;
-    private float _stressMIN = -50.0f;
-    private float _stressMAX = 50.0f;
+    private float _stressMIN = -60.0f;
+    private float _stressMAX = 60.0f;
+    private float _angryZone = 30.0f;
+    private float _happyZone = -30.0f;
     private Vector3 _thisRotation;
     private float _rotationTime = 0.5f;
     private Vector3 _shakeRotation;
     private float _shakeTime = 0.05f;
     private bool _canDie = false;
+    private bool _canTriggerQuote = true;
 
     private bool _paperCounter = false;
     private bool _inkCounter = false;
@@ -55,6 +60,12 @@ public class StressOMeter : MonoBehaviour
     
     public delegate void GameFailed();
     public static event GameFailed OnGameFailed;
+
+    public delegate void AngryZoneEntered();
+    public static event AngryZoneEntered OnAngryZoneEntered;
+
+    public delegate void HappyZoneEntered();
+    public static event HappyZoneEntered OnHappyZoneEntered;
 
     void Start()
     {
@@ -349,13 +360,42 @@ public class StressOMeter : MonoBehaviour
     {
         if(OnGameFailed != null && _rotationScale == _stressMAX && _canDie)
         {
-            Debug.Log("GDWDJWHFHGWIFHW");
             OnGameFailed();
         }
 
         _canDie = false;
 
+        if(_rotationScale >= _angryZone && _canTriggerQuote)
+        {
+            _canTriggerQuote = false;
+
+            if(OnAngryZoneEntered != null)
+            {
+                OnAngryZoneEntered();
+            }
+
+            StartCoroutine(QuoteWaitTime());
+        }
+
+        if(_rotationScale <= _happyZone && _canTriggerQuote)
+        {
+            _canTriggerQuote = false;
+
+            if(OnHappyZoneEntered != null)
+            {
+                OnHappyZoneEntered();
+            }
+
+            StartCoroutine(QuoteWaitTime());
+        }
+
         iTween.ShakeRotation(gameObject, iTween.Hash("amount", _shakeRotation, "time", _shakeTime, "oncomplete", "SlightMovementBack", "oncompletetarget", gameObject));
+    }
+
+    IEnumerator QuoteWaitTime()
+    {
+        yield return new WaitForSeconds(2.0f);
+        _canTriggerQuote = true;
     }
 
     void SlightMovementBack()
