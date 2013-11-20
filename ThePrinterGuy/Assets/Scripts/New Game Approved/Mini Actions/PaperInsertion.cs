@@ -27,8 +27,9 @@ public class PaperInsertion : MonoBehaviour
     private bool _isGateAllowedToRun = false;
     private float _openTime     = 0.5f;
     private float _closeTime    = 0.5f;
-    private float _waitTime     = 0.2f;
 	private float _burnTime 	= 0.5f;
+    private float _waitTime     = 0.5f;
+
 	
 	//Paper Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
@@ -157,7 +158,7 @@ public class PaperInsertion : MonoBehaviour
             if(_isGateOpen)
                 Invoke("CloseGate",_waitTime);
             else
-                Invoke("OpenGate",_waitTime);
+                OpenGate(); //Invoke("OpenGate",_waitTime);
         }
     }
 
