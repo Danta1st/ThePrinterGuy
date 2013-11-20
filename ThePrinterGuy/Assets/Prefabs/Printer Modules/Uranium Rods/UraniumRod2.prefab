@@ -248,6 +248,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100030
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400030}
+  m_Layer: 0
+  m_Name: UraniumRod1MoveTo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100032
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400032}
+  m_Layer: 0
+  m_Name: UraniumRod0MoveTo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -426,7 +456,31 @@ Transform:
   - {fileID: 400014}
   - {fileID: 400012}
   - {fileID: 400010}
+  - {fileID: 400032}
+  - {fileID: 400030}
   m_Father: {fileID: 400000}
+--- !u!4 &400030
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100030}
+  m_LocalRotation: {x: .251741141, y: 0, z: -0, w: .967794657}
+  m_LocalPosition: {x: -.45742321, y: .697725296, z: .353523016}
+  m_LocalScale: {x: .868728161, y: .868728161, z: .868728161}
+  m_Children: []
+  m_Father: {fileID: 400028}
+--- !u!4 &400032
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100032}
+  m_LocalRotation: {x: .251741141, y: 0, z: -0, w: .967794657}
+  m_LocalPosition: {x: .323940992, y: .644126892, z: .516055465}
+  m_LocalScale: {x: .915684402, y: .915684402, z: .915684402}
+  m_Children: []
+  m_Father: {fileID: 400028}
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -768,11 +822,11 @@ MonoBehaviour:
   _easeTypeIn: 27
   _rods:
   - rod: {fileID: 100012}
-    startPos: 0
-    endPos: 0
+    rodMoveTo: {fileID: 100032}
+    startPos: {x: 0, y: 0, z: 0}
   - rod: {fileID: 100010}
-    startPos: 0
-    endPos: 0
+    rodMoveTo: {fileID: 100030}
+    startPos: {x: 0, y: 0, z: 0}
   _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
     type: 2}
   _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
