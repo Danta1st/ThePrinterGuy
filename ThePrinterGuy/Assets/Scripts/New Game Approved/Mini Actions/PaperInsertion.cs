@@ -387,12 +387,6 @@ public class PaperInsertion : MonoBehaviour
 		_IsSlideLocked = false;
 	}
 	
-	void DestroyCrushedPaper(GameObject go)
-	{
-		_tempPaper.Remove(go);
-		Destroy (go);
-	}
-	
 	public void Reset()
 	{
 		if(_particleSmoke != null && _particleSmoke.isPlaying)
@@ -412,7 +406,6 @@ public class PaperInsertion : MonoBehaviour
         public Texture on;
         public Texture off;
         public GameObject paper;
-		public GameObject crushedPaperPrefab;
         public bool isOn = false;
     };
     #endregion
