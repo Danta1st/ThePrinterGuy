@@ -12,6 +12,10 @@ public class LevelManager : MonoBehaviour
     private float _charMoveTime = 2.0f;
     [SerializeField]
     private List<GameObject> _stageCharacters = new List<GameObject>();
+    [SerializeField]
+    private List<GameObject> _gameLevels = new List<GameObject>();
+    [SerializeField]
+    private List<bool> _gameLevelsUnlocked = new List<bool>();
 
     private GameObject _selectedStageChar;
     private GameObject _lookTarget;
@@ -20,19 +24,33 @@ public class LevelManager : MonoBehaviour
     private GameObject _camPointDefault;
     private bool _isZoomed = false;
     private GameObject _camStartPos;
+    private bool _camAtRest = true;
+
+
+    public delegate void CreditsView();
+    public static event CreditsView OnCreditsView;
+
+    public delegate void OptionsView();
+    public static event OptionsView OnOptionsView;
+
+    public delegate void MainView();
+    public static event MainView OnMainView;
+
 
     void Awake()
     {
-        _camPointDefault = GameObject.Find("CamPoint_Default");
-
         _creditsLookTarget = GameObject.Find("Television");
-
         _optionsLookTarget = GameObject.Find("OptionButtons");
     }
 
     // Use this for initialization
     void Start()
     {
+        #region Camera Positioning Objects
+        _camPointDefault = new GameObject();
+        _camPointDefault.name = "CamLookPosDefault";
+        _camPointDefault.transform.position = new Vector3(0, 0, 12);
+
         _lookTarget = new GameObject();
         _lookTarget.name = "LookTarget";
         _lookTarget.transform.position = _camPointDefault.transform.position;
@@ -40,18 +58,34 @@ public class LevelManager : MonoBehaviour
         _camStartPos = new GameObject();
         _camStartPos.name = "CamStartPosition";
         _camStartPos.transform.position = Camera.main.transform.position;
+        #endregion
 
         foreach(GameObject go in _stageCharacters)
         {
-            go.transform.FindChild("stageLevelSelection").gameObject.SetActive(false);
             go.collider.enabled = false;
+
+            StageCharacter thisChar = go.GetComponent<StageCharacter>();
+
+            GameObject thisProjectorHolder = go.transform.FindChild("projectorHolder").gameObject;
+
+            Projector thisProjector = thisProjectorHolder.transform.GetComponent<Projector>();
+
+            Color thisColor = thisProjector.material.color;
+
+            thisColor.a = 1.0f;
+
+            thisProjector.material.SetColor("_Color", thisColor);
+
+            if(thisChar.GetUnlocked())
+            {
+                SilhouetteCharacter(thisProjectorHolder);
+            }
         }
-    }
- 
-    // Update is called once per frame
-    void Update()
-    {
- 
+
+        for(int i = 0; i < _gameLevels.Count; i++)
+        {
+            _gameLevels[i].SetActive(false);
+        }
     }
 
     void OnEnable()
@@ -72,31 +106,20 @@ public class LevelManager : MonoBehaviour
         GUIMainMenuCamera.OnOptionsScreen -= ChangeViewToOptions;
     }
 
-    //TODO:
-     /*
-      * Start - Language boxes appear, stageCharacters are visible as shadows in the background
-      * OnTap - Select a language
-      *         After the language is selected the stageCharacters appear
-      *         The stages that are unlocked will appear lit, while the rest are silhouettes
-      * OnTap - Selected stageCharacter moves forward (only on lit characters)
-      *         Camera focus on selected Character
-      *         An animation animates the character to move forward
-      *         The level boxes appear above the character
-      * OnTap - Go to selected levelbox's scene
-      */
-
     public List<GameObject> GetStageCharacters()
     {
         return _stageCharacters;
     }
 
-    void IlluminateCharacter(GameObject go)
-    {
-
-    }
-
     void SilhouetteCharacter(GameObject go)
     {
+        Projector thisProjector = go.transform.GetComponent<Projector>();
+
+        Color thisColor = thisProjector.material.color;
+
+        thisColor.a = 0.9f;
+
+        thisProjector.material.SetColor("_Color", thisColor);
     }
 
     void SelectStage(GameObject go, Vector2 screenPos)
@@ -104,11 +127,8 @@ public class LevelManager : MonoBehaviour
         //It works, change at own risk
         if(go != null)
         {
-            if(_stageCharacters.Contains(go))
+            if(_stageCharacters.Contains(go) && go.GetComponent<StageCharacter>().GetUnlocked())
             {
-                GameObject selectedChar = go.transform.FindChild("bossChar").gameObject;
-                selectedChar.animation.CrossFade("SelectionFast");
-                selectedChar.animation.CrossFadeQueued("Idle");
                 if(_selectedStageChar != null)
                 {
                     if(_selectedStageChar == go)
@@ -116,31 +136,26 @@ public class LevelManager : MonoBehaviour
                         if(_isZoomed)
                         {
                             CameraZoomOut();
-                            SilhouetteCharacter(_selectedStageChar);
                             BeginMoveBackAnimation(_selectedStageChar);
 
                         }
                         else if(!_isZoomed)
                         {
                             CameraFocusOnStage(go);
-                            IlluminateCharacter(go);
                             BeginMoveForwardAnimation(go);
                         }
                     }
                     else if(_selectedStageChar != go)
                     {
                         CameraFocusOnStage(go);
-                        IlluminateCharacter(go);
                         BeginMoveForwardAnimation(go);
 
-                        SilhouetteCharacter(_selectedStageChar);
                         BeginMoveBackAnimation(_selectedStageChar);
                     }
                 }
                 else
                 {
                     CameraFocusOnStage(go);
-                    IlluminateCharacter(go);
                     BeginMoveForwardAnimation(go);
                 }
 
@@ -150,7 +165,6 @@ public class LevelManager : MonoBehaviour
         else if(go == null && _selectedStageChar != null)
         {
             CameraZoomOut();
-            SilhouetteCharacter(_selectedStageChar);
             BeginMoveBackAnimation(_selectedStageChar);
         }
     }
@@ -192,8 +206,17 @@ public class LevelManager : MonoBehaviour
 
     void LevelBoxesAppear(GameObject go)
     {
-        GameObject tmpGo = go.transform.FindChild("stageLevelSelection").gameObject;
-        tmpGo.SetActive(true);
+        int indexChar = _stageCharacters.IndexOf(go);
+
+        int minIndex = indexChar * 5;
+
+        for(int i = minIndex; i < (minIndex + 5); i++)
+        {
+            if(_gameLevelsUnlocked[i])
+            {
+                _gameLevels[i].SetActive(true);
+            }
+        }
     }
 
     void BeginMoveBackAnimation(GameObject go)
@@ -213,66 +236,117 @@ public class LevelManager : MonoBehaviour
 
     void LevelBoxesDisappear(GameObject go)
     {
-        GameObject tmpGo = go.transform.FindChild("stageLevelSelection").gameObject;
-        tmpGo.SetActive(false);
+//        GameObject tmpGo = go.transform.FindChild("stageLevelSelection").gameObject;
+//        tmpGo.SetActive(false);
+
+        int indexChar = _stageCharacters.IndexOf(go);
+
+        int minIndex = indexChar * 5;
+
+        for(int i = minIndex; i < (minIndex + 5); i++)
+        {
+            if(_gameLevelsUnlocked[i])
+            {
+                _gameLevels[i].SetActive(false);
+            }
+        }
     }
 
     void SelectLevel(GameObject go, Vector2 screenPos)
     {
-        if(go != null)
+        if(go != null && _gameLevels.Contains(go))
         {
-            if(go.GetComponent<LevelSelection>() != null)
+            int index = _gameLevels.IndexOf(go);
+
+            if(_gameLevelsUnlocked[index])
             {
-                LevelSelection lvlSelect = go.GetComponent<LevelSelection>();
-                string tmpSceneName = lvlSelect.GetSceneName();
-                Application.LoadLevel(tmpSceneName);
+                Application.LoadLevel(index);
             }
         }
     }
 
     void ChangeViewToCredits()
     {
-//        GestureManager.OnTap -= SelectStage;
-//        GestureManager.OnTap -= SelectLevel;
-
-        GameObject creditsCamPos = _creditsLookTarget.transform.FindChild("CamPointWallW").gameObject;
-
-        iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _creditsLookTarget.transform.position, "time", _charMoveTime));
-
-        iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", creditsCamPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform));
-
-        if(_selectedStageChar != null)
+        if(_camAtRest)
         {
-            SilhouetteCharacter(_selectedStageChar);
-            BeginMoveBackAnimation(_selectedStageChar);
+            _camAtRest = false;
+
+            GestureManager.OnTap -= SelectStage;
+            GestureManager.OnTap -= SelectLevel;
+    
+            GameObject creditsCamPos = _creditsLookTarget.transform.FindChild("CamPointWallW").gameObject;
+    
+            iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _creditsLookTarget.transform.position, "time", _charMoveTime));
+
+            iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", creditsCamPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform,
+                "oncomplete", "OnCreditCameraComplete", "oncompletetarget", gameObject));
+
+            if(_selectedStageChar != null)
+            {
+                BeginMoveBackAnimation(_selectedStageChar);
+            }
         }
+    }
+
+    void OnCreditCameraComplete()
+    {
+        SetCamAtRest();
+        OnCreditsView();
     }
 
     void ChangeViewToOptions()
     {
-//        GestureManager.OnTap -= SelectStage;
-//        GestureManager.OnTap -= SelectLevel;
-
-        GameObject optionsCamPos = _optionsLookTarget.transform.FindChild("CamPointWallE").gameObject;
-
-        iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _optionsLookTarget.transform.position, "time", _charMoveTime));
-
-        iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", optionsCamPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform));
-
-        if(_selectedStageChar != null)
+        if(_camAtRest)
         {
-            SilhouetteCharacter(_selectedStageChar);
-            BeginMoveBackAnimation(_selectedStageChar);
+            _camAtRest = false;
+
+            GestureManager.OnTap -= SelectStage;
+            GestureManager.OnTap -= SelectLevel;
+    
+            GameObject optionsCamPos = _optionsLookTarget.transform.FindChild("CamPointWallE").gameObject;
+
+            iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _optionsLookTarget.transform.position, "time", _charMoveTime));
+    
+            iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", optionsCamPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform,
+                "oncomplete", "OnOptionsCameraComplete", "oncompletetarget", gameObject));
+    
+            if(_selectedStageChar != null)
+            {
+                BeginMoveBackAnimation(_selectedStageChar);
+            }
         }
+    }
+
+    void OnOptionsCameraComplete()
+    {
+        SetCamAtRest();
+        OnOptionsView();
     }
 
     void ChangeViewToMain()
     {
-//        GestureManager.OnTap += SelectStage;
-//        GestureManager.OnTap += SelectLevel;
+        if(_camAtRest)
+        {
+            _camAtRest = false;
 
-        iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _camPointDefault.transform.position, "time", _charMoveTime));
+            iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _camPointDefault.transform.position, "time", _charMoveTime));
 
-        iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", _camStartPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform));
+            iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", _camStartPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform,
+                "oncomplete", "OnMainViewCameraComplete", "oncompletetarget", gameObject));
+        }
+    }
+
+    void OnMainViewCameraComplete()
+    {
+        SetCamAtRest();
+        OnMainView();
+
+        GestureManager.OnTap += SelectStage;
+        GestureManager.OnTap += SelectLevel;
+    }
+
+    void SetCamAtRest()
+    {
+        _camAtRest = true;
     }
 }
