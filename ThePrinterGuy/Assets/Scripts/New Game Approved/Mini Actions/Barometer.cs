@@ -104,7 +104,7 @@ public class Barometer : MonoBehaviour
 	
 	private void TriggerBreakBarometer(int itemNumber)
 	{
-		if(_barometers.Length < itemNumber)
+		if(_barometers.Length < itemNumber + 1)
 		{
 			if(OnBarometerFixed != null)
 				OnBarometerFixed();
