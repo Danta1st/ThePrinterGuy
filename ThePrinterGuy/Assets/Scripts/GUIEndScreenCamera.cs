@@ -13,7 +13,6 @@ public class GUIEndScreenCamera : MonoBehaviour {
     private GameObject[] _textList;
     [SerializeField]
     private iTween.EaseType _easeTypeCamera;
-	private GameObject _guiCam;
 	[SerializeField]
 	private GameObject[] _stars;
 	[SerializeField]
@@ -45,6 +44,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
 	private bool _isWin = false;
+    private GameObject _guiCam;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -62,6 +62,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
     void OnDisable()
     {
 		GUIGameCamera.OnGameEnded -= DisplayEndScreenWin;
+        GestureManager.OnTap -= CheckCollision;
     }
 
     public void EnableGUICamera()
@@ -119,8 +120,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	void Start () {
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
-        _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         _guiCam = GameObject.Find("GUI Camera");
+        _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
 
         _scaleMultiplierX = Screen.width / 1920f;

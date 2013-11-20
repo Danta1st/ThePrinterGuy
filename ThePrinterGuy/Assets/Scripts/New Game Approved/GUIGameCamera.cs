@@ -46,7 +46,7 @@ public class GUIGameCamera : MonoBehaviour
     private float _statsOverviewDuration = 1.0f;
 	
 	//Highscore Variables.
-	private static int _score = 0;
+	private int _score = 0;
 	private string _strScore = "0";
 	private GameObject _scoreValueObject;
 	private GameObject _star1Object;
