@@ -358,11 +358,13 @@ public class GUIMainMenuCamera : MonoBehaviour
 		}
 		else
 		{
+			iTweenPath path = Camera.main.GetComponent<iTweenPath>();
+		
+	        Camera.main.transform.position = path.nodes[path.nodes.Count - 1];
 			_isOnStartScreen = false;
 			
         	EnableGUIElement("OptionsButton");
         	EnableGUIElement("CreditsButton");
-			
 			
 
 	        List<GameObject> stageChars = lvlManager.GetStageCharacters();
