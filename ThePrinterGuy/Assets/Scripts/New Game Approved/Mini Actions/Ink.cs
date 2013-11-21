@@ -39,7 +39,6 @@ public class Ink : MonoBehaviour
 
 	void Awake () 
 	{
-
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
 		if(_particleSystemSmoke != null)
 		{
@@ -92,7 +91,7 @@ public class Ink : MonoBehaviour
 	void OnDisable()
 	{
 		ActionSequencerManager.OnInkNode -= StartInkTask;
-		ActionSequencerItem.OnFailed += InkReset;
+		ActionSequencerItem.OnFailed -= InkReset;
 	}
 	
 	#region Private Methods
@@ -248,7 +247,9 @@ public class Ink : MonoBehaviour
 						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 			
 			if(OnCorrectInkInserted != null)
-				OnCorrectInkInserted();
+            {
+                OnCorrectInkInserted();
+            }
 		}
 		else
 		{
@@ -332,7 +333,10 @@ public class Ink : MonoBehaviour
 		if(_machineInks.Count < itemNumber + 1)
 		{
 			if(OnCorrectInkInserted != null)
-				OnCorrectInkInserted();
+            {
+                OnCorrectInkInserted();
+            }
+
 			Debug.Log("ERROR INK: Number out of index!");
 			return;
 		}
