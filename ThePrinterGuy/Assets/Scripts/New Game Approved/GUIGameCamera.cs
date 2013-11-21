@@ -235,7 +235,6 @@ public class GUIGameCamera : MonoBehaviour
 			IncreaseScorePopup(10000);
 		}
 		
-
         if(Input.GetKeyDown(KeyCode.L))
         {
             CheckZone();

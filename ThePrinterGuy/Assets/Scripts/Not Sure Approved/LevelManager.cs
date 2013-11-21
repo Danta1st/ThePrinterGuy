@@ -264,7 +264,7 @@ public class LevelManager : MonoBehaviour
 
             if(_gameLevelsUnlocked[index])
             {
-                Application.LoadLevel(index);
+                LoadingScreen.Load(index);
             }
         }
     }
