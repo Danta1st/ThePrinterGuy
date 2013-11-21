@@ -233,7 +233,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if(_hit.collider.gameObject.name == "MusicButton")
                     {
-
+                        SaveGame.ResetPlayerData();
                     }
                     else if(_hit.collider.gameObject.name == "OptionsButton")
                     {

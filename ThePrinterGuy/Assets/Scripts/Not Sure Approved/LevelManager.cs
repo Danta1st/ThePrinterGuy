@@ -27,6 +27,8 @@ public class LevelManager : MonoBehaviour
     private GameObject _camStartPos;
     private bool _camAtRest = true;
     private int[] highScores;
+	private enum MainMenuStates { MainMenu, LevelSelection};
+	private MainMenuStates state = MainMenuStates.MainMenu;
 
 
     public delegate void CreditsView();
@@ -43,18 +45,10 @@ public class LevelManager : MonoBehaviour
     {
         _creditsLookTarget = GameObject.Find("Television");
         _optionsLookTarget = GameObject.Find("OptionButtons");
-        #if UNITY_EDITOR
-            // TRIGGER TO RESET SCORE! :)
+        if(!PlayerPrefs.HasKey("highscoresAsString")){
             highScores = new int[3]{0,-1,-1};
             SaveGame.SavePlayerData(0,0,highScores);
-        #endif
-
-        #if UNITY_ANDROID
-            if(!PlayerPrefs.HasKey("highscoresAsString")){
-                highScores = new int[3]{0,-1,-1};
-                SaveGame.SavePlayerData(0,0,highScores);
-            }
-        #endif
+        }
 
 
         highScores = SaveGame.GetPlayerHighscores();
@@ -122,7 +116,7 @@ public class LevelManager : MonoBehaviour
 
     void OnEnable()
     {
-        GestureManager.OnTap += SelectStage;
+		GestureManager.OnTap += SelectStage;
         GestureManager.OnTap += SelectLevel;
         GUIMainMenuCamera.OnCreditScreen += ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen += ChangeViewToMain;
@@ -131,7 +125,7 @@ public class LevelManager : MonoBehaviour
 
     void OnDisable()
     {
-        GestureManager.OnTap -= SelectStage;
+		GestureManager.OnTap -= SelectStage;
         GestureManager.OnTap -= SelectLevel;
         GUIMainMenuCamera.OnCreditScreen -= ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen -= ChangeViewToMain;
@@ -159,63 +153,71 @@ public class LevelManager : MonoBehaviour
         //It works, change at own risk
         if(go != null)
         {
-            if(_stageCharacters.Contains(go) && go.GetComponent<StageCharacter>().GetUnlocked())
-            {
-                if(_selectedStageChar != null)
-                {
-                    if(_selectedStageChar == go)
-                    {
-                        if(_isZoomed)
-                        {
-                            CameraZoomOut();
-                            BeginMoveBackAnimation(_selectedStageChar);
+			switch(state) {
+			case MainMenuStates.MainMenu:
+				MainMenuHandler(go);
+				break;
+			case MainMenuStates.LevelSelection:
+				LevelSelectionHandler(go);
+				break;
+			}
+		} 
+//		else
+//        {
+//            CameraZoomOut();
+//            BeginMoveBackAnimation(_selectedStageChar);
+//        }
+    	
+	}
+		
+	void MainMenuHandler(GameObject go)
+	{
+		if(_stageCharacters.Contains(go) && go.GetComponent<StageCharacter>().GetUnlocked())
+		{
+			state = MainMenuStates.LevelSelection;
+			CameraFocusOnStage(go);
+			BeginMoveForwardAnimation(go);
+			_selectedStageChar = go;
+		}
 
-                        }
-                        else if(!_isZoomed)
-                        {
-                            CameraFocusOnStage(go);
-                            BeginMoveForwardAnimation(go);
-                        }
-                    }
-                    else if(_selectedStageChar != go)
-                    {
-                        CameraFocusOnStage(go);
-                        BeginMoveForwardAnimation(go);
+	}
+	
+	void LevelSelectionHandler(GameObject go)
+	{
+		if(_stageCharacters.Contains(go) && go.GetComponent<StageCharacter>().GetUnlocked())
+		{
+			if(_selectedStageChar == go)
+			{
+				state = MainMenuStates.MainMenu;
+				CameraZoomOut();
+				BeginMoveBackAnimation(_selectedStageChar);
+				_selectedStageChar = null;
+			}
+			else
+			{
+				CameraFocusOnStage(go);
+				BeginMoveForwardAnimation(go);
 
-                        BeginMoveBackAnimation(_selectedStageChar);
-                    }
-                }
-                else
-                {
-                    CameraFocusOnStage(go);
-                    BeginMoveForwardAnimation(go);
-                }
+				BeginMoveBackAnimation(_selectedStageChar);
+				_selectedStageChar = go;
+			} 
+		}
 
-                _selectedStageChar = go;
-            }
-        }
-        else if(go == null && _selectedStageChar != null)
-        {
-            CameraZoomOut();
-            BeginMoveBackAnimation(_selectedStageChar);
-        }
-    }
+	}
 
     void CameraFocusOnStage(GameObject go)
     {
-        _isZoomed = true;
-
-        Transform charCamPoint = go.transform.FindChild("CamPoint");
-
-        iTween.MoveTo(_lookTarget, iTween.Hash("position", go.transform.position, "time", _charMoveTime));
-
-        iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", charCamPoint, "time", _charMoveTime, "looktarget", _lookTarget));
+		if(go != null) {
+	        Transform charCamPoint = go.transform.FindChild("CamPoint");
+	
+	        iTween.MoveTo(_lookTarget, iTween.Hash("position", go.transform.position, "time", _charMoveTime));
+	
+	        iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", charCamPoint, "time", _charMoveTime, "looktarget", _lookTarget));
+		}
     }
 
     void CameraZoomOut()
     {
-        _isZoomed = false;
-
         iTween.MoveTo(_lookTarget, iTween.Hash("position", _camPointDefault, "time", _charMoveTime));
 
         iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", _camStartPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget));
@@ -223,15 +225,17 @@ public class LevelManager : MonoBehaviour
 
     void BeginMoveForwardAnimation(GameObject go)
     {
-        Vector3 tmpPos = go.transform.position;
-        tmpPos.z = _charUnlockedDistance;
-
-        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveForwardAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
-
-        LevelBoxesAppear(go);
-        GameObject character = go.transform.FindChild("bossChar").gameObject;
-        character.animation.CrossFade("SelectionFast");
-        character.animation.CrossFadeQueued("Idle");
+		if(go != null) {
+	        Vector3 tmpPos = go.transform.position;
+	        tmpPos.z = _charUnlockedDistance;
+	
+	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveForwardAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
+	
+	        LevelBoxesAppear(go);
+	        GameObject character = go.transform.FindChild("bossChar").gameObject;
+	        character.animation.CrossFade("SelectionFast");
+	        character.animation.CrossFadeQueued("Idle");
+		}
     }
 
     void OnMoveForwardAnimationEnd(GameObject go)
@@ -256,12 +260,14 @@ public class LevelManager : MonoBehaviour
 
     void BeginMoveBackAnimation(GameObject go)
     {
-        Vector3 tmpPos = go.transform.position;
-        tmpPos.z = _charLockedDistance;
-
-        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveBackAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
-
-        LevelBoxesDisappear(go);
+        if(go != null) {
+			Vector3 tmpPos = go.transform.position;
+	        tmpPos.z = _charLockedDistance;
+	
+	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveBackAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
+	
+	        LevelBoxesDisappear(go);
+		}
     }
 
     void OnMoveBackAnimationEnd(GameObject go)
@@ -303,6 +309,7 @@ public class LevelManager : MonoBehaviour
 
     void ChangeViewToCredits()
     {
+	
         if(_camAtRest)
         {
             _camAtRest = false;
@@ -327,7 +334,8 @@ public class LevelManager : MonoBehaviour
     void OnCreditCameraComplete()
     {
         SetCamAtRest();
-        OnCreditsView();
+		if(OnCreditsView != null)
+        	OnCreditsView();
     }
 
     void ChangeViewToOptions()
@@ -356,7 +364,8 @@ public class LevelManager : MonoBehaviour
     void OnOptionsCameraComplete()
     {
         SetCamAtRest();
-        OnOptionsView();
+		if(OnOptionsView != null)
+        	OnOptionsView();
     }
 
     void ChangeViewToMain()
@@ -375,9 +384,12 @@ public class LevelManager : MonoBehaviour
     void OnMainViewCameraComplete()
     {
         SetCamAtRest();
-        OnMainView();
-
-        GestureManager.OnTap += SelectStage;
+		if(OnMainView != null)
+        	OnMainView();
+		
+		state = MainMenuStates.MainMenu;
+		
+		GestureManager.OnTap += SelectStage;
         GestureManager.OnTap += SelectLevel;
     }
 

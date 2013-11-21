@@ -138,7 +138,7 @@ public class GUICutsceneCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		_currentTimeStamp = Time.time;
+		_currentTimeStamp = Time.timeSinceLevelLoad;
 		Debug.Log(_currentTimeStamp);
 		if(_currentTimeStamp > _timeStampText && _isReady == true && _isLast == false)
 		{
