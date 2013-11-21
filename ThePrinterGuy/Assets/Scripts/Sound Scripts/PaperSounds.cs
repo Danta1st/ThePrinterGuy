@@ -3,20 +3,30 @@ using System.Collections;
 
 public class PaperSounds : MonoBehaviour
 {
+    private GenericSoundScript _soundFx;
+    private GenericSoundScript _music;
 
-    public void Effect_PaperTray_ConveyorBelt()
+    void Awake()
     {
-        //Play ConveyorBelt sound
+        _soundFx = transform.transform.FindChild("SoundFx_Papertray").
+            GetComponent<GenericSoundScript>();
+        _music = transform.transform.FindChild("Music_Papertray").
+            GetComponent<GenericSoundScript>();
     }
 
     public void Effect_PaperTray_MoveUp()
     {
-        //Play Moveup sound
+        _soundFx.PlayClip(0);
     }
 
     public void Effect_PaperTray_MoveDown()
     {
-        //Play MoveDown sound
+        _soundFx.PlayClip(1);
+    }
+
+    public void Effect_PaperTray_ConveyorBelt()
+    {
+        //Play ConveyorBelt sound
     }
 
     public void Effect_PaperTray_ColorChange1()
@@ -47,5 +57,10 @@ public class PaperSounds : MonoBehaviour
     public void Effect_PaperTray_Swipe4()
     {
         //Play swipe sound 4
+    }
+
+    public void Effect_PaperTray_WrongSwipe()
+    {
+
     }
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameMusic : MonoBehaviour
+public class InGameSounds : MonoBehaviour
 {
 
     public static void Music_InGame_Main()

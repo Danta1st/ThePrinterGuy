@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MenuMusic : MonoBehaviour
+public class MainMenuSounds : MonoBehaviour
 {
 
     public static void Music_GUI_Main()
