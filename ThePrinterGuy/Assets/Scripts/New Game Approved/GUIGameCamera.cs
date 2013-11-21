@@ -26,6 +26,14 @@ public class GUIGameCamera : MonoBehaviour
     private GameObject _uraniumRodPrefab;
     [SerializeField]
     private GameObject _barometerPrefab;
+    [SerializeField]
+    private float _DialogueWindowInDuration = 1;
+    [SerializeField]
+    private iTween.EaseType _easeTypeDialogueWindowIn;
+    [SerializeField]
+    private float _DialogueWindowOutDuration = 1;
+    [SerializeField]
+    private iTween.EaseType _easeTypeDialogueWindowOut;
     #endregion
 
     #region Private Variables
@@ -39,6 +47,9 @@ public class GUIGameCamera : MonoBehaviour
     private float _timeScale = 0.0f;
 	private ParticleSystem[] _particleSystems;
     private bool _waitForMe = false;
+    private GameObject _guiDialogueWindow;
+    private Vector3 _guiDialogueWindowMoveToPoint;
+    private Vector3 _guiDialogueWindowMoveFromPoint;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -86,6 +97,9 @@ public class GUIGameCamera : MonoBehaviour
         ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
         ActionSequencerManager.OnLastNode += LastNode;
         ScoreManager.TaskCompleted += CheckZone;
+        //Dialogue.OnDialogueStart += DialogueWindowIn;
+        //Dialogue.OnDialogueEnd += DialogueWindowOut;
+
     }
 
     void OnDisable()
@@ -94,6 +108,8 @@ public class GUIGameCamera : MonoBehaviour
         ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
         ActionSequencerManager.OnLastNode -= LastNode;
         ScoreManager.TaskCompleted -= CheckZone;
+        //Dialogue.OnDialogueStart -= DialogueWindowIn;
+        //Dialogue.OnDialogueEnd -= DialogueWindowOut;
     }
 
     public void EnableGUICamera()
@@ -200,6 +216,13 @@ public class GUIGameCamera : MonoBehaviour
 				_speechTextObject = _guiObject.transform.FindChild("SpeechText").gameObject;
 				_guiSpeechTextScript = _speechTextObject.GetComponent<GUISpeechText>();
 			}
+
+            if(_guiObject.name == "GUIDialogue")
+            {
+                _guiDialogueWindow = _guiObject.transform.FindChild("RenderTexture").gameObject;
+                _guiDialogueWindowMoveFromPoint = _guiObject.transform.FindChild("RenderTexture").transform.position;
+                _guiDialogueWindowMoveToPoint = _guiObject.transform.FindChild("MoveToPoint").transform.position;
+            }
         }
         //--------------------------------------------------//
 		if(GUIMainMenuCamera.languageSetting == "EN")
@@ -702,6 +725,20 @@ public class GUIGameCamera : MonoBehaviour
 
         Time.timeScale = _timeScale;
         _waitForMe = true;
+    }
+    #endregion
+
+    #region DialogueWindow
+    private void DialogueWindowIn()
+    {
+        Debug.Log("DialogueWindowIn");
+        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveToPoint, "duration", _DialogueWindowInDuration, "easetype", _easeTypeDialogueWindowIn));
+    }
+
+    private void DialogueWindowOut()
+    {
+        Debug.Log("DialogueWindowOut");
+        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveFromPoint, "duration", _DialogueWindowOutDuration, "easetype", _easeTypeDialogueWindowOut));
     }
     #endregion
 	

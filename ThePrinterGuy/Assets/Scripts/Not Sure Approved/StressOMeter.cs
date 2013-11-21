@@ -434,7 +434,7 @@ public class StressOMeter : MonoBehaviour
 
     IEnumerator QuoteWaitTime()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(_quoteWaitTime);
         _canTriggerQuote = true;
     }
 
