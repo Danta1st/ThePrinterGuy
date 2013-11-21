@@ -3,24 +3,34 @@ using System.Collections;
 
 public class InkSounds : MonoBehaviour
 {
+    private GenericSoundScript _soundFx;
+    private GenericSoundScript _music;
+
+    void Awake()
+    {
+        _soundFx = transform.transform.FindChild("SoundFx_Ink").
+            GetComponent<GenericSoundScript>();
+        _music = transform.transform.FindChild("Music_Ink").
+            GetComponent<GenericSoundScript>();
+    }
 
     public void Effect_Ink_SlotOpen1()
     {
-        //Play slotopen sound 1
+        _soundFx.PlayClip(0);
     }
 
     public void Effect_Ink_SlotOpen2()
     {
-        //Play slotopen sound 2
+        _soundFx.PlayClip(1);
     }
 
     public void Effect_Ink_SlotOpen3()
     {
-        //Play slotopen sound 3
+        _soundFx.PlayClip(2);
     }
 
     public void Effect_Ink_SlotOpen4()
     {
-        //Play slotopen sound 4
+        _soundFx.PlayClip(3);
     }
 }

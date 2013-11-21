@@ -31,32 +31,32 @@ public class PaperSounds : MonoBehaviour
 
     public void Effect_PaperTray_ColorChange1()
     {
-        //Play colorchange sound 1
+        _soundFx.PlayClip(3);
     }
 
     public void Effect_PaperTray_ColorChange2()
     {
-        //Play colorchange sound 2
+        _soundFx.PlayClip(4);
     }
 
     public void Effect_PaperTray_Swipe1()
     {
-        //Play swipe sound 1
+        _soundFx.PlayClip(5);
     }
 
     public void Effect_PaperTray_Swipe2()
     {
-        //Play swipe sound 2
+        _soundFx.PlayClip(6);
     }
 
     public void Effect_PaperTray_Swipe3()
     {
-        //Play swipe sound 3
+        _soundFx.PlayClip(7);
     }
 
     public void Effect_PaperTray_Swipe4()
     {
-        //Play swipe sound 4
+        _soundFx.PlayClip(8);
     }
 
     public void Effect_PaperTray_WrongSwipe()
