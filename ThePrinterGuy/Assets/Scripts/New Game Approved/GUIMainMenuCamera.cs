@@ -24,10 +24,11 @@ public class GUIMainMenuCamera : MonoBehaviour
     private RaycastHit _hit;
     private bool _isGUI = true;
     private bool _canTouch = true;
+	private bool _isOnStartScreen = true;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
-    private string _guiCameraStage = "MainMenuStage";
+	LevelManager lvlManager;
 
     public static string languageSetting = "EN";
     #endregion
@@ -118,6 +119,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
+		lvlManager = gameObject.GetComponent<LevelManager>();
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
 
@@ -178,7 +180,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
- 
+ 		
     }
     #endregion
 
@@ -293,16 +295,34 @@ public class GUIMainMenuCamera : MonoBehaviour
                         LocalizationText.SetLanguage(languageSetting);
                         UpdateText();
                     }
+					
                 }
                 //-----------------------------------------------------------------------//
             }
             else
             {
-                if(_guiCameraStage == "MainMenuStage")
-                {
-                    //Load level selection scene.
-
-                }
+                if(_isOnStartScreen)
+				{
+					_isOnStartScreen = false;
+					DisableGUIElement("MainMenu");
+					GameObject goLM = GameObject.Find ("elevatorDoor_L_MoveTo");
+					GameObject goRM = GameObject.Find ("elevatorDoor_R_MoveTo");
+					GameObject goL = GameObject.Find ("elevatorDoor_L");
+					GameObject goR = GameObject.Find ("elevatorDoor_R");
+					iTween.MoveTo(goL, iTween.Hash("position", goLM.transform.position,
+                                                    "time", 2,
+                                                    "easetype", iTween.EaseType.easeOutSine));
+					iTween.MoveTo(goR, iTween.Hash("position", goRM.transform.position,
+                                                    "time", 2,
+                                                    "easetype", iTween.EaseType.easeOutSine));
+					iTween.MoveTo(Camera.main.gameObject, iTween.Hash("path", iTweenPath.GetPath("intoLobby"),
+                                                    "time", 3,
+                                                    "easetype", iTween.EaseType.linear,
+                                                    "looktarget", lvlManager.getLookTarget().transform,
+                                                    "looktime", 3,
+                                                    "oncomplete", "SwitchToMainMenu",
+                                                    "oncompletetarget", gameObject));
+				}
             }
         }
     }
@@ -330,20 +350,30 @@ public class GUIMainMenuCamera : MonoBehaviour
 
     private void SwitchToMainMenu()
     {
-        _guiCameraStage = "MainMenuStage";
-//        DisableGUIElement("LanguageMenu");
-        EnableGUIElement("MainMenu");
-        EnableGUIElement("OptionsButton");
-        EnableGUIElement("CreditsButton");
+		if(LoadingScreen.isStart)
+		{
+			EnableGUIElement("MainMenu");
+        	LoadingScreen.isStart = false;
+			_isOnStartScreen = true;
+		}
+		else
+		{
+			_isOnStartScreen = false;
+			
+        	EnableGUIElement("OptionsButton");
+        	EnableGUIElement("CreditsButton");
+			
+			
 
-        LevelManager lvlManager = gameObject.GetComponent<LevelManager>();
-
-        List<GameObject> stageChars = lvlManager.GetStageCharacters();
-
-        foreach(GameObject go in stageChars)
-        {
-            go.collider.enabled = true;
-        }
+	        List<GameObject> stageChars = lvlManager.GetStageCharacters();
+	
+	        foreach(GameObject go in stageChars)
+	        {
+	            go.collider.enabled = true;
+	        }
+		}
+    
+//        DisableGUIElement("LanguageMenu"); 
     }
 //
 //    private void CheckLeft(GameObject go)
