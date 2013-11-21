@@ -12818,9 +12818,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 569231001}
   - {fileID: 1544523120}
   - {fileID: 1525696942}
-  - {fileID: 569231001}
   m_Father: {fileID: 0}
 --- !u!1 &1083621931
 GameObject:
@@ -15640,9 +15640,9 @@ MonoBehaviour:
   - {fileID: 501169394}
   _progressBar: {fileID: 1653534509}
   _targetScore:
-    starScoreOne: 25
-    starScoreTwo: 50
-    starScoreThree: 100
+    starScoreOne: 1500
+    starScoreTwo: 5000
+    starScoreThree: 10000
   _particle: {fileID: 767059847}
   _levelOffset: 2
 --- !u!1 &1331728514
@@ -17541,6 +17541,11 @@ MonoBehaviour:
   YellowZoneModifier: 1.20000005
   GreenZoneModifier: 1.5
   Feedback: []
+  _scoreMultiplier:
+    happyZoneMultiplier: 1.20000005
+    slightlyAngryZoneMultiplier: 1
+    slightlyHappyZoneMultiplier: 1
+    angryZoneMultiplier: .800000012
 --- !u!114 &1525696944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19378,6 +19383,18 @@ Prefab:
     - target: {fileID: 400034, guid: d284d3839aae167448e0c05568c8d021, type: 2}
       propertyPath: m_LocalRotation.w
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: d284d3839aae167448e0c05568c8d021, type: 2}
+      propertyPath: _targetScore.starScoreThree
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: d284d3839aae167448e0c05568c8d021, type: 2}
+      propertyPath: _targetScore.starScoreTwo
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: d284d3839aae167448e0c05568c8d021, type: 2}
+      propertyPath: _targetScore.starScoreOne
+      value: 1500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d284d3839aae167448e0c05568c8d021, type: 2}

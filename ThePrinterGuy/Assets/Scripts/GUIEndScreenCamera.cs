@@ -45,6 +45,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private TextMesh _speechText;
 	private bool _isWin = false;
     private GameObject _guiCam;
+    private GameObject nextLevelButton;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -130,7 +131,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
         {
             if(_guiObject.name == "GUIButtons")
             {
-                GameObject nextLevelButton = _guiObject.transform.FindChild("NextLevelButton").gameObject;
+                nextLevelButton = _guiObject.transform.FindChild("NextLevelButton").gameObject;
                 if(Application.loadedLevel == 3)
                 {
                     nextLevelButton.SetActive(false);
@@ -284,6 +285,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
         GUIGameCamera gUIGameCamera =  new GUIGameCamera();
 
         _levelScore = gUIGameCamera.GetScore();
+        nextLevelButton.SetActive(false);
         _isWin = false;
         StartCoroutine("MoveEstimateBar");
     }
