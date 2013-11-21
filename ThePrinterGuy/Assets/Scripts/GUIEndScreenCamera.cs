@@ -21,8 +21,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private TargetScores _targetScore;
 	[SerializeField]
 	private ParticleSystem _particle;
-	[SerializeField]
-	private int _levelOffset = 0;
+	//[SerializeField]
+	//private int _levelOffset = 0;
     #endregion
 	
 	[System.Serializable]
@@ -46,6 +46,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private bool _isWin = false;
     private GameObject _guiCam;
     private GameObject nextLevelButton;
+    private int _levelOffset = 0;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -222,24 +223,24 @@ public class GUIEndScreenCamera : MonoBehaviour {
                     if(_hit.collider.gameObject.name == "RestartButton")
                     {
                         GestureManager.OnTap -= CheckCollision;
-						Application.LoadLevel(Application.loadedLevel);
+						LoadingScreen.Load(Application.loadedLevel);
                     }
                     else if(_hit.collider.gameObject.name == "MainMenuButton")
                     {
                         GestureManager.OnTap -= CheckCollision;
-						Application.LoadLevel("MainMenu");
+						LoadingScreen.Load("MainMenu");
                     }
 					else if(_hit.collider.gameObject.name == "NextLevelButton")
 					{
                         if(Application.loadedLevel == 4)
                         {
                             GestureManager.OnTap -= CheckCollision;
-                            Application.LoadLevel(2);
+                            LoadingScreen.Load(2);
                         }
                         else
                         {
                             GestureManager.OnTap -= CheckCollision;
-                            Application.LoadLevel(Application.loadedLevel+1);
+                            LoadingScreen.Load(Application.loadedLevel+1);
                         }
 					}
                 }
@@ -339,7 +340,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private void RestartGame()
 	{
 		GestureManager.OnTap -= CheckCollision;
-		Application.LoadLevel(1);
+		LoadingScreen.Load(1);
 	}
 	
 	IEnumerator MoveEstimateBar()
@@ -423,7 +424,12 @@ public class GUIEndScreenCamera : MonoBehaviour {
 			
 	private void GetCurrentLevel()
 	{
-		_currentLevel = Application.loadedLevel;
+        if(Application.loadedLevelName == "Level1")
+            _currentLevel = 1;
+        else if(Application.loadedLevelName == "Level2")
+            _currentLevel = 2;
+        else if(Application.loadedLevelName == "Level3")
+            _currentLevel = 3;
 	}
 	
 	private void InsertSpeechText(string text)
