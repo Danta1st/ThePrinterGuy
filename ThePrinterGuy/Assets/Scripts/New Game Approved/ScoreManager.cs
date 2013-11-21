@@ -19,10 +19,13 @@ public class ScoreManager : MonoBehaviour
 	private float GreenZoneModifier = 1.5f;
 	[SerializeField]
 	private List<string> Feedback;
+	[SerializeField]
+	private ScoreMultipliers _scoreMultiplier;
 	#endregion
 	
 	#region Privates
 	private GUIGameCamera guiGameCameraScript;
+	private float _multiplier;
 	#endregion
 	
 	#region Delegates and Events
@@ -34,6 +37,7 @@ public class ScoreManager : MonoBehaviour
 	void Start () 
 	{
 		guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
+		_multiplier = _scoreMultiplier.slightlyHappyZoneMultiplier;
 	}
 	/*void Update()
 	{
@@ -49,6 +53,8 @@ public class ScoreManager : MonoBehaviour
 		PaperInsertion.OnCorrectPaperInserted += PaperSuccess;
 		Barometer.OnBarometerFixed += BarometerSuccess;
 		UraniumRods.OnRodHammered += RodSuccess;
+		StressOMeter.OnHappyZone += EnableHappyMultiplier;
+		StressOMeter.OnZoneLeft -= DisableHappyMultiplier;
 	}
 	
 	void OnDisable()
@@ -57,6 +63,20 @@ public class ScoreManager : MonoBehaviour
 		PaperInsertion.OnCorrectPaperInserted -= PaperSuccess;
 		Barometer.OnBarometerFixed -= BarometerSuccess;
 		UraniumRods.OnRodHammered -= RodSuccess;
+		StressOMeter.OnAngryZone -= EnableHappyMultiplier;
+		StressOMeter.OnZoneLeft -= DisableHappyMultiplier;
+	}
+	#endregion
+	
+	#region delegate methods
+	private void EnableHappyMultiplier()
+	{
+		_multiplier = _scoreMultiplier.happyZoneMultiplier;
+	}
+	
+	private void DisableHappyMultiplier()
+	{
+		_multiplier = _scoreMultiplier.slightlyHappyZoneMultiplier;
 	}
 	#endregion
 	
@@ -105,13 +125,13 @@ public class ScoreManager : MonoBehaviour
                 Feedback.Clear();
                 Feedback.Add("Great!");
 				popupSize = 2;
-				amount = amount * YellowZoneModifier;
+				amount = amount * YellowZoneModifier * _multiplier;
 				break;
 			case 3:
                 Feedback.Clear();
                 Feedback.Add("Perfect!");
 				popupSize = 1;
-				amount = amount * GreenZoneModifier;
+				amount = amount * GreenZoneModifier * _multiplier;
 				break;
 			default:
 				break;
@@ -155,4 +175,13 @@ public class ScoreManager : MonoBehaviour
 		}
 	}
 	#endregion
+}
+
+[System.Serializable]
+public class ScoreMultipliers
+{
+	public float happyZoneMultiplier = 1.2f;
+	public float slightlyAngryZoneMultiplier = 1f;
+	public float slightlyHappyZoneMultiplier = 1f;
+	public float angryZoneMultiplier = 0.8f;
 }
