@@ -4,16 +4,16 @@ using System.Collections;
 public class TempoManager : MonoBehaviour {
 	
 	#region Delegates and Events
-	public delegate void InkTempo(float ms);
+	public delegate void InkTempo();
 	public static event InkTempo OnInkTempo;
 	
-	public delegate void PaperTempo(float ms);
+	public delegate void PaperTempo();
 	public static event PaperTempo OnPaperTempo;
 	
-	public delegate void UraniumRodTempo(float ms);
+	public delegate void UraniumRodTempo();
 	public static event UraniumRodTempo OnUraniumRodTempo;
 	
-	public delegate void BarometerTempo(float ms);
+	public delegate void BarometerTempo();
 	public static event BarometerTempo OnBarometerTempo;
 	#endregion
 	
@@ -21,11 +21,19 @@ public class TempoManager : MonoBehaviour {
 	[SerializeField]
 	private float _inkMs;
 	[SerializeField]
+	private float _inkTime;
+	[SerializeField]
 	private float _paperMs;
+	[SerializeField]
+	private float _paperTime;
 	[SerializeField]
 	private float _uraniumRodMs;
 	[SerializeField]
+	private float _uraniumRodTime;
+	[SerializeField]
 	private float _barometerMs;
+	[SerializeField]
+	private float _barometerTime;
 	#endregion
 	
 	#region Private Variables
@@ -53,10 +61,38 @@ public class TempoManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-//		if(_inkTimer.)
-//		{
-//			
-//		}
+		if(_inkTimer.GetTimeLeft() == 0)
+		{
+			StartInkTimer();
+			if(OnInkTempo != null)
+			{
+				OnInkTempo();
+			}
+		}
+		else if(_paperTimer.GetTimeLeft() == 0)
+		{
+			StartPaperTimer();
+			if(OnPaperTempo != null)
+			{
+				OnPaperTempo();
+			}
+		}
+		else if(_uraniumRodTimer.GetTimeLeft() == 0)
+		{
+			StartUraniumRodTimer();
+			if(OnUraniumRodTempo != null)
+			{
+				OnUraniumRodTempo();
+			}
+		}
+		else if(_barometerTimer.GetTimeLeft() == 0)
+		{
+			StartBarometerTimer();
+			if(OnBarometerTempo != null)
+			{
+				OnBarometerTempo();
+			}
+		}
 	}
 	
 	private void StartInkTimer()
@@ -77,6 +113,46 @@ public class TempoManager : MonoBehaviour {
 	private void StartBarometerTimer()
 	{
 		_barometerTimer.StartTimer(_uraniumRodMs, false);
+	}
+	
+	public float GetInkMs()
+	{
+		return _inkMs;
+	}
+	
+	public float GetPaperMs()
+	{
+		return _paperMs;
+	}
+	
+	public float GetUraniumRodMs()
+	{
+		return _uraniumRodMs;
+	}
+	
+	public float GetBarometerMs()
+	{
+		return _barometerMs;
+	}
+	
+	public float GetInkTime()
+	{
+		return _inkTime;
+	}
+	
+	public float GetPaperTime()
+	{
+		return _paperTime;
+	}
+	
+	public float GetUraniumRodTime()
+	{
+		return _uraniumRodTime;
+	}
+	
+	public float GetBarometerTime()
+	{
+		return _barometerTime;
 	}
 }
 
