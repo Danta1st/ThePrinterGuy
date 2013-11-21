@@ -21,8 +21,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private TargetScores _targetScore;
 	[SerializeField]
 	private ParticleSystem _particle;
-	[SerializeField]
-	private int _levelOffset = 0;
+	//[SerializeField]
+	//private int _levelOffset = 0;
     #endregion
 	
 	[System.Serializable]
@@ -46,6 +46,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private bool _isWin = false;
     private GameObject _guiCam;
     private GameObject nextLevelButton;
+    private int _levelOffset = 0;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
