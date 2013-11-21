@@ -6,18 +6,12 @@ public class GestureManager : MonoBehaviour
 {
 
     #region Editor Publics
-    [SerializeField]
-    private float _tapThreshold = 0.3f;
-    [SerializeField]
-    private float _pressThreshold = 1.0f;
-    [SerializeField]
-    private float _swipeThreshold = 5.0f;
-    [SerializeField]
-    private float _swipeOffset = 50f;
-	[SerializeField]
-	private float _allowedFingerMovementInPx = 50f;
-	[SerializeField]
-	private float _minFingerMovementForSwipeInPx = 75f;
+    [SerializeField] private float _tapThreshold = 0.3f;
+    [SerializeField] private float _pressThreshold = 1.0f;
+//    [SerializeField] private float _swipeThreshold = 5.0f;
+    [SerializeField] private float _swipeOffset = 50f;
+	[SerializeField] private float _allowedFingerMovementInPx = 50f;
+	[SerializeField] private float _minFingerMovementForSwipeInPx = 75f;
     #endregion
 
     #region Privates
@@ -26,7 +20,7 @@ public class GestureManager : MonoBehaviour
     private bool _isPressing = false;
     private bool _isSwiping = false;
     private GameObject _touchBeganObject;
-	private Vector2 _lastPosition;
+	//private Vector2 _lastPosition;
     #endregion
 	
 	/*Public gesture disable and enable functions
@@ -160,7 +154,8 @@ public class GestureManager : MonoBehaviour
             var primaryFinger = Input.GetTouch(0);
 
             //Single Tap
-            if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1 && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) < _allowedFingerMovementInPx))
+            if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 1 && 
+				(Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) < _allowedFingerMovementInPx))
             {
                 if((Time.time - _touchBeginTimes[primaryFinger.fingerId]) < _tapThreshold)
                 {
@@ -195,7 +190,8 @@ public class GestureManager : MonoBehaviour
             }
 
             //Swipes
-            else if((primaryFinger.phase == TouchPhase.Moved || primaryFinger.phase == TouchPhase.Ended) && (Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) >= _minFingerMovementForSwipeInPx))
+            else if((primaryFinger.phase == TouchPhase.Moved || primaryFinger.phase == TouchPhase.Ended) && 
+				(Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) >= _minFingerMovementForSwipeInPx))
             {
                 _isSwiping = true;
                 //Horizontal swipes
@@ -267,7 +263,7 @@ public class GestureManager : MonoBehaviour
 //                }
 //            }
 			
-			_lastPosition = primaryFinger.position;
+			//_lastPosition = primaryFinger.position;
 
 			if(primaryFinger.phase == TouchPhase.Ended)
             {
@@ -283,7 +279,7 @@ public class GestureManager : MonoBehaviour
                 if(OnDrag != null)
                     OnDrag(_touchBeganObject, primaryFinger.position, primaryFinger.deltaPosition);
             }
-			_lastPosition = primaryFinger.position;
+			//_lastPosition = primaryFinger.position;
 		
         }
 
@@ -371,7 +367,7 @@ public class GestureManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.RightArrow))
         {
-			 var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+			 //var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
