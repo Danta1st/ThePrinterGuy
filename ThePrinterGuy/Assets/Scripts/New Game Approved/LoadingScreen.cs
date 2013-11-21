@@ -9,6 +9,8 @@ public class LoadingScreen : MonoBehaviour
 	private static float _fadeInTime = 0.2f;
 	[SerializeField]
 	private static float _fadeOutTime = 0.2f;
+	[SerializeField]
+	private static bool _skipTap = false;
 	
     private static LoadingScreen instance;
 	private AsyncOperation Async;
@@ -34,6 +36,25 @@ public class LoadingScreen : MonoBehaviour
 	{
 		
 	}
+	
+	public static void Load(int index, bool skipTap)
+    {
+        if (NoInstance()) return;
+		if (Fading) return;
+		_skipTap = skipTap;
+        instance._levelName = "";
+        instance._levelIndex = index;
+        instance.StartFade(_fadeOutTime, _fadeInTime, Color.black);
+    }
+ 
+    public static void Load(string name, bool skipTap)
+    {
+        if (NoInstance()) return;
+		if (Fading) return;
+		_skipTap = skipTap;
+		instance._levelName = name;
+        instance.StartFade(_fadeOutTime, _fadeInTime, Color.black);
+    }
 	
     public static void Load(int index)
     {
@@ -129,6 +150,12 @@ public class LoadingScreen : MonoBehaviour
 		TapToCont.LocalizeText();
 		while(true)
 		{
+			if(_skipTap)
+			{
+				_skipTap = false;
+				TapToCont.gameObject.GetComponent<TextMesh>().text = "";
+				break;
+			}
 			if(Input.anyKey)
 			{
 				TapToCont.gameObject.GetComponent<TextMesh>().text = "";
