@@ -6,6 +6,16 @@ public class LoadingScreen : MonoBehaviour
 	[SerializeField]
 	private int _loadingScreenLevelNumber;
 	[SerializeField]
+	private int _startScreenLevelNumber;
+	[SerializeField]
+	private int[] _tutorialLevels;
+	[SerializeField]
+	private int _tutorialTipsAmount;
+	[SerializeField]
+	private int _funnyTipsAmount;
+	[SerializeField]
+	private int _practicalTipsAmount;
+	[SerializeField]
 	private static float _fadeInTime = 0.2f;
 	[SerializeField]
 	private static float _fadeOutTime = 0.2f;
@@ -131,8 +141,35 @@ public class LoadingScreen : MonoBehaviour
 		//AdjustCameraSize();
 		LoadingWheel LW = GameObject.Find("LoadingEffect").GetComponent<LoadingWheel>();
 		LocalizationKeywordText TapToCont = GameObject.Find("ContinueText").GetComponent<LocalizationKeywordText>();
+		LocalizationKeywordText TipText = GameObject.Find("TipText").GetComponent<LocalizationKeywordText>();
 		LW.setLoading(true);
         alphaFloat = 0.0f;
+		
+		string temp = "";
+		if(_levelName == "")
+		{
+			if(_levelIndex == _startScreenLevelNumber)
+			{
+				temp = "Tips_Funny" + Random.Range(1, _funnyTipsAmount).ToString();
+			}
+			else
+			{
+				foreach(int i in _tutorialLevels)
+				{
+					if(i == _levelIndex)
+					{
+						temp = "Tips_Tutorial" + Random.Range(1, _tutorialTipsAmount).ToString();
+						break;
+					}
+				}
+			}
+		}
+		if(temp == "")
+		{
+			temp = "Tips_Tip" + Random.Range(1, _practicalTipsAmount).ToString();
+		}
+		TipText.SetStringText(temp);
+		TipText.LocalizeText();
 		
 		if (_levelName != "")
             Async = Application.LoadLevelAsync(_levelName);
@@ -153,12 +190,10 @@ public class LoadingScreen : MonoBehaviour
 			if(_skipTap)
 			{
 				_skipTap = false;
-				TapToCont.gameObject.GetComponent<TextMesh>().text = "";
 				break;
 			}
 			if(Input.anyKey)
 			{
-				TapToCont.gameObject.GetComponent<TextMesh>().text = "";
 				break;
 			}
 			yield return new WaitForEndOfFrame();
@@ -170,7 +205,7 @@ public class LoadingScreen : MonoBehaviour
             alphaFloat = Mathf.Clamp01(alphaFloat + Time.deltaTime / aFadeOutTime);
             DrawQuad(aColor, alphaFloat);
         }
-		
+		TapToCont.gameObject.GetComponent<TextMesh>().text = "";
 		Async.allowSceneActivation = true;
 		
         while (alphaFloat>0.0f)
