@@ -9,11 +9,9 @@ public class BpmCube : MonoBehaviour {
 	
 	private Vector3 _beginPos;
 	private Vector3 _targetPos;
-	private AudioSource _aSource;
 	
 	void Start()
 	{
-		_aSource = gameObject.AddComponent<AudioSource>();
 		_beginPos = transform.position;
 		_targetPos = transform.position + Vector3.right;
 	}

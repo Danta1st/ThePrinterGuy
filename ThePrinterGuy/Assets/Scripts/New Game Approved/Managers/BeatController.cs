@@ -88,7 +88,7 @@ public class BeatController : MonoBehaviour {
 	//4 tact event calls
 	private void CheckBeat4th()
 	{
-		switch(_beatCounter%4)
+		switch(_beatCounter%8)
 		{
 		case 0:
 			//0ms & 2000ms?
@@ -118,34 +118,34 @@ public class BeatController : MonoBehaviour {
 	//6 tact event calls
 	private void CheckBeat6th()
 	{
-		switch(_beatCounter%12)
+		switch(_beatCounter%6)
 		{
 		case 0:
 			//0ms & 2000ms?
 			if(OnBeat6th1 != null)
 				OnBeat6th1();
 			break;
-		case 2:
+		case 1:
 			//333ms
 			if(OnBeat6th2 != null)
 				OnBeat6th2();
 			break;
-		case 4:
+		case 2:
 			//667ms
 			if(OnBeat6th3 != null)
 				OnBeat6th3();
 			break;
-		case 6:
+		case 3:
 			//1000ms
 			if(OnBeat6th4 != null)
 				OnBeat6th4();
 			break;
-		case 8:
+		case 4:
 			//1333ms
 			if(OnBeat6th5 != null)
 				OnBeat6th5();
 			break;
-		case 10:
+		case 5:
 			//1667ms
 			if(OnBeat6th6 != null)
 				OnBeat6th6();
