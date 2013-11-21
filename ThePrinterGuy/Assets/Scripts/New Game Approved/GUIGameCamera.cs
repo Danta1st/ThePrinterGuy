@@ -29,6 +29,7 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Private Variables
+    private GreenZone _greenZoneScript;
 	private Camera _guiCamera;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
@@ -218,6 +219,7 @@ public class GUIGameCamera : MonoBehaviour
 		_star2Object.SetActive(false);
 		_star3Object.SetActive(false);
 		
+		_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
     }
 
     // Update is called once per frame
@@ -646,7 +648,7 @@ public class GUIGameCamera : MonoBehaviour
         _sequencerObjectQueue.TrimExcess();
         Destroy(_go);
         _queuedObject = null;
-		
+		_greenZoneScript.GreenOff();
         if(OnUpdateAction != null)
         {
             OnUpdateAction();
