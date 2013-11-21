@@ -468,7 +468,8 @@ Transform:
   m_LocalRotation: {x: 0, y: -7.38683994e-08, z: 0, w: 1}
   m_LocalPosition: {x: -1.1694963, y: 6.67540503, z: -.0874087811}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 294777398}
   m_Father: {fileID: 1190369920}
 --- !u!23 &124031531
 Renderer:
@@ -1102,6 +1103,32 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1832620242}
+--- !u!1 &294777397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100088, guid: 1d401574f4eb7d74fafcb78e2e9cd29f, type: 2}
+  m_PrefabInternal: {fileID: 1806613490}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 294777398}
+  m_Layer: 0
+  m_Name: InkCrashObj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &294777398
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400088, guid: 1d401574f4eb7d74fafcb78e2e9cd29f, type: 2}
+  m_PrefabInternal: {fileID: 1806613490}
+  m_GameObject: {fileID: 294777397}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 7.54243956e-07}
+  m_LocalPosition: {x: 1.32741761, y: 0, z: 1.98864913}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 124031530}
 --- !u!1001 &305310502
 Prefab:
   m_ObjectHideFlags: 0
@@ -1467,7 +1494,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 2.17674021e-08, z: 0, w: 1}
   m_LocalPosition: {x: 1.27299953, y: 3.86925101, z: -.0848639011}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 2011147209}
   m_Father: {fileID: 1656611566}
 --- !u!23 &384666131
 Renderer:
@@ -2647,7 +2675,8 @@ Transform:
   m_LocalRotation: {x: 2.95473601e-08, y: -1.39088705e-14, z: 4.15016879e-15, w: 1}
   m_LocalPosition: {x: 1.23489404, y: .549235821, z: .0881011486}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1064583289}
   m_Father: {fileID: 1083939582}
 --- !u!23 &687348130
 Renderer:
@@ -2912,6 +2941,8 @@ MonoBehaviour:
   _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
     type: 2}
   _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
+    type: 2}
+  _particleSystemIncinerate: {fileID: 19800000, guid: f4f349063707fd24287add0a2c86bfe2,
     type: 2}
 --- !u!1 &740490679
 GameObject:
@@ -4389,6 +4420,32 @@ MeshFilter:
   m_PrefabInternal: {fileID: 1806613490}
   m_GameObject: {fileID: 1058003120}
   m_Mesh: {fileID: 4300030, guid: d447fb3b29684764790659c1107adb41, type: 3}
+--- !u!1 &1064583288
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100092, guid: 1d401574f4eb7d74fafcb78e2e9cd29f, type: 2}
+  m_PrefabInternal: {fileID: 1806613490}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1064583289}
+  m_Layer: 0
+  m_Name: InkCrashObj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1064583289
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400092, guid: 1d401574f4eb7d74fafcb78e2e9cd29f, type: 2}
+  m_PrefabInternal: {fileID: 1806613490}
+  m_GameObject: {fileID: 1064583288}
+  m_LocalRotation: {x: -2.42534705e-14, y: -1, z: 2.95473601e-08, w: 6.80375535e-07}
+  m_LocalPosition: {x: -1.06416798, y: .839998364, z: 1.8156867}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 687348129}
 --- !u!1 &1083939581
 GameObject:
   m_ObjectHideFlags: 0
@@ -6101,6 +6158,32 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: .439631015, y: 1.02201343, z: .45780769}
   m_Center: {x: 0, y: 3.57627869e-07, z: -4.76837158e-07}
+--- !u!1 &1559371795
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100090, guid: 1d401574f4eb7d74fafcb78e2e9cd29f, type: 2}
+  m_PrefabInternal: {fileID: 1806613490}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1559371796}
+  m_Layer: 0
+  m_Name: InkCrashObj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1559371796
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400090, guid: 1d401574f4eb7d74fafcb78e2e9cd29f, type: 2}
+  m_PrefabInternal: {fileID: 1806613490}
+  m_GameObject: {fileID: 1559371795}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 6.80375535e-07}
+  m_LocalPosition: {x: 1.25415349, y: -1.47443771, z: 1.81568611}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1713952229}
 --- !u!1 &1584312858
 GameObject:
   m_ObjectHideFlags: 0
@@ -6516,7 +6599,8 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -1.160326, y: 10.6136408, z: .0881009996}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1559371796}
   m_Father: {fileID: 1383619899}
 --- !u!23 &1713952230
 Renderer:
@@ -7805,6 +7889,32 @@ Transform:
   - {fileID: 1518644134}
   - {fileID: 235929484}
   m_Father: {fileID: 335992689}
+--- !u!1 &2011147208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100094, guid: 1d401574f4eb7d74fafcb78e2e9cd29f, type: 2}
+  m_PrefabInternal: {fileID: 1806613490}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2011147209}
+  m_Layer: 0
+  m_Name: InkCrashObj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2011147209
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400094, guid: 1d401574f4eb7d74fafcb78e2e9cd29f, type: 2}
+  m_PrefabInternal: {fileID: 1806613490}
+  m_GameObject: {fileID: 2011147208}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 6.58608144e-07}
+  m_LocalPosition: {x: -1.05525506, y: 0, z: 1.98865271}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 384666130}
 --- !u!1 &2014719352
 GameObject:
   m_ObjectHideFlags: 0
@@ -8078,6 +8188,7 @@ MonoBehaviour:
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
+    inkCollisionPosition: {x: 0, y: 0, z: 0}
   - cartridge: {fileID: 665013194}
     insertableCartridge: {fileID: 766197407}
     full: {fileID: 0}
@@ -8088,6 +8199,7 @@ MonoBehaviour:
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
+    inkCollisionPosition: {x: 0, y: 0, z: 0}
   - cartridge: {fileID: 684113496}
     insertableCartridge: {fileID: 228161675}
     full: {fileID: 0}
@@ -8098,6 +8210,7 @@ MonoBehaviour:
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
+    inkCollisionPosition: {x: 0, y: 0, z: 0}
   - cartridge: {fileID: 1665465770}
     insertableCartridge: {fileID: 1680680771}
     full: {fileID: 0}
@@ -8108,9 +8221,12 @@ MonoBehaviour:
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
+    inkCollisionPosition: {x: 0, y: 0, z: 0}
   _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
     type: 2}
   _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
+    type: 2}
+  _particleSystemExplosion: {fileID: 19800000, guid: 479902545a73e9f4e8a6f3401d14e39c,
     type: 2}
   _easeTypeOpen: 19
   _easeTypeClose: 24

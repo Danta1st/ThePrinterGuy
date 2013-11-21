@@ -516,12 +516,10 @@ public class GUIGameCamera : MonoBehaviour
         float _start = 0.0f;
         float _end = 3.0f;
         _canTouch = false;
-//        StartCoroutine(UnpauseTimer(_start, _end));
         UnpauseTimer(_start, _end);
 
     }
 
-//    IEnumerator UnpauseTimer(float _start, float _end)
     private void UnpauseTimer(float _start, float _end)
     {
         while(true)
@@ -537,14 +535,11 @@ public class GUIGameCamera : MonoBehaviour
 								"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true,
                     "oncomplete", "UnPauseTimeScale", "oncompletetarget", gameObject));
 
-//                yield return new WaitForSeconds(_statsOverviewDuration+0.1f);
-
                 break;
 
                 //ToDo: Insert flashy numbers counting down from 3 to 1 --> Request from Nicolai.
                 //This should happen after the menu has disappeared and the ingame gui appeared, but before the game resumes.
             }
-            //yield return new WaitForSeconds(1);
         }
     }
 
@@ -552,15 +547,13 @@ public class GUIGameCamera : MonoBehaviour
     {
         Time.timeScale = 1.0f;
 
-//        iTween.PunchRotation(gameObject, iTween.Hash("amount", new Vector3(0.0f, 0.0f, 0.0f), "time", _statsOverviewDuration+0.1f,
-//            "oncomplete", "DelayToStart", "oncompletetarget", gameObject));
+        LoadGUIState();
 
-        while(_waitForMe)
+        while(!_waitForMe)
         {
             //NAILED IT!!!!
         }
 
-        LoadGUIState();
         DisableGUIElement("IngameMenu");
         DisableGUIElement("StatsOverview");
         DisableGUIElement("BGIngameMenu");
