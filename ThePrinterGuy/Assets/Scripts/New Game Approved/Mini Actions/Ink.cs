@@ -246,10 +246,7 @@ public class Ink : MonoBehaviour
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.cartridge.transform.position, 
 						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 			
-			if(OnCorrectInkInserted != null)
-            {
-                OnCorrectInkInserted();
-            }
+
 		}
 		else
 		{
@@ -285,8 +282,16 @@ public class Ink : MonoBehaviour
 			}
 		}
 		GestureManager.OnSwipeRight -= InsertCartridge;
-		icc.insertableCartridge.position = icc.insertableStartPos;
-		_canSlide = true;
+
+        if(OnCorrectInkInserted != null)
+        {
+            InkReset();
+            OnCorrectInkInserted();
+        }
+
+        icc.insertableCartridge.position = icc.insertableStartPos;
+        _canSlide = true;
+
 	}
 	
 	private IEnumerator InkFailed(InkCartridgeClass icc)
