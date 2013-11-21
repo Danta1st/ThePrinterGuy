@@ -131,7 +131,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
             if(_guiObject.name == "GUIButtons")
             {
                 GameObject nextLevelButton = _guiObject.transform.FindChild("NextLevelButton").gameObject;
-                if(Application.loadedLevel == 4)
+                if(Application.loadedLevel == 3)
                 {
                     nextLevelButton.SetActive(false);
                 }
@@ -228,7 +228,10 @@ public class GUIEndScreenCamera : MonoBehaviour {
                     }
 					else if(_hit.collider.gameObject.name == "NextLevelButton")
 					{
-						Application.LoadLevel(Application.loadedLevel+1);
+                        if(Application.loadedLevel == 4)
+                            Application.LoadLevel(2);
+                        else
+                            Application.LoadLevel(Application.loadedLevel+1);
 					}
                 }
                 //-----------------------------------------------------------------------//

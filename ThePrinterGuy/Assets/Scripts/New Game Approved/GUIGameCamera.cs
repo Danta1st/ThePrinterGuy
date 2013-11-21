@@ -417,6 +417,11 @@ public class GUIGameCamera : MonoBehaviour
 		Destroy(_popupObject);
 		
 	}
+
+    public int GetScore()
+    {
+        return _score;
+    }
     #endregion
 
 	private void AdjustCameraSize()
