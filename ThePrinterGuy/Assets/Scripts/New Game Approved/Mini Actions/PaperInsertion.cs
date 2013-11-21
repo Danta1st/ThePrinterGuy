@@ -24,12 +24,8 @@ public class PaperInsertion : MonoBehaviour
     #region Privates
 	//Gate Variables
     private bool _isGateOpen    = true;
-    private bool _isGateAllowedToRun = false;
-    private float _openTime     = 0.5f;
-    private float _closeTime    = 0.5f;
-	private float _burnTime 	= 0.5f;
-    private float _waitTime     = 0.5f;
-
+    private float _openTime     = 0.4f;
+    private float _closeTime    = 0.4f;
 	
 	//Paper Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
@@ -44,8 +40,11 @@ public class PaperInsertion : MonoBehaviour
 	private ParticleSystem _particleSmoke;
 	private ParticleSystem _particleStars;  
 	private ParticleSystem _particleFlames;
-
-    private GenericSoundScript GSS;
+	private float _burnTime 	= 0.5f;
+	
+	//Gate positions
+	private Vector3 _beginPosition;
+	private Vector3 _openPosition;
     #endregion
 
 
@@ -55,32 +54,41 @@ public class PaperInsertion : MonoBehaviour
     //public static event OnPaperInsertedAction OnIncorrectPaperInserted;
     #endregion
 
-    //TODO: Insert Proper connectivity to the Action Sequencer
-	//TODO: Handle gesture allowance
+	
     void OnEnable()
     {
+		StartGate();
+		
 		ActionSequencerManager.OnPaperNode += TriggerLight;
 		ActionSequencerManager.OnPaperNode += EnablePaper;
 		ActionSequencerItem.OnFailed += Reset;
-		
-        StartGate();
     }
     void OnDisable()
     {
+		StopGate();
+		
 		ActionSequencerManager.OnPaperNode -= TriggerLight;
 		ActionSequencerManager.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
         GestureManager.OnTap -= TriggerSlide;
-
-		
-        StopGate();
     }
 
     #region Monobehaviour Functions
 	void Awake()
 	{
-
+		if(GameObject.Find("BPM_Manager") == null)
+			Debug.LogError("Level Dependency object 'BPM_Manager' couldn't be found");
+		
+		//Set gate positions;
+		_beginPosition = _gate.transform.position;
+		_openPosition = _gate.transform.position + Vector3.up * 3;
+		
+		//Get dynamic objects to instantiate objects in
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
+		if(_dynamicObjects == null)
+			Debug.LogError("Level Dependency object 'Dynamic Objects' couldn't be found");
+		
+		//Check for particle systems.
 		if(_particleSystemSmoke != null)
 		{
 			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
@@ -101,9 +109,6 @@ public class PaperInsertion : MonoBehaviour
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 
-        GSS = transform.GetComponentInChildren<GenericSoundScript>();
-		_dynamicObjects = GameObject.Find("Dynamic Objects");	
-
 		InitializeLights();
 		DisablePaper();
 	}
@@ -113,32 +118,27 @@ public class PaperInsertion : MonoBehaviour
     //Gate Methods
     private void StartGate()
     {
-        if(!_isGateAllowedToRun)
-        {
-            _isGateAllowedToRun = true;
-
-            if(!_isGateOpen)
-                OpenGate();
-            else
-                CloseGate();
-        }
+		BeatController.OnBeat4th1 += OpenGate;
+		BeatController.OnBeat4th1 += SoundManager.Effect_PaperTray_MoveUp;
+		BeatController.OnBeat4th4 += CloseGate;
+		BeatController.OnBeat4th4 += SoundManager.Effect_PaperTray_MoveDown;
     }
 
     private void StopGate()
     {
-        _isGateAllowedToRun = false;
+		BeatController.OnBeat4th1 -= OpenGate;
+		BeatController.OnBeat4th1 -= SoundManager.Effect_PaperTray_MoveUp;
+		BeatController.OnBeat4th4 -= CloseGate;
+		BeatController.OnBeat4th4 -= SoundManager.Effect_PaperTray_MoveDown;
     }
 
     private void OpenGate()
     {
         if(!_isGateOpen)
         {
-            GSS.PlayClip(0);
-            iTween.MoveTo(_gate,iTween.Hash("y", _gate.transform.localPosition.y + 3, "time", _openTime,
-                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-                                            "oncompletetarget", gameObject));
+			iTween.MoveTo(_gate, iTween.Hash("position", _openPosition, "time", _openTime, "easetype", _easeTypeOpen));
+			
             _isGateOpen = true;
-//            gameObject.audio.PlayOneShot(clipUp);
         }
     }
 
@@ -146,27 +146,13 @@ public class PaperInsertion : MonoBehaviour
     {
         if(_isGateOpen)
         {
-            GSS.PlayClip(1);
-            iTween.MoveTo(_gate,iTween.Hash("y", _gate.transform.localPosition.y - 3, "time", _closeTime,
-                                            "islocal", true, "easetype", _easeTypeClose, "oncomplete", "NextAnimation",
-                                            "oncompletetarget", gameObject));
+			iTween.MoveTo(_gate, iTween.Hash("position", _beginPosition, "time", _closeTime, "easetype", _easeTypeClose));
+			
             _isGateOpen = false;
-//            gameObject.audio.PlayOneShot(clipDown);
         }
     }
-
-    private void NextAnimation()
-    {
-        if(_isGateAllowedToRun)
-        {
-            if(_isGateOpen)
-                Invoke("CloseGate",_waitTime);
-            else
-                OpenGate(); //Invoke("OpenGate",_waitTime);
-        }
-    }
-
-
+	
+	
     //Light Methods
     private void InitializeLights()
     {
@@ -196,7 +182,7 @@ public class PaperInsertion : MonoBehaviour
 		}
 		if(_paperlightset[itemNumber].isOn == false)
         {
-            GSS.PlayClip(Random.Range(3, 4));
+            //GSS.PlayClip(Random.Range(3, 4));
             TurnOnLight(itemNumber);
         }
         
@@ -289,13 +275,13 @@ public class PaperInsertion : MonoBehaviour
 	        {
 	            if(_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
 				{
-                    GSS.PlayClip(Random.Range(5, 8));
+                    //GSS.PlayClip(Random.Range(5, 8));
 					SlidePaper(i, true);
 					break;
 				}
 				else if(!_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
 				{
-                    GSS.PlayClip(Random.Range(5, 8));
+                    //GSS.PlayClip(Random.Range(5, 8));
 					SlidePaper(i, false);
 					break;
 				}
@@ -382,7 +368,7 @@ public class PaperInsertion : MonoBehaviour
 	{
 		Hashtable ht = (Hashtable)obj;
 		GameObject go = (GameObject)ht["go"];
-		int index = (int)ht["index"];
+		//int index = (int)ht["index"];
 		_particleFlames.transform.position = go.transform.position;
 		if(_particleFlames != null && _particleFlames.isPlaying)
 			_particleFlames.Stop();

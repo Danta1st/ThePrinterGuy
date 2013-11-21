@@ -18,22 +18,14 @@ public class TempoManager : MonoBehaviour {
 	#endregion
 	
 	#region SerializeFields
-	[SerializeField]
-	private float _inkMs;
-	[SerializeField]
-	private float _inkTime;
-	[SerializeField]
-	private float _paperMs;
-	[SerializeField]
-	private float _paperTime;
-	[SerializeField]
-	private float _uraniumRodMs;
-	[SerializeField]
-	private float _uraniumRodTime;
-	[SerializeField]
-	private float _barometerMs;
-	[SerializeField]
-	private float _barometerTime;
+	[SerializeField] private float _inkMs;
+	[SerializeField] private float _inkTime;
+	[SerializeField] private float _paperMs;
+	[SerializeField] private float _paperTime;
+	[SerializeField] private float _uraniumRodMs;
+	[SerializeField] private float _uraniumRodTime;
+	[SerializeField] private float _barometerMs;
+	[SerializeField] private float _barometerTime;
 	#endregion
 	
 	#region Private Variables

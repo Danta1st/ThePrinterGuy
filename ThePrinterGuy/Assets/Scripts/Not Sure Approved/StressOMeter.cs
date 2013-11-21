@@ -5,20 +5,8 @@ using System.Collections.Generic;
 public class StressOMeter : MonoBehaviour
 {
     #region Editor Publics
-    [SerializeField]
-    private float _inZonePoints = 7.0f;
-    [SerializeField]
-    private float _failedPoints = -15.0f;
-    [SerializeField]
-    private float _quoteWaitTime = 10.0f;
-
-    /*Paper
-     *Ink
-     *Uranium Rods
-     *(Barometer)
-     */
-//    [SerializeField]
-//    private List<GameObject> _audioObjects = new List<GameObject>();
+    [SerializeField] private float _inZonePoints = 7.0f;
+    [SerializeField] private float _failedPoints = -15.0f;
     #endregion
 
     #region Privates#
@@ -52,14 +40,11 @@ public class StressOMeter : MonoBehaviour
     private float _barometerStreak = 0.0f;
 
     private float _audioStreak = 0.0f;
-    private float _audioPanLevel = 0.0f;
-    private int _panLevelIndex = 0;
-
-    private List<float> _streakArray = new List<float>();
 
     private GUIGameCamera _guiGameCamScript;
     #endregion
     
+	#region Delegates & Events
     public delegate void GameFailed();
     public static event GameFailed OnGameFailed;
 
@@ -77,6 +62,7 @@ public class StressOMeter : MonoBehaviour
 	
 	public delegate void ZoneLeft();
 	public static event ZoneLeft OnZoneLeft;
+	#endregion
 
     void Start()
     {
@@ -312,42 +298,6 @@ public class StressOMeter : MonoBehaviour
     {
         _audioStreak++;
     }
-
-
-//    private float CalculateAudioStreak()
-//    {
-//        _streakArray.Add(_paperStreak);
-//        _streakArray.Add(_inkStreak);
-//        _streakArray.Add(_rodStreak);
-//        _streakArray.Add(_barometerStreak);
-//
-//        for(int i = 0; i < _streakArray.Count; i++)
-//        {
-//            if(_audioPanLevel < _streakArray[i])
-//            {
-//                _audioPanLevel = _streakArray[i];
-//                _panLevelIndex = i;
-//            }
-//        }
-//
-//        _audioPanLevel = 1 - _audioPanLevel;
-//
-//        return _audioPanLevel;
-//    }
-//
-//    //ToDO: HookUp with event from PathManager... && Update other related brances and merge with this...
-//    private void GiveNewPanLevel()
-//    {
-//        GenericSoundScript thisAudioScript = _audioObjects[_panLevelIndex].GetComponent<GenericSoundScript>();
-////        thisAudioScript.SetPanLevel()CalculateAudioStreak());
-//
-//        StreakReset();
-//
-//        _paperStreak = 0;
-//        _inkStreak = 0;
-//        _rodStreak = 0;
-//        _barometerStreak = 0;
-//    }
     #endregion
 
     #region Needlemovement functions
