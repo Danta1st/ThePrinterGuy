@@ -423,7 +423,12 @@ public class GUIEndScreenCamera : MonoBehaviour {
 			
 	private void GetCurrentLevel()
 	{
-		_currentLevel = Application.loadedLevel;
+        if(Application.loadedLevelName == "Level1")
+            _currentLevel = 1;
+        else if(Application.loadedLevelName == "Level2")
+            _currentLevel = 2;
+        else if(Application.loadedLevelName == "Level3")
+            _currentLevel = 3;
 	}
 	
 	private void InsertSpeechText(string text)
