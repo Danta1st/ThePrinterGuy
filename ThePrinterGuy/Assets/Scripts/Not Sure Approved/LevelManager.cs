@@ -14,7 +14,7 @@ public class LevelManager : MonoBehaviour
     private List<GameObject> _stageCharacters = new List<GameObject>();
     [SerializeField]
     private List<GameObject> _gameLevels = new List<GameObject>();
-    [SerializeField]
+    //[SerializeField]
     private List<bool> _gameLevelsUnlocked = new List<bool>();
 
 
@@ -26,6 +26,7 @@ public class LevelManager : MonoBehaviour
     private bool _isZoomed = false;
     private GameObject _camStartPos;
     private bool _camAtRest = true;
+    private int[] highScores;
 
 
     public delegate void CreditsView();
@@ -42,11 +43,30 @@ public class LevelManager : MonoBehaviour
     {
         _creditsLookTarget = GameObject.Find("Television");
         _optionsLookTarget = GameObject.Find("OptionButtons");
+        // TRIGGER TO RESET SCORE! :)
+        //highScores = new int[3]{0,-1,-1};
+        //SaveGame.SavePlayerData(0,0,highScores);
+        highScores = SaveGame.GetPlayerHighscores();
     }
 
     // Use this for initialization
     void Start()
     {
+        #region Unlock Levels based on Highscore
+        _gameLevelsUnlocked.Clear();
+        foreach (int highscore in highScores)
+        {
+            if(highscore > -1)
+            {
+                _gameLevelsUnlocked.Add(true);
+            }
+            else
+            {
+                _gameLevelsUnlocked.Add(false);
+            }
+        }
+        #endregion
+
         #region Camera Positioning Objects
         _camPointDefault = new GameObject();
         _camPointDefault.name = "CamLookPosDefault";
@@ -249,6 +269,7 @@ public class LevelManager : MonoBehaviour
 
         for(int i = minIndex; i < (minIndex + 3); i++)
         {
+
             if(_gameLevelsUnlocked[i])
             {
                 _gameLevels[i].SetActive(false);
@@ -264,7 +285,7 @@ public class LevelManager : MonoBehaviour
 
             if(_gameLevelsUnlocked[index])
             {
-                Application.LoadLevel(index);
+                Application.LoadLevel(index+1);
             }
         }
     }

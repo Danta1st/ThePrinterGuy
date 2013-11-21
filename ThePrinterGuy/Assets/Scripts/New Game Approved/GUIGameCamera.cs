@@ -29,6 +29,7 @@ public class GUIGameCamera : MonoBehaviour
     #endregion
 
     #region Private Variables
+    private GreenZone _greenZoneScript;
 	private Camera _guiCamera;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
@@ -37,6 +38,7 @@ public class GUIGameCamera : MonoBehaviour
     private bool _canTouch = true;
     private float _timeScale = 0.0f;
 	private ParticleSystem[] _particleSystems;
+    private bool _waitForMe = false;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -217,6 +219,7 @@ public class GUIGameCamera : MonoBehaviour
 		_star2Object.SetActive(false);
 		_star3Object.SetActive(false);
 		
+		_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
     }
 
     // Update is called once per frame
@@ -414,6 +417,11 @@ public class GUIGameCamera : MonoBehaviour
 		Destroy(_popupObject);
 		
 	}
+
+    public int GetScore()
+    {
+        return _score;
+    }
     #endregion
 
 	private void AdjustCameraSize()
@@ -506,7 +514,8 @@ public class GUIGameCamera : MonoBehaviour
 		EnableGUIElement("BGIngameMenu");
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
-						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu));
+						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
+        Time.timeScale = 0.0f;
     }
 
     private void CloseIngameMenu()
@@ -514,10 +523,11 @@ public class GUIGameCamera : MonoBehaviour
         float _start = 0.0f;
         float _end = 3.0f;
         _canTouch = false;
-        StartCoroutine(UnpauseTimer(_start, _end));
+        UnpauseTimer(_start, _end);
+
     }
 
-    IEnumerator UnpauseTimer(float _start, float _end)
+    private void UnpauseTimer(float _start, float _end)
     {
         while(true)
         {
@@ -529,17 +539,42 @@ public class GUIGameCamera : MonoBehaviour
             {
                 _canTouch = true;
 				iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", -_statsOverviewMoveAmount,
-								"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu));
-                yield return new WaitForSeconds(_statsOverviewDuration+0.1f);
-                LoadGUIState();
-				DisableGUIElement("IngameMenu");
-				DisableGUIElement("StatsOverview");
-				DisableGUIElement("BGIngameMenu");
+								"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true,
+                    "oncomplete", "UnPauseTimeScale", "oncompletetarget", gameObject));
+
                 break;
+
+                //ToDo: Insert flashy numbers counting down from 3 to 1 --> Request from Nicolai.
+                //This should happen after the menu has disappeared and the ingame gui appeared, but before the game resumes.
             }
-            yield return new WaitForSeconds(1);
         }
     }
+
+    private void UnPauseTimeScale()
+    {
+        Time.timeScale = 1.0f;
+
+        LoadGUIState();
+
+        while(!_waitForMe)
+        {
+            //NAILED IT!!!!
+        }
+
+        DisableGUIElement("IngameMenu");
+        DisableGUIElement("StatsOverview");
+        DisableGUIElement("BGIngameMenu");
+
+    }
+
+    private void DelayToStart()
+    {
+        LoadGUIState();
+        DisableGUIElement("IngameMenu");
+        DisableGUIElement("StatsOverview");
+        DisableGUIElement("BGIngameMenu");
+    }
+
     #endregion
 
     #region GUI Restart, Quit and Settings
@@ -618,7 +653,7 @@ public class GUIGameCamera : MonoBehaviour
         _sequencerObjectQueue.TrimExcess();
         Destroy(_go);
         _queuedObject = null;
-		
+		_greenZoneScript.GreenOff();
         if(OnUpdateAction != null)
         {
             OnUpdateAction();
@@ -656,13 +691,17 @@ public class GUIGameCamera : MonoBehaviour
 
     private void LoadGUIState()
     {
-        Time.timeScale = _timeScale;
+        _waitForMe = false;
 
         foreach(GameObject _gui in _guiSaveList)
         {
             _gui.SetActive(true);
         }
+
         _guiSaveList.Clear();
+
+        Time.timeScale = _timeScale;
+        _waitForMe = true;
     }
     #endregion
 	

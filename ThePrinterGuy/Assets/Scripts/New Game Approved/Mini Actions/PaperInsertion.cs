@@ -9,10 +9,12 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
-    [SerializeField] private PaperLightSet[] _paperlightset;
+    [SerializeField] private List<PaperLightSet> _paperlightset;
 
 	[SerializeField] private ParticleSystem _particleSystemStars;
 	[SerializeField] private ParticleSystem _particleSystemSmoke;
+	[SerializeField] private ParticleSystem _particleSystemIncinerate;
+
 
 //    [SerializeField] private AudioClip clipUp;
 //    [SerializeField] private AudioClip clipDown;
@@ -25,7 +27,9 @@ public class PaperInsertion : MonoBehaviour
     private bool _isGateAllowedToRun = false;
     private float _openTime     = 0.5f;
     private float _closeTime    = 0.5f;
+	private float _burnTime 	= 0.5f;
     private float _waitTime     = 0.5f;
+
 	
 	//Paper Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
@@ -38,7 +42,8 @@ public class PaperInsertion : MonoBehaviour
 	private GameObject _dynamicObjects;
 
 	private ParticleSystem _particleSmoke;
-	private ParticleSystem _particleStars;    
+	private ParticleSystem _particleStars;  
+	private ParticleSystem _particleFlames;
 
     private GenericSoundScript GSS;
     #endregion
@@ -89,7 +94,10 @@ public class PaperInsertion : MonoBehaviour
 		}
 		else
 			Debug.Log("Star Particle not loaded for Paper");
-		
+		if(_particleSystemIncinerate != null)
+		{
+			_particleFlames = (ParticleSystem)Instantiate (_particleSystemIncinerate);
+		}
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 
@@ -162,7 +170,7 @@ public class PaperInsertion : MonoBehaviour
     //Light Methods
     private void InitializeLights()
     {
-        for(int i = 0; i < _paperlightset.Length; i++)
+        for(int i = 0; i < _paperlightset.Count; i++)
         {
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].off;
         }
@@ -170,7 +178,7 @@ public class PaperInsertion : MonoBehaviour
 
     private void TriggerLight(int itemNumber)
     {
-		if(_paperlightset.Length < itemNumber + 1)
+		if(_paperlightset.Count < itemNumber)
 		{
 			if(OnCorrectPaperInserted != null)
 				OnCorrectPaperInserted();
@@ -231,7 +239,7 @@ public class PaperInsertion : MonoBehaviour
 
     private void TurnOfAllLights()
     {
-        for(int i = 0; i < _paperlightset.Length; i++)
+        for(int i = 0; i < _paperlightset.Count; i++)
         {
             TurnOffLight(i);
         }
@@ -241,7 +249,7 @@ public class PaperInsertion : MonoBehaviour
 	//TODO: Paper animations
     private void DisablePaper()
     {
-        for(int i = 0; i < _paperlightset.Length; i++)
+        for(int i = 0; i < _paperlightset.Count; i++)
         {
             _paperlightset[i].paper.SetActive(false);
         }
@@ -251,7 +259,7 @@ public class PaperInsertion : MonoBehaviour
     {
 		//GestureManager.OnSwipeUp += TriggerSlide;
 		GestureManager.OnTap += TriggerSlide;
-        for(int i = 0; i < _paperlightset.Length; i++)
+        for(int i = 0; i < _paperlightset.Count; i++)
         {
             _paperlightset[i].paper.SetActive(true);
         }
@@ -259,21 +267,43 @@ public class PaperInsertion : MonoBehaviour
 	
 	private void TriggerSlide(GameObject go, Vector2 screenPosition)
 	{
+		
 		if(go != null)
 		{
-	        for(int i = 0; i < _paperlightset.Length; i++)
+			int j = 0;
+			PaperLightSet paper;
+			int count = _paperlightset.Count;
+			for(int i = 0; i < count; i++)
+			{
+				paper = _paperlightset[j];
+				if(paper.paper == null)
+				{
+					_paperlightset.Remove(paper);
+					_paperlightset.TrimExcess();
+					continue;
+				}
+				j++;
+			}
+			
+	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 	            if(_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
 				{
                     GSS.PlayClip(Random.Range(5, 8));
-					SlidePaper(i);
+					SlidePaper(i, true);
+					break;
+				}
+				else if(!_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
+				{
+                    GSS.PlayClip(Random.Range(5, 8));
+					SlidePaper(i, false);
 					break;
 				}
 	        }
 		}
 	}
 
-    private void SlidePaper(int i)
+    private void SlidePaper(int i, bool colorMatch)
     {
 		if(_IsSlideLocked == false)
 		{
@@ -286,10 +316,21 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
-				Reset();
 				
-				iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+				if(colorMatch) 
+				{
+					Reset();
+					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+				}
+				else
+				{
+					Hashtable iTweenParams = new Hashtable();
+					iTweenParams.Add("go", paper);
+					iTweenParams.Add("index", i);
+					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+													"oncomplete", "IncineratePaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));
+				}
 				
 				foreach(Transform child in gameObject.transform)
 				{
@@ -300,10 +341,10 @@ public class PaperInsertion : MonoBehaviour
 						_particleStars.Play();
 					}
 				}
-				if(_particleSmoke != null && _particleSmoke.isPlaying)
+				if(_particleSmoke != null && _particleSmoke.isPlaying && colorMatch)
 					_particleSmoke.Stop();
 				
-				if(OnCorrectPaperInserted != null)
+				if(OnCorrectPaperInserted != null && colorMatch)
 					OnCorrectPaperInserted();
 				
 			}
@@ -311,12 +352,15 @@ public class PaperInsertion : MonoBehaviour
 			{
 				_IsSlideLocked = true;
 				
-				var paper = (GameObject) Instantiate(_paperlightset[i].paper);
+				var paper = (GameObject) Instantiate(_paperlightset[i].paper, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
-				iTween.MoveTo(paper, iTween.Hash("position", _gate.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));			
+				Hashtable iTweenParams = new Hashtable();
+				iTweenParams.Add("go", paper);
+				iTweenParams.Add("index", i);
+				iTween.MoveTo(paper, iTween.Hash("position", _gate.gameObject.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+													"oncomplete", "IncineratePaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));			
 			}
 		}
     }
@@ -329,6 +373,21 @@ public class PaperInsertion : MonoBehaviour
 	IEnumerator DestroyPaper(GameObject go)
 	{
 		yield return new WaitForSeconds(_slideWait);
+		_tempPaper.Remove(go);
+		Destroy(go);
+		_IsSlideLocked = false;
+	}
+	
+	IEnumerator IncineratePaper(object obj)
+	{
+		Hashtable ht = (Hashtable)obj;
+		GameObject go = (GameObject)ht["go"];
+		int index = (int)ht["index"];
+		_particleFlames.transform.position = go.transform.position;
+		if(_particleFlames != null && _particleFlames.isPlaying)
+			_particleFlames.Stop();
+		_particleFlames.Play ();
+		yield return new WaitForSeconds(_burnTime);
 		_tempPaper.Remove(go);
 		Destroy(go);
 		_IsSlideLocked = false;
