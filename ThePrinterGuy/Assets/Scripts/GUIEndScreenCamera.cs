@@ -220,18 +220,26 @@ public class GUIEndScreenCamera : MonoBehaviour {
                 {
                     if(_hit.collider.gameObject.name == "RestartButton")
                     {
+                        GestureManager.OnTap -= CheckCollision;
 						Application.LoadLevel(Application.loadedLevel);
                     }
                     else if(_hit.collider.gameObject.name == "MainMenuButton")
                     {
+                        GestureManager.OnTap -= CheckCollision;
 						Application.LoadLevel("MainMenu");
                     }
 					else if(_hit.collider.gameObject.name == "NextLevelButton")
 					{
                         if(Application.loadedLevel == 4)
+                        {
+                            GestureManager.OnTap -= CheckCollision;
                             Application.LoadLevel(2);
+                        }
                         else
+                        {
+                            GestureManager.OnTap -= CheckCollision;
                             Application.LoadLevel(Application.loadedLevel+1);
+                        }
 					}
                 }
                 //-----------------------------------------------------------------------//
