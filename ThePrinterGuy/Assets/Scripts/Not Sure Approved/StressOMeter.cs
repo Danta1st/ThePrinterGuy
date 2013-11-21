@@ -33,6 +33,8 @@ public class StressOMeter : MonoBehaviour
     private float _shakeTime = 0.05f;
     private bool _canDie = false;
     private bool _canTriggerQuote = true;
+	private bool _inHappyZone = false;
+	private bool _inAngryZone = false;
 
     private bool _paperCounter = false;
     private bool _inkCounter = false;
@@ -66,6 +68,15 @@ public class StressOMeter : MonoBehaviour
 
     public delegate void HappyZoneEntered();
     public static event HappyZoneEntered OnHappyZoneEntered;
+	
+	public delegate void HappyZone();
+    public static event HappyZone OnHappyZone;
+	
+	public delegate void AngryZone();
+    public static event AngryZone OnAngryZone;
+	
+	public delegate void ZoneLeft();
+	public static event ZoneLeft OnZoneLeft;
 
     void Start()
     {
@@ -363,9 +374,38 @@ public class StressOMeter : MonoBehaviour
             OnGameFailed();
         }
 
-        _canDie = false;
+		if((_happyZone < _rotationScale && _inHappyZone) || (_rotationScale < _angryZone && _inAngryZone) && _canDie)
+		{
+			_inHappyZone = false;
+			_inAngryZone = false;
 
-        if(_rotationScale >= _angryZone && _canTriggerQuote)
+			if(OnZoneLeft != null)
+			{
+				OnZoneLeft();
+			}
+		}
+		else if(_rotationScale <= _happyZone && !_inHappyZone && _canDie)
+		{
+			_inHappyZone = true;
+			
+			if(OnHappyZone != null)
+			{
+				OnHappyZone();
+			}
+		}
+		else if(_rotationScale >= _angryZone && !_inAngryZone && _canDie)
+		{
+			_inAngryZone = true;
+
+			if(OnAngryZone != null)
+			{
+				OnAngryZone();
+			}
+		}
+		
+		_canDie = false;
+		
+		if(_rotationScale >= _angryZone && _canTriggerQuote)
         {
             _canTriggerQuote = false;
 
