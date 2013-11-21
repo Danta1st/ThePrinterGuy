@@ -113,6 +113,9 @@ public class ActionSequencerItem : MonoBehaviour
 			_time = _tempoManagerScript.GetBarometerTime();
 			_ms = _tempoManagerScript.GetBarometerMs();
 		}
+		
+		iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "time", _time,
+                                                    "easeType", _easeTypeActionSequencerItem));
     }
 
     // Update is called once per frame
@@ -135,9 +138,10 @@ public class ActionSequencerItem : MonoBehaviour
 			_statusZone = "Green";
 			_greenZoneScript.GreenOn();
 		}
-		if(transform.position.x < _greenZonePosition.x-20)
+		if(transform.position.x < _greenZonePosition.x-25)
 		{
 			_greenZoneScript.GreenOff();
+			_statusZone = "Yellow";
 		}
 		if(transform.position.x <= _deadZonePosition.x)
 		{
@@ -170,14 +174,7 @@ public class ActionSequencerItem : MonoBehaviour
 
     public void StartTween()
     {
-//    	if(_once == false)
-//    	{
-//    		_once = true;
-			//iTween.Stop(gameObject);
-        	iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", _ms));
-			iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "time", _time,
-                                                    "easeType", _easeTypeActionSequencerItem));
-//    	}
+        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", _ms));
     }
 	
     public int GetZoneStatus()

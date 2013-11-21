@@ -18,22 +18,6 @@ public class GreenZone : MonoBehaviour {
 	
 	}
 	
-	void OnTriggerEnter(Collider other)
-	{
-		if(other.gameObject.tag == "ActionNode")
-		{
-			renderer.material.mainTexture = _greenOn;
-		}
-	}
-	
-	void OnTriggerExit(Collider other)
-	{
-		if(other.gameObject.tag == "ActionNode")
-		{
-			renderer.material.mainTexture = _greenOff;
-		}
-	}
-	
 	public void GreenOn()
 	{
 		renderer.material.mainTexture = _greenOn;
