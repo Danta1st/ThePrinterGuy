@@ -43,18 +43,10 @@ public class LevelManager : MonoBehaviour
     {
         _creditsLookTarget = GameObject.Find("Television");
         _optionsLookTarget = GameObject.Find("OptionButtons");
-        #if UNITY_EDITOR
-            // TRIGGER TO RESET SCORE! :)
+        if(!PlayerPrefs.HasKey("highscoresAsString")){
             highScores = new int[3]{0,-1,-1};
             SaveGame.SavePlayerData(0,0,highScores);
-        #endif
-
-        #if UNITY_ANDROID
-            if(!PlayerPrefs.HasKey("highscoresAsString")){
-                highScores = new int[3]{0,-1,-1};
-                SaveGame.SavePlayerData(0,0,highScores);
-            }
-        #endif
+        }
 
 
         highScores = SaveGame.GetPlayerHighscores();
@@ -296,7 +288,7 @@ public class LevelManager : MonoBehaviour
 
             if(_gameLevelsUnlocked[index])
             {
-                Application.LoadLevel(index+1);
+                LoadingScreen.Load(index+1);
             }
         }
     }

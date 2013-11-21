@@ -238,7 +238,6 @@ public class GUIGameCamera : MonoBehaviour
 			IncreaseScorePopup(10000);
 		}
 		
-
         if(Input.GetKeyDown(KeyCode.L))
         {
             CheckZone();
@@ -581,13 +580,14 @@ public class GUIGameCamera : MonoBehaviour
     private void RestartLevel()
     {
 		//Need confirmation before restart.
-        Application.LoadLevel(Application.loadedLevel);
+		Time.timeScale = 1.0f;
+        LoadingScreen.Load(Application.loadedLevel, true);
     }
 	
 	//TODO: Quit button functionality.
     private void QuitLevel()
     {
-        //Application.LoadLevel("SOMETHING SCENE");
+        //LoadingScreen.Load("SOMETHING SCENE");
     }
 	
 	//TODO: Settings button functionality.
