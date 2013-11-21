@@ -220,8 +220,8 @@ public class GUIGameCamera : MonoBehaviour
             if(_guiObject.name == "GUIDialogue")
             {
                 _guiDialogueWindow = _guiObject.transform.FindChild("RenderTexture").gameObject;
-                _guiDialogueWindowMoveFromPoint = _guiObject.transform.FindChild("RenderTexture").transform.position;
-                _guiDialogueWindowMoveToPoint = _guiObject.transform.FindChild("MoveToPoint").transform.position;
+                //_guiDialogueWindowMoveFromPoint = _guiObject.transform.FindChild("RenderTexture").transform.position;
+                //_guiDialogueWindowMoveToPoint = _guiObject.transform.FindChild("MoveToPoint").transform.position;
             }
         }
         //--------------------------------------------------//
@@ -728,19 +728,19 @@ public class GUIGameCamera : MonoBehaviour
     }
     #endregion
 
-    #region DialogueWindow
-    private void DialogueWindowIn()
-    {
-        Debug.Log("DialogueWindowIn");
-        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveToPoint, "duration", _DialogueWindowInDuration, "easetype", _easeTypeDialogueWindowIn));
-    }
-
-    private void DialogueWindowOut()
-    {
-        Debug.Log("DialogueWindowOut");
-        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveFromPoint, "duration", _DialogueWindowOutDuration, "easetype", _easeTypeDialogueWindowOut));
-    }
-    #endregion
+//    #region DialogueWindow
+//    private void DialogueWindowIn()
+//    {
+//        Debug.Log("DialogueWindowIn");
+//        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveToPoint, "duration", _DialogueWindowInDuration, "easetype", _easeTypeDialogueWindowIn));
+//    }
+//
+//    private void DialogueWindowOut()
+//    {
+//        Debug.Log("DialogueWindowOut");
+//        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveFromPoint, "duration", _DialogueWindowOutDuration, "easetype", _easeTypeDialogueWindowOut));
+//    }
+//    #endregion
 	
 	private void UpdateText()
 	{

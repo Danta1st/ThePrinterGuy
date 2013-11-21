@@ -5,8 +5,12 @@ using System.Collections.Generic;
 public class StressOMeter : MonoBehaviour
 {
     #region Editor Publics
-    [SerializeField] private float _inZonePoints = 7.0f;
-    [SerializeField] private float _failedPoints = -15.0f;
+    [SerializeField]
+    private float _inZonePoints = 7.0f;
+    [SerializeField]
+    private float _failedPoints = -15.0f;
+    [SerializeField]
+    private float _quoteWaitTime = 7;
     #endregion
 
     #region Privates#
