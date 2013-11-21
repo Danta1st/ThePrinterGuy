@@ -14,10 +14,6 @@ public class GUIEndScreenCamera : MonoBehaviour {
     [SerializeField]
     private iTween.EaseType _easeTypeCamera;
 	[SerializeField]
-	private GameObject _guiCam;
-	[SerializeField]
-	private GameObject _mainCam;
-	[SerializeField]
 	private GameObject[] _stars;
 	[SerializeField]
 	private GameObject _progressBar;
@@ -25,8 +21,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private TargetScores _targetScore;
 	[SerializeField]
 	private ParticleSystem _particle;
-	[SerializeField]
-	private int _levelOffset = 0;
+	//[SerializeField]
+	//private int _levelOffset = 0;
     #endregion
 	
 	[System.Serializable]
@@ -48,6 +44,9 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
 	private bool _isWin = false;
+    private GameObject _guiCam;
+    private GameObject nextLevelButton;
+    private int _levelOffset = 0;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -60,12 +59,14 @@ public class GUIEndScreenCamera : MonoBehaviour {
     void OnEnable()
     {
 		GUIGameCamera.OnGameEnded += DisplayEndScreenWin;
+        StressOMeter.OnGameFailed += DisplayEndScreenLoose;
     }
 
     void OnDisable()
     {
 		GUIGameCamera.OnGameEnded -= DisplayEndScreenWin;
         GestureManager.OnTap -= CheckCollision;
+        StressOMeter.OnGameFailed -= DisplayEndScreenLoose;
     }
 
     public void EnableGUICamera()
@@ -123,8 +124,21 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	void Start () {
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
+        _guiCam = GameObject.Find("GUI Camera");
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
+
+        foreach(GameObject _guiObject in _guiList)
+        {
+            if(_guiObject.name == "GUIButtons")
+            {
+                nextLevelButton = _guiObject.transform.FindChild("NextLevelButton").gameObject;
+                if(Application.loadedLevel == 3)
+                {
+                    nextLevelButton.SetActive(false);
+                }
+            }
+        };
 
         _scaleMultiplierX = Screen.width / 1920f;
         _scaleMultiplierY = Screen.height / 1200f;
@@ -208,15 +222,26 @@ public class GUIEndScreenCamera : MonoBehaviour {
                 {
                     if(_hit.collider.gameObject.name == "RestartButton")
                     {
-						Application.LoadLevel(0);
+                        GestureManager.OnTap -= CheckCollision;
+						LoadingScreen.Load(Application.loadedLevel);
                     }
                     else if(_hit.collider.gameObject.name == "MainMenuButton")
                     {
-						Application.LoadLevel(1);
+                        GestureManager.OnTap -= CheckCollision;
+						LoadingScreen.Load("MainMenu");
                     }
 					else if(_hit.collider.gameObject.name == "NextLevelButton")
 					{
-						
+                        if(Application.loadedLevel == 4)
+                        {
+                            GestureManager.OnTap -= CheckCollision;
+                            LoadingScreen.Load(2);
+                        }
+                        else
+                        {
+                            GestureManager.OnTap -= CheckCollision;
+                            LoadingScreen.Load(Application.loadedLevel+1);
+                        }
 					}
                 }
                 //-----------------------------------------------------------------------//
@@ -238,17 +263,33 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	
 	private void DisplayEndScreenWin(int score)
 	{
-		GetCurrentLevel();
-		_mainCam.camera.enabled = false;
-		_guiCam.camera.enabled = false;
-		EnableGUICamera();
-		EnableGUIElementAll();
-		GestureManager.OnTap += CheckCollision;
+		    GetCurrentLevel();
+		    //Camera.main.enabled = false;
+		    _guiCam.camera.enabled = false;
+		    EnableGUICamera();
+		    EnableGUIElementAll();
+		    GestureManager.OnTap += CheckCollision;
 
-		_levelScore = score;
-		_isWin = true;
-		StartCoroutine("MoveEstimateBar");
+		    _levelScore = score;
+		    _isWin = true;
+		    StartCoroutine("MoveEstimateBar");
 	}
+
+    private void DisplayEndScreenLoose()
+    {
+        GetCurrentLevel();
+        //Camera.main.enabled = false;
+        _guiCam.camera.enabled = false;
+        EnableGUICamera();
+        EnableGUIElementAll();
+        GestureManager.OnTap += CheckCollision;
+        GUIGameCamera gUIGameCamera =  new GUIGameCamera();
+
+        _levelScore = gUIGameCamera.GetScore();
+        nextLevelButton.SetActive(false);
+        _isWin = false;
+        StartCoroutine("MoveEstimateBar");
+    }
 	
 	private void PlaceTargetStars()
 	{
@@ -286,7 +327,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		int[] highScores = SaveGame.GetPlayerHighscores();
 		_levelHighscore = highScores[_currentLevel - _levelOffset];
 		
-		if(_levelScore > _levelHighscore)
+		if(_levelScore > _levelHighscore && _isWin)
 		{
 			highScores[_currentLevel - _levelOffset] = _levelScore;
 			_levelHighscore = _levelScore;
@@ -299,7 +340,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
 	private void RestartGame()
 	{
 		GestureManager.OnTap -= CheckCollision;
-		Application.LoadLevel(1);
+		LoadingScreen.Load(1);
 	}
 	
 	IEnumerator MoveEstimateBar()
@@ -321,20 +362,19 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		{
 			
 			ShowScore(i);
-			
-			if(i >= _targetScore.starScoreThree)
+			if(i >= _targetScore.starScoreThree && !_stars[2].activeSelf)
 			{
 				_particle.transform.position = _stars[2].transform.position;
 				_particle.Play();
 				_stars[2].SetActive(true);
 			}
-			else if(i >= _targetScore.starScoreTwo)
+			if(i >= _targetScore.starScoreTwo && !_stars[1].activeSelf)
 			{
 				_particle.transform.position = _stars[1].transform.position;
 				_particle.Play();
 				_stars[1].SetActive(true);
 			}
-			else if(i >= _targetScore.starScoreOne)
+			if(i >= _targetScore.starScoreOne && !_stars[0].activeSelf)
 			{
 				_particle.transform.position = _stars[0].transform.position;
 				_particle.Play();
@@ -377,18 +417,24 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		if(_isWin)
 			InsertSpeechText("Nice work, are\n you ready for the\n next challenge?");
 		else
-			InsertSpeechText("You're fired.\n never mind now\n get back to work.");
+			InsertSpeechText("You're fired.\n Never mind now\n get back to work.");
 		
 		FindHighscore();
 	}
 			
 	private void GetCurrentLevel()
 	{
-		_currentLevel = Application.loadedLevel;
+        if(Application.loadedLevelName == "Level1")
+            _currentLevel = 1;
+        else if(Application.loadedLevelName == "Level2")
+            _currentLevel = 2;
+        else if(Application.loadedLevelName == "Level3")
+            _currentLevel = 3;
 	}
 	
 	private void InsertSpeechText(string text)
 	{
+        _speechText.transform.parent.transform.gameObject.SetActive(true);
 		_speechText.text = text;
 	}
 }
