@@ -378,7 +378,7 @@ public class StressOMeter : MonoBehaviour
 		{
 			_inHappyZone = false;
 			_inAngryZone = false;
-			
+
 			if(OnZoneLeft != null)
 			{
 				OnZoneLeft();
@@ -396,7 +396,7 @@ public class StressOMeter : MonoBehaviour
 		else if(_rotationScale >= _angryZone && !_inAngryZone && _canDie)
 		{
 			_inAngryZone = true;
-			
+
 			if(OnAngryZone != null)
 			{
 				OnAngryZone();

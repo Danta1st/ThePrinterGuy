@@ -54,7 +54,7 @@ public class ScoreManager : MonoBehaviour
 		Barometer.OnBarometerFixed += BarometerSuccess;
 		UraniumRods.OnRodHammered += RodSuccess;
 		StressOMeter.OnHappyZone += EnableHappyMultiplier;
-		StressOMeter.OnZoneLeft -= DisableHappyMultiplier;
+		StressOMeter.OnZoneLeft += DisableHappyMultiplier;
 	}
 	
 	void OnDisable()
