@@ -28,8 +28,8 @@ public class ActionSequencerItem : MonoBehaviour
 	
 	private float _time;
 	private float _ms;
-    private bool _once = false;
-    private bool _isBack = false;
+    //private bool _once = false;
+    //private bool _isBack = false;
     private Vector3 _destinationPosition;
     #endregion
 
