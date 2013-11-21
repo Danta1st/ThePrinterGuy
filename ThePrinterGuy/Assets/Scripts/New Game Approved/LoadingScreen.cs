@@ -29,6 +29,8 @@ public class LoadingScreen : MonoBehaviour
     private string _levelName = "";
     private int _levelIndex = 0;
     private bool _fading = false;
+	
+	public static bool isStart = true;
  
     void Awake()
     {

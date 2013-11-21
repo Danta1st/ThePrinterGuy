@@ -75,15 +75,17 @@ public class LevelManager : MonoBehaviour
         #region Camera Positioning Objects
         _camPointDefault = new GameObject();
         _camPointDefault.name = "CamLookPosDefault";
-        _camPointDefault.transform.position = new Vector3(0, 0, 12);
+        _camPointDefault.transform.position = new Vector3(0, 3, 14);
 
         _lookTarget = new GameObject();
         _lookTarget.name = "LookTarget";
         _lookTarget.transform.position = _camPointDefault.transform.position;
-
+		
+		iTweenPath path = Camera.main.GetComponent<iTweenPath>();
+		
         _camStartPos = new GameObject();
         _camStartPos.name = "CamStartPosition";
-        _camStartPos.transform.position = Camera.main.transform.position;
+        _camStartPos.transform.position = path.nodes[path.nodes.Count - 1];
         #endregion
 
         foreach(GameObject go in _stageCharacters)
@@ -397,4 +399,9 @@ public class LevelManager : MonoBehaviour
     {
         _camAtRest = true;
     }
+	
+	public GameObject getLookTarget()
+	{
+		return _lookTarget;
+	}
 }
