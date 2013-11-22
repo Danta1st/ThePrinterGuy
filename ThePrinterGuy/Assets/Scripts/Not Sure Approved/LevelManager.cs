@@ -75,15 +75,17 @@ public class LevelManager : MonoBehaviour
         #region Camera Positioning Objects
         _camPointDefault = new GameObject();
         _camPointDefault.name = "CamLookPosDefault";
-        _camPointDefault.transform.position = new Vector3(0, 0, 12);
+        _camPointDefault.transform.position = new Vector3(0, 3, 14);
 
         _lookTarget = new GameObject();
         _lookTarget.name = "LookTarget";
         _lookTarget.transform.position = _camPointDefault.transform.position;
-
+		
+		iTweenPath path = Camera.main.GetComponent<iTweenPath>();
+		
         _camStartPos = new GameObject();
         _camStartPos.name = "CamStartPosition";
-        _camStartPos.transform.position = Camera.main.transform.position;
+        _camStartPos.transform.position = path.nodes[path.nodes.Count - 1];
         #endregion
 
         foreach(GameObject go in _stageCharacters)
@@ -151,17 +153,16 @@ public class LevelManager : MonoBehaviour
     void SelectStage(GameObject go, Vector2 screenPos)
     {
         //It works, change at own risk
-        if(go != null)
-        {
-			switch(state) {
-			case MainMenuStates.MainMenu:
-				MainMenuHandler(go);
-				break;
-			case MainMenuStates.LevelSelection:
-				LevelSelectionHandler(go);
-				break;
-			}
-		} 
+ 
+		switch(state) {
+		case MainMenuStates.MainMenu:
+			MainMenuHandler(go);
+			break;
+		case MainMenuStates.LevelSelection:
+			LevelSelectionHandler(go);
+			break;
+		}
+		 
 //		else
 //        {
 //            CameraZoomOut();
@@ -172,6 +173,9 @@ public class LevelManager : MonoBehaviour
 		
 	void MainMenuHandler(GameObject go)
 	{
+		if(go == null)
+			return;
+		
 		if(_stageCharacters.Contains(go) && go.GetComponent<StageCharacter>().GetUnlocked())
 		{
 			state = MainMenuStates.LevelSelection;
@@ -184,23 +188,29 @@ public class LevelManager : MonoBehaviour
 	
 	void LevelSelectionHandler(GameObject go)
 	{
-		if(_stageCharacters.Contains(go) && go.GetComponent<StageCharacter>().GetUnlocked())
-		{
-			if(_selectedStageChar == go)
+		if(go != null) {
+			if(_stageCharacters.Contains(go) && go.GetComponent<StageCharacter>().GetUnlocked())
 			{
-				state = MainMenuStates.MainMenu;
-				CameraZoomOut();
-				BeginMoveBackAnimation(_selectedStageChar);
-				_selectedStageChar = null;
+				if(_selectedStageChar == go)
+				{
+					state = MainMenuStates.MainMenu;
+					CameraZoomOut();
+					BeginMoveBackAnimation(_selectedStageChar);
+					_selectedStageChar = null;
+				}
+				else
+				{
+					CameraFocusOnStage(go);
+					BeginMoveForwardAnimation(go);
+	
+					BeginMoveBackAnimation(_selectedStageChar);
+					_selectedStageChar = go;
+				} 
 			}
-			else
-			{
-				CameraFocusOnStage(go);
-				BeginMoveForwardAnimation(go);
-
-				BeginMoveBackAnimation(_selectedStageChar);
-				_selectedStageChar = go;
-			} 
+		} else if(go == null && _selectedStageChar != null) {
+			state = MainMenuStates.MainMenu;
+			CameraZoomOut();
+			BeginMoveBackAnimation(_selectedStageChar);
 		}
 
 	}
@@ -302,7 +312,7 @@ public class LevelManager : MonoBehaviour
 
             if(_gameLevelsUnlocked[index])
             {
-                LoadingScreen.Load(index+1);
+                LoadingScreen.Load(index+1, true);
             }
         }
     }
@@ -397,4 +407,9 @@ public class LevelManager : MonoBehaviour
     {
         _camAtRest = true;
     }
+	
+	public GameObject getLookTarget()
+	{
+		return _lookTarget;
+	}
 }

@@ -24,12 +24,11 @@ public class GUIMainMenuCamera : MonoBehaviour
     private RaycastHit _hit;
     private bool _isGUI = true;
     private bool _canTouch = true;
+	private bool _isOnStartScreen = true;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
-    private string _guiCameraStage = "MainMenuStage";
-
-    public static string languageSetting = "EN";
+	LevelManager lvlManager;
     #endregion
 
 
@@ -116,8 +115,18 @@ public class GUIMainMenuCamera : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+		if(PlayerPrefs.HasKey("selectedLanguage"))
+		{
+			LocalizationText.SetLanguage(PlayerPrefs.GetString("selectedLanguage"));
+		}
+		else
+		{
+			LocalizationText.SetLanguage("EN");
+			PlayerPrefs.SetString("selectedLanguage", "EN");
+		}
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
+		lvlManager = gameObject.GetComponent<LevelManager>();
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
 
@@ -172,13 +181,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 
         EnableGUICamera();
         SwitchToMainMenu();
-
-    }
- 
-    // Update is called once per frame
-    void Update()
-    {
- 
+		UpdateText();
     }
     #endregion
 
@@ -273,24 +276,14 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if(_hit.collider.gameObject.name == "DanishButton")
                     {
-//                        if(_guiCameraStage == "LanguageSelectionStage")
-//                        {
-//                            SwitchToMainMenu();
-//                        }
-
-                        languageSetting = "DK";
-                        LocalizationText.SetLanguage(languageSetting);
+						PlayerPrefs.SetString("selectedLanguage", "DK");
+                        LocalizationText.SetLanguage("DK");
                         UpdateText();
                     }
                     else if(_hit.collider.gameObject.name == "EnglishButton")
                     {
-//                        if(_guiCameraStage == "LanguageSelectionStage")
-//                        {
-//                            SwitchToMainMenu();
-//                        }
-
-                        languageSetting = "EN";
-                        LocalizationText.SetLanguage(languageSetting);
+						PlayerPrefs.SetString("selectedLanguage", "EN");
+                        LocalizationText.SetLanguage("EN");
                         UpdateText();
                     }
                 }
@@ -298,11 +291,28 @@ public class GUIMainMenuCamera : MonoBehaviour
             }
             else
             {
-                if(_guiCameraStage == "MainMenuStage")
-                {
-                    //Load level selection scene.
-
-                }
+                if(_isOnStartScreen)
+				{
+					_isOnStartScreen = false;
+					DisableGUIElement("MainMenu");
+					GameObject goLM = GameObject.Find ("elevatorDoor_L_MoveTo");
+					GameObject goRM = GameObject.Find ("elevatorDoor_R_MoveTo");
+					GameObject goL = GameObject.Find ("elevatorDoor_L");
+					GameObject goR = GameObject.Find ("elevatorDoor_R");
+					iTween.MoveTo(goL, iTween.Hash("position", goLM.transform.position,
+                                                    "time", 2,
+                                                    "easetype", iTween.EaseType.easeOutSine));
+					iTween.MoveTo(goR, iTween.Hash("position", goRM.transform.position,
+                                                    "time", 2,
+                                                    "easetype", iTween.EaseType.easeOutSine));
+					iTween.MoveTo(Camera.main.gameObject, iTween.Hash("path", iTweenPath.GetPath("intoLobby"),
+                                                    "time", 3,
+                                                    "easetype", iTween.EaseType.linear,
+                                                    "looktarget", lvlManager.getLookTarget().transform,
+                                                    "looktime", 3,
+                                                    "oncomplete", "SwitchToMainMenu",
+                                                    "oncompletetarget", gameObject));
+				}
             }
         }
     }
@@ -330,49 +340,31 @@ public class GUIMainMenuCamera : MonoBehaviour
 
     private void SwitchToMainMenu()
     {
-        _guiCameraStage = "MainMenuStage";
-//        DisableGUIElement("LanguageMenu");
-        EnableGUIElement("MainMenu");
-        EnableGUIElement("OptionsButton");
-        EnableGUIElement("CreditsButton");
+		if(LoadingScreen.isStart)
+		{
+			EnableGUIElement("MainMenu");
+        	LoadingScreen.isStart = false;
+			_isOnStartScreen = true;
+		}
+		else
+		{
+			iTweenPath path = Camera.main.GetComponent<iTweenPath>();
+		
+	        Camera.main.transform.position = path.nodes[path.nodes.Count - 1];
+			_isOnStartScreen = false;
+			
+        	EnableGUIElement("OptionsButton");
+        	EnableGUIElement("CreditsButton");
+			
 
-        LevelManager lvlManager = gameObject.GetComponent<LevelManager>();
-
-        List<GameObject> stageChars = lvlManager.GetStageCharacters();
-
-        foreach(GameObject go in stageChars)
-        {
-            go.collider.enabled = true;
-        }
+	        List<GameObject> stageChars = lvlManager.GetStageCharacters();
+	
+	        foreach(GameObject go in stageChars)
+	        {
+	            go.collider.enabled = true;
+	        }
+		}
     }
-//
-//    private void CheckLeft(GameObject go)
-//    {
-//        if(_guiCameraStage == "MainMenuStage")
-//        {
-//            _guiCameraStage = "CreditsStage";
-//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _creditsPosition, "time", _guiCameraDuration));
-//        }
-//        else if(_guiCameraStage == "OptionsMenuStage")
-//        {
-//            _guiCameraStage = "MainMenuStage";
-//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
-//        }
-//    }
-//
-//    private void CheckRight(GameObject go)
-//    {
-//        if(_guiCameraStage == "MainMenuStage")
-//        {
-//            _guiCameraStage = "OptionsMenuStage";
-//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _optionsPosition, "time", _guiCameraDuration));
-//        }
-//        else if(_guiCameraStage == "CreditsStage")
-//        {
-//            _guiCameraStage = "MainMenuStage";
-//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
-//        }
-//    }
 
     private void UpdateText()
     {

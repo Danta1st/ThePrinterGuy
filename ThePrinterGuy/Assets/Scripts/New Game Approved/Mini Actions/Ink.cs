@@ -15,11 +15,8 @@ public class Ink : MonoBehaviour
 	
 	#region Privates
 	//Gate Variables
-    private bool _isGateAllowedToRun = false;
     private float _openTime     = 0.250f;
     private float _closeTime    = 0.250f;
-    private float _waitTime     = 0.500f;
-    private GenericSoundScript GSS;
 	
 	//Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
@@ -32,10 +29,12 @@ public class Ink : MonoBehaviour
 	private ParticleSystem _particleExplosion;
 	
 	private GameObject _dynamicObjects;
+    #endregion
 	
+	#region Delegates & Events
 	public delegate void OnInkInsertedAction();
     public static event OnInkInsertedAction OnCorrectInkInserted;
-    #endregion
+	#endregion
 
 	void Awake () 
 	{
@@ -61,8 +60,6 @@ public class Ink : MonoBehaviour
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
 
-        GSS = transform.GetComponentInChildren<GenericSoundScript>();
-
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			icc.insertableStartPos = icc.insertableCartridge.position;
@@ -83,6 +80,7 @@ public class Ink : MonoBehaviour
 	
 	void OnEnable()
 	{
+		StartGates();
 		
 		ActionSequencerManager.OnInkNode += StartInkTask;
 		ActionSequencerItem.OnFailed += InkReset;
@@ -90,125 +88,95 @@ public class Ink : MonoBehaviour
 	
 	void OnDisable()
 	{
+		StopGates();
+		
 		ActionSequencerManager.OnInkNode -= StartInkTask;
 		ActionSequencerItem.OnFailed -= InkReset;
 	}
 	
-	#region Private Methods
+	#region Private Methods	
 	#region Gates and Machines Ink
 	// Cartridge gate functions
 	private void StartGates()
     {
-        if(!_isGateAllowedToRun)
-        {
-            _isGateAllowedToRun = true;
-			foreach(InkCartridgeClass icc in _machineInks)
-			{
-				StartCoroutine_Auto(InitiateInkGates(icc));
-			}
-        }
-		
+		BeatController.OnBeat4th2 += CloseGates;
+		//TODO: Insert lid close sounds
+		BeatController.OnBeat4th3 += OpenGates;
+		BeatController.OnBeat4th3 += SoundManager.Effect_Ink_SlotOpen1;
+		BeatController.OnBeat4th3 += SoundManager.Effect_Ink_SlotOpen2;
+		BeatController.OnBeat4th3 += SoundManager.Effect_Ink_SlotOpen3;
+		BeatController.OnBeat4th3 += SoundManager.Effect_Ink_SlotOpen4;
     }
 
     private void StopGates()
     {
-        _isGateAllowedToRun = false;
+		BeatController.OnBeat4th2 -= CloseGates;
+		BeatController.OnBeat4th3 -= OpenGates;
     }
 	
-	private void OpenGate(InkCartridgeClass icc)
+	private void OpenGates()
     {
-        GSS.PlayClip(Random.Range(0,3));
-		GameObject go = icc.lid;
-        if(!icc.lidIsOpen)
-        {
-			//yield return new WaitForSeconds(_waitTime);
-			
-			if(icc.lidDirection == OpenDirection.Left)
-			{
-	            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y + 90, "time", _openTime,
-	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
-			}
-			else if(icc.lidDirection == OpenDirection.Right)
-			{
-	            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y - 90, "time", _openTime,
-	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
-			}
-			else if(icc.lidDirection == OpenDirection.Up)
-			{
-	            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x - 90, "time", _openTime,
-	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
-			}
-			if(icc.lidDirection == OpenDirection.Down)
-			{
-	            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x + 90, "time", _openTime,
-	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
-			}
-            icc.lidIsOpen = true;
-        }
+		foreach(InkCartridgeClass icc in _machineInks)
+		{
+			GameObject go = icc.lid;
+	        if(!icc.lidIsOpen)
+	        {				
+				if(icc.lidDirection == OpenDirection.Left)
+				{
+		            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y + 90, "time", _openTime,
+		                                            "islocal", true, "easetype", _easeTypeOpen));
+				}
+				else if(icc.lidDirection == OpenDirection.Right)
+				{
+		            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y - 90, "time", _openTime,
+		                                            "islocal", true, "easetype", _easeTypeOpen));
+				}
+				else if(icc.lidDirection == OpenDirection.Up)
+				{
+		            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x - 90, "time", _openTime,
+		                                            "islocal", true, "easetype", _easeTypeOpen));
+				}
+				if(icc.lidDirection == OpenDirection.Down)
+				{
+		            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x + 90, "time", _openTime,
+		                                            "islocal", true, "easetype", _easeTypeOpen));
+				}
+	            icc.lidIsOpen = true;
+	        }
+		}
     }
 
-    IEnumerator CloseGate(InkCartridgeClass icc)
+    void CloseGates()
     {
-		GameObject go = icc.lid;
-        if(icc.lidIsOpen)
-        {
-			yield return new WaitForSeconds(_waitTime);
-            if(icc.lidDirection == OpenDirection.Left)
-			{
-	            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y - 90, "time", _openTime,
-	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
-			}
-			else if(icc.lidDirection == OpenDirection.Right)
-			{
-	            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y + 90, "time", _openTime,
-	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
-			}
-			else if(icc.lidDirection == OpenDirection.Up)
-			{
-	            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x + 90, "time", _openTime,
-	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
-			}
-			if(icc.lidDirection == OpenDirection.Down)
-			{
-	            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x - 90, "time", _openTime,
-	                                            "islocal", true, "easetype", _easeTypeOpen, "oncomplete", "NextAnimation",
-	                                            "oncompletetarget", gameObject, "oncompleteparams", icc));
-			}
-            icc.lidIsOpen = false;
-        }
-		yield break;
+		foreach(InkCartridgeClass icc in _machineInks)
+		{
+			GameObject go = icc.lid;
+	        if(icc.lidIsOpen)
+	        {
+	            if(icc.lidDirection == OpenDirection.Left)
+				{
+		            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y - 90, "time", _closeTime,
+		                                            "islocal", true, "easetype", _easeTypeClose));
+				}
+				else if(icc.lidDirection == OpenDirection.Right)
+				{
+		            iTween.RotateTo(go,iTween.Hash("y", go.transform.localRotation.eulerAngles.y + 90, "time", _closeTime,
+		                                            "islocal", true, "easetype", _easeTypeClose));
+				}
+				else if(icc.lidDirection == OpenDirection.Up)
+				{
+		            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x + 90, "time", _closeTime,
+		                                            "islocal", true, "easetype", _easeTypeClose));
+				}
+				if(icc.lidDirection == OpenDirection.Down)
+				{
+		            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x - 90, "time", _closeTime,
+		                                            "islocal", true, "easetype", _easeTypeClose));
+				}
+	            icc.lidIsOpen = false;
+	        }
+		}
     }
-	
-	private void NextAnimation(InkCartridgeClass icc)
-    {
-        if(_isGateAllowedToRun)
-        {
-			foreach(InkCartridgeClass IC in _machineInks)
-			{
-				if(IC.lidIsOpen && icc == IC)
-	                StartCoroutine_Auto(CloseGate(IC));
-	            else if(!IC.lidIsOpen && icc == IC)
-	                OpenGate(IC);
-			}
-        }
-    }
-	// END OF Gate functions
-	
-	IEnumerator InitiateInkGates(InkCartridgeClass icc)
-	{
-		yield return new WaitForSeconds(icc.startWait);
-		if(icc.lidIsOpen)
-            StartCoroutine_Auto(CloseGate(icc));
-        else
-            OpenGate(icc);
-	}
 	#endregion
 	
 	#region Insertable Ink
@@ -245,24 +213,11 @@ public class Ink : MonoBehaviour
 			_canSlide = false;
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.cartridge.transform.position, 
 						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
-			
-
 		}
 		else
 		{
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.inkCollisionPosition, 
-							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));			
-//				foreach(Transform t in currIcc.lid.transform)
-//			{
-//				if(t.name == "InkCrashObj")
-//				{
-//					GameObject target = t.gameObject;
-//					iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", target.transform.position, 
-//							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
-//				}
-//			}
-				
-			
+							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
 		}
 	}
 	
@@ -367,7 +322,6 @@ public class Ink : MonoBehaviour
         }*/
 		
 		GestureManager.OnSwipeRight += InsertCartridge;
-		StartGates();
 	}
 	
 	private void EmptyCartridge(int iccnumber)
@@ -387,6 +341,7 @@ public class Ink : MonoBehaviour
 	
 	#endregion
 	#endregion
+	
 	#region SubClasses
     [System.Serializable]
     public class InkCartridgeClass

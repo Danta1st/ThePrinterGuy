@@ -26,6 +26,14 @@ public class GUIGameCamera : MonoBehaviour
     private GameObject _uraniumRodPrefab;
     [SerializeField]
     private GameObject _barometerPrefab;
+    [SerializeField]
+    private float _DialogueWindowInDuration = 1;
+    [SerializeField]
+    private iTween.EaseType _easeTypeDialogueWindowIn;
+    [SerializeField]
+    private float _DialogueWindowOutDuration = 1;
+    [SerializeField]
+    private iTween.EaseType _easeTypeDialogueWindowOut;
     #endregion
 
     #region Private Variables
@@ -39,6 +47,9 @@ public class GUIGameCamera : MonoBehaviour
     private float _timeScale = 0.0f;
 	private ParticleSystem[] _particleSystems;
     private bool _waitForMe = false;
+    private GameObject _guiDialogueWindow;
+    private Vector3 _guiDialogueWindowMoveToPoint;
+    private Vector3 _guiDialogueWindowMoveFromPoint;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -86,6 +97,9 @@ public class GUIGameCamera : MonoBehaviour
         ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
         ActionSequencerManager.OnLastNode += LastNode;
         ScoreManager.TaskCompleted += CheckZone;
+        //Dialogue.OnDialogueStart += DialogueWindowIn;
+        //Dialogue.OnDialogueEnd += DialogueWindowOut;
+
     }
 
     void OnDisable()
@@ -94,6 +108,8 @@ public class GUIGameCamera : MonoBehaviour
         ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
         ActionSequencerManager.OnLastNode -= LastNode;
         ScoreManager.TaskCompleted -= CheckZone;
+        //Dialogue.OnDialogueStart -= DialogueWindowIn;
+        //Dialogue.OnDialogueEnd -= DialogueWindowOut;
     }
 
     public void EnableGUICamera()
@@ -154,7 +170,8 @@ public class GUIGameCamera : MonoBehaviour
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
-        transform.position = _guiCamera.transform.position;
+
+		transform.position = _guiCamera.transform.position;
 
         _scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
@@ -200,18 +217,17 @@ public class GUIGameCamera : MonoBehaviour
 				_speechTextObject = _guiObject.transform.FindChild("SpeechText").gameObject;
 				_guiSpeechTextScript = _speechTextObject.GetComponent<GUISpeechText>();
 			}
+
+            if(_guiObject.name == "GUIDialogue")
+            {
+                _guiDialogueWindow = _guiObject.transform.FindChild("RenderTexture").gameObject;
+                //_guiDialogueWindowMoveFromPoint = _guiObject.transform.FindChild("RenderTexture").transform.position;
+                //_guiDialogueWindowMoveToPoint = _guiObject.transform.FindChild("MoveToPoint").transform.position;
+            }
         }
         //--------------------------------------------------//
-		if(GUIMainMenuCamera.languageSetting == "EN")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
-		else if(GUIMainMenuCamera.languageSetting == "DK")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
+
+		UpdateText();
 		
         EnableGUICamera();
 		
@@ -587,7 +603,8 @@ public class GUIGameCamera : MonoBehaviour
 	//TODO: Quit button functionality.
     private void QuitLevel()
     {
-        //LoadingScreen.Load("SOMETHING SCENE");
+		Time.timeScale = 1.0f;
+        LoadingScreen.Load(ConstantValues.GetStartScene);
     }
 	
 	//TODO: Settings button functionality.
@@ -622,7 +639,7 @@ public class GUIGameCamera : MonoBehaviour
             _sequencerObject = _barometerPrefab;
         }
 
-        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 1);
+        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 4);
         GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);
@@ -678,6 +695,14 @@ public class GUIGameCamera : MonoBehaviour
     private void SaveGUIState()
     {
         _timeScale = Time.timeScale;
+		
+		if(_sequencerObjectQueue.Count > 0)
+		{
+			foreach(GameObject obj in _sequencerObjectQueue)
+			{
+				obj.SetActive(false);
+			}
+		}
 
         foreach(GameObject _gui in _guiList)
         {
@@ -692,7 +717,15 @@ public class GUIGameCamera : MonoBehaviour
     private void LoadGUIState()
     {
         _waitForMe = false;
-
+		
+		if(_sequencerObjectQueue.Count > 0)
+		{
+			foreach(GameObject obj in _sequencerObjectQueue)
+			{
+				obj.SetActive(true);
+			}
+		}
+		
         foreach(GameObject _gui in _guiSaveList)
         {
             _gui.SetActive(true);
@@ -704,6 +737,20 @@ public class GUIGameCamera : MonoBehaviour
         _waitForMe = true;
     }
     #endregion
+
+//    #region DialogueWindow
+//    private void DialogueWindowIn()
+//    {
+//        Debug.Log("DialogueWindowIn");
+//        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveToPoint, "duration", _DialogueWindowInDuration, "easetype", _easeTypeDialogueWindowIn));
+//    }
+//
+//    private void DialogueWindowOut()
+//    {
+//        Debug.Log("DialogueWindowOut");
+//        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveFromPoint, "duration", _DialogueWindowOutDuration, "easetype", _easeTypeDialogueWindowOut));
+//    }
+//    #endregion
 	
 	private void UpdateText()
 	{

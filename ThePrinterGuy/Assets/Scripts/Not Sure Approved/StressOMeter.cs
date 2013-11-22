@@ -10,15 +10,7 @@ public class StressOMeter : MonoBehaviour
     [SerializeField]
     private float _failedPoints = -15.0f;
     [SerializeField]
-    private float _quoteWaitTime = 10.0f;
-
-    /*Paper
-     *Ink
-     *Uranium Rods
-     *(Barometer)
-     */
-//    [SerializeField]
-//    private List<GameObject> _audioObjects = new List<GameObject>();
+    private float _quoteWaitTime = 7;
     #endregion
 
     #region Privates#
@@ -31,10 +23,11 @@ public class StressOMeter : MonoBehaviour
     private float _rotationTime = 0.5f;
     private Vector3 _shakeRotation;
     private float _shakeTime = 0.05f;
-    private bool _canDie = false;
+    private bool _canTrigger = false;
     private bool _canTriggerQuote = true;
 	private bool _inHappyZone = false;
 	private bool _inAngryZone = false;
+    private bool _isDead = false;
 
     private bool _paperCounter = false;
     private bool _inkCounter = false;
@@ -52,31 +45,29 @@ public class StressOMeter : MonoBehaviour
     private float _barometerStreak = 0.0f;
 
     private float _audioStreak = 0.0f;
-    private float _audioPanLevel = 0.0f;
-    private int _panLevelIndex = 0;
-
-    private List<float> _streakArray = new List<float>();
 
     private GUIGameCamera _guiGameCamScript;
     #endregion
     
+	#region Delegates & Events
     public delegate void GameFailed();
     public static event GameFailed OnGameFailed;
 
-    public delegate void AngryZoneEntered();
-    public static event AngryZoneEntered OnAngryZoneEntered;
+    public delegate void AngryZoneTriggered();
+    public static event AngryZoneTriggered OnAngryZoneEntered;
 
-    public delegate void HappyZoneEntered();
-    public static event HappyZoneEntered OnHappyZoneEntered;
+    public delegate void HappyZoneTriggered();
+    public static event HappyZoneTriggered OnHappyZoneEntered;
 	
-	public delegate void HappyZone();
-    public static event HappyZone OnHappyZone;
+	public delegate void HappyZoneEntered();
+    public static event HappyZoneEntered OnHappyZone;
 	
-	public delegate void AngryZone();
-    public static event AngryZone OnAngryZone;
+	public delegate void AngryZoneEntered();
+    public static event AngryZoneEntered OnAngryZone;
 	
 	public delegate void ZoneLeft();
 	public static event ZoneLeft OnZoneLeft;
+	#endregion
 
     void Start()
     {
@@ -312,48 +303,12 @@ public class StressOMeter : MonoBehaviour
     {
         _audioStreak++;
     }
-
-
-//    private float CalculateAudioStreak()
-//    {
-//        _streakArray.Add(_paperStreak);
-//        _streakArray.Add(_inkStreak);
-//        _streakArray.Add(_rodStreak);
-//        _streakArray.Add(_barometerStreak);
-//
-//        for(int i = 0; i < _streakArray.Count; i++)
-//        {
-//            if(_audioPanLevel < _streakArray[i])
-//            {
-//                _audioPanLevel = _streakArray[i];
-//                _panLevelIndex = i;
-//            }
-//        }
-//
-//        _audioPanLevel = 1 - _audioPanLevel;
-//
-//        return _audioPanLevel;
-//    }
-//
-//    //ToDO: HookUp with event from PathManager... && Update other related brances and merge with this...
-//    private void GiveNewPanLevel()
-//    {
-//        GenericSoundScript thisAudioScript = _audioObjects[_panLevelIndex].GetComponent<GenericSoundScript>();
-////        thisAudioScript.SetPanLevel()CalculateAudioStreak());
-//
-//        StreakReset();
-//
-//        _paperStreak = 0;
-//        _inkStreak = 0;
-//        _rodStreak = 0;
-//        _barometerStreak = 0;
-//    }
     #endregion
 
     #region Needlemovement functions
     void UpdateRotation()
     {
-        _canDie = true;
+        _canTrigger = true;
 
         _rotationScale = Mathf.Clamp(_rotationScale, _stressMIN, _stressMAX);
 
@@ -369,12 +324,13 @@ public class StressOMeter : MonoBehaviour
 
     void SlightMovement()
     {
-        if(OnGameFailed != null && _rotationScale == _stressMAX && _canDie)
+        if(OnGameFailed != null && _rotationScale == _stressMAX && !_isDead)
         {
+            _isDead = true;
             OnGameFailed();
         }
 
-		if((_happyZone < _rotationScale && _inHappyZone) || (_rotationScale < _angryZone && _inAngryZone) && _canDie)
+		if((_happyZone < _rotationScale && _inHappyZone) || (_rotationScale < _angryZone && _inAngryZone) && _canTrigger)
 		{
 			_inHappyZone = false;
 			_inAngryZone = false;
@@ -384,7 +340,7 @@ public class StressOMeter : MonoBehaviour
 				OnZoneLeft();
 			}
 		}
-		else if(_rotationScale <= _happyZone && !_inHappyZone && _canDie)
+		else if(_rotationScale <= _happyZone && !_inHappyZone && _canTrigger)
 		{
 			_inHappyZone = true;
 			
@@ -393,7 +349,7 @@ public class StressOMeter : MonoBehaviour
 				OnHappyZone();
 			}
 		}
-		else if(_rotationScale >= _angryZone && !_inAngryZone && _canDie)
+		else if(_rotationScale >= _angryZone && !_inAngryZone && _canTrigger)
 		{
 			_inAngryZone = true;
 
@@ -403,7 +359,7 @@ public class StressOMeter : MonoBehaviour
 			}
 		}
 		
-		_canDie = false;
+		_canTrigger = false;
 		
 		if(_rotationScale >= _angryZone && _canTriggerQuote)
         {
@@ -434,7 +390,7 @@ public class StressOMeter : MonoBehaviour
 
     IEnumerator QuoteWaitTime()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(_quoteWaitTime);
         _canTriggerQuote = true;
     }
 

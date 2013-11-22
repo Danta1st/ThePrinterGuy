@@ -62,8 +62,6 @@ public class PaperInsertion : MonoBehaviour
 		ActionSequencerManager.OnPaperNode += TriggerLight;
 		ActionSequencerManager.OnPaperNode += EnablePaper;
 		ActionSequencerItem.OnFailed += Reset;
-		
-        //StartGate();
     }
     void OnDisable()
     {
@@ -73,9 +71,6 @@ public class PaperInsertion : MonoBehaviour
 		ActionSequencerManager.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
         GestureManager.OnTap -= TriggerSlide;
-
-		
-        //StopGate();
     }
 
     #region Monobehaviour Functions
@@ -124,13 +119,17 @@ public class PaperInsertion : MonoBehaviour
     private void StartGate()
     {
 		BeatController.OnBeat4th1 += OpenGate;
+		BeatController.OnBeat4th1 += SoundManager.Effect_PaperTray_MoveUp;
 		BeatController.OnBeat4th4 += CloseGate;
+		BeatController.OnBeat4th4 += SoundManager.Effect_PaperTray_MoveDown;
     }
 
     private void StopGate()
     {
 		BeatController.OnBeat4th1 -= OpenGate;
+		BeatController.OnBeat4th1 -= SoundManager.Effect_PaperTray_MoveUp;
 		BeatController.OnBeat4th4 -= CloseGate;
+		BeatController.OnBeat4th4 -= SoundManager.Effect_PaperTray_MoveDown;
     }
 
     private void OpenGate()
