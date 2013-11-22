@@ -11,6 +11,7 @@ public class Ink : MonoBehaviour
 	[SerializeField] private ParticleSystem _particleSystemExplosion;
     [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
+
     #endregion
 	
 	#region Privates
@@ -40,6 +41,14 @@ public class Ink : MonoBehaviour
 
 	void Awake () 
 	{
+		pathNameSucc.Add("Ink0");
+		pathNameSucc.Add("Ink1");
+		pathNameSucc.Add("Ink2");
+		pathNameSucc.Add("Ink3");
+		pathNameFail.Add("Ink0Collision");
+		pathNameFail.Add("Ink1Collision");
+		pathNameFail.Add("Ink2Collision");
+		pathNameFail.Add("Ink3Collision");
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
 		if(_particleSystemSmoke != null)
 		{
@@ -61,20 +70,25 @@ public class Ink : MonoBehaviour
 		
 		_particleSmoke.transform.parent = _dynamicObjects.transform;
 		_particleStars.transform.parent = _dynamicObjects.transform;
-
+		
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			icc.insertableStartPos = icc.insertableCartridge.position;
+			icc.pathSucc = new Vector3[3];
+			icc.pathSucc[0] = icc.insertableCartridge.position;
+			icc.pathSucc[2] = icc.cartridge.position;
+			icc.pathSucc[1] = icc.cartridge.position;
+//			icc.pathSucc[1] = new Vector3(icc.pathSucc[1].x + 0.5f * (icc.pathSucc[1].x - icc.pathSucc[0].x), icc.pathSucc[0].y, icc.pathSucc[0].z);
+			icc.pathFail = new Vector3[3];
+			icc.pathFail[0] = icc.pathSucc[0];
+			icc.pathFail[1] = icc.pathSucc[1];
+			icc.pathFail[2] = icc.pathSucc[2];
+			icc.pathFail[2].z -= 1.25f;
 		}
 		
-		pathNameSucc.Add("Ink0");
-		pathNameSucc.Add("Ink1");
-		pathNameSucc.Add("Ink2");
-		pathNameSucc.Add("Ink3");
-		pathNameFail.Add("Ink0Collision");
-		pathNameFail.Add("Ink1Collision");
-		pathNameFail.Add("Ink2Collision");
-		pathNameFail.Add("Ink3Collision");
+		
+		
+	
 	}
 	
 	void OnEnable()
@@ -210,12 +224,13 @@ public class Ink : MonoBehaviour
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
 			_canSlide = false;
-			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", iTweenPath.GetPath(pathNameSucc[j]), 
+			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathSucc, 
 						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 		}
 		else
 		{
-			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", iTweenPath.GetPath (pathNameFail[j]), 
+
+			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathFail, 
 							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
 		}
 	}
@@ -353,6 +368,10 @@ public class Ink : MonoBehaviour
 		public float startWait = 1f;
 		public OpenDirection lidDirection;
 		
+		[HideInInspector]
+		public Vector3[] pathSucc = new Vector3[3];
+		[HideInInspector]
+		public Vector3[] pathFail = new Vector3[3];
 		[HideInInspector]
 		public Vector3 insertableStartPos;
 		[HideInInspector]

@@ -399,29 +399,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &100056
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400056}
-  - 114: {fileID: 11400010}
-  - 114: {fileID: 11400008}
-  - 114: {fileID: 11400006}
-  - 114: {fileID: 11400004}
-  - 114: {fileID: 11400012}
-  - 114: {fileID: 11400014}
-  - 114: {fileID: 11400016}
-  - 114: {fileID: 11400018}
-  m_Layer: 0
-  m_Name: InkPaths
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -613,7 +590,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400038}
-  - {fileID: 400056}
   - {fileID: 400036}
   - {fileID: 400002}
   - {fileID: 400000}
@@ -710,17 +686,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400012}
---- !u!4 &400056
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.66754484, y: 0, z: 4.76837158e-07}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400032}
 --- !u!23 &2300000
 Renderer:
   m_ObjectHideFlags: 1
@@ -1198,6 +1163,14 @@ MonoBehaviour:
     lid: {fileID: 100030}
     startWait: 1
     lidDirection: 1
+    pathSucc:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    pathFail:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
@@ -1208,6 +1181,14 @@ MonoBehaviour:
     lid: {fileID: 100026}
     startWait: 1
     lidDirection: 2
+    pathSucc:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    pathFail:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
@@ -1218,6 +1199,14 @@ MonoBehaviour:
     lid: {fileID: 100022}
     startWait: 1
     lidDirection: 3
+    pathSucc:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    pathFail:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
@@ -1228,6 +1217,14 @@ MonoBehaviour:
     lid: {fileID: 100018}
     startWait: 1
     lidDirection: 0
+    pathSucc:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    pathFail:
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
+    - {x: 0, y: 0, z: 0}
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
@@ -1258,174 +1255,6 @@ MonoBehaviour:
   _randomPitchOnPlay: 0
   _minPitch: .5
   _maxPitch: 1.5
---- !u!114 &11400004
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b47d8fab48095449e0c73b0ef0f4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathName: Ink3
-  pathColor: {r: 1, g: 0, b: 0, a: 1}
-  nodes:
-  - {x: -2.1694088, y: 4.21783686, z: -17.253624}
-  - {x: 3.35183716, y: 4.21783686, z: -15.4326391}
-  - {x: 4.49306297, y: 4.21783781, z: -9.47753525}
-  nodeCount: 3
-  initialized: 1
-  initialName: New Path 3
-  pathVisible: 1
---- !u!114 &11400006
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b47d8fab48095449e0c73b0ef0f4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathName: Ink2
-  pathColor: {r: 1, g: 1, b: 0, a: 1}
-  nodes:
-  - {x: -2.16940904, y: 1.40666604, z: -17.2536201}
-  - {x: 3.35183692, y: 1.40666604, z: -15.4326401}
-  - {x: 4.49306297, y: 1.40666699, z: -9.47753525}
-  nodeCount: 3
-  initialized: 1
-  initialName: New Path 2
-  pathVisible: 1
---- !u!114 &11400008
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b47d8fab48095449e0c73b0ef0f4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathName: Ink1
-  pathColor: {r: 0, g: 0, b: 1, a: 1}
-  nodes:
-  - {x: -2.16940904, y: -1.38995302, z: -17.2536201}
-  - {x: 3.35183692, y: -1.38995302, z: -15.4326401}
-  - {x: 4.49306297, y: -1.38995397, z: -9.47753525}
-  nodeCount: 3
-  initialized: 1
-  initialName: New Path 1
-  pathVisible: 1
---- !u!114 &11400010
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b47d8fab48095449e0c73b0ef0f4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathName: Ink0
-  pathColor: {r: 0, g: 1, b: 0, a: 1}
-  nodes:
-  - {x: -2.16940904, y: -4.1879282, z: -17.2536201}
-  - {x: 3.35183692, y: -4.1879282, z: -15.4326401}
-  - {x: 4.49306297, y: -4.1879282, z: -9.47753525}
-  nodeCount: 3
-  initialized: 1
-  initialName: New Path 1
-  pathVisible: 1
---- !u!114 &11400012
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b47d8fab48095449e0c73b0ef0f4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathName: Ink0Collision
-  pathColor: {r: 0, g: 1, b: 0, a: 1}
-  nodes:
-  - {x: -2.16940904, y: -4.1879282, z: -17.2536201}
-  - {x: 3.35183692, y: -4.1879282, z: -15.4326401}
-  - {x: 4.49306297, y: -4.1879282, z: -10.6811724}
-  nodeCount: 3
-  initialized: 1
-  initialName: New Path 1
-  pathVisible: 1
---- !u!114 &11400014
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b47d8fab48095449e0c73b0ef0f4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathName: Ink1Collision
-  pathColor: {r: 0, g: 0, b: 1, a: 1}
-  nodes:
-  - {x: -2.16940904, y: -1.38995302, z: -17.2536201}
-  - {x: 3.35183692, y: -1.38995302, z: -15.4326401}
-  - {x: 4.49306297, y: -1.38995397, z: -10.5454273}
-  nodeCount: 3
-  initialized: 1
-  initialName: New Path 1
-  pathVisible: 1
---- !u!114 &11400016
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b47d8fab48095449e0c73b0ef0f4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathName: Ink2Collision
-  pathColor: {r: 1, g: 1, b: 0, a: 1}
-  nodes:
-  - {x: -2.16940904, y: 1.40666604, z: -17.2536201}
-  - {x: 3.35183692, y: 1.40666604, z: -15.4326401}
-  - {x: 4.49306297, y: 1.40666699, z: -10.555006}
-  nodeCount: 3
-  initialized: 1
-  initialName: New Path 2
-  pathVisible: 1
---- !u!114 &11400018
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30b47d8fab48095449e0c73b0ef0f4c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathName: Ink3Collision
-  pathColor: {r: 1, g: 0, b: 0, a: 1}
-  nodes:
-  - {x: -2.1694088, y: 4.21783686, z: -17.253624}
-  - {x: 3.35183716, y: 4.21783686, z: -15.4326391}
-  - {x: 4.49306297, y: 4.21783781, z: -10.3732128}
-  nodeCount: 3
-  initialized: 1
-  initialName: New Path 3
-  pathVisible: 1
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1
