@@ -13,6 +13,8 @@ public class SoundManager : MonoBehaviour
 
     private static VoiceSounds _voiceSounds;
 
+    private static MachineSounds _machineSounds;
+
     void Awake()
     {
         _inGameSounds = transform.FindChild("In Game").GetComponent<InGameSounds>();
@@ -22,6 +24,10 @@ public class SoundManager : MonoBehaviour
         _inkSounds = transform.FindChild("Ink").GetComponent<InkSounds>();
         _rodSounds = transform.FindChild("Uranium Rods").GetComponent<RodSounds>();
         _baroSounds = transform.FindChild("BaroMeter").GetComponent<BaroSounds>();
+
+        _voiceSounds = transform.FindChild("Voice").GetComponent<VoiceSounds>();
+
+        _machineSounds = transform.FindChild("Machine").GetComponent<MachineSounds>();
     }
 
     public static void thisTest(GameObject go, Vector2 thisPos)
@@ -62,6 +68,11 @@ public class SoundManager : MonoBehaviour
         _paperSounds.Effect_PaperTray_MoveDown();
     }
 
+    public static void Effect_PaperTray_ConveyorBelt()
+    {
+        _paperSounds.Effect_PaperTray_ConveyorBelt();
+    }
+
     public static void Effect_PaperTray_ColorChange1()
     {
         _paperSounds.Effect_PaperTray_ColorChange1();
@@ -90,6 +101,11 @@ public class SoundManager : MonoBehaviour
     public static void Effect_PaperTray_Swipe4()
     {
         _paperSounds.Effect_PaperTray_Swipe4();
+    }
+
+    public static void Effect_PaperTray_WrongSwipe()
+    {
+        _paperSounds.Effect_PaperTray_WrongSwipe();
     }
     #endregion
 
@@ -123,6 +139,36 @@ public class SoundManager : MonoBehaviour
     {
         _inkSounds.Effect_Ink_SlotOpen4();
     }
+
+    public static void Effect_Ink_RightSlot()
+    {
+        _inkSounds.Effect_Ink_RightSlot();
+    }
+
+    public static void Effect_Ink_WrongSlot()
+    {
+        _inkSounds.Effect_Ink_WrongSlot();
+    }
+
+    public static void Effect_Ink_SlotClose1()
+    {
+        _inkSounds.Effect_Ink_SlotClose1();
+    }
+
+    public static void Effect_Ink_SlotClose2()
+    {
+        _inkSounds.Effect_Ink_SlotClose2();
+    }
+
+    public static void Effect_Ink_SlotClose3()
+    {
+        _inkSounds.Effect_Ink_SlotClose3();
+    }
+
+    public static void Effect_Ink_SlotClose4()
+    {
+        _inkSounds.Effect_Ink_SlotClose4();
+    }
     #endregion
 
     #region Uranium Sounds
@@ -151,6 +197,11 @@ public class SoundManager : MonoBehaviour
         _rodSounds.Effect_UraniumRods_Popup3();
     }
 
+    public static void Effect_UraniumRods_Popup4()
+    {
+        _rodSounds.Effect_UraniumRods_Popup4();
+    }
+
     public static void Effect_UraniumRods_Hammer()
     {
         _rodSounds.Effect_UraniumRods_Hammer();
@@ -166,6 +217,36 @@ public class SoundManager : MonoBehaviour
     public static void Barometer_LowerVolume()
     {
         _baroSounds.LowerVolume();
+    }
+
+    public static void Effect_Barometer_NormSpin1()
+    {
+        _baroSounds.Effect_Barometer_NormSpin1();
+    }
+
+    public static void Effect_Barometer_NormSpin2()
+    {
+        _baroSounds.Effect_Barometer_NormSpin2();
+    }
+
+    public static void Effect_Barometer_NormSpin3()
+    {
+        _baroSounds.Effect_Barometer_NormSpin3();
+    }
+
+    public static void Effect_Barometer_NokOkSpin1()
+    {
+        _baroSounds.Effect_Barometer_NokOkSpin1();
+    }
+
+    public static void Effect_Barometer_NokOkSpin2()
+    {
+        _baroSounds.Effect_Barometer_NokOkSpin2();
+    }
+
+    public static void Effect_Barometer_NokOkSpin3()
+    {
+        _baroSounds.Effect_Barometer_NokOkSpin3();
     }
 
     public static void Effect_Barometer_Tap1()
@@ -184,7 +265,7 @@ public class SoundManager : MonoBehaviour
     }
     #endregion
 
-    #region Voice
+    #region Voice Samples
     public static void Voice_Boos_Random_Happy()
     {
         _voiceSounds.Voice_Boss_Random_Happy();
@@ -268,6 +349,112 @@ public class SoundManager : MonoBehaviour
     public static void Voice_Boss_19()
     {
         _voiceSounds.Voice_Boss_19();
+    }
+
+    public static void Voice_Boss_Idle()
+    {
+        _voiceSounds.Voice_Boss_Idle();
+    }
+
+    public static void Voice_Boss_ForwardsMovement()
+    {
+        _voiceSounds.Voice_Boss_ForwardsMovement();
+    }
+
+    public static void Voice_Boss_BackwardsMovement()
+    {
+        _voiceSounds.Voice_Boss_BackwardsMovement();
+    }
+   #endregion
+
+    #region Machine Sounds
+    public static void Effect_Machine_Cogwheels1()
+    {
+        _machineSounds.Effect_Machine_Cogwheels1();
+    }
+
+    public static void Effect_Machine_Cogwheels2()
+    {
+        _machineSounds.Effect_Machine_Cogwheels2();
+    }
+
+    public static void Effect_Machine_Cogwheels3()
+    {
+        _machineSounds.Effect_Machine_Cogwheels3();
+    }
+
+    public static void Effect_Machine_Electricity()
+    {
+        _machineSounds.Effect_Machine_Electricity();
+    }
+
+    public static void Effect_Machine_Smoke1()
+    {
+        _machineSounds.Effect_Machine_Smoke1();
+    }
+
+    public static void Effect_Machine_Smoke2()
+    {
+        _machineSounds.Effect_Machine_Smoke2();
+    }
+
+    public static void Effect_Machine_Smoke3()
+    {
+        _machineSounds.Effect_Machine_Smoke3();
+    }
+    #endregion
+
+    #region In Game Sounds
+    public static void Effect_InGame_Win()
+    {
+        _inGameSounds.Effect_InGame_Win();
+    }
+
+    public static void Effect_InGame_Lose()
+    {
+        _inGameSounds.Effect_InGame_Lose();
+    }
+    #endregion
+
+    #region Menu Sounds
+    public static void Effect_Menu_Intro()
+    {
+        _mainMenuSounds.Effect_Menu_Intro();
+    }
+
+    public static void Effect_Menu_Click()
+    {
+        _mainMenuSounds.Effect_Menu_Click();
+    }
+
+    public static void Effect_Menu_Stinger()
+    {
+        _mainMenuSounds.Effect_Menu_Stinger();
+    }
+
+    public static void Effect_Menu_Appear()
+    {
+        _mainMenuSounds.Effect_Menu_Appear();
+    }
+
+    public static void Effect_Menu_Disappear()
+    {
+        _mainMenuSounds.Effect_Menu_Disappear();
+    }
+
+    public static void Effect_Menu_Footsteps()
+    {
+        _mainMenuSounds.Effect_Menu_Footsteps();
+    }
+
+    public static void Effect_Menu_Credits()
+    {
+        _mainMenuSounds.Effect_Menu_Credits();
+    }
+
+    public static void Effect_Menu_Options()
+    {
+        _mainMenuSounds.Effect_Menu_Options();
     }
     #endregion
 }
