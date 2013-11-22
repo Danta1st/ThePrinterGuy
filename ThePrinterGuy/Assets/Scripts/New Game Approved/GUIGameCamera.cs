@@ -611,7 +611,8 @@ public class GUIGameCamera : MonoBehaviour
 	//TODO: Quit button functionality.
     private void QuitLevel()
     {
-        //LoadingScreen.Load("SOMETHING SCENE");
+		Time.timeScale = 1.0f;
+        LoadingScreen.Load("MainMenu");
     }
 	
 	//TODO: Settings button functionality.
