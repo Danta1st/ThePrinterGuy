@@ -3,29 +3,29 @@ using System.Collections;
 
 public class InGameSounds : MonoBehaviour
 {
+    private GenericSoundScript _soundFx;
+    private GenericSoundScript _music;
 
-    public static void Music_InGame_Main()
+    void Awake()
     {
-        //Start ingame music
+        _soundFx = transform.transform.FindChild("SoundFx_Game").
+            GetComponent<GenericSoundScript>();
+        _music = transform.transform.FindChild("Music_Game").
+            GetComponent<GenericSoundScript>();
     }
 
-    public static void Music_BaroMeter()
+    public void Music_InGame_Main()
     {
-        //Start barometer track
+        _music.LoopClipStart(0);
     }
 
-    public static void Music_Ink()
+    public void Effect_InGame_Win()
     {
-        //Start ink track
+        _soundFx.PlayClip(0);
     }
 
-    public static void Music_PaperTray()
+    public void Effect_InGame_Lose()
     {
-        //Start papertray track
-    }
-
-    public static void Music_UraniumRods()
-    {
-        //Start rod track
+        _soundFx.PlayClip(1);
     }
 }
