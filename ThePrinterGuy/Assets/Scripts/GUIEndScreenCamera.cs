@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GUIEndScreenCamera : MonoBehaviour {
-	
+public class GUIEndScreenCamera : MonoBehaviour 
+{
     #region Editor Publics
     [SerializeField]
     private LayerMask _layerMaskGUI;
@@ -26,11 +26,11 @@ public class GUIEndScreenCamera : MonoBehaviour {
     #endregion
 	
 	[System.Serializable]
-	public class TargetScores {
+	public class TargetScores 
+	{
 		public int starScoreOne;
 		public int starScoreTwo;
 		public int starScoreThree;
-		
 	}
 	
     #region Private Variables
@@ -121,7 +121,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
     #endregion
 	
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCam = GameObject.Find("GUI Camera");
@@ -395,9 +396,9 @@ public class GUIEndScreenCamera : MonoBehaviour {
 			yield return new WaitForSeconds(0.1f);
 		}
 		if(_isWin)
-			InsertSpeechText("Nice work, are\n you ready for the\n next challenge?");
+			InsertSpeechText(LocalizationText.GetText("WinText1"));
 		else
-			InsertSpeechText("You're fired.\n Never mind now\n get back to work.");
+			InsertSpeechText(LocalizationText.GetText("LossText1"));
 		
 		FindHighscore();
 	}
