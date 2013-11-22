@@ -7,7 +7,7 @@ public class VoiceSounds : MonoBehaviour
 
     void Awake()
     {
-        _voiceBoss = transform.transform.FindChild("Voice_Boss").
+        _voiceBoss = transform.FindChild("Voice_Boss").
             GetComponent<GenericSoundScript>();
     }
 
@@ -54,5 +54,15 @@ public class VoiceSounds : MonoBehaviour
     public void Voice_Boss_9()
     {
         _voiceBoss.PlayClip(8);
+    }
+
+    public void Voice_Boss_Random_Happy()
+    {
+        _voiceBoss.PlayClip(Random.Range(0, 2));
+    }
+
+    public void Voice_Boss_Random_Angry()
+    {
+        _voiceBoss.PlayClip(Random.Range(6, 8));
     }
 }

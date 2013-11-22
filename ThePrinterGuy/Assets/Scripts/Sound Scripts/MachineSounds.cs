@@ -10,11 +10,11 @@ public class MachineSounds : MonoBehaviour
 
     void Awake()
     {
-        _soundFxC = transform.transform.FindChild("SoundFx_Cogwheels").
+        _soundFxC = transform.FindChild("SoundFx_Cogwheels").
             GetComponent<GenericSoundScript>();
-        _soundFxM = transform.transform.FindChild("SoundFx_Machine").
+        _soundFxM = transform.FindChild("SoundFx_Machine").
             GetComponent<GenericSoundScript>();
-        _soundFxS = transform.transform.FindChild("SoundFx_Smoke").
+        _soundFxS = transform.FindChild("SoundFx_Smoke").
             GetComponent<GenericSoundScript>();
     }
 

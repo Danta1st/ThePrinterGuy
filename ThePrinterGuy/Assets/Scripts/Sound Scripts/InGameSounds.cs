@@ -8,9 +8,9 @@ public class InGameSounds : MonoBehaviour
 
     void Awake()
     {
-        _soundFx = transform.transform.FindChild("SoundFx_Game").
+        _soundFx = transform.FindChild("SoundFx_Game").
             GetComponent<GenericSoundScript>();
-        _music = transform.transform.FindChild("Music_Game").
+        _music = transform.FindChild("Music_Game").
             GetComponent<GenericSoundScript>();
     }
 

@@ -42,6 +42,16 @@ public class SoundManager : MonoBehaviour
     #endregion
 
     #region Paper Sounds
+    public static void PaperTray_RaiseVolume()
+    {
+        _paperSounds.RaiseVolume();
+    }
+
+    public static void PaperTray_LowerVolume()
+    {
+        _paperSounds.LowerVolume();
+    }
+
     public static void Effect_PaperTray_MoveUp()
     {
         _paperSounds.Effect_PaperTray_MoveUp();
@@ -84,6 +94,16 @@ public class SoundManager : MonoBehaviour
     #endregion
 
     #region Ink Sounds
+    public static void Ink_RaiseVolume()
+    {
+        _inkSounds.RaiseVolume();
+    }
+
+    public static void Ink_LowerVolume()
+    {
+        _inkSounds.LowerVolume();
+    }
+
     public static void Effect_Ink_SlotOpen1()
     {
         _inkSounds.Effect_Ink_SlotOpen1();
@@ -106,6 +126,16 @@ public class SoundManager : MonoBehaviour
     #endregion
 
     #region Uranium Sounds
+    public static void UraniumRods_RaiseVolume()
+    {
+        _rodSounds.RaiseVolume();
+    }
+
+    public static void UraniumRods_LowerVolume()
+    {
+        _rodSounds.LowerVolume();
+    }
+
     public static void Effect_UraniumRods_Popup1()
     {
         _rodSounds.Effect_UraniumRods_Popup1();
@@ -128,6 +158,16 @@ public class SoundManager : MonoBehaviour
     #endregion
 
     #region Barometer Sounds
+    public static void Barometer_RaiseVolume()
+    {
+        _baroSounds.RaiseVolume();
+    }
+
+    public static void Barometer_LowerVolume()
+    {
+        _baroSounds.LowerVolume();
+    }
+
     public static void Effect_Barometer_Tap1()
     {
         _baroSounds.Effect_Barometer_Tap1();
@@ -145,6 +185,16 @@ public class SoundManager : MonoBehaviour
     #endregion
 
     #region Voice
+    public static void Voice_Boos_Random_Happy()
+    {
+        _voiceSounds.Voice_Boss_Random_Happy();
+    }
+
+    public static void Voice_Boos_Random_Angry()
+    {
+        _voiceSounds.Voice_Boss_Random_Angry();
+    }
+
     public static void Voice_Boss_1()
     {
         _voiceSounds.Voice_Boss_1();

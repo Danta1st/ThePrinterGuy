@@ -9,9 +9,9 @@ public class MainMenuSounds : MonoBehaviour
 
     void Awake()
     {
-        _soundFx = transform.transform.FindChild("SoundFx_Menu").
+        _soundFx = transform.FindChild("SoundFx_Menu").
             GetComponent<GenericSoundScript>();
-        _music = transform.transform.FindChild("Music_Menu").
+        _music = transform.FindChild("Music_Menu").
             GetComponent<GenericSoundScript>();
     }
 
