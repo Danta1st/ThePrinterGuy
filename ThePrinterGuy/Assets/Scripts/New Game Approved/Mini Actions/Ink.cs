@@ -22,6 +22,8 @@ public class Ink : MonoBehaviour
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private float _inkMoveSpeed		= 0.4f;
 	private bool _canSlide = true;
+	private List<string> pathNameSucc = new List<string>();
+	private List<string> pathNameFail = new List<string>();
 	
 	// Particlesystem
 	private ParticleSystem _particleStars;
@@ -65,17 +67,14 @@ public class Ink : MonoBehaviour
 			icc.insertableStartPos = icc.insertableCartridge.position;
 		}
 		
-		foreach(InkCartridgeClass icc in _machineInks)
-		{
-			
-			foreach(Transform t in icc.lid.transform) {
-				if(t.name == "InkCrashObj") {
-					GameObject crashPos;
-					crashPos = t.gameObject;
-					icc.inkCollisionPosition = crashPos.transform.position;
-				}
-			}
-		}
+		pathNameSucc.Add("Ink0");
+		pathNameSucc.Add("Ink1");
+		pathNameSucc.Add("Ink2");
+		pathNameSucc.Add("Ink3");
+		pathNameFail.Add("Ink0Collision");
+		pathNameFail.Add("Ink1Collision");
+		pathNameFail.Add("Ink2Collision");
+		pathNameFail.Add("Ink3Collision");
 	}
 	
 	void OnEnable()
@@ -211,12 +210,12 @@ public class Ink : MonoBehaviour
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
 			_canSlide = false;
-			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.cartridge.transform.position, 
+			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", iTweenPath.GetPath(pathNameSucc[j]), 
 						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 		}
 		else
 		{
-			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("position", currIcc.inkCollisionPosition, 
+			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", iTweenPath.GetPath (pathNameFail[j]), 
 							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
 		}
 	}
@@ -360,8 +359,6 @@ public class Ink : MonoBehaviour
         public bool lidIsOpen = false;
 		[HideInInspector]
 		public bool cartridgeEmpty = false;
-		[HideInInspector]
-		public Vector3 inkCollisionPosition;
     };
 	
 	public enum OpenDirection
