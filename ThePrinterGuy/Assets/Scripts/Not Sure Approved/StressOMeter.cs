@@ -23,10 +23,11 @@ public class StressOMeter : MonoBehaviour
     private float _rotationTime = 0.5f;
     private Vector3 _shakeRotation;
     private float _shakeTime = 0.05f;
-    private bool _canDie = false;
+    private bool _canTrigger = false;
     private bool _canTriggerQuote = true;
 	private bool _inHappyZone = false;
 	private bool _inAngryZone = false;
+    private bool _isDead = false;
 
     private bool _paperCounter = false;
     private bool _inkCounter = false;
@@ -52,17 +53,17 @@ public class StressOMeter : MonoBehaviour
     public delegate void GameFailed();
     public static event GameFailed OnGameFailed;
 
-    public delegate void AngryZoneEntered();
-    public static event AngryZoneEntered OnAngryZoneEntered;
+    public delegate void AngryZoneTriggered();
+    public static event AngryZoneTriggered OnAngryZoneEntered;
 
-    public delegate void HappyZoneEntered();
-    public static event HappyZoneEntered OnHappyZoneEntered;
+    public delegate void HappyZoneTriggered();
+    public static event HappyZoneTriggered OnHappyZoneEntered;
 	
-	public delegate void HappyZone();
-    public static event HappyZone OnHappyZone;
+	public delegate void HappyZoneEntered();
+    public static event HappyZoneEntered OnHappyZone;
 	
-	public delegate void AngryZone();
-    public static event AngryZone OnAngryZone;
+	public delegate void AngryZoneEntered();
+    public static event AngryZoneEntered OnAngryZone;
 	
 	public delegate void ZoneLeft();
 	public static event ZoneLeft OnZoneLeft;
@@ -307,7 +308,7 @@ public class StressOMeter : MonoBehaviour
     #region Needlemovement functions
     void UpdateRotation()
     {
-        _canDie = true;
+        _canTrigger = true;
 
         _rotationScale = Mathf.Clamp(_rotationScale, _stressMIN, _stressMAX);
 
@@ -323,12 +324,13 @@ public class StressOMeter : MonoBehaviour
 
     void SlightMovement()
     {
-        if(OnGameFailed != null && _rotationScale == _stressMAX && _canDie)
+        if(OnGameFailed != null && _rotationScale == _stressMAX && !_isDead)
         {
+            _isDead = true;
             OnGameFailed();
         }
 
-		if((_happyZone < _rotationScale && _inHappyZone) || (_rotationScale < _angryZone && _inAngryZone) && _canDie)
+		if((_happyZone < _rotationScale && _inHappyZone) || (_rotationScale < _angryZone && _inAngryZone) && _canTrigger)
 		{
 			_inHappyZone = false;
 			_inAngryZone = false;
@@ -338,7 +340,7 @@ public class StressOMeter : MonoBehaviour
 				OnZoneLeft();
 			}
 		}
-		else if(_rotationScale <= _happyZone && !_inHappyZone && _canDie)
+		else if(_rotationScale <= _happyZone && !_inHappyZone && _canTrigger)
 		{
 			_inHappyZone = true;
 			
@@ -347,7 +349,7 @@ public class StressOMeter : MonoBehaviour
 				OnHappyZone();
 			}
 		}
-		else if(_rotationScale >= _angryZone && !_inAngryZone && _canDie)
+		else if(_rotationScale >= _angryZone && !_inAngryZone && _canTrigger)
 		{
 			_inAngryZone = true;
 
@@ -357,7 +359,7 @@ public class StressOMeter : MonoBehaviour
 			}
 		}
 		
-		_canDie = false;
+		_canTrigger = false;
 		
 		if(_rotationScale >= _angryZone && _canTriggerQuote)
         {
