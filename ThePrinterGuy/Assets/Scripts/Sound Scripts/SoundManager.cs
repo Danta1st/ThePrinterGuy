@@ -225,5 +225,49 @@ public class SoundManager : MonoBehaviour
         _voiceSounds.Voice_Boss_9();
     }
 
+    public static void Voice_Boss_11()
+    {
+        _voiceSounds.Voice_Boss_11();
+    }
+
+    public static void Voice_Boss_12()
+    {
+        _voiceSounds.Voice_Boss_12();
+    }
+
+    public static void Voice_Boss_13()
+    {
+        _voiceSounds.Voice_Boss_13();
+    }
+
+    public static void Voice_Boss_14()
+    {
+        _voiceSounds.Voice_Boss_14();
+    }
+
+    public static void Voice_Boss_15()
+    {
+        _voiceSounds.Voice_Boss_15();
+    }
+
+    public static void Voice_Boss_16()
+    {
+        _voiceSounds.Voice_Boss_16();
+    }
+
+    public static void Voice_Boss_17()
+    {
+        _voiceSounds.Voice_Boss_17();
+    }
+
+    public static void Voice_Boss_18()
+    {
+        _voiceSounds.Voice_Boss_18();
+    }
+
+    public static void Voice_Boss_19()
+    {
+        _voiceSounds.Voice_Boss_19();
+    }
     #endregion
 }
