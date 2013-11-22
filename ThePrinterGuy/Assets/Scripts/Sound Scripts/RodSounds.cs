@@ -3,24 +3,34 @@ using System.Collections;
 
 public class RodSounds : MonoBehaviour
 {
+    private GenericSoundScript _soundFx;
+    private GenericSoundScript _music;
 
-    public static void Effect_UraniumRods_Popup1()
+    void Awake()
     {
-        //Play Rod Popup sound 1
+        _soundFx = transform.transform.FindChild("SoundFx_Uranium Rods").
+            GetComponent<GenericSoundScript>();
+        _music = transform.transform.FindChild("Music_Uranium Rods").
+            GetComponent<GenericSoundScript>();
     }
 
-    public static void Effect_UraniumRods_Popup2()
+    public void Effect_UraniumRods_Popup1()
     {
-        //Play Rod Popup sound 2
+        _soundFx.PlayClip(0);
     }
 
-    public static void Effect_UraniumRods_Popup3()
+    public void Effect_UraniumRods_Popup2()
     {
-        //Play Rod Popup sound 3
+        _soundFx.PlayClip(1);
     }
 
-    public static void Effect_UraniumRods_Hammer()
+    public void Effect_UraniumRods_Popup3()
     {
-        //Play Hammer sound
+        _soundFx.PlayClip(2);
+    }
+
+    public void Effect_UraniumRods_Hammer()
+    {
+        _soundFx.PlayClip(3);
     }
 }

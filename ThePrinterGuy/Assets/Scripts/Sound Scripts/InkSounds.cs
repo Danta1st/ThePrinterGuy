@@ -33,4 +33,14 @@ public class InkSounds : MonoBehaviour
     {
         _soundFx.PlayClip(3);
     }
+
+    public void Effect_Ink_RightSlot()
+    {
+        _soundFx.PlayClip(4);
+    }
+
+    public void Effect_Ink_WrongSlot()
+    {
+        _soundFx.PlayClip(5);
+    }
 }
