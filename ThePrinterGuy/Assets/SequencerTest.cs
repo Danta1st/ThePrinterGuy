@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//FIXME: FIX THIS THING!
 public class SequencerTest : MonoBehaviour {
 	
 	#region Editor Publics
@@ -153,7 +154,7 @@ public class SequencerTest : MonoBehaviour {
 			}				
 		}
 		
-		//Check if last Sequence
+		//Check if last Sequence 
 		if(_sequenceIndex >= _TaskSequences.Length)
 		{
 				//Reset counter & index
@@ -161,7 +162,7 @@ public class SequencerTest : MonoBehaviour {
 				_sequenceIndex = 0;
 				
 				TriggerUnsubscribeFromBeat();
-				_isSubscribed = false;
+				//_isSubscribed = false;
 				
 				//OnLastNode
 				if(OnLastNode != null)
@@ -413,7 +414,10 @@ public class SequencerTest : MonoBehaviour {
 			if(_baseBeatCounter >= _TaskSequences[_sequenceIndex].beatsUntillNextSequence)
 			{
 				BpmManager.OnBeat -= WaitForBaseBeats;
-				_sequenceIndex++;
+				
+				if(_sequenceIndex+1 <= _TaskSequences.Length-1)
+					_sequenceIndex++;
+				
 				_isSubscribed = false;
 				_baseBeatCounter = 0;
 				_taskCounter = 0;
