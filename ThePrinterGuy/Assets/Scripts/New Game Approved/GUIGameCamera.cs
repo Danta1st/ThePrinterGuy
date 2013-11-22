@@ -226,16 +226,8 @@ public class GUIGameCamera : MonoBehaviour
             }
         }
         //--------------------------------------------------//
-		if(GUIMainMenuCamera.languageSetting == "EN")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
-		else if(GUIMainMenuCamera.languageSetting == "DK")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
+
+		UpdateText();
 		
         EnableGUICamera();
 		
@@ -612,7 +604,7 @@ public class GUIGameCamera : MonoBehaviour
     private void QuitLevel()
     {
 		Time.timeScale = 1.0f;
-        LoadingScreen.Load("MainMenu");
+        LoadingScreen.Load(ConstantValues.GetStartScene);
     }
 	
 	//TODO: Settings button functionality.
