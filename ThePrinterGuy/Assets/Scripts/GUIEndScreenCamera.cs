@@ -274,7 +274,6 @@ public class GUIEndScreenCamera : MonoBehaviour
         GestureManager.OnTap += CheckCollision;
         GUIGameCamera guiGameCameraScript = _realGUIList.GetComponent<GUIGameCamera>();
 
-        Debug.Log("STOPMEDKALD§!!!");
         _levelScore = guiGameCameraScript.GetScore();
         nextLevelButton.SetActive(false);
         _isWin = false;

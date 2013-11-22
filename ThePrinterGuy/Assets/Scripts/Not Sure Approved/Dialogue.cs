@@ -7,13 +7,13 @@ public class Dialogue : MonoBehaviour {
     private Color _alertColor;
     #endregion
 
-    private GameObject character;
-    private Color oldColor;
+    private Animation _characterAnimation;
+    private Color _oldColor;
     private bool _cameraMovement = false;
 
     void Start()
     {
-        character = gameObject.transform.FindChild("bossChar").gameObject;
+        _characterAnimation = gameObject.GetComponentInChildren<Animation>();
     }
 
     #region Delegates & Events
@@ -46,31 +46,31 @@ public class Dialogue : MonoBehaviour {
     private void HappyCharacter()
     {
        // OnDialogueStart();
-        character.animation.CrossFade("Selection");
-        character.animation.CrossFadeQueued("Idle");
+        _characterAnimation.CrossFade("Good 01");
         StartCoroutine("CheckForDialogueEnd");
+         _characterAnimation.CrossFadeQueued("Idle");
     }
 
     //Make some variables available to tweaking in editor.   
     private void AngryCharacter()
     {
         //OnDialogueStart();
-        character.animation.CrossFade("Selection");
+        _characterAnimation.CrossFade("Very Angry 01");
         iTween.ColorFrom(Camera.main.gameObject, Color.red, 2f);
-        oldColor = Camera.main.backgroundColor;
-        iTween.ValueTo(gameObject, iTween.Hash("from", oldColor, "to", _alertColor, "time", 0.1f, "onupdate", "changeSkyboxValue"));
-        iTween.ValueTo(gameObject, iTween.Hash("from", _alertColor, "to", oldColor, "time", 0.1f, "onupdate", "changeSkyboxValue", "delay", 0.1f));
-        character.animation.CrossFadeQueued("Idle");
+        _oldColor = Camera.main.backgroundColor;
+        iTween.ValueTo(gameObject, iTween.Hash("from", _oldColor, "to", _alertColor, "time", 0.1f, "onupdate", "changeSkyboxValue"));
+        iTween.ValueTo(gameObject, iTween.Hash("from", _alertColor, "to", _oldColor, "time", 0.1f, "onupdate", "changeSkyboxValue", "delay", 0.1f));
         if(!_cameraMovement)
         {
             iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f,0.5f,0.5f), "time", 0.2f));
         }
         StartCoroutine("CheckForDialogueEnd");
+        _characterAnimation.CrossFadeQueued("Idle");
     }
 
     IEnumerator CheckForDialogueEnd()
     {
-        while(character.animation.IsPlaying("Selection"))
+        while(_characterAnimation.IsPlaying("Very Angry 01") || _characterAnimation.IsPlaying("Good 01"))
         {
             yield return new WaitForSeconds(1);
         }
