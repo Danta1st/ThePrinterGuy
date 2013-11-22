@@ -15,11 +15,11 @@ public class BaroSounds : MonoBehaviour
 
     void Awake()
     {
-        _soundFx = transform.FindChild("SoundFx_Barometers").
-            GetComponent<GenericSoundScript>();
-        _music = transform.FindChild("Music_Barometers").
-            GetComponent<GenericSoundScript>();
-        _effectObject = transform.FindChild("SoundFx_Barometers").gameObject;
+        //_soundFx = transform.FindChild("SoundFx_Barometers").
+        //    GetComponent<GenericSoundScript>();
+        //_music = transform.FindChild("Music_Barometers").
+        //    GetComponent<GenericSoundScript>();
+        //_effectObject = transform.FindChild("SoundFx_Barometers").gameObject;
     }
 
     public void LowerVolume()
