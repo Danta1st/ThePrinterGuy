@@ -170,7 +170,8 @@ public class GUIGameCamera : MonoBehaviour
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
-        transform.position = _guiCamera.transform.position;
+
+		transform.position = _guiCamera.transform.position;
 
         _scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
@@ -701,6 +702,14 @@ public class GUIGameCamera : MonoBehaviour
     private void SaveGUIState()
     {
         _timeScale = Time.timeScale;
+		
+		if(_sequencerObjectQueue.Count > 0)
+		{
+			foreach(GameObject obj in _sequencerObjectQueue)
+			{
+				obj.SetActive(false);
+			}
+		}
 
         foreach(GameObject _gui in _guiList)
         {
@@ -715,7 +724,15 @@ public class GUIGameCamera : MonoBehaviour
     private void LoadGUIState()
     {
         _waitForMe = false;
-
+		
+		if(_sequencerObjectQueue.Count > 0)
+		{
+			foreach(GameObject obj in _sequencerObjectQueue)
+			{
+				obj.SetActive(true);
+			}
+		}
+		
         foreach(GameObject _gui in _guiSaveList)
         {
             _gui.SetActive(true);
