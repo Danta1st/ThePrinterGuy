@@ -94,8 +94,12 @@ public class GUIGameCamera : MonoBehaviour
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
-        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
-        ActionSequencerManager.OnLastNode += LastNode;
+//        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
+//        ActionSequencerManager.OnLastNode += LastNode;
+		
+		SequencerTest.OnCreateNewNode += InstantiateNodeAction;
+		SequencerTest.OnLastNode += LastNode;
+		
         ScoreManager.TaskCompleted += CheckZone;
         //Dialogue.OnDialogueStart += DialogueWindowIn;
         //Dialogue.OnDialogueEnd += DialogueWindowOut;
@@ -105,8 +109,12 @@ public class GUIGameCamera : MonoBehaviour
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
-        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
-        ActionSequencerManager.OnLastNode -= LastNode;
+//        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
+//        ActionSequencerManager.OnLastNode -= LastNode;
+		
+		SequencerTest.OnCreateNewNode -= InstantiateNodeAction;
+		SequencerTest.OnLastNode -= LastNode;
+		
         ScoreManager.TaskCompleted -= CheckZone;
         //Dialogue.OnDialogueStart -= DialogueWindowIn;
         //Dialogue.OnDialogueEnd -= DialogueWindowOut;

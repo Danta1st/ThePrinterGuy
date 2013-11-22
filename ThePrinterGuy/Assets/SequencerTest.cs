@@ -20,8 +20,10 @@ public class SequencerTest : MonoBehaviour {
 	
 	//Beat Handling
 	private int _beatCounter = 0;
+	private int _baseBeatCounter = 0;
 	
 	private bool _isSubscribed = false;
+	private bool _baseBeatSubscribed = false;
 	#endregion
 	
 	#region Delegates & Events
@@ -32,7 +34,7 @@ public class SequencerTest : MonoBehaviour {
     public static event DefaultCamPosAction OnDefaultCamPos;
 	
     public delegate void OnCreateNewNodeAction(string itemName);
-    public static event OnCreateNewNodeAction OnCreateNewNode;	//New Task
+    public static event OnCreateNewNodeAction OnCreateNewNode;
 	
     public delegate void OnTaskAction(int taskIdentifier);
 	
@@ -74,13 +76,13 @@ public class SequencerTest : MonoBehaviour {
 	{
 		if(!_isSubscribed)
 		{
-			SubscribeToBeat();
+			TriggerSubscribeToBeat();
 			_isSubscribed = true;
 			_beatCounter = 0;
 		}
 	}
 	
-	//FIXME: Still use??
+	/*
 	private void SwitchDimmer()
 	{		
 		switch(_TaskSequences[_sequenceIndex].task.ToString())
@@ -99,37 +101,55 @@ public class SequencerTest : MonoBehaviour {
 			break;
 		}
 	}
+	*/
+	
+	private void SpawnTask()
+	{
+		var taskName = _TaskSequences[_sequenceIndex].task.ToString();
+		Debug.Log(gameObject.name + " Spawning: "+taskName);
+		//Spawn Task
+		if(OnCreateNewNode != null)
+			OnCreateNewNode(taskName);
+	}
+	
+	private void CheckSpawnInterval()
+	{
+		//Check what beat we are on
+		if(_beatCounter == 0)
+		{
+			SpawnTask();
+			_taskCounter++;
+			_beatCounter++;
+		}
+		//Reset beat counter
+		else if(_beatCounter >= _TaskSequences[_sequenceIndex].SpawnInterval - 1)
+		{
+			_beatCounter = 0;
+		}
+		//Skip spawning this beat
+		else //if(_beatCounter < _TaskSequences[_sequenceIndex].SpawnInterval - 1)
+		{
+			_beatCounter++;
+		}		
+	}
 	
 	private void CheckBeat()
 	{
 		//Check what sequence we are in
 		if(_sequenceIndex < _TaskSequences.Length)
 		{
-			//Check what beat we are on
-			if(_beatCounter == 0)
-			{
-				SimpleSpawnTask();
-				_taskCounter++;
-				_beatCounter++;
-			}
-			//Reset beat counter
-			else if(_beatCounter >= _TaskSequences[_sequenceIndex].SpawningEvery - 1)
-			{
-				_beatCounter = 0;
-			}
-			//Skip spawning this beat
-			else
-			{
-				_beatCounter++;
-			}
+			CheckSpawnInterval();
 							
 			//Check if last task
 			if(_taskCounter >= _TaskSequences[_sequenceIndex].amounts.Length)
 			{
 				//Reset task counter
 				_taskCounter = 0;
+				//Unsubscribe sequence
+				TriggerUnsubscribeFromBeat();
 				//Increase sequenceCounter
-				_sequenceIndex++;
+				//_sequenceIndex++;
+				BpmManager.OnBeat += WaitForBaseBeats;
 			}				
 		}
 		
@@ -140,7 +160,7 @@ public class SequencerTest : MonoBehaviour {
 				_taskCounter = 0;
 				_sequenceIndex = 0;
 				
-				UnSubscribeFromBeat();
+				TriggerUnsubscribeFromBeat();
 				_isSubscribed = false;
 				
 				//OnLastNode
@@ -149,11 +169,27 @@ public class SequencerTest : MonoBehaviour {
 		}
 	}
 	
-	private void SubscribeToBeat()
+	private void TriggerSubscribeToBeat()
 	{
-		var temp = _TaskSequences[_sequenceIndex].beat.ToString();
+		if(_TaskSequences[_sequenceIndex].beats.Length != 0)
+		{
+			for(int i = 0; i < _TaskSequences[_sequenceIndex].beats.Length; i++)
+			{
+				var temp = _TaskSequences[_sequenceIndex].beats[i].ToString();
+				
+				SubscribeToBeat(temp);
+			}
+		}
+		else
+			Debug.LogError(gameObject.name+" reported that a beat have not been set!");
+	}
+	
+	private void SubscribeToBeat(string beatName)
+	{
+		Debug.Log(gameObject.name+" Subscribing a sequence to: "+beatName);
+		//var temp = _TaskSequences[_sequenceIndex].beat0.ToString();
 		
-		switch(temp)
+		switch(beatName)
 		{
 		case "OnBeat3rd1":
 			//
@@ -250,11 +286,25 @@ public class SequencerTest : MonoBehaviour {
 		}
 	}
 	
-	private void UnSubscribeFromBeat()
+	private void TriggerUnsubscribeFromBeat()
 	{
-		var temp = _TaskSequences[_sequenceIndex].beat.ToString();
+		if(_TaskSequences[_sequenceIndex].beats.Length != 0)
+		{
+			for(int i = 0; i < _TaskSequences[_sequenceIndex].beats.Length; i++)
+			{
+				var temp = _TaskSequences[_sequenceIndex].beats[i].ToString();
+				
+				UnSubscribeFromBeat(temp);
+			}
+		}
+	}
+	
+	private void UnSubscribeFromBeat(string beatName)
+	{
+		Debug.Log(gameObject.name+" Unsubscribing a sequence from: "+beatName);
+		//var temp = _TaskSequences[_sequenceIndex].beat0.ToString();
 		
-		switch(temp)
+		switch(beatName)
 		{
 		case "OnBeat3rd1":
 			//
@@ -352,13 +402,27 @@ public class SequencerTest : MonoBehaviour {
 		
 	}
 	
-	private void SimpleSpawnTask()
+	private void WaitForBaseBeats()
 	{
-		var taskName = _TaskSequences[_sequenceIndex].task.ToString();
+		//count
+		_baseBeatCounter++;
 		
-		//Spawn Task
-		if(OnCreateNewNode != null)
-			OnCreateNewNode(taskName);
+		//unsubscribe
+		if(_baseBeatSubscribed)
+		{
+			if(_baseBeatCounter >= _TaskSequences[_sequenceIndex].beatsUntillNextSequence)
+			{
+				BpmManager.OnBeat -= WaitForBaseBeats;
+				_sequenceIndex++;
+				_isSubscribed = false;
+				_baseBeatCounter = 0;
+				_taskCounter = 0;
+				//_beatCounter = 0;
+				Debug.Log(gameObject.name+" Changing Sequence");
+			}
+		}
+		else if(!_baseBeatSubscribed)
+			_baseBeatSubscribed = true;
 	}
 	
     private void UpdateTaskInFocus()
@@ -366,6 +430,7 @@ public class SequencerTest : MonoBehaviour {
 		//Check ??? 
 		if(_gGameCam.GetQueueCount() == 0)
 		{
+			Debug.Log(gameObject.name+" calling OnDefaultCamPos");
 			if(OnDefaultCamPos != null)
 				OnDefaultCamPos();
 		}
@@ -417,6 +482,7 @@ public class SequencerTest : MonoBehaviour {
 		}
         public enum Beats
 		{
+			Nothing,
 			//3 tact beats
 			OnBeat3rd1,
 			OnBeat3rd2,
@@ -444,9 +510,9 @@ public class SequencerTest : MonoBehaviour {
 			OnBeat8th8
 		}
 		public Tasks task;
-		public Beats beat; 
+		public Beats[] beats;
         public int[] amounts;
-		public int SpawningEvery;
+		public int SpawnInterval;
 		public int beatsUntillNextSequence;
     };
     #endregion

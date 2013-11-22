@@ -59,16 +59,16 @@ public class PaperInsertion : MonoBehaviour
     {
 		StartGate();
 		
-		ActionSequencerManager.OnPaperNode += TriggerLight;
-		ActionSequencerManager.OnPaperNode += EnablePaper;
+		SequencerTest.OnPaperNode += TriggerLight;
+		SequencerTest.OnPaperNode += EnablePaper;
 		ActionSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
 		StopGate();
 		
-		ActionSequencerManager.OnPaperNode -= TriggerLight;
-		ActionSequencerManager.OnPaperNode -= EnablePaper;
+		SequencerTest.OnPaperNode -= TriggerLight;
+		SequencerTest.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
         GestureManager.OnTap -= TriggerSlide;
     }

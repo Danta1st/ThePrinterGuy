@@ -36,13 +36,13 @@ public class UraniumRods : MonoBehaviour
 
     void OnEnable()
     {
-		ActionSequencerManager.OnUraniumRodNode += TriggerSpring;
+		SequencerTest.OnUraniumRodNode += TriggerSpring;
 		ActionSequencerItem.OnFailed += Reset;
     }
 
     void OnDisable()
     {
-		ActionSequencerManager.OnUraniumRodNode -= TriggerSpring;
+		SequencerTest.OnUraniumRodNode -= TriggerSpring;
 		ActionSequencerItem.OnFailed -= Reset;
     }
 
