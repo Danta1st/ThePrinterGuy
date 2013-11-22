@@ -29,8 +29,6 @@ public class GUIMainMenuCamera : MonoBehaviour
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
 	LevelManager lvlManager;
-
-    public static string languageSetting = "EN";
     #endregion
 
 
@@ -117,6 +115,15 @@ public class GUIMainMenuCamera : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+		if(PlayerPrefs.HasKey("selectedLanguage"))
+		{
+			LocalizationText.SetLanguage(PlayerPrefs.GetString("selectedLanguage"));
+		}
+		else
+		{
+			LocalizationText.SetLanguage("EN");
+			PlayerPrefs.SetString("selectedLanguage", "EN");
+		}
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
 		lvlManager = gameObject.GetComponent<LevelManager>();
@@ -174,13 +181,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 
         EnableGUICamera();
         SwitchToMainMenu();
-
-    }
- 
-    // Update is called once per frame
-    void Update()
-    {
- 		
+		UpdateText();
     }
     #endregion
 
@@ -275,27 +276,16 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if(_hit.collider.gameObject.name == "DanishButton")
                     {
-//                        if(_guiCameraStage == "LanguageSelectionStage")
-//                        {
-//                            SwitchToMainMenu();
-//                        }
-
-                        languageSetting = "DK";
-                        LocalizationText.SetLanguage(languageSetting);
+						PlayerPrefs.SetString("selectedLanguage", "DK");
+                        LocalizationText.SetLanguage("DK");
                         UpdateText();
                     }
                     else if(_hit.collider.gameObject.name == "EnglishButton")
                     {
-//                        if(_guiCameraStage == "LanguageSelectionStage")
-//                        {
-//                            SwitchToMainMenu();
-//                        }
-
-                        languageSetting = "EN";
-                        LocalizationText.SetLanguage(languageSetting);
+						PlayerPrefs.SetString("selectedLanguage", "EN");
+                        LocalizationText.SetLanguage("EN");
                         UpdateText();
                     }
-					
                 }
                 //-----------------------------------------------------------------------//
             }
@@ -374,37 +364,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 	            go.collider.enabled = true;
 	        }
 		}
-    
-//        DisableGUIElement("LanguageMenu"); 
     }
-//
-//    private void CheckLeft(GameObject go)
-//    {
-//        if(_guiCameraStage == "MainMenuStage")
-//        {
-//            _guiCameraStage = "CreditsStage";
-//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _creditsPosition, "time", _guiCameraDuration));
-//        }
-//        else if(_guiCameraStage == "OptionsMenuStage")
-//        {
-//            _guiCameraStage = "MainMenuStage";
-//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
-//        }
-//    }
-//
-//    private void CheckRight(GameObject go)
-//    {
-//        if(_guiCameraStage == "MainMenuStage")
-//        {
-//            _guiCameraStage = "OptionsMenuStage";
-//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _optionsPosition, "time", _guiCameraDuration));
-//        }
-//        else if(_guiCameraStage == "CreditsStage")
-//        {
-//            _guiCameraStage = "MainMenuStage";
-//            iTween.MoveTo(_guiCamera.gameObject, iTween.Hash("position", _mainMenuPosition, "time", _guiCameraDuration));
-//        }
-//    }
 
     private void UpdateText()
     {

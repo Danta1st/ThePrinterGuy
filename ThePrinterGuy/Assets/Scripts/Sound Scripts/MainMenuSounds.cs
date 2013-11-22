@@ -44,4 +44,19 @@ public class MainMenuSounds : MonoBehaviour
     {
         _soundFx.PlayClip(4);
     }
+
+    public void Effect_Menu_Footsteps()
+    {
+        _soundFx.PlayClip(5);
+    }
+
+    public void Effect_Menu_Credits()
+    {
+        _soundFx.PlayClip(6);
+    }
+
+    public void Effect_Menu_Options()
+    {
+        _soundFx.PlayClip(7);
+    }
 }

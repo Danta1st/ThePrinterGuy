@@ -238,6 +238,8 @@ ModelImporter:
     100464: RightLeg_IK_BakingLOC
     100466: upperEyeLid
     100468: upperEyelid
+    100470: Cigar_Mesh
+    100472: HandCompLocator
     400000: //RootNode
     400002: bossCharacter_head_uvDONE_michaelK3:Geo_SelectSet
     400004: bossCharacter_torso_uvDONE_michaelK:polySurface19
@@ -473,6 +475,8 @@ ModelImporter:
     400464: RightLeg_IK_BakingLOC
     400466: upperEyeLid
     400468: upperEyelid
+    400470: Cigar_Mesh
+    400472: HandCompLocator
     2300000: polySurface16
     2300002: LeftEye_Mesh
     2300004: lowerEyeLid
@@ -480,6 +484,7 @@ ModelImporter:
     2300008: RightEye_Mesh
     2300010: upperEyeLid
     2300012: upperEyelid
+    2300014: Cigar_Mesh
     3300000: polySurface16
     3300002: LeftEye_Mesh
     3300004: lowerEyeLid
@@ -487,6 +492,7 @@ ModelImporter:
     3300008: RightEye_Mesh
     3300010: upperEyeLid
     3300012: upperEyelid
+    3300014: Cigar_Mesh
     4300000: polySurface16
     4300002: LeftEye_Mesh
     4300004: RightEye_Mesh
@@ -495,9 +501,18 @@ ModelImporter:
     4300010: upperEyeLid
     4300012: lowerEyeLid
     4300014: Boss_Mesh
-    7400000: Idle
+    4300016: Cigar_Mesh
+    7400000: Very Angry 01
     7400002: Selection
     7400004: SelectionFast
+    7400006: Angry 01
+    7400008: Very Angry 02
+    7400010: Extra Bonus
+    7400012: Angry 02
+    7400014: Good 01
+    7400016: Angry 03
+    7400018: Idle
+    7400020: You're Fired
     9500000: //RootNode
     11100000: //RootNode
     13700000: Boss_Mesh
@@ -514,32 +529,11 @@ ModelImporter:
     animationScaleError: .5
     animationWrapMode: 0
     clipAnimations:
-    - name: Idle
+    - name: Very Angry 01
       takeName: Take 001
-      firstFrame: 0
-      lastFrame: 100
-      wrapMode: 2
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      transformMask: []
-    - name: Selection
-      takeName: Take 001
-      firstFrame: 100
-      lastFrame: 160
-      wrapMode: 1
+      firstFrame: 1
+      lastFrame: 70
+      wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
@@ -556,10 +550,178 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       transformMask: []
-    - name: SelectionFast
+    - name: Angry 01
       takeName: Take 001
-      firstFrame: 120
-      lastFrame: 200
+      firstFrame: 100
+      lastFrame: 130
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Very Angry 02
+      takeName: Take 001
+      firstFrame: 150
+      lastFrame: 160
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Extra Bonus
+      takeName: Take 001
+      firstFrame: 170
+      lastFrame: 205
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Angry 02
+      takeName: Take 001
+      firstFrame: 266
+      lastFrame: 302
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Good 01
+      takeName: Take 001
+      firstFrame: 310
+      lastFrame: 350
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Angry 03
+      takeName: Take 001
+      firstFrame: 437
+      lastFrame: 506
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Idle
+      takeName: Take 001
+      firstFrame: 671
+      lastFrame: 771
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: Selection
+      takeName: Take 001
+      firstFrame: 800
+      lastFrame: 832
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      transformMask: []
+    - name: You're Fired
+      takeName: Take 001
+      firstFrame: 1081
+      lastFrame: 1135
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

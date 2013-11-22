@@ -63,4 +63,24 @@ public class InkSounds : MonoBehaviour
     {
         _soundFx.PlayClip(5);
     }
+
+    public void Effect_Ink_SlotClose1()
+    {
+        _soundFx.PlayClip(6);
+    }
+
+    public void Effect_Ink_SlotClose2()
+    {
+        _soundFx.PlayClip(7);
+    }
+
+    public void Effect_Ink_SlotClose3()
+    {
+        _soundFx.PlayClip(8);
+    }
+
+    public void Effect_Ink_SlotClose4()
+    {
+        _soundFx.PlayClip(9);
+    }
 }
