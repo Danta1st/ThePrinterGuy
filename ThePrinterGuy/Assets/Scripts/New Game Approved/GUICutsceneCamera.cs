@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GUICutsceneCamera : MonoBehaviour {
-	
+public class GUICutsceneCamera : MonoBehaviour 
+{
     #region Editor Publics
     //List of all gui elements.
     [SerializeField]
@@ -92,7 +92,8 @@ public class GUICutsceneCamera : MonoBehaviour {
     #endregion
 	
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
@@ -115,17 +116,9 @@ public class GUICutsceneCamera : MonoBehaviour {
             }
         }
         //--------------------------------------------------//
-		if(GUIMainMenuCamera.languageSetting == "EN")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
-		else if(GUIMainMenuCamera.languageSetting == "DK")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
-		
+
+		UpdateText();
+
 		foreach(GameObject _text in _textList)
 		{
 			_text.SetActive(false);
@@ -137,9 +130,9 @@ public class GUICutsceneCamera : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
 		_currentTimeStamp = Time.timeSinceLevelLoad;
-		Debug.Log(_currentTimeStamp);
 		if(_currentTimeStamp > _timeStampText && _isReady == true && _isLast == false)
 		{
 			ActivateSubtitle();

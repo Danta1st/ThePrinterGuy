@@ -312,7 +312,7 @@ public class LevelManager : MonoBehaviour
 
             if(_gameLevelsUnlocked[index])
             {
-                LoadingScreen.Load(index+1);
+                LoadingScreen.Load(index+1, true);
             }
         }
     }

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GUIEndScreenCamera : MonoBehaviour {
-	
+public class GUIEndScreenCamera : MonoBehaviour 
+{
     #region Editor Publics
     [SerializeField]
     private LayerMask _layerMaskGUI;
@@ -26,11 +26,11 @@ public class GUIEndScreenCamera : MonoBehaviour {
     #endregion
 	
 	[System.Serializable]
-	public class TargetScores {
+	public class TargetScores 
+	{
 		public int starScoreOne;
 		public int starScoreTwo;
 		public int starScoreThree;
-		
 	}
 	
     #region Private Variables
@@ -121,7 +121,8 @@ public class GUIEndScreenCamera : MonoBehaviour {
     #endregion
 	
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCam = GameObject.Find("GUI Camera");
@@ -157,16 +158,6 @@ public class GUIEndScreenCamera : MonoBehaviour {
 				_speechText = _textObject.GetComponent<TextMesh>();
         }
         //--------------------------------------------------//
-		if(GUIMainMenuCamera.languageSetting == "EN")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-//			UpdateText();
-		}
-		else if(GUIMainMenuCamera.languageSetting == "DK")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-//			UpdateText();
-		}
 		
 		PlaceTargetStars();
 		
@@ -223,19 +214,19 @@ public class GUIEndScreenCamera : MonoBehaviour {
                     if(_hit.collider.gameObject.name == "RestartButton")
                     {
                         GestureManager.OnTap -= CheckCollision;
-						LoadingScreen.Load(Application.loadedLevel);
+						LoadingScreen.Load(Application.loadedLevel, true);
                     }
                     else if(_hit.collider.gameObject.name == "MainMenuButton")
                     {
                         GestureManager.OnTap -= CheckCollision;
-						LoadingScreen.Load("MainMenu");
+						LoadingScreen.Load(ConstantValues.GetStartScene);
                     }
 					else if(_hit.collider.gameObject.name == "NextLevelButton")
 					{
                         if(Application.loadedLevel == 4)
                         {
                             GestureManager.OnTap -= CheckCollision;
-                            LoadingScreen.Load(2);
+                            LoadingScreen.Load(ConstantValues.GetStartScene);
                         }
                         else
                         {
@@ -245,10 +236,6 @@ public class GUIEndScreenCamera : MonoBehaviour {
 					}
                 }
                 //-----------------------------------------------------------------------//
-            }
-            else
-            {
-
             }
         }
     }
@@ -283,7 +270,7 @@ public class GUIEndScreenCamera : MonoBehaviour {
         EnableGUICamera();
         EnableGUIElementAll();
         GestureManager.OnTap += CheckCollision;
-        GUIGameCamera gUIGameCamera =  new GUIGameCamera();
+        GUIGameCamera gUIGameCamera = new GUIGameCamera();
 
         _levelScore = gUIGameCamera.GetScore();
         nextLevelButton.SetActive(false);
@@ -335,12 +322,6 @@ public class GUIEndScreenCamera : MonoBehaviour {
 		}
 		
 		ShowHighscore(_levelHighscore);
-	}
-	
-	private void RestartGame()
-	{
-		GestureManager.OnTap -= CheckCollision;
-		LoadingScreen.Load(1);
 	}
 	
 	IEnumerator MoveEstimateBar()
@@ -415,9 +396,9 @@ public class GUIEndScreenCamera : MonoBehaviour {
 			yield return new WaitForSeconds(0.1f);
 		}
 		if(_isWin)
-			InsertSpeechText("Nice work, are\n you ready for the\n next challenge?");
+			InsertSpeechText(LocalizationText.GetText("WinText1"));
 		else
-			InsertSpeechText("You're fired.\n Never mind now\n get back to work.");
+			InsertSpeechText(LocalizationText.GetText("LossText1"));
 		
 		FindHighscore();
 	}

@@ -170,8 +170,11 @@ public class LoadingScreen : MonoBehaviour
 		{
 			temp = "Tips_Tip" + Random.Range(1, _practicalTipsAmount).ToString();
 		}
-		TipText.SetStringText(temp);
-		TipText.LocalizeText();
+		if(!_skipTap)
+		{
+			TipText.SetStringText(temp);
+			TipText.LocalizeText();
+		}
 		
 		if (_levelName != "")
             Async = Application.LoadLevelAsync(_levelName);
@@ -180,13 +183,17 @@ public class LoadingScreen : MonoBehaviour
 		
 		Async.allowSceneActivation = false;
 		
-		while(Async.progress < 0.9f)
+		while(Async.progress < 0.9f) // Load is actually done at 90% when allowSceneActivation = false
 		{
 			yield return new WaitForEndOfFrame();
 		}
+		
 		LW.setLoading(false);
-		TapToCont.gameObject.SetActive(true);
-		TapToCont.LocalizeText();
+		if(!_skipTap)
+		{
+			TapToCont.gameObject.SetActive(true);
+			TapToCont.LocalizeText();
+		}
 		while(true)
 		{
 			if(_skipTap)
