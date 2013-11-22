@@ -114,4 +114,19 @@ public class VoiceSounds : MonoBehaviour
     {
         _voiceBoss.PlayClip(Random.Range(9, 17));
     }
+
+    public void Voice_Boss_Idle()
+    {
+        _voiceBoss.PlayClip(18);
+    }
+
+    public void Voice_Boss_ForwardsMovement()
+    {
+        _voiceBoss.PlayClip(19);
+    }
+
+    public void Voice_Boss_BackwardsMovement()
+    {
+        _voiceBoss.PlayClip(20);
+    }
 }
