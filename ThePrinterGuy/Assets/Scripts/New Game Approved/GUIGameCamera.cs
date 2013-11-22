@@ -170,7 +170,8 @@ public class GUIGameCamera : MonoBehaviour
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
-        transform.position = _guiCamera.transform.position;
+
+		transform.position = _guiCamera.transform.position;
 
         _scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
@@ -225,16 +226,8 @@ public class GUIGameCamera : MonoBehaviour
             }
         }
         //--------------------------------------------------//
-		if(GUIMainMenuCamera.languageSetting == "EN")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
-		else if(GUIMainMenuCamera.languageSetting == "DK")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
+
+		UpdateText();
 		
         EnableGUICamera();
 		
@@ -610,7 +603,8 @@ public class GUIGameCamera : MonoBehaviour
 	//TODO: Quit button functionality.
     private void QuitLevel()
     {
-        //LoadingScreen.Load("SOMETHING SCENE");
+		Time.timeScale = 1.0f;
+        LoadingScreen.Load(ConstantValues.GetStartScene);
     }
 	
 	//TODO: Settings button functionality.
@@ -645,7 +639,7 @@ public class GUIGameCamera : MonoBehaviour
             _sequencerObject = _barometerPrefab;
         }
 
-        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 1);
+        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 4);
         GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);
@@ -701,6 +695,14 @@ public class GUIGameCamera : MonoBehaviour
     private void SaveGUIState()
     {
         _timeScale = Time.timeScale;
+		
+		if(_sequencerObjectQueue.Count > 0)
+		{
+			foreach(GameObject obj in _sequencerObjectQueue)
+			{
+				obj.SetActive(false);
+			}
+		}
 
         foreach(GameObject _gui in _guiList)
         {
@@ -715,7 +717,15 @@ public class GUIGameCamera : MonoBehaviour
     private void LoadGUIState()
     {
         _waitForMe = false;
-
+		
+		if(_sequencerObjectQueue.Count > 0)
+		{
+			foreach(GameObject obj in _sequencerObjectQueue)
+			{
+				obj.SetActive(true);
+			}
+		}
+		
         foreach(GameObject _gui in _guiSaveList)
         {
             _gui.SetActive(true);
