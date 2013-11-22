@@ -3,24 +3,54 @@ using System.Collections;
 
 public class RodSounds : MonoBehaviour
 {
+    [SerializeField] private iTween.EaseType _easeType;
+    [SerializeField] private float _lowVolume = 0.8f;
+    [SerializeField] private float _highVolume = 1.0f;
+    [SerializeField] private float _fadeTime = 2.0f;
 
-    public static void Effect_UraniumRods_Popup1()
+    private GameObject _effectObject;
+
+    private GenericSoundScript _soundFx;
+    private GenericSoundScript _music;
+
+    void Awake()
     {
-        //Play Rod Popup sound 1
+        _soundFx = transform.FindChild("SoundFx_Uranium Rods").
+            GetComponent<GenericSoundScript>();
+        _music = transform.FindChild("Music_Uranium Rods").
+            GetComponent<GenericSoundScript>();
+        _effectObject = transform.FindChild("SoundFx_Uranium Rods").gameObject;
     }
 
-    public static void Effect_UraniumRods_Popup2()
+    public void LowerVolume()
     {
-        //Play Rod Popup sound 2
+        iTween.AudioTo(_effectObject, iTween.Hash("audiosource", _effectObject.audio, "volume", _lowVolume,
+            "time", _fadeTime, "easetype", _easeType));
     }
 
-    public static void Effect_UraniumRods_Popup3()
+    public void RaiseVolume()
     {
-        //Play Rod Popup sound 3
+        iTween.AudioTo(_effectObject, iTween.Hash("audiosource", _effectObject.audio, "volume", _highVolume,
+            "time", _fadeTime, "easetype", _easeType));
     }
 
-    public static void Effect_UraniumRods_Hammer()
+    public void Effect_UraniumRods_Popup1()
     {
-        //Play Hammer sound
+        _soundFx.PlayClip(0);
+    }
+
+    public void Effect_UraniumRods_Popup2()
+    {
+        _soundFx.PlayClip(1);
+    }
+
+    public void Effect_UraniumRods_Popup3()
+    {
+        _soundFx.PlayClip(2);
+    }
+
+    public void Effect_UraniumRods_Hammer()
+    {
+        _soundFx.PlayClip(3);
     }
 }
