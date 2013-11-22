@@ -639,7 +639,7 @@ public class GUIGameCamera : MonoBehaviour
             _sequencerObject = _barometerPrefab;
         }
 
-        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 1);
+        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 4);
         GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);
