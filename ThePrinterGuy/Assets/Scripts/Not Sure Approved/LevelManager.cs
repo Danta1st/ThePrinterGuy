@@ -94,6 +94,8 @@ public class LevelManager : MonoBehaviour
 
             StageCharacter thisChar = go.GetComponent<StageCharacter>();
 
+            Animation characterAnimation = go.GetComponent<Animation>();
+
             GameObject thisProjectorHolder = go.transform.parent.FindChild("projectorHolder").gameObject;
 
             Projector thisProjector = thisProjectorHolder.transform.GetComponent<Projector>();
@@ -242,9 +244,9 @@ public class LevelManager : MonoBehaviour
 	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveForwardAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
 	
 	        LevelBoxesAppear(go);
-	        GameObject character = go.transform.FindChild("bossChar").gameObject;
-	        character.animation.CrossFade("SelectionFast");
-	        character.animation.CrossFadeQueued("Idle");
+	        Animation characterAnimation = go.GetComponentInChildren<Animation>();
+	        characterAnimation.CrossFade("Selection");
+	        characterAnimation.CrossFadeQueued("Idle");
 		}
     }
 
