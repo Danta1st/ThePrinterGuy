@@ -1,27 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-//FIXME: FIX THIS THING!
 public class SequencerTest : MonoBehaviour {
 	
 	#region Editor Publics
 	[SerializeField] private TaskSequence[] _TaskSequences;
-	#endregion
-	
+	#endregion	
 	
 	#region Privates
 	private GUIGameCamera _gGameCam;
 	
 	//Task Spawning
     private int _sequenceIndex = 0;
-	private int _taskCounter = 0;
-	
-	//Focus Handling
-    private int _focusIndex = 0;
+	private int _taskCounter = 0;	
 	
 	//Beat Handling
 	private int _beatCounter = 0;
 	private int _baseBeatCounter = 0;
+	
+	//Focus Handling
+    private int _focusIndex = 0;
+	private int _sequenceFocusIndex = 0;	
 	
 	private bool _isSubscribed = false;
 	private bool _baseBeatSubscribed = false;
@@ -57,22 +56,21 @@ public class SequencerTest : MonoBehaviour {
     }
     #endregion
 	
+	#region Monebehaviour Functions
 	void Awake()
 	{
 		_gGameCam = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
 	}
-	
-	void Start()
-	{
-	
-	}
-	
+		
 	void Update()
 	{
 		CheckSubscription();
 	}
+	#endregion
 	
 	#region Class Methods
+	
+	//Subscription Methods
 	private void CheckSubscription()
 	{
 		if(!_isSubscribed)
@@ -80,93 +78,6 @@ public class SequencerTest : MonoBehaviour {
 			TriggerSubscribeToBeat();
 			_isSubscribed = true;
 			_beatCounter = 0;
-		}
-	}
-	
-	/*
-	private void SwitchDimmer()
-	{		
-		switch(_TaskSequences[_sequenceIndex].task.ToString())
-		{
-		case "Paper":
-			//Paper methods
-			break;
-		case "Ink":
-			//Ink Methods
-			break;
-		case "UraniumRod":
-			//Uranium Methods
-			break;
-		case "Barometer":
-			//Barometer Methods
-			break;
-		}
-	}
-	*/
-	
-	private void SpawnTask()
-	{
-		var taskName = _TaskSequences[_sequenceIndex].task.ToString();
-		Debug.Log(gameObject.name + " Spawning: "+taskName);
-		//Spawn Task
-		if(OnCreateNewNode != null)
-			OnCreateNewNode(taskName);
-	}
-	
-	private void CheckSpawnInterval()
-	{
-		//Check what beat we are on
-		if(_beatCounter == 0)
-		{
-			SpawnTask();
-			_taskCounter++;
-			_beatCounter++;
-		}
-		//Reset beat counter
-		else if(_beatCounter >= _TaskSequences[_sequenceIndex].SpawnInterval - 1)
-		{
-			_beatCounter = 0;
-		}
-		//Skip spawning this beat
-		else //if(_beatCounter < _TaskSequences[_sequenceIndex].SpawnInterval - 1)
-		{
-			_beatCounter++;
-		}		
-	}
-	
-	private void CheckBeat()
-	{
-		//Check what sequence we are in
-		if(_sequenceIndex < _TaskSequences.Length)
-		{
-			CheckSpawnInterval();
-							
-			//Check if last task
-			if(_taskCounter >= _TaskSequences[_sequenceIndex].amounts.Length)
-			{
-				//Reset task counter
-				_taskCounter = 0;
-				//Unsubscribe sequence
-				TriggerUnsubscribeFromBeat();
-				//Increase sequenceCounter
-				//_sequenceIndex++;
-				BpmManager.OnBeat += WaitForBaseBeats;
-			}				
-		}
-		
-		//Check if last Sequence 
-		if(_sequenceIndex >= _TaskSequences.Length)
-		{
-				//Reset counter & index
-				_taskCounter = 0;
-				_sequenceIndex = 0;
-				
-				TriggerUnsubscribeFromBeat();
-				//_isSubscribed = false;
-				
-				//OnLastNode
-				if(OnLastNode != null)
-					OnLastNode();
 		}
 	}
 	
@@ -187,7 +98,7 @@ public class SequencerTest : MonoBehaviour {
 	
 	private void SubscribeToBeat(string beatName)
 	{
-		Debug.Log(gameObject.name+" Subscribing a sequence to: "+beatName);
+		Debug.Log(gameObject.name+" Subscribing sequence '"+_sequenceIndex+"' to: "+beatName);
 		//var temp = _TaskSequences[_sequenceIndex].beat0.ToString();
 		
 		switch(beatName)
@@ -302,7 +213,7 @@ public class SequencerTest : MonoBehaviour {
 	
 	private void UnSubscribeFromBeat(string beatName)
 	{
-		Debug.Log(gameObject.name+" Unsubscribing a sequence from: "+beatName);
+		Debug.Log(gameObject.name+" Unsubscribing sequence '"+_sequenceIndex+"' from: "+beatName);
 		//var temp = _TaskSequences[_sequenceIndex].beat0.ToString();
 		
 		switch(beatName)
@@ -399,16 +310,99 @@ public class SequencerTest : MonoBehaviour {
 			break;
 		default:
 			break;
+		}		
+	}	
+		
+	/*
+	private void SwitchDimmer()
+	{		
+		switch(_TaskSequences[_sequenceIndex].task.ToString())
+		{
+		case "Paper":
+			//Paper methods
+			break;
+		case "Ink":
+			//Ink Methods
+			break;
+		case "UraniumRod":
+			//Uranium Methods
+			break;
+		case "Barometer":
+			//Barometer Methods
+			break;
+		}
+	}
+	*/
+	
+	//Task Spawning Logic Hell!
+	private void SpawnTask()
+	{
+		var taskName = _TaskSequences[_sequenceIndex].task.ToString();
+		
+		//Spawn Task
+		if(OnCreateNewNode != null)
+			OnCreateNewNode(taskName);
+	}
+	
+	private void CheckSpawnInterval()
+	{
+		//Check what beat we are on
+		if(_beatCounter == 0)
+		{
+			SpawnTask();
+			_beatCounter++;
+			
+			if(_taskCounter < _TaskSequences[_sequenceIndex].amounts.Length)
+				_taskCounter++;
+		}
+		//Reset beat counter
+		else if(_beatCounter >= _TaskSequences[_sequenceIndex].SpawnInterval)
+		{
+			_beatCounter = 0;
+		}
+		//Skip spawning this beat
+		else if(_beatCounter < _TaskSequences[_sequenceIndex].SpawnInterval)
+		{
+			_beatCounter++;
+		}		
+	}
+	
+	private void CheckBeat()
+	{
+		//Check what sequence we are in
+		if(_sequenceIndex < _TaskSequences.Length)
+		{
+			CheckSpawnInterval();
+							
+			//Check if last task
+			if(_taskCounter >= _TaskSequences[_sequenceIndex].amounts.Length)
+			{
+				//Unsubscribe sequence
+				TriggerUnsubscribeFromBeat();
+				//Subscribe waiting for base beats & lock
+				_baseBeatSubscribed = true;
+				BpmManager.OnBeat += WaitForBaseBeats;
+			}				
 		}
 		
-	}
+		//FIXME: Check if last Sequence
+		if(_sequenceIndex >= _TaskSequences.Length)
+		{
+			Debug.Log(gameObject.name+" Inside OnLastNode method!");
+			
+				TriggerUnsubscribeFromBeat();
+				
+				//OnLastNode
+				if(OnLastNode != null)
+					OnLastNode();
+		}
+	}	
 	
 	private void WaitForBaseBeats()
 	{
 		//count
 		_baseBeatCounter++;
 		
-		//unsubscribe
 		if(_baseBeatSubscribed)
 		{
 			if(_baseBeatCounter >= _TaskSequences[_sequenceIndex].beatsUntillNextSequence)
@@ -416,59 +410,65 @@ public class SequencerTest : MonoBehaviour {
 				BpmManager.OnBeat -= WaitForBaseBeats;
 				
 				if(_sequenceIndex+1 <= _TaskSequences.Length-1)
+				{
 					_sequenceIndex++;
-				
+					Debug.Log(gameObject.name+" Increasing _sequencerIndex to: "+_sequenceIndex);
+				}
 				_isSubscribed = false;
 				_baseBeatCounter = 0;
 				_taskCounter = 0;
-				//_beatCounter = 0;
-				Debug.Log(gameObject.name+" Changing Sequence");
+				_beatCounter = 0;
 			}
 		}
-		else if(!_baseBeatSubscribed)
-			_baseBeatSubscribed = true;
 	}
 	
+	//Focus Update
     private void UpdateTaskInFocus()
     {
+		//Update counters
+		if(_focusIndex >= _TaskSequences[_sequenceFocusIndex].amounts.Length)
+		{
+			_sequenceFocusIndex++;
+			_focusIndex = 0;
+		}
+		
 		//Check ??? 
 		if(_gGameCam.GetQueueCount() == 0)
 		{
-			Debug.Log(gameObject.name+" calling OnDefaultCamPos");
 			if(OnDefaultCamPos != null)
 				OnDefaultCamPos();
 		}
-		//Check which ask is in focus;
-		else if(_focusIndex < _TaskSequences.Length)
+		//Check which task is in focus;
+		else if(_focusIndex < _TaskSequences[_sequenceFocusIndex].amounts.Length)
 		{
-			var focusItem = _TaskSequences[_focusIndex].task.ToString();
+			var focusItem = _TaskSequences[_sequenceFocusIndex].task.ToString();
 						
 	        if(focusItem == "Paper")
 	        {
 	            if(OnPaperNode != null)
 	            {
-	                OnPaperNode(_TaskSequences[_focusIndex].amounts[_taskCounter] - 1);
+	                OnPaperNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
 	            }
 	        }
 	        else if(focusItem == "Ink")
 	        {
 	            if(OnInkNode != null)
 	            {
-	                OnInkNode(_TaskSequences[_focusIndex].amounts[_taskCounter] - 1);
+	                OnInkNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
 	            }
 	        }
 	        else if(focusItem == "UraniumRod")
 	        {
 	            if(OnUraniumRodNode != null)
 	            {
-	                OnUraniumRodNode(_TaskSequences[_focusIndex].amounts[_taskCounter] - 1);
+	                OnUraniumRodNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
 	            }
 	        }
 	        else if(focusItem == "Barometer")
 	        {
 	            if(OnBarometerNode != null)
 	            {
-	                OnBarometerNode(_TaskSequences[_focusIndex].amounts[_taskCounter] - 1);
+	                OnBarometerNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
 	            }
 	        }
             _focusIndex++;

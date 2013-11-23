@@ -98,7 +98,25 @@ public class UraniumRods : MonoBehaviour
 		var go = _rods[itemNumber].rod;
 		//if(_rodsAndStates[go] == false) // QUICKFIX: Enables ability to choose same rod several times in a row
         {
-            GSS.PlayClip(itemNumber);
+			
+			switch(itemNumber)
+			{
+			case 1:
+				SoundManager.Effect_UraniumRods_Popup1();
+				break;
+			case 2:
+				SoundManager.Effect_UraniumRods_Popup2();
+				break;
+			case 3:
+				SoundManager.Effect_UraniumRods_Popup3();
+				break;
+			case 4:
+				SoundManager.Effect_UraniumRods_Popup4();
+				break;
+			default:
+				Debug.LogWarning("Incorrect itemNumber for uranium received. No sound will play");
+				break;
+			}
             Spring(go, itemNumber);
 
             _rodsAndStates[go] = true;
@@ -159,7 +177,7 @@ public class UraniumRods : MonoBehaviour
             {
 				failed = false;
 
-                GSS.PlayClip(3);
+				SoundManager.Effect_UraniumRods_Hammer();
 
                 Hammer(go);
 				GestureManager.OnTap -= TriggerHammer;

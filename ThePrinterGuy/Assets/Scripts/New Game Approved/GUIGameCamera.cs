@@ -656,8 +656,8 @@ public class GUIGameCamera : MonoBehaviour
     {
         if(_sequencerObjectQueue.Count > 0)
         {
-			Debug.Log(gameObject.name+" Settings _queuedObject");
             _queuedObject = _sequencerObjectQueue.Peek();
+			Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
             ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
 
             _zone = _actionSequencerItemScript.GetZoneStatus();
