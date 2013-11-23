@@ -441,34 +441,34 @@ public class SequencerTest : MonoBehaviour {
 		//Check which ask is in focus;
 		else if(_focusIndex < _TaskSequences.Length)
 		{
-			var focusItem = _TaskSequences[_sequenceIndex].task.ToString();
+			var focusItem = _TaskSequences[_focusIndex].task.ToString();
 						
 	        if(focusItem == "Paper")
 	        {
 	            if(OnPaperNode != null)
 	            {
-	                OnPaperNode(_TaskSequences[_sequenceIndex].amounts[_taskCounter] - 1);
+	                OnPaperNode(_TaskSequences[_focusIndex].amounts[_taskCounter] - 1);
 	            }
 	        }
 	        else if(focusItem == "Ink")
 	        {
 	            if(OnInkNode != null)
 	            {
-	                OnInkNode(_TaskSequences[_sequenceIndex].amounts[_taskCounter] - 1);
+	                OnInkNode(_TaskSequences[_focusIndex].amounts[_taskCounter] - 1);
 	            }
 	        }
 	        else if(focusItem == "UraniumRod")
 	        {
 	            if(OnUraniumRodNode != null)
 	            {
-	                OnUraniumRodNode(_TaskSequences[_sequenceIndex].amounts[_taskCounter] - 1);
+	                OnUraniumRodNode(_TaskSequences[_focusIndex].amounts[_taskCounter] - 1);
 	            }
 	        }
 	        else if(focusItem == "Barometer")
 	        {
 	            if(OnBarometerNode != null)
 	            {
-	                OnBarometerNode(_TaskSequences[_sequenceIndex].amounts[_taskCounter] - 1);
+	                OnBarometerNode(_TaskSequences[_focusIndex].amounts[_taskCounter] - 1);
 	            }
 	        }
             _focusIndex++;
@@ -520,4 +520,5 @@ public class SequencerTest : MonoBehaviour {
 		public int beatsUntillNextSequence;
     };
     #endregion
+	
 }
