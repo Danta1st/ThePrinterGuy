@@ -77,13 +77,12 @@ public class Ink : MonoBehaviour
 			icc.pathSucc = new Vector3[3];
 			icc.pathSucc[0] = icc.insertableCartridge.position;
 			icc.pathSucc[2] = icc.cartridge.position;
-			icc.pathSucc[1] = icc.cartridge.position;
-//			icc.pathSucc[1] = new Vector3(icc.pathSucc[1].x + 0.5f * (icc.pathSucc[1].x - icc.pathSucc[0].x), icc.pathSucc[0].y, icc.pathSucc[0].z);
+			icc.pathSucc[1] = new Vector3(icc.pathSucc[2].x, icc.pathSucc[2].y, icc.pathSucc[2].z + 0.5f * (icc.pathSucc[0].z - icc.pathSucc[2].z));
 			icc.pathFail = new Vector3[3];
 			icc.pathFail[0] = icc.pathSucc[0];
 			icc.pathFail[1] = icc.pathSucc[1];
 			icc.pathFail[2] = icc.pathSucc[2];
-			icc.pathFail[2].z -= 1.25f;
+			icc.pathFail[2].z -= 1.5f;
 		}
 		
 		
