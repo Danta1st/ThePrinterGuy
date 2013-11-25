@@ -16,8 +16,8 @@ public class SoundManager : MonoBehaviour
     private static MachineSounds _machineSounds;
 
     private static GenericSoundScript[] _soundScripts;
-    private static List<GenericSoundScript> _scriptList;
-    private static List<float> _soundVolume;
+    private static List<GenericSoundScript> _scriptList = new List<GenericSoundScript>();
+    private static List<float> _soundVolume = new List<float>();
 
     void Awake()
     {
@@ -37,6 +37,7 @@ public class SoundManager : MonoBehaviour
         for(int i = 0; i <_soundScripts.Length; i++)
         {
             _scriptList.Add(_soundScripts[i]);
+            _soundVolume.Add(_soundScripts[i].GetVolume());
         }
     }
 
@@ -429,10 +430,12 @@ public class SoundManager : MonoBehaviour
             //False - Set volume for each source
             if(!_isFaded)
             {
+                Debug.Log(gss);
                 int index = _scriptList.IndexOf(gss);
+                Debug.Log(_soundVolume[index]);
                 _soundVolume[index] = gss.GetVolume();
                 gss.FadeVolume(0.0f, _fadeTime);
-                StaticCoroutine.DoCoroutine(_fadeTime);
+                //StaticCoroutine.DoCoroutine(_fadeTime);
             }
 
             //True - Return volume for each source
@@ -440,7 +443,7 @@ public class SoundManager : MonoBehaviour
             {
                 int index = _scriptList.IndexOf(gss);
                 gss.FadeVolume(_soundVolume[index], _fadeTime);
-                StaticCoroutine.DoCoroutine(_fadeTime);
+                //StaticCoroutine.DoCoroutine(_fadeTime);
             }
 
             _isFaded = !_isFaded;
