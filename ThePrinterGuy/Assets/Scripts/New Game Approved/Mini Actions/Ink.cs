@@ -94,7 +94,7 @@ public class Ink : MonoBehaviour
 	{
 		StartGates();
 		
-		ActionSequencerManager.OnInkNode += StartInkTask;
+		SequencerTest.OnInkNode += StartInkTask;
 		ActionSequencerItem.OnFailed += InkReset;
 	}
 	
@@ -102,7 +102,7 @@ public class Ink : MonoBehaviour
 	{
 		StopGates();
 		
-		ActionSequencerManager.OnInkNode -= StartInkTask;
+		SequencerTest.OnInkNode -= StartInkTask;
 		ActionSequencerItem.OnFailed -= InkReset;
 	}
 	

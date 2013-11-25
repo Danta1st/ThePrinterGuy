@@ -37,10 +37,16 @@ public class PathManager : MonoBehaviour {
 //        GestureManager.OnSwipeLeft += TriggerMovePaper;
 //        GestureManager.OnSwipeUp += TriggerMoveInk;
 //        GestureManager.OnSwipeDown += TriggerMoveUranium;
-		ActionSequencerManager.OnBarometerNode += TriggerMoveBarometer;
-		ActionSequencerManager.OnInkNode += TriggerMoveInk;
-		ActionSequencerManager.OnPaperNode += TriggerMovePaper;
-		ActionSequencerManager.OnUraniumRodNode += TriggerMoveUranium;
+		
+//		ActionSequencerManager.OnBarometerNode += TriggerMoveBarometer;
+//		ActionSequencerManager.OnInkNode += TriggerMoveInk;
+//		ActionSequencerManager.OnPaperNode += TriggerMovePaper;
+//		ActionSequencerManager.OnUraniumRodNode += TriggerMoveUranium;
+		
+		SequencerTest.OnPaperNode 		+= TriggerMovePaper;
+		SequencerTest.OnInkNode 		+= TriggerMoveInk;
+		SequencerTest.OnUraniumRodNode 	+= TriggerMoveUranium;
+		SequencerTest.OnBarometerNode 	+= TriggerMoveBarometer;
     }
     void OnDisable()
     {
@@ -48,10 +54,16 @@ public class PathManager : MonoBehaviour {
 //        GestureManager.OnSwipeLeft -= TriggerMovePaper;
 //        GestureManager.OnSwipeUp -= TriggerMoveInk;
 //        GestureManager.OnSwipeDown -= TriggerMoveUranium;
-		ActionSequencerManager.OnBarometerNode -= TriggerMoveBarometer;
-		ActionSequencerManager.OnInkNode -= TriggerMoveInk;
-		ActionSequencerManager.OnPaperNode -= TriggerMovePaper;
-		ActionSequencerManager.OnUraniumRodNode -= TriggerMoveUranium;
+		
+//		ActionSequencerManager.OnBarometerNode -= TriggerMoveBarometer;
+//		ActionSequencerManager.OnInkNode -= TriggerMoveInk;
+//		ActionSequencerManager.OnPaperNode -= TriggerMovePaper;
+//		ActionSequencerManager.OnUraniumRodNode -= TriggerMoveUranium;
+		
+		SequencerTest.OnPaperNode 		-= TriggerMovePaper;
+		SequencerTest.OnInkNode 		-= TriggerMoveInk;
+		SequencerTest.OnUraniumRodNode 	-= TriggerMoveUranium;
+		SequencerTest.OnBarometerNode 	-= TriggerMoveBarometer;
     }
 
     #region Monohevaiour Methods
