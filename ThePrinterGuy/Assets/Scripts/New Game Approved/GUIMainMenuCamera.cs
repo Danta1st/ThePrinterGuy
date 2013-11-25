@@ -26,7 +26,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     private bool _isGUI = true;
     private bool _canTouch = true;
 	private bool _isOnStartScreen = true;
-	private CreditsScript credits;
+	private Credits credits;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -142,7 +142,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 		lvlManager = gameObject.GetComponent<LevelManager>();
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
-		credits = GameObject.Find("Credits").GetComponent<CreditsScript>();
+		credits = GameObject.Find("Television").GetComponent<Credits>();
 
         _scaleMultiplierX = Screen.width / 1920f;
         _scaleMultiplierY = Screen.height / 1200f;
@@ -288,7 +288,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                         if(OnMainScreen != null)
                         {
                             OnMainScreen();
-
+							credits.SetCreditsRunning(false);
                             DisableGUIElementAll();
                         }
                     }
@@ -391,8 +391,11 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         foreach(GameObject _text in _textList)
         {
-            _text.GetComponent<LocalizationKeywordText>().LocalizeText();
-        }
+			if(_text != null)
+            	_text.GetComponent<LocalizationKeywordText>().LocalizeText();
+			else
+				Debug.LogWarning(gameObject.name+" found no text in _textList");
+        }		
     }
     #endregion
 }
