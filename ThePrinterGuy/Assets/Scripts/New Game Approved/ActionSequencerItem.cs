@@ -131,12 +131,12 @@ public class ActionSequencerItem : MonoBehaviour
 		{
 			_statusZone = "Yellow";
 		}
-		if(transform.position.x < _greenZonePosition.x)
+		if(transform.position.x < _greenZonePosition.x+50)
 		{
 			_statusZone = "Green";
 			_greenZoneScript.GreenOn();
 		}
-		if(transform.position.x < _greenZonePosition.x-25)
+		if(transform.position.x < _greenZonePosition.x-50)
 		{
 			_greenZoneScript.GreenOff();
 			_statusZone = "Yellow";
