@@ -126,7 +126,7 @@ public class GUIEndScreenCamera : MonoBehaviour
 	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
-        _guiCam = GameObject.Find("GUI Camera");
+        _guiCam = GameObject.Find("GUIEndSceneCamera");
         _realGUIList = GameObject.Find("GUI List");
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
@@ -166,7 +166,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 		DisableGUICamera();
 		DisableGUIElementAll();
 	}
-	
 	
     private void AdjustCameraSize()
     {
