@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -94,7 +94,7 @@ public class Ink : MonoBehaviour
 	{
 		StartGates();
 		
-		BPM_Sequencer.OnInkNode += StartInkTask;
+		BpmSequencer.OnInkNode += StartInkTask;
 		ActionSequencerItem.OnFailed += InkReset;
 	}
 	
@@ -102,7 +102,7 @@ public class Ink : MonoBehaviour
 	{
 		StopGates();
 		
-		BPM_Sequencer.OnInkNode -= StartInkTask;
+		BpmSequencer.OnInkNode -= StartInkTask;
 		ActionSequencerItem.OnFailed -= InkReset;
 	}
 	

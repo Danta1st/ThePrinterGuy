@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BPM_Sequencer : MonoBehaviour {
+public class BpmSequencer : MonoBehaviour {
 	
 	#region Editor Publics
 	[SerializeField] private TaskSequence[] _TaskSequences;
@@ -98,7 +98,7 @@ public class BPM_Sequencer : MonoBehaviour {
 	
 	private void SubscribeToBeat(string beatName)
 	{
-		Debug.Log(gameObject.name+" Subscribing sequence '"+_sequenceIndex+"' to: "+beatName);
+		//Debug.Log(gameObject.name+" Subscribing sequence '"+_sequenceIndex+"' to: "+beatName);
 		//var temp = _TaskSequences[_sequenceIndex].beat0.ToString();
 		
 		switch(beatName)
@@ -213,7 +213,7 @@ public class BPM_Sequencer : MonoBehaviour {
 	
 	private void UnSubscribeFromBeat(string beatName)
 	{
-		Debug.Log(gameObject.name+" Unsubscribing sequence '"+_sequenceIndex+"' from: "+beatName);
+		//Debug.Log(gameObject.name+" Unsubscribing sequence '"+_sequenceIndex+"' from: "+beatName);
 		//var temp = _TaskSequences[_sequenceIndex].beat0.ToString();
 		
 		switch(beatName)
@@ -412,7 +412,7 @@ public class BPM_Sequencer : MonoBehaviour {
 				if(_sequenceIndex+1 <= _TaskSequences.Length-1)
 				{
 					_sequenceIndex++;
-					Debug.Log(gameObject.name+" Increasing _sequencerIndex to: "+_sequenceIndex);
+					//Debug.Log(gameObject.name+" Increasing _sequencerIndex to: "+_sequenceIndex);
 				}
 				_isSubscribed = false;
 				_baseBeatCounter = 0;
