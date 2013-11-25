@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -36,13 +36,13 @@ public class UraniumRods : MonoBehaviour
 
     void OnEnable()
     {
-		BPM_Sequencer.OnUraniumRodNode += TriggerSpring;
+		BpmSequencer.OnUraniumRodNode += TriggerSpring;
 		ActionSequencerItem.OnFailed += Reset;
     }
 
     void OnDisable()
     {
-		BPM_Sequencer.OnUraniumRodNode -= TriggerSpring;
+		BpmSequencer.OnUraniumRodNode -= TriggerSpring;
 		ActionSequencerItem.OnFailed -= Reset;
     }
 
