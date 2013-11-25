@@ -2,9 +2,6 @@
 using System.Collections;
 
 public class LoadNextSceneAfterAnimation : MonoBehaviour {
-    private GameObject Character;
-
-
     #region Setup of Delegates
     void OnEnable ()
     {
@@ -16,11 +13,6 @@ public class LoadNextSceneAfterAnimation : MonoBehaviour {
         GestureManager.OnTap -= LoadNextScene;
     }
     #endregion
-
-	// Use this for initialization
-	void Start () {
-        Character = gameObject;
-	}
 
 	// Update is called once per frame
 	void Update () {
