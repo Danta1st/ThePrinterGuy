@@ -71,9 +71,10 @@ public class SequencerTest : MonoBehaviour {
 	#region Class Methods
 	
 	//Subscription Methods
+	private bool _shouldSpawn = true;
 	private void CheckSubscription()
 	{
-		if(!_isSubscribed)
+		if(!_isSubscribed && _shouldSpawn)
 		{
 			TriggerSubscribeToBeat();
 			_isSubscribed = true;
@@ -428,8 +429,17 @@ public class SequencerTest : MonoBehaviour {
 		//Update counters
 		if(_focusIndex >= _TaskSequences[_sequenceFocusIndex].amounts.Length)
 		{
-			_sequenceFocusIndex++;
-			_focusIndex = 0;
+			//FIXME: Check if last Sequence
+			if(_sequenceFocusIndex >= _TaskSequences.Length-1)
+			{
+				//stop 
+				_shouldSpawn = false;
+			}
+			else
+			{
+				_sequenceFocusIndex++;
+				_focusIndex = 0;
+			}
 		}
 		
 		//Check ??? 
