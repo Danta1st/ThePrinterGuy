@@ -43,10 +43,10 @@ public class PathManager : MonoBehaviour {
 //		ActionSequencerManager.OnPaperNode += TriggerMovePaper;
 //		ActionSequencerManager.OnUraniumRodNode += TriggerMoveUranium;
 		
-		SequencerTest.OnPaperNode 		+= TriggerMovePaper;
-		SequencerTest.OnInkNode 		+= TriggerMoveInk;
-		SequencerTest.OnUraniumRodNode 	+= TriggerMoveUranium;
-		SequencerTest.OnBarometerNode 	+= TriggerMoveBarometer;
+		BPM_Sequencer.OnPaperNode 		+= TriggerMovePaper;
+		BPM_Sequencer.OnInkNode 		+= TriggerMoveInk;
+		BPM_Sequencer.OnUraniumRodNode 	+= TriggerMoveUranium;
+		BPM_Sequencer.OnBarometerNode 	+= TriggerMoveBarometer;
     }
     void OnDisable()
     {
@@ -60,10 +60,10 @@ public class PathManager : MonoBehaviour {
 //		ActionSequencerManager.OnPaperNode -= TriggerMovePaper;
 //		ActionSequencerManager.OnUraniumRodNode -= TriggerMoveUranium;
 		
-		SequencerTest.OnPaperNode 		-= TriggerMovePaper;
-		SequencerTest.OnInkNode 		-= TriggerMoveInk;
-		SequencerTest.OnUraniumRodNode 	-= TriggerMoveUranium;
-		SequencerTest.OnBarometerNode 	-= TriggerMoveBarometer;
+		BPM_Sequencer.OnPaperNode 		-= TriggerMovePaper;
+		BPM_Sequencer.OnInkNode 		-= TriggerMoveInk;
+		BPM_Sequencer.OnUraniumRodNode 	-= TriggerMoveUranium;
+		BPM_Sequencer.OnBarometerNode 	-= TriggerMoveBarometer;
     }
 
     #region Monohevaiour Methods

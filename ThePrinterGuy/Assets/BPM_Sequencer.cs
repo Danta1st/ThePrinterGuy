@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SequencerTest : MonoBehaviour {
+public class BPM_Sequencer : MonoBehaviour {
 	
 	#region Editor Publics
 	[SerializeField] private TaskSequence[] _TaskSequences;
@@ -71,10 +71,9 @@ public class SequencerTest : MonoBehaviour {
 	#region Class Methods
 	
 	//Subscription Methods
-	private bool _shouldSpawn = true;
 	private void CheckSubscription()
 	{
-		if(!_isSubscribed && _shouldSpawn)
+		if(!_isSubscribed)
 		{
 			TriggerSubscribeToBeat();
 			_isSubscribed = true;
@@ -386,7 +385,7 @@ public class SequencerTest : MonoBehaviour {
 			}				
 		}
 		
-		//FIXME: Check if last Sequence
+		//FIXME: Check if last Sequence. Possible check in the "UpdateFocusItem" instead
 		if(_sequenceIndex >= _TaskSequences.Length)
 		{
 			Debug.Log(gameObject.name+" Inside OnLastNode method!");
@@ -429,17 +428,8 @@ public class SequencerTest : MonoBehaviour {
 		//Update counters
 		if(_focusIndex >= _TaskSequences[_sequenceFocusIndex].amounts.Length)
 		{
-			//FIXME: Check if last Sequence
-			if(_sequenceFocusIndex >= _TaskSequences.Length-1)
-			{
-				//stop 
-				_shouldSpawn = false;
-			}
-			else
-			{
-				_sequenceFocusIndex++;
-				_focusIndex = 0;
-			}
+			_sequenceFocusIndex++;
+			_focusIndex = 0;
 		}
 		
 		//Check ??? 
