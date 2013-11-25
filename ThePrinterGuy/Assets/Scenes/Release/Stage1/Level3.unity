@@ -3401,7 +3401,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 296551837}
-  - 114: {fileID: 296551838}
+  - 114: {fileID: 296551839}
   m_Layer: 0
   m_Name: Action Sequencer Manager
   m_TagString: Untagged
@@ -3420,109 +3420,23 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1076735492}
---- !u!114 &296551838
+--- !u!114 &296551839
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11400022, guid: de75dd5ce5d7ff84384d2694efafc227,
-    type: 2}
-  m_PrefabInternal: {fileID: 997108012}
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 296551836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b328b5fcc020bd64880769e0b4356219, type: 3}
+  m_Script: {fileID: 11500000, guid: 48adf773605602a47a68ffbcdc521a9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _actionSequencerList:
-  - timeStamp: .5
-    actionItem: 2
-    itemNumber: 2
-  - timeStamp: 2
-    actionItem: 2
-    itemNumber: 2
-  - timeStamp: 3.5
-    actionItem: 2
-    itemNumber: 2
-  - timeStamp: 5
-    actionItem: 2
-    itemNumber: 2
-  - timeStamp: 6.5
-    actionItem: 1
-    itemNumber: 1
-  - timeStamp: 8
-    actionItem: 1
-    itemNumber: 2
-  - timeStamp: 9.5
-    actionItem: 1
-    itemNumber: 2
-  - timeStamp: 11
-    actionItem: 1
-    itemNumber: 2
-  - timeStamp: 12.5
-    actionItem: 1
-    itemNumber: 2
-  - timeStamp: 14
-    actionItem: 1
-    itemNumber: 1
-  - timeStamp: 15.5
-    actionItem: 1
-    itemNumber: 2
-  - timeStamp: 22
-    actionItem: 2
-    itemNumber: 3
-  - timeStamp: 24
-    actionItem: 2
-    itemNumber: 4
-  - timeStamp: 26
-    actionItem: 2
-    itemNumber: 1
-  - timeStamp: 28
-    actionItem: 2
-    itemNumber: 2
-  - timeStamp: 30
-    actionItem: 2
-    itemNumber: 3
-  - timeStamp: 32
-    actionItem: 2
-    itemNumber: 4
-  - timeStamp: 34
-    actionItem: 2
-    itemNumber: 1
-  - timeStamp: 36
-    actionItem: 2
-    itemNumber: 2
-  - timeStamp: 38
-    actionItem: 2
-    itemNumber: 3
-  - timeStamp: 42.5
-    actionItem: 3
-    itemNumber: 1
-  - timeStamp: 44.25
-    actionItem: 3
-    itemNumber: 2
-  - timeStamp: 45.5
-    actionItem: 3
-    itemNumber: 3
-  - timeStamp: 46.5
-    actionItem: 3
-    itemNumber: 1
-  - timeStamp: 48.25
-    actionItem: 3
-    itemNumber: 2
-  - timeStamp: 49.5
-    actionItem: 3
-    itemNumber: 3
-  - timeStamp: 50.5
-    actionItem: 3
-    itemNumber: 1
-  - timeStamp: 52.25
-    actionItem: 3
-    itemNumber: 2
-  - timeStamp: 53.5
-    actionItem: 3
-    itemNumber: 3
-  - timeStamp: 54.5
-    actionItem: 3
-    itemNumber: 1
+  _TaskSequences:
+  - task: 0
+    beats: 04000000
+    amounts: 01000000010000000100000001000000010000000100000001000000010000000100000001000000
+    SpawnInterval: 0
+    beatsUntillNextSequence: 20
 --- !u!1 &297220501
 GameObject:
   m_ObjectHideFlags: 0
@@ -12478,7 +12392,8 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11400022, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
   m_RootGameObject: {fileID: 1076735491}
   m_IsPrefabParent: 0
