@@ -40,7 +40,6 @@ public class LevelManager : MonoBehaviour
     public delegate void MainView();
     public static event MainView OnMainView;
 
-
     void Awake()
     {
         _creditsLookTarget = GameObject.Find("Television");
