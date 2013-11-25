@@ -142,7 +142,6 @@ public class GUIMainMenuCamera : MonoBehaviour
 		lvlManager = gameObject.GetComponent<LevelManager>();
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
-		_creditsCamera = GameObject.Find("Credits Camera").camera;
 		credits = GameObject.Find("Credits").GetComponent<CreditsScript>();
 
         _scaleMultiplierX = Screen.width / 1920f;
@@ -215,8 +214,6 @@ public class GUIMainMenuCamera : MonoBehaviour
 				continue;
             _guiCamera.aspect = _aspectRatio;
             _guiCamera.orthographicSize = _startCameraSize;
-			_creditsCamera.aspect = _aspectRatio;
-			_creditsCamera.orthographicSize = _startCameraSize;
 
             Vector3 _startPosition = _guiCamera.WorldToViewportPoint(_guiObject.transform.position);
 
@@ -233,13 +230,10 @@ public class GUIMainMenuCamera : MonoBehaviour
             }
 
             _guiCamera.ResetAspect();
-			_creditsCamera.ResetAspect();
             _guiCamera.orthographicSize = _newCameraSize;
-			_creditsCamera.orthographicSize = _newCameraSize;
             _guiObject.transform.position = _guiCamera.ViewportToWorldPoint(_startPosition);
         }
         _guiCamera.orthographicSize = _newCameraSize;
-		_creditsCamera.orthographicSize = _newCameraSize;
     }
 
     private void CheckCollision(GameObject _go, Vector2 _screenPosition)
