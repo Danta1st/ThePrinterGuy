@@ -74,7 +74,6 @@ public class Dialogue : MonoBehaviour {
         PlaySound(angryTuple[1]);
         _localizationKey = angryTuple[2];
         if(OnDialogueStart != null){
-            Debug.Log("Null?");
             OnDialogueStart(_localizationKey);
         }
         iTween.ColorFrom(Camera.main.gameObject, Color.red, 2f);
