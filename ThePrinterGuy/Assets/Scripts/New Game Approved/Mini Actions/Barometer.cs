@@ -28,13 +28,17 @@ public class Barometer : MonoBehaviour
 	//TODO: Handle gesture allowance
     void OnEnable()
     {
-		ActionSequencerManager.OnBarometerNode += TriggerBreakBarometer;
+//		ActionSequencerManager.OnBarometerNode += TriggerBreakBarometer;
 		ActionSequencerItem.OnFailed += Reset;
+		
+		BPM_Sequencer.OnBarometerNode += TriggerBreakBarometer;
     }
     void OnDisable()
     {
-		ActionSequencerManager.OnBarometerNode -= TriggerBreakBarometer;
+//		ActionSequencerManager.OnBarometerNode -= TriggerBreakBarometer;
 		ActionSequencerItem.OnFailed -= Reset;
+		
+		BPM_Sequencer.OnBarometerNode -= TriggerBreakBarometer;
     }
 	
 	#region Monobehaviour Functions

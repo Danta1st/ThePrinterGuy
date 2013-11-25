@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ActionSequencerManager : MonoBehaviour {
-
+	
+	/*
     #region SerializeField Variables
     [SerializeField]
     private ActionSequencerList[] _actionSequencerList;
@@ -168,4 +169,5 @@ public class ActionSequencerManager : MonoBehaviour {
     };
 		
     #endregion
+    */
 }
