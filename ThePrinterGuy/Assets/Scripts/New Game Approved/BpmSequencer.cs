@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BPM_Sequencer : MonoBehaviour {
+public class BpmSequencer : MonoBehaviour {
 	
 	#region Editor Publics
 	[SerializeField] private TaskSequence[] _TaskSequences;
@@ -73,7 +73,7 @@ public class BPM_Sequencer : MonoBehaviour {
 	//Subscription Methods
 	private void CheckSubscription()
 	{
-		if(!_isSubscribed)
+		if(!_isSubscribed && !_isAllTasksSpawned)
 		{
 			TriggerSubscribeToBeat();
 			_isSubscribed = true;
@@ -98,7 +98,7 @@ public class BPM_Sequencer : MonoBehaviour {
 	
 	private void SubscribeToBeat(string beatName)
 	{
-		Debug.Log(gameObject.name+" Subscribing sequence '"+_sequenceIndex+"' to: "+beatName);
+		//Debug.Log(gameObject.name+" Subscribing sequence '"+_sequenceIndex+"' to: "+beatName);
 		//var temp = _TaskSequences[_sequenceIndex].beat0.ToString();
 		
 		switch(beatName)
@@ -213,7 +213,7 @@ public class BPM_Sequencer : MonoBehaviour {
 	
 	private void UnSubscribeFromBeat(string beatName)
 	{
-		Debug.Log(gameObject.name+" Unsubscribing sequence '"+_sequenceIndex+"' from: "+beatName);
+		//Debug.Log(gameObject.name+" Unsubscribing sequence '"+_sequenceIndex+"' from: "+beatName);
 		//var temp = _TaskSequences[_sequenceIndex].beat0.ToString();
 		
 		switch(beatName)
@@ -345,7 +345,8 @@ public class BPM_Sequencer : MonoBehaviour {
 	}
 	
 	private void CheckSpawnInterval()
-	{
+	{//This method works perfectly. Don't touch :) 
+		
 		//Check what beat we are on
 		if(_beatCounter == 0)
 		{
@@ -365,7 +366,7 @@ public class BPM_Sequencer : MonoBehaviour {
 		{
 			_beatCounter++;
 		}		
-	}
+	} 
 	
 	private void CheckBeat()
 	{
@@ -383,28 +384,16 @@ public class BPM_Sequencer : MonoBehaviour {
 				_baseBeatSubscribed = true;
 				BpmManager.OnBeat += WaitForBaseBeats;
 			}				
-		}
-		
-		//FIXME: Check if last Sequence. Possible check in the "UpdateFocusItem" instead
-		if(_sequenceIndex >= _TaskSequences.Length)
-		{
-			Debug.Log(gameObject.name+" Inside OnLastNode method!");
-			
-				TriggerUnsubscribeFromBeat();
-				
-				//OnLastNode
-				if(OnLastNode != null)
-					OnLastNode();
-		}
+		}		
 	}	
 	
 	private void WaitForBaseBeats()
-	{
-		//count
-		_baseBeatCounter++;
-		
+	{		
 		if(_baseBeatSubscribed)
-		{
+		{			
+			//count
+			_baseBeatCounter++;
+			
 			if(_baseBeatCounter >= _TaskSequences[_sequenceIndex].beatsUntillNextSequence)
 			{
 				BpmManager.OnBeat -= WaitForBaseBeats;
@@ -412,7 +401,7 @@ public class BPM_Sequencer : MonoBehaviour {
 				if(_sequenceIndex+1 <= _TaskSequences.Length-1)
 				{
 					_sequenceIndex++;
-					Debug.Log(gameObject.name+" Increasing _sequencerIndex to: "+_sequenceIndex);
+					//Debug.Log(gameObject.name+" Increasing _sequencerIndex to: "+_sequenceIndex);
 				}
 				_isSubscribed = false;
 				_baseBeatCounter = 0;
@@ -423,55 +412,72 @@ public class BPM_Sequencer : MonoBehaviour {
 	}
 	
 	//Focus Update
+	private bool _isAllTasksSpawned = false;
     private void UpdateTaskInFocus()
     {
-		//Update counters
-		if(_focusIndex >= _TaskSequences[_sequenceFocusIndex].amounts.Length)
+		if(!_isAllTasksSpawned)
 		{
-			_sequenceFocusIndex++;
-			_focusIndex = 0;
-		}
-		
-		//Check ??? 
-		if(_gGameCam.GetQueueCount() == 0)
-		{
-			if(OnDefaultCamPos != null)
-				OnDefaultCamPos();
-		}
-		//Check which task is in focus;
-		else if(_focusIndex < _TaskSequences[_sequenceFocusIndex].amounts.Length)
-		{
-			var focusItem = _TaskSequences[_sequenceFocusIndex].task.ToString();
-						
-	        if(focusItem == "Paper")
-	        {
-	            if(OnPaperNode != null)
-	            {
-	                OnPaperNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
-	            }
-	        }
-	        else if(focusItem == "Ink")
-	        {
-	            if(OnInkNode != null)
-	            {
-	                OnInkNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
-	            }
-	        }
-	        else if(focusItem == "UraniumRod")
-	        {
-	            if(OnUraniumRodNode != null)
-	            {
-	                OnUraniumRodNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
-	            }
-	        }
-	        else if(focusItem == "Barometer")
-	        {
-	            if(OnBarometerNode != null)
-	            {
-	                OnBarometerNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
-	            }
-	        }
-            _focusIndex++;
+			//Update counters
+			if(_focusIndex >= _TaskSequences[_sequenceFocusIndex].amounts.Length)
+			{
+				_sequenceFocusIndex++;
+				_focusIndex = 0;
+			}
+			
+			//Check ??? 
+			if(_gGameCam.GetQueueCount() == 0)
+			{
+				if(OnDefaultCamPos != null)
+					OnDefaultCamPos();
+			}
+			//Check which task is in focus;
+			else if(_focusIndex < _TaskSequences[_sequenceFocusIndex].amounts.Length)
+			{
+				var focusItem = _TaskSequences[_sequenceFocusIndex].task.ToString();
+							
+		        if(focusItem == "Paper")
+		        {
+		            if(OnPaperNode != null)
+		            {
+		                OnPaperNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
+		            }
+		        }
+		        else if(focusItem == "Ink")
+		        {
+		            if(OnInkNode != null)
+		            {
+		                OnInkNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
+		            }
+		        }
+		        else if(focusItem == "UraniumRod")
+		        {
+		            if(OnUraniumRodNode != null)
+		            {
+		                OnUraniumRodNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
+		            }
+		        }
+		        else if(focusItem == "Barometer")
+		        {
+		            if(OnBarometerNode != null)
+		            {
+		                OnBarometerNode(_TaskSequences[_sequenceFocusIndex].amounts[_focusIndex] - 1);
+		            }
+		        }
+	            _focusIndex++;
+				
+				//HACK: Should work - Check if this was the second to last task in the last sequence
+				if(_focusIndex >= _TaskSequences[_sequenceFocusIndex].amounts.Length && 
+					_sequenceFocusIndex >= _TaskSequences.Length-1)
+				{
+					_isAllTasksSpawned = true;
+					
+					TriggerUnsubscribeFromBeat();
+					
+					//OnLastNode
+					if(OnLastNode != null)
+						OnLastNode();
+				}
+			}
 		}			
 	}
 	#endregion

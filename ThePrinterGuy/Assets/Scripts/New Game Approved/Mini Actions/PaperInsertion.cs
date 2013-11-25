@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -59,16 +59,16 @@ public class PaperInsertion : MonoBehaviour
     {
 		StartGate();
 		
-		BPM_Sequencer.OnPaperNode += TriggerLight;
-		BPM_Sequencer.OnPaperNode += EnablePaper;
+		BpmSequencer.OnPaperNode += TriggerLight;
+		BpmSequencer.OnPaperNode += EnablePaper;
 		ActionSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
 		StopGate();
 		
-		BPM_Sequencer.OnPaperNode -= TriggerLight;
-		BPM_Sequencer.OnPaperNode -= EnablePaper;
+		BpmSequencer.OnPaperNode -= TriggerLight;
+		BpmSequencer.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
     }
 

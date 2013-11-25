@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Barometer : MonoBehaviour 
@@ -31,14 +31,14 @@ public class Barometer : MonoBehaviour
 //		ActionSequencerManager.OnBarometerNode += TriggerBreakBarometer;
 		ActionSequencerItem.OnFailed += Reset;
 		
-		BPM_Sequencer.OnBarometerNode += TriggerBreakBarometer;
+		BpmSequencer.OnBarometerNode += TriggerBreakBarometer;
     }
     void OnDisable()
     {
 //		ActionSequencerManager.OnBarometerNode -= TriggerBreakBarometer;
 		ActionSequencerItem.OnFailed -= Reset;
 		
-		BPM_Sequencer.OnBarometerNode -= TriggerBreakBarometer;
+		BpmSequencer.OnBarometerNode -= TriggerBreakBarometer;
     }
 	
 	#region Monobehaviour Functions
