@@ -260,7 +260,7 @@ public class Ink : MonoBehaviour
 
         icc.insertableCartridge.position = icc.insertableStartPos;
         _canSlide = true;
-
+		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 	}
 	
 	private IEnumerator InkFailed(InkCartridgeClass icc)
@@ -273,6 +273,7 @@ public class Ink : MonoBehaviour
 		icc.insertableCartridge.transform.position = icc.insertableStartPos;
 		yield return new WaitForSeconds(_particleExplosion.duration);
 		_canSlide = true;
+		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 	}
 	
 	private void InkReset()
