@@ -237,6 +237,7 @@ public class PaperInsertion : MonoBehaviour
         for(int i = 0; i < _paperlightset.Count; i++)
         {
             _paperlightset[i].paper.SetActive(false);
+			_paperlightset[i].paperToSlide.SetActive(false);
         }
     }
 
@@ -247,6 +248,7 @@ public class PaperInsertion : MonoBehaviour
         for(int i = 0; i < _paperlightset.Count; i++)
         {
             _paperlightset[i].paper.SetActive(true);
+			_paperlightset[i].paperToSlide.SetActive(true);
         }
     }
 	
@@ -299,7 +301,7 @@ public class PaperInsertion : MonoBehaviour
 				TurnOffLight(i);
 				_IsSlideLocked = true;
 				
-				var paper = (GameObject) Instantiate(_paperlightset[i].paper, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
+				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
@@ -339,7 +341,7 @@ public class PaperInsertion : MonoBehaviour
 			{
 				_IsSlideLocked = true;
 				
-				var paper = (GameObject) Instantiate(_paperlightset[i].paper, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
+				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
 				_tempPaper.Add(paper);
 				
@@ -424,6 +426,7 @@ public class PaperInsertion : MonoBehaviour
         public Texture off;
         public GameObject paper;
         public bool isOn = false;
+		public GameObject paperToSlide;
     };
     #endregion
 }
