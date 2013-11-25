@@ -792,9 +792,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 400066}
   - {fileID: 400020}
   - {fileID: 400034}
+  - {fileID: 400066}
   m_Father: {fileID: 0}
 --- !u!4 &400002
 Transform:
@@ -2558,21 +2558,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _TaskSequences:
-  - task: 1
+  - task: 0
     beats: 04000000
-    amounts: 01000000
+    amounts: 0100000002000000020000000100000001000000
     SpawnInterval: 0
     beatsUntillNextSequence: 10
   - task: 2
     beats: 01000000
-    amounts: 01000000
+    amounts: 0200000001000000010000000200000002000000
     SpawnInterval: 0
-    beatsUntillNextSequence: 10
+    beatsUntillNextSequence: 20
+  - task: 1
+    beats: 15000000
+    amounts: 0100000001000000010000000100000001000000
+    SpawnInterval: 0
+    beatsUntillNextSequence: 20
   - task: 0
     beats: 04000000
-    amounts: 01000000
+    amounts: 02000000020000000200000001000000010000000100000002000000020000000200000001000000
     SpawnInterval: 0
-    beatsUntillNextSequence: 10
+    beatsUntillNextSequence: 20
+  - task: 2
+    beats: 01000000
+    amounts: 01000000010000000100000002000000020000000200000001000000010000000100000002000000
+    SpawnInterval: 0
+    beatsUntillNextSequence: 20
+  - task: 1
+    beats: 15000000
+    amounts: 01000000010000000100000001000000010000000100000001000000010000000100000001000000
+    SpawnInterval: 0
+    beatsUntillNextSequence: 20
 --- !u!114 &11400024
 MonoBehaviour:
   m_ObjectHideFlags: 1

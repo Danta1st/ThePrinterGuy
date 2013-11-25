@@ -131,17 +131,17 @@ public class GUIEndScreenCamera : MonoBehaviour
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
 
-        foreach(GameObject _guiObject in _guiList)
+     /*   foreach(GameObject _guiObject in _guiList)
         {
             if(_guiObject.name == "GUIButtons")
             {
                 nextLevelButton = _guiObject.transform.FindChild("NextLevelButton").gameObject;
-                if(Application.loadedLevel == 3)
+                if(Application.loadedLevel == 7)
                 {
                     nextLevelButton.SetActive(false);
                 }
             }
-        };
+        };*/
 
         _scaleMultiplierX = Screen.width / 1920f;
         _scaleMultiplierY = Screen.height / 1200f;
@@ -225,7 +225,7 @@ public class GUIEndScreenCamera : MonoBehaviour
                     }
 					else if(_hit.collider.gameObject.name == "NextLevelButton")
 					{
-                        if(Application.loadedLevel == 4)
+                        if(Application.loadedLevel == 7)
                         {
                             GestureManager.OnTap -= CheckCollision;
                             LoadingScreen.Load(ConstantValues.GetStartScene);
@@ -407,13 +407,8 @@ public class GUIEndScreenCamera : MonoBehaviour
 			
 	private void GetCurrentLevel()
 	{
-        if(Application.loadedLevelName == "Level1")
-            _currentLevel = 1;
-        else if(Application.loadedLevelName == "Level2")
-            _currentLevel = 2;
-        else if(Application.loadedLevelName == "Level3")
-            _currentLevel = 3;
-	}
+        _currentLevel = Application.loadedLevel - 2;
+    }
 	
 	private void InsertSpeechText(string text)
 	{
