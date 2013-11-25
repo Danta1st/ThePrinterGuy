@@ -69,19 +69,19 @@ public class GenericSoundScript : MonoBehaviour
     public void LoopClipStart()
     {
         _shouldLoop = true;
-        PlayLoopingClip(_audioClips[0]);
+        StartCoroutine(PlayLoopingClip(_audioClips[0]));
     }
 
     public void LoopClipStart(int index)
     {
         _shouldLoop = true;
-        PlayLoopingClip(_audioClips[index]);
+        StartCoroutine(PlayLoopingClip(_audioClips[index]));
     }
 
     public void LoopCurrentClipStart()
     {
         _shouldLoop = true;
-        PlayLoopingClip(_audioSource.clip);
+        StartCoroutine(PlayLoopingClip(_audioSource.clip));
     }
 
     public void LoopClipStop()
@@ -116,13 +116,14 @@ public class GenericSoundScript : MonoBehaviour
 
     private IEnumerator PlayLoopingClip(AudioClip thisClip)
     {
-        if(_shouldLoop && !_audioSource.isPlaying)
+        _audioSource.Stop();
+
+        if(_shouldLoop)// && !_audioSource.isPlaying)
         {
             _audioSource.clip = thisClip;
             _audioSource.Play();
 
             yield return new WaitForSeconds(_audioSource.clip.length);
-
             PlayLoopingClip(_audioSource.clip);
         }
     }

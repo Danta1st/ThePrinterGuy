@@ -16,7 +16,8 @@ public class LevelManager : MonoBehaviour
     private List<GameObject> _gameLevels = new List<GameObject>();
     //[SerializeField]
     private List<bool> _gameLevelsUnlocked = new List<bool>();
-
+    [SerializeField]
+    private iTween.EaseType _easeType;
 
     private GameObject _selectedStageChar;
     private GameObject _lookTarget;
@@ -39,7 +40,6 @@ public class LevelManager : MonoBehaviour
 
     public delegate void MainView();
     public static event MainView OnMainView;
-
 
     void Awake()
     {
@@ -350,7 +350,7 @@ public class LevelManager : MonoBehaviour
             iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _creditsLookTarget.transform.position, "time", _charMoveTime));
 
             iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", creditsCamPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform,
-                "oncomplete", "OnCreditCameraComplete", "oncompletetarget", gameObject));
+                "oncomplete", "OnCreditCameraComplete", "oncompletetarget", gameObject, "easeType", _easeType));
 
             if(_selectedStageChar != null)
             {
@@ -383,7 +383,7 @@ public class LevelManager : MonoBehaviour
             iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _optionsLookTarget.transform.position, "time", _charMoveTime));
     
             iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", optionsCamPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform,
-                "oncomplete", "OnOptionsCameraComplete", "oncompletetarget", gameObject));
+                "oncomplete", "OnOptionsCameraComplete", "oncompletetarget", gameObject, "easeType", _easeType));
     
             if(_selectedStageChar != null)
             {
@@ -409,7 +409,7 @@ public class LevelManager : MonoBehaviour
             iTween.MoveTo(_lookTarget, iTween.Hash(("position"), _camPointDefault.transform.position, "time", _charMoveTime));
 
             iTween.MoveTo(Camera.main.gameObject, iTween.Hash("position", _camStartPos.transform.position, "time", _charMoveTime, "looktarget", _lookTarget.transform,
-                "oncomplete", "OnMainViewCameraComplete", "oncompletetarget", gameObject));
+                "oncomplete", "OnMainViewCameraComplete", "oncompletetarget", gameObject, "easeType", _easeType));
         }
     }
 
