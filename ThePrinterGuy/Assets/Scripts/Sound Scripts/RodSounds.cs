@@ -49,8 +49,13 @@ public class RodSounds : MonoBehaviour
         _soundFx.PlayClip(2);
     }
 
-    public void Effect_UraniumRods_Hammer()
+    public void Effect_UraniumRods_Popup4()
     {
         _soundFx.PlayClip(3);
+    }
+
+    public void Effect_UraniumRods_Hammer()
+    {
+        _soundFx.PlayClip(4);
     }
 }

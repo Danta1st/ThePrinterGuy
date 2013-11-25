@@ -43,6 +43,9 @@ public class GUIMainMenuCamera : MonoBehaviour
 
     public delegate void OptionsScreen();
     public static event OptionsScreen OnOptionsScreen;
+	
+	public delegate void LevelManagerEvent(GameObject go, Vector2 screenPos);
+    public static event LevelManagerEvent OnLevelManagerEvent;
     #endregion
 
     #region Enable and Disable
@@ -333,6 +336,9 @@ public class GUIMainMenuCamera : MonoBehaviour
                                                     "looktime", 3,
                                                     "oncomplete", "SwitchToMainMenu",
                                                     "oncompletetarget", gameObject));
+				} else {
+					if(OnLevelManagerEvent != null)
+						OnLevelManagerEvent(_go, _screenPosition);
 				}
             }
         }

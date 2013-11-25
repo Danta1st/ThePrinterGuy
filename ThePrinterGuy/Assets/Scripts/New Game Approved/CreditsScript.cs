@@ -29,7 +29,6 @@ public class CreditsScript : MonoBehaviour
 		if(_isRunning)
 		{
 			iTween.MoveAdd(_credits, iTween.Hash("amount", _endPos, "speed", _creditsSpeed, "easetype", iTween.EaseType.linear));
-			Debug.Log(_credits.transform.localPosition.y);
 			if(_credits.transform.localPosition.y >= 1600)
 			{
 				_credits.transform.position -= _difference;

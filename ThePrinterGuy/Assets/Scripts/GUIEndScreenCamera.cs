@@ -35,6 +35,7 @@ public class GUIEndScreenCamera : MonoBehaviour
 	
     #region Private Variables
     private Camera _guiCamera;
+    private GameObject _realGUIList;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
     private RaycastHit _hit;
@@ -126,6 +127,7 @@ public class GUIEndScreenCamera : MonoBehaviour
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCam = GameObject.Find("GUI Camera");
+        _realGUIList = GameObject.Find("GUI List");
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
 
@@ -270,9 +272,9 @@ public class GUIEndScreenCamera : MonoBehaviour
         EnableGUICamera();
         EnableGUIElementAll();
         GestureManager.OnTap += CheckCollision;
-        GUIGameCamera gUIGameCamera = new GUIGameCamera();
+        GUIGameCamera guiGameCameraScript = _realGUIList.GetComponent<GUIGameCamera>();
 
-        _levelScore = gUIGameCamera.GetScore();
+        _levelScore = guiGameCameraScript.GetScore();
         nextLevelButton.SetActive(false);
         _isWin = false;
         StartCoroutine("MoveEstimateBar");
