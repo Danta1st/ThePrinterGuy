@@ -39,6 +39,7 @@ public class GUIGameCamera : MonoBehaviour
     private GameObject _guiDialogueWindow;
     private Vector3 _guiDialogueWindowMoveToPoint;
     private Vector3 _guiDialogueWindowMoveFromPoint;
+    private string _currentTaskType;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -86,6 +87,10 @@ public class GUIGameCamera : MonoBehaviour
 
     public delegate void ToMainMenuFromLevelAction();
     public static event ToMainMenuFromLevelAction OnToMainMenuFromLevel;
+
+
+    public delegate void TaskEndAction(string type, int zone);
+    public static event TaskEndAction OnTaskEnd;
 	#endregion
 
     #region Enable and Disable
@@ -94,6 +99,10 @@ public class GUIGameCamera : MonoBehaviour
         GestureManager.OnTap += CheckCollision;
 //        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
 //        ActionSequencerManager.OnLastNode += LastNode;
+        BpmSequencer.OnPaperNode += SetCurrentTaskTypeToPaper;
+        BpmSequencer.OnInkNode += SetCurrentTaskTypeToInk;
+        BpmSequencer.OnUraniumRodNode += SetCurrentTaskTypeToRod;
+        BpmSequencer.OnBarometerNode += SetCurrentTaskTypeToBarometer;
 		
 		BpmSequencer.OnCreateNewNode += InstantiateNodeAction;
 		BpmSequencer.OnLastNode += LastNode;
@@ -109,6 +118,11 @@ public class GUIGameCamera : MonoBehaviour
         GestureManager.OnTap -= CheckCollision;
 //        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
 //        ActionSequencerManager.OnLastNode -= LastNode;
+
+        BpmSequencer.OnPaperNode -= SetCurrentTaskTypeToPaper;
+        BpmSequencer.OnInkNode -= SetCurrentTaskTypeToInk;
+        BpmSequencer.OnUraniumRodNode -= SetCurrentTaskTypeToRod;
+        BpmSequencer.OnBarometerNode -= SetCurrentTaskTypeToBarometer;
 		
 		BpmSequencer.OnCreateNewNode -= InstantiateNodeAction;
 		BpmSequencer.OnLastNode -= LastNode;
@@ -676,10 +690,12 @@ public class GUIGameCamera : MonoBehaviour
         if(_sequencerObjectQueue.Count > 0)
         {
             _queuedObject = _sequencerObjectQueue.Peek();
-			Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
-            ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
 
+            Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
+            ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
             _zone = _actionSequencerItemScript.GetZoneStatus();
+            if(OnTaskEnd != null)
+                OnTaskEnd(_currentTaskType, _zone);
             EndZone(_queuedObject);
         }
     }
@@ -780,5 +796,24 @@ public class GUIGameCamera : MonoBehaviour
         }
 	}
 	
+    #endregion
+
+    #region GA
+    private void SetCurrentTaskTypeToPaper(int stateNumber)
+    {
+        _currentTaskType = "Paper";
+    }
+    private void SetCurrentTaskTypeToInk(int stateNumber)
+    {
+        _currentTaskType = "Ink";
+    }
+    private void SetCurrentTaskTypeToRod(int stateNumber)
+    {
+        _currentTaskType = "Rods";
+    }
+    private void SetCurrentTaskTypeToBarometer(int stateNumber)
+    {
+        _currentTaskType = "Barometers";
+    }
     #endregion
 }
