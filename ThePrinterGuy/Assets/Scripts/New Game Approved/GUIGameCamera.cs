@@ -643,7 +643,7 @@ public class GUIGameCamera : MonoBehaviour
         }
 
         _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 4);
-        GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
+        GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, _sequencerObject.transform.localRotation);
 		//TODO: Set _nodeItem parent to DynamicObjects
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);
