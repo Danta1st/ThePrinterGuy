@@ -35,7 +35,7 @@ public class ItemIdleState : MonoBehaviour {
 	
 	}
 	
-	private void StartFloat()
+	public void StartFloat()
 	{
 		Vector3 _offsetPosition = new Vector3(Random.Range(-_floatAmount.x, _floatAmount.x), 
 										Random.Range(-_floatAmount.y, _floatAmount.y),
