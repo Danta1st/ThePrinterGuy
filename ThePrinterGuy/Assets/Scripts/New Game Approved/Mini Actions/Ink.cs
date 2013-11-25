@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -94,7 +94,7 @@ public class Ink : MonoBehaviour
 	{
 		StartGates();
 		
-		BPM_Sequencer.OnInkNode += StartInkTask;
+		BpmSequencer.OnInkNode += StartInkTask;
 		ActionSequencerItem.OnFailed += InkReset;
 	}
 	
@@ -102,7 +102,7 @@ public class Ink : MonoBehaviour
 	{
 		StopGates();
 		
-		BPM_Sequencer.OnInkNode -= StartInkTask;
+		BpmSequencer.OnInkNode -= StartInkTask;
 		ActionSequencerItem.OnFailed -= InkReset;
 	}
 	
@@ -111,19 +111,19 @@ public class Ink : MonoBehaviour
 	// Cartridge gate functions
 	private void StartGates()
     {
-		BeatController.OnBeat4th2 += CloseGates;
+		BeatController.OnBeat8th7 += CloseGates;
 		//TODO: Insert lid close sounds
-		BeatController.OnBeat4th3 += OpenGates;
-		BeatController.OnBeat4th3 += SoundManager.Effect_Ink_SlotOpen1;
-		BeatController.OnBeat4th3 += SoundManager.Effect_Ink_SlotOpen2;
-		BeatController.OnBeat4th3 += SoundManager.Effect_Ink_SlotOpen3;
-		BeatController.OnBeat4th3 += SoundManager.Effect_Ink_SlotOpen4;
+		BeatController.OnBeat8th3 += OpenGates;
+		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen1;
+		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen2;
+		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen3;
+		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen4;
     }
 
     private void StopGates()
     {
-		BeatController.OnBeat4th2 -= CloseGates;
-		BeatController.OnBeat4th3 -= OpenGates;
+		BeatController.OnBeat8th7 -= CloseGates;
+		BeatController.OnBeat8th3 -= OpenGates;
     }
 	
 	private void OpenGates()
@@ -260,7 +260,7 @@ public class Ink : MonoBehaviour
 
         icc.insertableCartridge.position = icc.insertableStartPos;
         _canSlide = true;
-
+		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 	}
 	
 	private IEnumerator InkFailed(InkCartridgeClass icc)
@@ -273,6 +273,7 @@ public class Ink : MonoBehaviour
 		icc.insertableCartridge.transform.position = icc.insertableStartPos;
 		yield return new WaitForSeconds(_particleExplosion.duration);
 		_canSlide = true;
+		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 	}
 	
 	private void InkReset()

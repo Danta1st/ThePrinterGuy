@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -95,8 +95,8 @@ public class GUIGameCamera : MonoBehaviour
 //        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
 //        ActionSequencerManager.OnLastNode += LastNode;
 		
-		BPM_Sequencer.OnCreateNewNode += InstantiateNodeAction;
-		BPM_Sequencer.OnLastNode += LastNode;
+		BpmSequencer.OnCreateNewNode += InstantiateNodeAction;
+		BpmSequencer.OnLastNode += LastNode;
 		
         ScoreManager.OnTaskCompleted += CheckZone;
         //Dialogue.OnDialogueStart += DialogueWindowIn;
@@ -110,8 +110,8 @@ public class GUIGameCamera : MonoBehaviour
 //        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
 //        ActionSequencerManager.OnLastNode -= LastNode;
 		
-		BPM_Sequencer.OnCreateNewNode -= InstantiateNodeAction;
-		BPM_Sequencer.OnLastNode -= LastNode;
+		BpmSequencer.OnCreateNewNode -= InstantiateNodeAction;
+		BpmSequencer.OnLastNode -= LastNode;
 		
         ScoreManager.OnTaskCompleted -= CheckZone;
         //Dialogue.OnDialogueStart -= DialogueWindowIn;
@@ -545,6 +545,7 @@ public class GUIGameCamera : MonoBehaviour
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
 						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
         Time.timeScale = 0.0f;
+        AudioListener.pause = true;
     }
 
     private void CloseIngameMenu()
@@ -582,6 +583,7 @@ public class GUIGameCamera : MonoBehaviour
     private void UnPauseTimeScale()
     {
         Time.timeScale = 1.0f;
+        AudioListener.pause = false;
 
         LoadGUIState();
 
@@ -611,6 +613,7 @@ public class GUIGameCamera : MonoBehaviour
     {
 		//TODO: Need confirmation before restart.
 		Time.timeScale = 1.0f;
+        AudioListener.pause = false;
         LoadingScreen.Load(Application.loadedLevel, true);
     }
 	
@@ -618,6 +621,7 @@ public class GUIGameCamera : MonoBehaviour
     private void QuitLevel()
     {
 		Time.timeScale = 1.0f;
+        AudioListener.pause = false;
         LoadingScreen.Load(ConstantValues.GetStartScene);
     }
 	
@@ -654,7 +658,7 @@ public class GUIGameCamera : MonoBehaviour
         }
 
         _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 4);
-        GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
+        GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, _sequencerObject.transform.localRotation);
 		//TODO: Set _nodeItem parent to DynamicObjects
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PathManager : MonoBehaviour {
@@ -43,10 +43,10 @@ public class PathManager : MonoBehaviour {
 //		ActionSequencerManager.OnPaperNode += TriggerMovePaper;
 //		ActionSequencerManager.OnUraniumRodNode += TriggerMoveUranium;
 		
-		BPM_Sequencer.OnPaperNode 		+= TriggerMovePaper;
-		BPM_Sequencer.OnInkNode 		+= TriggerMoveInk;
-		BPM_Sequencer.OnUraniumRodNode 	+= TriggerMoveUranium;
-		BPM_Sequencer.OnBarometerNode 	+= TriggerMoveBarometer;
+		BpmSequencer.OnPaperNode 		+= TriggerMovePaper;
+		BpmSequencer.OnInkNode 		+= TriggerMoveInk;
+		BpmSequencer.OnUraniumRodNode 	+= TriggerMoveUranium;
+		BpmSequencer.OnBarometerNode 	+= TriggerMoveBarometer;
     }
     void OnDisable()
     {
@@ -60,10 +60,10 @@ public class PathManager : MonoBehaviour {
 //		ActionSequencerManager.OnPaperNode -= TriggerMovePaper;
 //		ActionSequencerManager.OnUraniumRodNode -= TriggerMoveUranium;
 		
-		BPM_Sequencer.OnPaperNode 		-= TriggerMovePaper;
-		BPM_Sequencer.OnInkNode 		-= TriggerMoveInk;
-		BPM_Sequencer.OnUraniumRodNode 	-= TriggerMoveUranium;
-		BPM_Sequencer.OnBarometerNode 	-= TriggerMoveBarometer;
+		BpmSequencer.OnPaperNode 		-= TriggerMovePaper;
+		BpmSequencer.OnInkNode 		-= TriggerMoveInk;
+		BpmSequencer.OnUraniumRodNode 	-= TriggerMoveUranium;
+		BpmSequencer.OnBarometerNode 	-= TriggerMoveBarometer;
     }
 
     #region Monohevaiour Methods

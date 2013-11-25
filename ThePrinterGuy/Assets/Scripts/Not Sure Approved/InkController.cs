@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -42,13 +42,13 @@ public class InkController : MonoBehaviour
 	//TODO: Handle gesture allowance
 	void OnEnable ()
 	{
-		BPM_Sequencer.OnInkNode += EnableInkTask;
+		BpmSequencer.OnInkNode += EnableInkTask;
 		ActionSequencerItem.OnFailed += DisableInkTask;
 	}
 	
 	void OnDisable ()
 	{
-		BPM_Sequencer.OnInkNode -= EnableInkTask;
+		BpmSequencer.OnInkNode -= EnableInkTask;
 		ActionSequencerItem.OnFailed -= DisableInkTask;
 	}
 	

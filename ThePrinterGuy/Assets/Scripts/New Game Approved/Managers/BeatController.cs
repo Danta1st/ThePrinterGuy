@@ -4,7 +4,8 @@ using System.Collections;
 public class BeatController : MonoBehaviour {
 	
 	#region Privates
-	private int _beatCounter = 0; 
+	private int _beatCounter = 0;
+    private bool _hasPlayed = false;
 	#endregion
 	
 	#region Delegates & Events
@@ -49,6 +50,11 @@ public class BeatController : MonoBehaviour {
 	//Primary beat counter
 	private void UpdateBeatCounter()
 	{
+        if(!_hasPlayed)
+        {
+            SoundManager.Music_InGame_Main();
+            _hasPlayed = true;
+        }
 		if(_beatCounter +1 <= 240)
 			_beatCounter++;
 		else
