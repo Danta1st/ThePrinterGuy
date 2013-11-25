@@ -273,14 +273,14 @@ public class PaperInsertion : MonoBehaviour
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 				//Succesfull Slide
-	            if(_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
+	            if(_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform)
 				{
 					playSlideSound(i);
 					SlidePaper(i, true);
 					break;
 				}
 				//Unsuccesfull Slide
-				else if(!_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
+				else if(!_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform)
 				{
                     SoundManager.Effect_PaperTray_WrongSwipe();
 					SlidePaper(i, false);
