@@ -500,7 +500,7 @@ public class GUIGameCamera : MonoBehaviour
                     if(_hit.collider.gameObject.name == "PauseButton")
                     {
                         OpenIngameMenu();
-                        if(OnPause() != null)
+                        if(OnPause != null)
                             OnPause();
                     }
                     else if(_hit.collider.gameObject.name == "ResumeButton")
@@ -510,13 +510,13 @@ public class GUIGameCamera : MonoBehaviour
                     else if(_hit.collider.gameObject.name == "RestartButton")
                     {
                         RestartLevel();
-                        if(OnRestart() != null)
+                        if(OnRestart != null)
                             OnRestart();
                     }
                     else if(_hit.collider.gameObject.name == "QuitButton")
                     {
                         QuitLevel();
-                        if(OnToMainMenuFromLevel() != null)
+                        if(OnToMainMenuFromLevel != null)
                             OnToMainMenuFromLevel();
                     }
                     else if(_hit.collider.gameObject.name == "SettingsButton")
