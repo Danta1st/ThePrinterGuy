@@ -77,6 +77,15 @@ public class GUIGameCamera : MonoBehaviour
 
     public delegate void GameEndedAction(int score);
     public static event GameEndedAction OnGameEnded;
+
+    public delegate void PauseAction();
+    public static event PauseAction OnPause;
+
+    public delegate void RestartAction();
+    public static event RestartAction OnRestart;
+
+    public delegate void ToMainMenuFromLevelAction();
+    public static event ToMainMenuFromLevelAction OnToMainMenuFromLevel;
 	#endregion
 
     #region Enable and Disable
@@ -491,6 +500,8 @@ public class GUIGameCamera : MonoBehaviour
                     if(_hit.collider.gameObject.name == "PauseButton")
                     {
                         OpenIngameMenu();
+                        if(OnPause != null)
+                            OnPause();
                     }
                     else if(_hit.collider.gameObject.name == "ResumeButton")
                     {
@@ -499,10 +510,14 @@ public class GUIGameCamera : MonoBehaviour
                     else if(_hit.collider.gameObject.name == "RestartButton")
                     {
                         RestartLevel();
+                        if(OnRestart != null)
+                            OnRestart();
                     }
                     else if(_hit.collider.gameObject.name == "QuitButton")
                     {
                         QuitLevel();
+                        if(OnToMainMenuFromLevel != null)
+                            OnToMainMenuFromLevel();
                     }
                     else if(_hit.collider.gameObject.name == "SettingsButton")
                     {

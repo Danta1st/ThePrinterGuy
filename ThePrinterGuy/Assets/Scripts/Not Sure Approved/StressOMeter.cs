@@ -67,6 +67,12 @@ public class StressOMeter : MonoBehaviour
 	
 	public delegate void ZoneLeft();
 	public static event ZoneLeft OnZoneLeft;
+
+    public delegate void StressIncreaseAction();
+    public static event StressIncreaseAction OnStressIncrease;
+
+    public delegate void StressDecreaseAction();
+    public static event StressIncreaseAction OnStressDecrease;
 	#endregion
 
     void Start()
@@ -114,6 +120,8 @@ public class StressOMeter : MonoBehaviour
     #region Give Points
     void GivePoints()
     {
+        if(OnStressIncrease != null)
+            OnStressIncrease();
         _rotationScale -= _inZonePoints;
         UpdateRotation();
     }
@@ -122,6 +130,8 @@ public class StressOMeter : MonoBehaviour
     #region Reduct Point
     void ReductPointsFailed()
     {
+        if(OnStressDecrease != null)
+            OnStressDecrease();
          _paperAudioStreak = 0.0f;
         _rotationScale -= _failedPoints;
         UpdateRotation();
