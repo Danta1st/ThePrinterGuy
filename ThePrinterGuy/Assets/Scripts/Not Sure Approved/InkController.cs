@@ -42,13 +42,13 @@ public class InkController : MonoBehaviour
 	//TODO: Handle gesture allowance
 	void OnEnable ()
 	{
-		ActionSequencerManager.OnInkNode += EnableInkTask;
+		SequencerTest.OnInkNode += EnableInkTask;
 		ActionSequencerItem.OnFailed += DisableInkTask;
 	}
 	
 	void OnDisable ()
 	{
-		ActionSequencerManager.OnInkNode -= EnableInkTask;
+		SequencerTest.OnInkNode -= EnableInkTask;
 		ActionSequencerItem.OnFailed -= DisableInkTask;
 	}
 	
