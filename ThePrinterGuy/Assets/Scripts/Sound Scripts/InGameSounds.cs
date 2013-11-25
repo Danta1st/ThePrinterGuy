@@ -16,7 +16,7 @@ public class InGameSounds : MonoBehaviour
 
     public void Music_InGame_Main()
     {
-        _music.LoopClipStart(0);
+        _music.LoopClipStart();
     }
 
     public void Effect_InGame_Win()
