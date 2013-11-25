@@ -1,33 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SoundManager : MonoBehaviour
 {
+    private bool _isFaded;
+    private float _fadeTime;
+
     private static InGameSounds _inGameSounds;
     private static MainMenuSounds _mainMenuSounds;
-
     private static PaperSounds _paperSounds;
     private static InkSounds _inkSounds;
     private static RodSounds _rodSounds;
-    private static BaroSounds _baroSounds;
-
     private static VoiceSounds _voiceSounds;
-
     private static MachineSounds _machineSounds;
+
+    private static GenericSoundScript[] _soundScripts;
+    private static List<GenericSoundScript> _scriptList;
+    private static List<float> _soundVolume;
 
     void Awake()
     {
         _inGameSounds = transform.FindChild("In Game").GetComponent<InGameSounds>();
         _mainMenuSounds = transform.FindChild("Main Menu").GetComponent<MainMenuSounds>();
-
         _paperSounds = transform.FindChild("PaperTray").GetComponent<PaperSounds>();
         _inkSounds = transform.FindChild("Ink").GetComponent<InkSounds>();
         _rodSounds = transform.FindChild("Uranium Rods").GetComponent<RodSounds>();
-        _baroSounds = transform.FindChild("BaroMeter").GetComponent<BaroSounds>();
-
         _voiceSounds = transform.FindChild("Voice").GetComponent<VoiceSounds>();
-
         _machineSounds = transform.FindChild("Machine").GetComponent<MachineSounds>();
+
+        _soundScripts = FindObjectsOfType(typeof(GenericSoundScript)) as GenericSoundScript[];
+
+        for(int i = 0; i <_soundScripts.Length; i++)
+        {
+            _scriptList.Add(_soundScripts[i]);
+        }
     }
 
     public static void thisTest(GameObject go, Vector2 thisPos)
@@ -205,63 +212,6 @@ public class SoundManager : MonoBehaviour
     public static void Effect_UraniumRods_Hammer()
     {
         _rodSounds.Effect_UraniumRods_Hammer();
-    }
-    #endregion
-
-    #region Barometer Sounds
-    public static void Barometer_RaiseVolume()
-    {
-        _baroSounds.RaiseVolume();
-    }
-
-    public static void Barometer_LowerVolume()
-    {
-        _baroSounds.LowerVolume();
-    }
-
-    public static void Effect_Barometer_NormSpin1()
-    {
-        _baroSounds.Effect_Barometer_NormSpin1();
-    }
-
-    public static void Effect_Barometer_NormSpin2()
-    {
-        _baroSounds.Effect_Barometer_NormSpin2();
-    }
-
-    public static void Effect_Barometer_NormSpin3()
-    {
-        _baroSounds.Effect_Barometer_NormSpin3();
-    }
-
-    public static void Effect_Barometer_NokOkSpin1()
-    {
-        _baroSounds.Effect_Barometer_NokOkSpin1();
-    }
-
-    public static void Effect_Barometer_NokOkSpin2()
-    {
-        _baroSounds.Effect_Barometer_NokOkSpin2();
-    }
-
-    public static void Effect_Barometer_NokOkSpin3()
-    {
-        _baroSounds.Effect_Barometer_NokOkSpin3();
-    }
-
-    public static void Effect_Barometer_Tap1()
-    {
-        _baroSounds.Effect_Barometer_Tap1();
-    }
-
-    public static void Effect_Barometer_Tap2()
-    {
-        _baroSounds.Effect_Barometer_Tap2();
-    }
-
-    public static void Effect_Barometer_Tap3()
-    {
-        _baroSounds.Effect_Barometer_Tap3();
     }
     #endregion
 
@@ -465,6 +415,40 @@ public class SoundManager : MonoBehaviour
     public static void Effect_Menu_Options()
     {
         _mainMenuSounds.Effect_Menu_Options();
+    }
+    #endregion
+
+    #region Generic Methods
+    public void FadeAllSources()
+    {
+        foreach(GenericSoundScript gss in _soundScripts)
+        {
+            //False - Set volume for each source
+            if(!_isFaded)
+            {
+                int index = _scriptList.IndexOf(gss);
+                _soundVolume[index] = gss.GetVolume();
+                gss.FadeVolume(0.0f, _fadeTime);
+                StartCoroutine(freezeUnFreezeAudio());
+            }
+
+            //True - Return volume for each source
+            else
+            {
+                int index = _scriptList.IndexOf(gss);
+                gss.FadeVolume(_soundVolume[index], _fadeTime);
+                StartCoroutine(freezeUnFreezeAudio());
+            }
+
+            _isFaded = !_isFaded;
+        }
+    }
+
+    IEnumerator freezeUnFreezeAudio()
+    {
+        yield return new WaitForSeconds(_fadeTime);
+
+        AudioListener.pause = !AudioListener.pause;
     }
     #endregion
 }
