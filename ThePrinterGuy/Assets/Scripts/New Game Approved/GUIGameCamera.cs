@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -86,8 +86,8 @@ public class GUIGameCamera : MonoBehaviour
 //        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
 //        ActionSequencerManager.OnLastNode += LastNode;
 		
-		BPM_Sequencer.OnCreateNewNode += InstantiateNodeAction;
-		BPM_Sequencer.OnLastNode += LastNode;
+		BpmSequencer.OnCreateNewNode += InstantiateNodeAction;
+		BpmSequencer.OnLastNode += LastNode;
 		
         ScoreManager.OnTaskCompleted += CheckZone;
         //Dialogue.OnDialogueStart += DialogueWindowIn;
@@ -101,8 +101,8 @@ public class GUIGameCamera : MonoBehaviour
 //        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
 //        ActionSequencerManager.OnLastNode -= LastNode;
 		
-		BPM_Sequencer.OnCreateNewNode -= InstantiateNodeAction;
-		BPM_Sequencer.OnLastNode -= LastNode;
+		BpmSequencer.OnCreateNewNode -= InstantiateNodeAction;
+		BpmSequencer.OnLastNode -= LastNode;
 		
         ScoreManager.OnTaskCompleted -= CheckZone;
         //Dialogue.OnDialogueStart -= DialogueWindowIn;
