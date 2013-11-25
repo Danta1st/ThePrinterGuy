@@ -94,8 +94,6 @@ public class LevelManager : MonoBehaviour
 
             StageCharacter thisChar = go.GetComponent<StageCharacter>();
 
-            Animation characterAnimation = go.GetComponent<Animation>();
-
             GameObject thisProjectorHolder = go.transform.parent.FindChild("projectorHolder").gameObject;
 
             Projector thisProjector = thisProjectorHolder.transform.GetComponent<Projector>();

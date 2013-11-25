@@ -94,7 +94,7 @@ public class Ink : MonoBehaviour
 	{
 		StartGates();
 		
-		SequencerTest.OnInkNode += StartInkTask;
+		BPM_Sequencer.OnInkNode += StartInkTask;
 		ActionSequencerItem.OnFailed += InkReset;
 	}
 	
@@ -102,7 +102,7 @@ public class Ink : MonoBehaviour
 	{
 		StopGates();
 		
-		SequencerTest.OnInkNode -= StartInkTask;
+		BPM_Sequencer.OnInkNode -= StartInkTask;
 		ActionSequencerItem.OnFailed -= InkReset;
 	}
 	
@@ -237,7 +237,8 @@ public class Ink : MonoBehaviour
 	private void InkSuccess(InkCartridgeClass icc)
 	{
 		icc.cartridgeEmpty = false;
-		icc.cartridge.gameObject.SetActive(true);
+//		icc.cartridge.gameObject.SetActive(true);
+		icc.cartridge.renderer.material.mainTexture = icc.full;
 		if(_particleSmoke != null && _particleSmoke.isPlaying)
 			_particleSmoke.Stop();
 		foreach(Transform child in icc.cartridge.transform)
@@ -349,7 +350,8 @@ public class Ink : MonoBehaviour
 			}
 		}
 		_machineInks[iccnumber].cartridgeEmpty = true;
-		_machineInks[iccnumber].cartridge.gameObject.SetActive(false);
+//		_machineInks[iccnumber].cartridge.gameObject.SetActive(false);
+		_machineInks[iccnumber].cartridge.renderer.material.mainTexture = _machineInks[iccnumber].empty;
 	}
 	
 	#endregion

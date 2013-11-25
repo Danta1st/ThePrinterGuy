@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Dialogue : MonoBehaviour {
     #region Editor Publics
@@ -10,14 +11,27 @@ public class Dialogue : MonoBehaviour {
     private Animation _characterAnimation;
     private Color _oldColor;
     private bool _cameraMovement = false;
+    private GameObject _textBG;
+    private GameObject _text;
+    private string _localizationKey;
+    private string[] happyTuple;
+    private string[] angryTuple;
+    //animation, sound, localzation key
+    private List<string[]> happyCollection;
+    private List<string[]> angryCollection;
+    //1 AARGH, 2 næve, 3 smoke
 
-    void Start()
+    void Awake()
     {
+        happyCollection = new List<string[]>();
+        happyCollection.Add(new string[] {"Good 01","6","InGameHmNotBad"});
+        angryCollection = new List<string[]>();
+        angryCollection.Add(new string[] {"Very Angry 01","11","InGameAngryArgh"});
         _characterAnimation = gameObject.GetComponentInChildren<Animation>();
     }
 
     #region Delegates & Events
-    public delegate void DialogueStart();
+    public delegate void DialogueStart(string localizationKey);
     public static event DialogueStart OnDialogueStart;
 
     public delegate void DialogueEnd();
@@ -45,17 +59,23 @@ public class Dialogue : MonoBehaviour {
 
     private void HappyCharacter()
     {
-       // OnDialogueStart();
-        _characterAnimation.CrossFade("Good 01");
-        StartCoroutine("CheckForDialogueEnd");
-         _characterAnimation.CrossFadeQueued("Idle");
+        happyTuple = happyCollection[Random.Range(0, happyCollection.Count)];
+        _characterAnimation.CrossFade(happyTuple[0]);
+        PlaySound(happyTuple[1]);
+        if(OnDialogueStart != null)
+            OnDialogueStart(happyTuple[2]);
+        _characterAnimation.CrossFadeQueued("Idle");
     }
 
-    //Make some variables available to tweaking in editor.   
     private void AngryCharacter()
     {
-        //OnDialogueStart();
-        _characterAnimation.CrossFade("Very Angry 01");
+        angryTuple = angryCollection[Random.Range(0, angryCollection.Count)];
+        _characterAnimation.CrossFade(angryTuple[0]);
+        PlaySound(angryTuple[1]);
+        _localizationKey = angryTuple[2];
+        if(OnDialogueStart != null){
+            OnDialogueStart(_localizationKey);
+        }
         iTween.ColorFrom(Camera.main.gameObject, Color.red, 2f);
         _oldColor = Camera.main.backgroundColor;
         iTween.ValueTo(gameObject, iTween.Hash("from", _oldColor, "to", _alertColor, "time", 0.1f, "onupdate", "changeSkyboxValue"));
@@ -64,17 +84,8 @@ public class Dialogue : MonoBehaviour {
         {
             iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f,0.5f,0.5f), "time", 0.2f));
         }
-        StartCoroutine("CheckForDialogueEnd");
         _characterAnimation.CrossFadeQueued("Idle");
-    }
-
-    IEnumerator CheckForDialogueEnd()
-    {
-        while(_characterAnimation.IsPlaying("Very Angry 01") || _characterAnimation.IsPlaying("Good 01"))
-        {
-            yield return new WaitForSeconds(1);
-        }
-        //OnDialogueEnd();
+        StartCoroutine(CheckIfAnimationStopped(angryTuple[0]));
     }
 
     private void changeSkyboxValue(Color color)
@@ -90,6 +101,30 @@ public class Dialogue : MonoBehaviour {
     private void CameraStoppedMoving()
     {
         _cameraMovement = false;
+    }
+
+    private void PlaySound(string sound)
+    {
+        switch (sound) {
+        case "6":
+            SoundManager.Voice_Boss_6();
+            break;
+        case "11":
+            SoundManager.Voice_Boss_11();
+            break;
+        default:
+        break;
+        }
+    }
+
+    IEnumerator CheckIfAnimationStopped(string animation)
+    {
+        while(_characterAnimation.IsPlaying(angryTuple[0]))
+        {
+            yield return new WaitForSeconds(1f);
+        }
+        if(OnDialogueEnd != null)
+            OnDialogueEnd();
     }
 
 }
