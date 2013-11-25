@@ -15,6 +15,12 @@ public class MainMenuSounds : MonoBehaviour
             GetComponent<GenericSoundScript>();
     }
 
+    void Start()
+    {
+        _music.audio.ignoreListenerPause = true;
+        _soundFx.audio.ignoreListenerPause = true;
+    }
+
     public void Music_Menu_Main()
     {
         _music.LoopClipStart(0);
