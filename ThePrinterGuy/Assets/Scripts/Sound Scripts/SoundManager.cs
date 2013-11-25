@@ -291,6 +291,21 @@ public class SoundManager : MonoBehaviour
         _voiceSounds.Voice_Boss_6();
     }
 
+    public static void Voice_Boss_4()
+    {
+        _voiceSounds.Voice_Boss_4();
+    }
+
+    public static void Voice_Boss_5()
+    {
+        _voiceSounds.Voice_Boss_5();
+    }
+
+    public static void Voice_Boss_6()
+    {
+        _voiceSounds.Voice_Boss_6();
+    }
+
     public static void Voice_Boss_7()
     {
         _voiceSounds.Voice_Boss_7();
