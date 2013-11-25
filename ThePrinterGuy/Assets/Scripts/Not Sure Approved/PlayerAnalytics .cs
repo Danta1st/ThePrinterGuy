@@ -9,12 +9,11 @@ public class PlayerAnalytics : MonoBehaviour {
         BpmManager.OnBeat += UpdateBeat;
         GUIGameCamera.OnPause += PlayerPause;
         GUIGameCamera.OnRestart += PlayerRestartLevel;
-        GUIGameCamera.OnToMainMenuFromLevel += PlayerToMainMenu;
-        HighscoreSceneScript.OnFailedLevel += PlayerFailedLevel;
-        HighscoreSceneScript.OnCompletedLevel += PlayerCompletedLevel;
+        GUIGameCamera.OnToMainMenuFromLevel += PlayerToMainMenuFromLevel;
+        //HighscoreSceneScript.OnFailedLevel += PlayerFailedLevel;
+        //HighscoreSceneScript.OnCompletedLevel += PlayerCompletedLevel;
         StressOMeter.OnStressIncrease += StressIncrease;
         StressOMeter.OnStressDecrease += StressDecrease;
-        StressOMeter.OnGameFailed += PlayerFailedLevel;
 	}
 
     private void UpdateBeat()
