@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerAnalytics : MonoBehaviour {
+public class GAPlayerAnalytics : MonoBehaviour {
     float beatsSinceLevelLoad = 0;
 
 	// Use this for initialization
@@ -14,6 +14,7 @@ public class PlayerAnalytics : MonoBehaviour {
         //HighscoreSceneScript.OnCompletedLevel += PlayerCompletedLevel;
         StressOMeter.OnStressIncrease += StressIncrease;
         StressOMeter.OnStressDecrease += StressDecrease;
+        GUIGameCamera.OnTaskEnd += TaskEnd;
 	}
 
     private void UpdateBeat()
@@ -21,45 +22,45 @@ public class PlayerAnalytics : MonoBehaviour {
         beatsSinceLevelLoad++;
     }
 
-    private void PlayerFailedLevel(float score) //
+    private void PlayerFailedLevel(float score)
     {
         GA.API.Design.NewEvent("FailedLevel", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName), score);
     }
 
-    private void PlayerCompletedLevel(float score)//
+    private void PlayerCompletedLevel(float score)
     {
         GA.API.Design.NewEvent("CompletedLevel", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName), score);
     }
 
-    private void PlayerToMainMenuFromLevel()//
+    private void PlayerToMainMenuFromLevel()
     {
         GA.API.Design.NewEvent("ToMainMenuFromLevel", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName));
     }
 
-    private void PlayerRestartLevel()//
+    private void PlayerRestartLevel()
     {
         GA.API.Design.NewEvent("RestartLevel", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName));
     }
 
-    private void PlayerPause()//
+    private void PlayerPause()
     {
         GA.API.Design.NewEvent("Pause", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName));
     }
 
-    private void StressIncrease()//
+    private void StressIncrease()
     {
         GA.API.Design.NewEvent("StressIncrease", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName));
     }
 
-    private void StressDecrease()//
+    private void StressDecrease()
     {
         GA.API.Design.NewEvent("StressDecrease", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName));
     }
 
-  /*private void Task()
+    private void TaskEnd(string type, int zone)
     {
-        GA.API.Design.NewEvent("Task", Time.timeSinceLevelLoad, beatsSinceLevelLoad, Application.loadedLevelName);
-    }*/
+        GA.API.Design.NewEvent("Task " + type + " ended in ", zone, Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName));
+    }
 
     private int FindLevel(string level)
     {
@@ -72,6 +73,24 @@ public class PlayerAnalytics : MonoBehaviour {
                 break;
             case "level3":
                 return 3;
+                break;
+            case "level4":
+                return 4;
+                break;
+            case "level5":
+                return 5;
+                break;
+            case "level6":
+                return 6;
+                break;
+            case "level7":
+                return 7;
+                break;
+            case "level8":
+                return 8;
+                break;
+            case "level9":
+                return 9;
                 break;
             default:
                 return 0;

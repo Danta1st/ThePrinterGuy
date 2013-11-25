@@ -38,7 +38,7 @@ public class BpmSequencer : MonoBehaviour {
 	
     public delegate void OnTaskAction(int taskIdentifier);
 	
-    public static event OnTaskAction OnPaperNode;				
+    public static event OnTaskAction OnPaperNode;
     public static event OnTaskAction OnInkNode;
     public static event OnTaskAction OnUraniumRodNode;
     public static event OnTaskAction OnBarometerNode;
