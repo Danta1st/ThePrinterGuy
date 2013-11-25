@@ -252,6 +252,9 @@ public class GUIEndScreenCamera : MonoBehaviour
 	
 	private void DisplayEndScreenWin(int score)
 	{
+            SoundManager.FadeAllSources();
+            SoundManager.Effect_InGame_Win();
+
 		    GetCurrentLevel();
 		    //Camera.main.enabled = false;
 		    _guiCam.camera.enabled = false;
@@ -266,6 +269,9 @@ public class GUIEndScreenCamera : MonoBehaviour
 
     private void DisplayEndScreenLoose()
     {
+        SoundManager.FadeAllSources();
+        SoundManager.Effect_InGame_Lose();
+
         GetCurrentLevel();
         //Camera.main.enabled = false;
         _guiCam.camera.enabled = false;
