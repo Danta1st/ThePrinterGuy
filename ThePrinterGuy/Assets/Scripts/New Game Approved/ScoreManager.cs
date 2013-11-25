@@ -5,22 +5,17 @@ using System.Collections.Generic;
 public class ScoreManager : MonoBehaviour 
 {
 	#region Publics
-	[SerializeField]
-	private int InkPointsBase = 100;
-	[SerializeField]
-	private int PaperPointsBase = 100;
-	[SerializeField]
-	private int BarometerPointsBase = 100;
-	[SerializeField]
-	private int RodPointsBase = 100;
-	[SerializeField]
-	private float YellowZoneModifier = 1.2f;
-	[SerializeField]
-	private float GreenZoneModifier = 1.5f;
-	[SerializeField]
-	private List<string> Feedback;
-	[SerializeField]
-	private ScoreMultipliers _scoreMultiplier;
+	//Task points
+	[SerializeField] private int InkPointsBase = 100;
+	[SerializeField] private int PaperPointsBase = 100;
+	[SerializeField] private int BarometerPointsBase = 100;
+	[SerializeField] private int RodPointsBase = 100;
+	//Zone Modifiers
+	[SerializeField] private float YellowZoneModifier = 1.2f;
+	[SerializeField] private float GreenZoneModifier = 1.5f;
+	//StressOMeter Modifiers
+	[SerializeField] private List<string> Feedback;
+	[SerializeField] private ScoreMultipliers _scoreMultiplier;
 	#endregion
 	
 	#region Privates
@@ -29,8 +24,8 @@ public class ScoreManager : MonoBehaviour
 	#endregion
 	
 	#region Delegates and Events
-	public delegate void OnTaskCompleted();
-	public static event OnTaskCompleted TaskCompleted;
+	public delegate void OnTaskCompletedAction();
+	public static event OnTaskCompletedAction OnTaskCompleted;
 	#endregion
 	
 	#region Unity Methods
@@ -49,20 +44,26 @@ public class ScoreManager : MonoBehaviour
 	
 	void OnEnable()
 	{
+		//Task Succes Subscriptions
 		Ink.OnCorrectInkInserted += InkSuccess;
 		PaperInsertion.OnCorrectPaperInserted += PaperSuccess;
 		Barometer.OnBarometerFixed += BarometerSuccess;
 		UraniumRods.OnRodHammered += RodSuccess;
+		
+		//StressOMeter Subscriptions
 		StressOMeter.OnHappyZone += EnableHappyMultiplier;
 		StressOMeter.OnZoneLeft += DisableHappyMultiplier;
 	}
 	
 	void OnDisable()
 	{
+		//Task Succes Subscriptions
 		Ink.OnCorrectInkInserted -= InkSuccess;
 		PaperInsertion.OnCorrectPaperInserted -= PaperSuccess;
 		Barometer.OnBarometerFixed -= BarometerSuccess;
 		UraniumRods.OnRodHammered -= RodSuccess;
+	
+		//StressOMeter Subscriptions
 		StressOMeter.OnAngryZone -= EnableHappyMultiplier;
 		StressOMeter.OnZoneLeft -= DisableHappyMultiplier;
 	}
@@ -104,8 +105,8 @@ public class ScoreManager : MonoBehaviour
 		bool pointsGranted = false;
 		int popupSize = 1;
 		
-		if(TaskCompleted != null)
-			TaskCompleted();
+		if(OnTaskCompleted != null)
+			OnTaskCompleted();
 
 		colorHit = guiGameCameraScript.GetZone();
 

@@ -4,10 +4,8 @@ using System.Collections;
 public class ActionSequencerItem : MonoBehaviour
 {
     #region SerializeField
-    [SerializeField]
-    private string _moduleName;
-    [SerializeField]
-    private iTween.EaseType _easeTypeActionSequencerItem;
+    [SerializeField] private string _moduleName;
+    [SerializeField] private iTween.EaseType _easeTypeActionSequencerItem;
     #endregion
 
     #region Private Variables

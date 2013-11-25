@@ -36,13 +36,13 @@ public class UraniumRods : MonoBehaviour
 
     void OnEnable()
     {
-		ActionSequencerManager.OnUraniumRodNode += TriggerSpring;
+		BPM_Sequencer.OnUraniumRodNode += TriggerSpring;
 		ActionSequencerItem.OnFailed += Reset;
     }
 
     void OnDisable()
     {
-		ActionSequencerManager.OnUraniumRodNode -= TriggerSpring;
+		BPM_Sequencer.OnUraniumRodNode -= TriggerSpring;
 		ActionSequencerItem.OnFailed -= Reset;
     }
 
@@ -98,7 +98,7 @@ public class UraniumRods : MonoBehaviour
 		var go = _rods[itemNumber].rod;
 		//if(_rodsAndStates[go] == false) // QUICKFIX: Enables ability to choose same rod several times in a row
         {
-            GSS.PlayClip(itemNumber);
+			SoundManager.Effect_UraniumRods_Hammer();
             Spring(go, itemNumber);
 
             _rodsAndStates[go] = true;
@@ -159,8 +159,6 @@ public class UraniumRods : MonoBehaviour
             {
 				failed = false;
 
-                GSS.PlayClip(3);
-
                 Hammer(go);
 				GestureManager.OnTap -= TriggerHammer;
                 if(OnRodHammered != null)
@@ -183,6 +181,8 @@ public class UraniumRods : MonoBehaviour
 		{
 			if(_rods[i].rod == go)
 			{
+				PlayHammerSound(i);
+				
 				iTween.MoveTo(go, iTween.Hash("position", _rods[i].startPos, "time", _inTime,
                              "islocal", true, "easetype", _easeTypeIn, "oncomplete", "HammerComplete", "oncompletetarget", gameObject, "oncompleteparams", go));
 			}
@@ -220,6 +220,29 @@ public class UraniumRods : MonoBehaviour
             }
         }
     }
+	
+	private void PlayHammerSound(int i)
+	{
+		//Play Sound
+		switch(i)
+		{
+		case 0:
+			SoundManager.Effect_UraniumRods_Popup1();
+			break;
+		case 1:
+			SoundManager.Effect_UraniumRods_Popup2();
+			break;
+		case 2:
+			SoundManager.Effect_UraniumRods_Popup3();
+			break;
+		case 3:
+			SoundManager.Effect_UraniumRods_Popup4();
+			break;
+		default:
+			Debug.LogWarning("Incorrect itemNumber for uranium received. No sound will play on hammering");
+			break;
+		}		
+	}
     #endregion
 	
 	[System.Serializable]

@@ -5,35 +5,24 @@ using System.Collections.Generic;
 public class GUIGameCamera : MonoBehaviour
 {
     #region Editor Publics
-    [SerializeField]
-    private LayerMask _layerMaskGUI;
+    [SerializeField] private LayerMask _layerMaskGUI;
     //List of all gui elements.
-    [SerializeField]
-    private GameObject[] _guiList;
-	[SerializeField]
-    private GameObject[] _textList;
-	[SerializeField]
-	private iTween.EaseType _easeTypeIngameMenu;
-	[SerializeField]
-    private GameObject _popupPrefab;
-	[SerializeField]
-    private GameObject _popupTextPrefab;
-    [SerializeField]
-    private GameObject _inkPrefab;
-    [SerializeField]
-    private GameObject _paperPrefab;
-    [SerializeField]
-    private GameObject _uraniumRodPrefab;
-    [SerializeField]
-    private GameObject _barometerPrefab;
-    [SerializeField]
-    private float _DialogueWindowInDuration = 1;
-    [SerializeField]
-    private iTween.EaseType _easeTypeDialogueWindowIn;
-    [SerializeField]
-    private float _DialogueWindowOutDuration = 1;
-    [SerializeField]
-    private iTween.EaseType _easeTypeDialogueWindowOut;
+    [SerializeField] private GameObject[] _guiList;
+	[SerializeField] private GameObject[] _textList;
+	[SerializeField] private iTween.EaseType _easeTypeIngameMenu = iTween.EaseType.easeOutBack;
+	//Feedback prefabs for rewards (points)
+	[SerializeField] private GameObject _popupPrefab;
+	[SerializeField] private GameObject _popupTextPrefab;
+	//Task Prefabs for the sequencer
+    [SerializeField] private GameObject _inkPrefab;
+    [SerializeField] private GameObject _paperPrefab;
+    [SerializeField] private GameObject _uraniumRodPrefab;
+    [SerializeField] private GameObject _barometerPrefab;
+	//Dialogue variables
+    [SerializeField] private float _DialogueWindowInDuration = 1;
+    [SerializeField] private iTween.EaseType _easeTypeDialogueWindowIn;
+    [SerializeField] private float _DialogueWindowOutDuration = 1;
+    [SerializeField] private iTween.EaseType _easeTypeDialogueWindowOut;
     #endregion
 
     #region Private Variables
@@ -77,7 +66,7 @@ public class GUIGameCamera : MonoBehaviour
     private int _zone = 0;
     private bool _isLastNode = false;
 	
-	//Speech bubble
+	//Dialogue variables - Speech bubble
 	private GameObject _speechTextObject;
 	private GUISpeechText _guiSpeechTextScript;
     #endregion
@@ -94,9 +83,13 @@ public class GUIGameCamera : MonoBehaviour
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
-        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
-        ActionSequencerManager.OnLastNode += LastNode;
-        ScoreManager.TaskCompleted += CheckZone;
+//        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
+//        ActionSequencerManager.OnLastNode += LastNode;
+		
+		BPM_Sequencer.OnCreateNewNode += InstantiateNodeAction;
+		BPM_Sequencer.OnLastNode += LastNode;
+		
+        ScoreManager.OnTaskCompleted += CheckZone;
         //Dialogue.OnDialogueStart += DialogueWindowIn;
         //Dialogue.OnDialogueEnd += DialogueWindowOut;
 
@@ -105,9 +98,13 @@ public class GUIGameCamera : MonoBehaviour
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
-        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
-        ActionSequencerManager.OnLastNode -= LastNode;
-        ScoreManager.TaskCompleted -= CheckZone;
+//        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
+//        ActionSequencerManager.OnLastNode -= LastNode;
+		
+		BPM_Sequencer.OnCreateNewNode -= InstantiateNodeAction;
+		BPM_Sequencer.OnLastNode -= LastNode;
+		
+        ScoreManager.OnTaskCompleted -= CheckZone;
         //Dialogue.OnDialogueStart -= DialogueWindowIn;
         //Dialogue.OnDialogueEnd -= DialogueWindowOut;
     }
@@ -241,6 +238,7 @@ public class GUIGameCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+	#if UNITY_EDITOR
 		if(Input.GetKeyDown(KeyCode.N))
 		{
 			IncreaseScorePopup(1000);
@@ -264,6 +262,7 @@ public class GUIGameCamera : MonoBehaviour
 			EnableGUIElement("SpeechBubble");
 			_guiSpeechTextScript.WriteText("SpeechBubbleExample");
 		}
+	#endif
     }
     #endregion
 	
@@ -595,7 +594,7 @@ public class GUIGameCamera : MonoBehaviour
     #region GUI Restart, Quit and Settings
     private void RestartLevel()
     {
-		//Need confirmation before restart.
+		//TODO: Need confirmation before restart.
 		Time.timeScale = 1.0f;
         LoadingScreen.Load(Application.loadedLevel, true);
     }
@@ -641,6 +640,7 @@ public class GUIGameCamera : MonoBehaviour
 
         _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 4);
         GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
+		//TODO: Set _nodeItem parent to DynamicObjects
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);
 		if(_sequencerObjectQueue.Count == 1)
@@ -657,6 +657,7 @@ public class GUIGameCamera : MonoBehaviour
         if(_sequencerObjectQueue.Count > 0)
         {
             _queuedObject = _sequencerObjectQueue.Peek();
+			Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
             ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
 
             _zone = _actionSequencerItemScript.GetZoneStatus();

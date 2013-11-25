@@ -59,18 +59,17 @@ public class PaperInsertion : MonoBehaviour
     {
 		StartGate();
 		
-		ActionSequencerManager.OnPaperNode += TriggerLight;
-		ActionSequencerManager.OnPaperNode += EnablePaper;
+		BPM_Sequencer.OnPaperNode += TriggerLight;
+		BPM_Sequencer.OnPaperNode += EnablePaper;
 		ActionSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
 		StopGate();
 		
-		ActionSequencerManager.OnPaperNode -= TriggerLight;
-		ActionSequencerManager.OnPaperNode -= EnablePaper;
+		BPM_Sequencer.OnPaperNode -= TriggerLight;
+		BPM_Sequencer.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
-        GestureManager.OnTap -= TriggerSlide;
     }
 
     #region Monobehaviour Functions
@@ -273,15 +272,17 @@ public class PaperInsertion : MonoBehaviour
 			
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
+				//Succesfull Slide
 	            if(_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
 				{
-                    //GSS.PlayClip(Random.Range(5, 8));
+					playSlideSound(i);
 					SlidePaper(i, true);
 					break;
 				}
+				//Unsuccesfull Slide
 				else if(!_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform.parent)
 				{
-                    //GSS.PlayClip(Random.Range(5, 8));
+                    SoundManager.Effect_PaperTray_WrongSwipe();
 					SlidePaper(i, false);
 					break;
 				}
@@ -387,6 +388,30 @@ public class PaperInsertion : MonoBehaviour
 		GestureManager.OnTap += TriggerSlide;
 		DisablePaper();
 		TurnOfAllLights();
+	}
+	
+	private void playSlideSound(int i)
+	{
+		//Play Sound
+		switch(i)
+		{
+		case 0:
+			SoundManager.Effect_PaperTray_Swipe1();
+			break;
+		case 1:
+			SoundManager.Effect_PaperTray_Swipe2();
+			break;
+		case 2:
+			SoundManager.Effect_PaperTray_Swipe3();
+			break;
+		case 3:
+			SoundManager.Effect_PaperTray_Swipe4();
+			break;
+		default:
+			Debug.LogWarning("Incorrect itemNumber for paperSlide received. No sound will play on sliding");
+			break;
+		}
+		
 	}
     #endregion
 
