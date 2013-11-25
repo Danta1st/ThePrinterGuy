@@ -24,9 +24,9 @@ public class Dialogue : MonoBehaviour {
     void Awake()
     {
         happyCollection = new List<string[]>();
-        happyCollection.Add(new string[] {"Good 01","6","InGameHmNotBad"});
+        happyCollection.Add(new string[] {"Good 01","6","InGameNotBad"});
         angryCollection = new List<string[]>();
-        angryCollection.Add(new string[] {"Very Angry 01","11","InGameAngryArgh"});
+        angryCollection.Add(new string[] {"Very Angry 01","11","InGameIdiot"});
         _characterAnimation = gameObject.GetComponentInChildren<Animation>();
     }
 
