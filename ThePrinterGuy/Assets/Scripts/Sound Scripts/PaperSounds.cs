@@ -80,4 +80,9 @@ public class PaperSounds : MonoBehaviour
     {
         _soundFx.PlayClip(9);
     }
+
+    public GenericSoundScript GetEffectScript()
+    {
+        return _soundFx;
+    }
 }

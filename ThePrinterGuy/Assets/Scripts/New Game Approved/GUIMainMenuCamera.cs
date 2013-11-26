@@ -306,6 +306,8 @@ public class GUIMainMenuCamera : MonoBehaviour
                         LocalizationText.SetLanguage("EN");
                         UpdateText();
                     }
+
+                    SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }

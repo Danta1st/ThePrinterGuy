@@ -38,6 +38,12 @@ public class GenericSoundScript : MonoBehaviour
     void Start()
     {
         _audioSource.clip = _audioClips[0];
+        _audioSource.ignoreListenerPause = true;
+    }
+
+    void Update()
+    {
+        audio.ignoreListenerPause = true;
     }
 
     #region Set Clip
@@ -260,6 +266,12 @@ public class GenericSoundScript : MonoBehaviour
     {
         iTween.AudioTo(gameObject, iTween.Hash("audiosource", gameObject.audio, "volume", newVolume,
             "time", fadeTime, "easetype", iTween.EaseType.linear));
+            //, "oncomplete", "Pause", "oncompletetarget", gameObject));
+    }
+
+    public void Pause()
+    {
+        //Debug.Log("DONNNEEE + " + Time.time);
     }
     #endregion
 }

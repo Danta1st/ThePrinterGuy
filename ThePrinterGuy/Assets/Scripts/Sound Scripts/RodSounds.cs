@@ -55,4 +55,9 @@ public class RodSounds : MonoBehaviour
     {
         _soundFx.PlayClip(4);
     }
+
+    public GenericSoundScript GetEffectScript()
+    {
+        return _soundFx;
+    }
 }
