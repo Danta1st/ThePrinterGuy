@@ -30,6 +30,7 @@ public class GenericSoundScript : MonoBehaviour
     private float _volumeMAX = 1.0f;
     #endregion
 
+    #region MonoBehavior
     void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -38,13 +39,8 @@ public class GenericSoundScript : MonoBehaviour
     void Start()
     {
         _audioSource.clip = _audioClips[0];
-        _audioSource.ignoreListenerPause = true;
     }
-
-    void Update()
-    {
-        audio.ignoreListenerPause = true;
-    }
+    #endregion
 
     #region Set Clip
     public void AssignClip()
