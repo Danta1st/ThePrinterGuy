@@ -69,6 +69,7 @@ public class PaperInsertion : MonoBehaviour
 		
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
+        GestureManager.OnTap -= TriggerSlide;
 		ActionSequencerItem.OnFailed -= Reset;
     }
 	
@@ -396,7 +397,7 @@ public class PaperInsertion : MonoBehaviour
 		if(_particleSmoke != null && _particleSmoke.isPlaying)
 			_particleSmoke.Stop();
 		//GestureManager.OnSwipeUp -= TriggerSlide;
-		GestureManager.OnTap += TriggerSlide;
+		GestureManager.OnTap -= TriggerSlide;
 		DisablePaper();
 		TurnOfAllLights();
 	}
