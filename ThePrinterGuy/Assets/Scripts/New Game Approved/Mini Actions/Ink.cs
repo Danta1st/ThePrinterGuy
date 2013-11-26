@@ -267,7 +267,9 @@ public class Ink : MonoBehaviour
 	{
 		if(_particleExplosion != null && _particleExplosion.isPlaying)
 			_particleExplosion.Stop();
-		
+
+        SoundManager.Effect_Ink_WrongSlot();
+
 		_particleExplosion.Play();
 		_particleExplosion.transform.position = icc.insertableCartridge.position;
 		icc.insertableCartridge.transform.position = icc.insertableStartPos;
