@@ -48,8 +48,7 @@ public class LevelManager : MonoBehaviour
         _creditsLookTarget = GameObject.Find("Television");
         _optionsLookTarget = GameObject.Find("OptionButtons");
         if(!PlayerPrefs.HasKey("highscoresAsString")){
-            highScores = new int[3]{0,-1,-1};
-            SaveGame.SavePlayerData(0,0,highScores);
+            SaveGame.ResetPlayerData();
         }
 
 

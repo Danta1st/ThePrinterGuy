@@ -256,7 +256,10 @@ public class GUIEndScreenCamera : MonoBehaviour
             SoundManager.Effect_InGame_Win();
 
 		    GetCurrentLevel();
-		    //Camera.main.enabled = false;
+            //Unlocking the next level!
+            int[] highScores = SaveGame.GetPlayerHighscores();
+            highScores[_currentLevel+1] = 0;
+            SaveGame.SavePlayerData(0,0,highScores);
 		    _guiCam.camera.enabled = false;
 		    EnableGUICamera();
 		    EnableGUIElementAll();
