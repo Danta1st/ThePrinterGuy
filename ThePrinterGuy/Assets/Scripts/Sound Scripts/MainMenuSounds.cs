@@ -19,6 +19,8 @@ public class MainMenuSounds : MonoBehaviour
     {
         _music.audio.ignoreListenerPause = true;
         _soundFx.audio.ignoreListenerPause = true;
+        _music.audio.ignoreListenerVolume = true;
+        _soundFx.audio.ignoreListenerVolume = true;
     }
 
     public void Music_Menu_Main()
@@ -64,5 +66,15 @@ public class MainMenuSounds : MonoBehaviour
     public void Effect_Menu_Options()
     {
         _soundFx.PlayClip(7);
+    }
+
+    public GenericSoundScript GetEffectScript()
+    {
+        return _soundFx;
+    }
+
+    public GenericSoundScript GetMusicScript()
+    {
+        return _music;
     }
 }

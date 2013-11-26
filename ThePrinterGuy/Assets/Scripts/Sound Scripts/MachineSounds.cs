@@ -52,4 +52,19 @@ public class MachineSounds : MonoBehaviour
     {
         _soundFxS.PlayClip(2);
     }
+
+    public GenericSoundScript GetEffectScriptCogwheels()
+    {
+        return _soundFxC;
+    }
+
+    public GenericSoundScript GetEffectScriptMachine()
+    {
+        return _soundFxM;
+    }
+
+    public GenericSoundScript GetEffectScriptSmoke()
+    {
+        return _soundFxS;
+    }
 }

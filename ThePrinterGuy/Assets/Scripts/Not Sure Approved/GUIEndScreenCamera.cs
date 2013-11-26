@@ -253,8 +253,10 @@ public class GUIEndScreenCamera : MonoBehaviour
 	
 	private void DisplayEndScreenWin(int score)
 	{
-            SoundManager.FadeAllSources();
             SoundManager.Effect_InGame_Win();
+            SoundManager.StopAllSoundEffects();
+            SoundManager.FadeAllMusic();
+
 
 		    GetCurrentLevel();
             //Unlocking the next level!
@@ -276,8 +278,9 @@ public class GUIEndScreenCamera : MonoBehaviour
 
     private void DisplayEndScreenLoose()
     {
-        SoundManager.FadeAllSources();
         SoundManager.Effect_InGame_Lose();
+        SoundManager.StopAllSoundEffects();
+        SoundManager.FadeAllMusic();
 
         GetCurrentLevel();
         //Camera.main.enabled = false;

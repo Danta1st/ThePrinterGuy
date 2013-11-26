@@ -4,9 +4,12 @@ using System.Collections.Generic;
 
 public class SoundManager : MonoBehaviour
 {
-    private static bool _isFaded;
-    private static float _fadeTime;
+    [SerializeField]
+    private static float _fadeTime = 1.0f;
+    [SerializeField]
+    private static float _endMusicVolume = 0.2f;
 
+    private static bool _isFaded = false;
     private static InGameSounds _inGameSounds;
     private static MainMenuSounds _mainMenuSounds;
     private static PaperSounds _paperSounds;
@@ -422,32 +425,51 @@ public class SoundManager : MonoBehaviour
     }
     #endregion
 
-    #region Generic Methods
-    public static void FadeAllSources()
+    #region General Methods
+    public static void FadeAllSourcesUp()
     {
         foreach(GenericSoundScript gss in _soundScripts)
         {
-            //False - Set volume for each source
-            if(!_isFaded)
-            {
-                Debug.Log(gss);
-                int index = _scriptList.IndexOf(gss);
-                Debug.Log(_soundVolume[index]);
-                _soundVolume[index] = gss.GetVolume();
-                gss.FadeVolume(0.0f, _fadeTime);
-                //StaticCoroutine.DoCoroutine(_fadeTime);
-            }
-
-            //True - Return volume for each source
-            else
-            {
-                int index = _scriptList.IndexOf(gss);
-                gss.FadeVolume(_soundVolume[index], _fadeTime);
-                //StaticCoroutine.DoCoroutine(_fadeTime);
-            }
-
-            _isFaded = !_isFaded;
+            int index = _scriptList.IndexOf(gss);
+            gss.FadeVolume(_soundVolume[index], _fadeTime);
         }
+    }
+
+    public static void FadeAllSources(float volume)
+    {
+        foreach(GenericSoundScript gss in _soundScripts)
+        {
+            int index = _scriptList.IndexOf(gss);
+            gss.FadeVolume(volume, _fadeTime);
+        }
+    }
+
+    public static void StoreVolumes()
+    {
+        Debug.Log("Storing volume");
+
+        foreach(GenericSoundScript gss in _soundScripts)
+        {
+            int index = _scriptList.IndexOf(gss);
+            _soundVolume[index] = gss.GetVolume();
+            gss.SetVolume(0.0f);
+        }
+    }
+
+    public static void StopAllSoundEffects()
+    {
+        _inkSounds.GetEffectScript().SetVolume(0.0f);
+        _machineSounds.GetEffectScriptCogwheels().SetVolume(0.0f);
+        _machineSounds.GetEffectScriptMachine().SetVolume(0.0f);
+        _machineSounds.GetEffectScriptSmoke().SetVolume(0.0f);
+        _paperSounds .GetEffectScript().SetVolume(0.0f);
+        _rodSounds.GetEffectScript().SetVolume(0.0f);
+    }
+
+    public static void FadeAllMusic()
+    {
+        _inGameSounds.GetMusicScript().FadeVolume(_endMusicVolume, _fadeTime);
+        _mainMenuSounds.GetMusicScript().FadeVolume(_endMusicVolume, _fadeTime);
     }
     #endregion
 }
