@@ -38,6 +38,11 @@ public class MachineSounds : MonoBehaviour
         _soundFxM.PlayClip(0);
     }
 
+    public void Effect_Machine_TaskMissed()
+    {
+        _soundFxM.PlayClip(1);
+    }
+
     public void Effect_Machine_Smoke1()
     {
         _soundFxS.PlayClip(0);
@@ -51,5 +56,20 @@ public class MachineSounds : MonoBehaviour
     public void Effect_Machine_Smoke3()
     {
         _soundFxS.PlayClip(2);
+    }
+
+    public GenericSoundScript GetEffectScriptCogwheels()
+    {
+        return _soundFxC;
+    }
+
+    public GenericSoundScript GetEffectScriptMachine()
+    {
+        return _soundFxM;
+    }
+
+    public GenericSoundScript GetEffectScriptSmoke()
+    {
+        return _soundFxS;
     }
 }
