@@ -43,11 +43,6 @@ public class LoadingScreen : MonoBehaviour
 		_material = new Material("Shader \"Plane/No zTest\" { SubShader { Pass { Blend SrcAlpha OneMinusSrcAlpha ZWrite Off Cull Off Fog { Mode Off } BindChannels { Bind \"Color\",color } } } }");
         DontDestroyOnLoad(this); 
     }
- 
-	void Update()
-	{
-		
-	}
 	
 	public static void Load(int index, bool skipTap)
     {
