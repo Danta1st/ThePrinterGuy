@@ -18,6 +18,8 @@ public class LevelManager : MonoBehaviour
     private List<bool> _gameLevelsUnlocked = new List<bool>();
     [SerializeField]
     private iTween.EaseType _easeType;
+    [SerializeField]
+    private int _levelBoxCount;
 
     private GameObject _selectedStageChar;
     private GameObject _lookTarget;
@@ -41,18 +43,18 @@ public class LevelManager : MonoBehaviour
     public delegate void MainView();
     public static event MainView OnMainView;
 
-
     void Awake()
     {
         _creditsLookTarget = GameObject.Find("Television");
         _optionsLookTarget = GameObject.Find("OptionButtons");
         if(!PlayerPrefs.HasKey("highscoresAsString")){
-            highScores = new int[3]{0,-1,-1};
-            SaveGame.SavePlayerData(0,0,highScores);
+            SaveGame.ResetPlayerData();
         }
 
 
         highScores = SaveGame.GetPlayerHighscores();
+
+        _levelBoxCount = _gameLevels.Count;
     }
 
     // Use this for initialization
@@ -273,9 +275,9 @@ public class LevelManager : MonoBehaviour
     {
         int indexChar = _stageCharacters.IndexOf(go);
 
-        int minIndex = indexChar * 3;
+        int minIndex = indexChar * _levelBoxCount;
 
-        for(int i = minIndex; i < (minIndex + 3); i++)
+        for(int i = minIndex; i < (minIndex + _levelBoxCount); i++)
         {
             if(_gameLevelsUnlocked[i])
             {
@@ -308,9 +310,9 @@ public class LevelManager : MonoBehaviour
 
         int indexChar = _stageCharacters.IndexOf(go);
 
-        int minIndex = indexChar * 3;
+        int minIndex = indexChar * _levelBoxCount;
 
-        for(int i = minIndex; i < (minIndex + 3); i++)
+        for(int i = minIndex; i < (minIndex + _levelBoxCount); i++)
         {
 
             if(_gameLevelsUnlocked[i])

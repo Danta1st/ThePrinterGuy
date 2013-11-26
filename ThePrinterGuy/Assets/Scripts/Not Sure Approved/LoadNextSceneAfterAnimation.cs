@@ -22,11 +22,11 @@ public class LoadNextSceneAfterAnimation : MonoBehaviour {
     public void LoadNextSceneAfterAnimationIfTrue()
     {
         if(!gameObject.animation.isPlaying)
-            LoadingScreen.Load("Level1");
+            LoadingScreen.Load(Application.loadedLevel+1);
     }
 
     public void LoadNextScene(GameObject go, Vector2 screenPosition)
     {
-        LoadingScreen.Load("Level1");
+        LoadingScreen.Load(Application.loadedLevel+1);
     }
 }
