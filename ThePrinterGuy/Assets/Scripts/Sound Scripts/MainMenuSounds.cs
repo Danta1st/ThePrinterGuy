@@ -3,10 +3,12 @@ using System.Collections;
 
 public class MainMenuSounds : MonoBehaviour
 {
-
+    #region Privates
     private GenericSoundScript _soundFx;
     private GenericSoundScript _music;
+    #endregion
 
+    #region MonoBehavior
     void Awake()
     {
         _soundFx = transform.FindChild("SoundFx_Menu").
@@ -22,7 +24,9 @@ public class MainMenuSounds : MonoBehaviour
         _music.audio.ignoreListenerVolume = true;
         _soundFx.audio.ignoreListenerVolume = true;
     }
+    #endregion
 
+    #region Sounds
     public void Music_Menu_Main()
     {
         _music.LoopClipStart(0);
@@ -67,6 +71,7 @@ public class MainMenuSounds : MonoBehaviour
     {
         _soundFx.PlayClip(7);
     }
+    #endregion
 
     public GenericSoundScript GetEffectScript()
     {

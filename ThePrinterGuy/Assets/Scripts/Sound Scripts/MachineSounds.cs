@@ -3,11 +3,13 @@ using System.Collections;
 
 public class MachineSounds : MonoBehaviour
 {
-
+    #region Privates
     private GenericSoundScript _soundFxC;
     private GenericSoundScript _soundFxM;
     private GenericSoundScript _soundFxS;
+    #endregion
 
+    #region Monobehavior
     void Awake()
     {
         _soundFxC = transform.FindChild("SoundFx_Cogwheels").
@@ -17,7 +19,9 @@ public class MachineSounds : MonoBehaviour
         _soundFxS = transform.FindChild("SoundFx_Smoke").
             GetComponent<GenericSoundScript>();
     }
+    #endregion
 
+    #region Sounds
     public void Effect_Machine_Cogwheels1()
     {
         _soundFxC.PlayClip(0);
@@ -38,6 +42,11 @@ public class MachineSounds : MonoBehaviour
         _soundFxM.PlayClip(0);
     }
 
+    public void Effect_Machine_TaskMissed()
+    {
+        _soundFxM.PlayClip(1);
+    }
+
     public void Effect_Machine_Smoke1()
     {
         _soundFxS.PlayClip(0);
@@ -52,6 +61,7 @@ public class MachineSounds : MonoBehaviour
     {
         _soundFxS.PlayClip(2);
     }
+    #endregion
 
     public GenericSoundScript GetEffectScriptCogwheels()
     {

@@ -3,9 +3,12 @@ using System.Collections;
 
 public class InGameSounds : MonoBehaviour
 {
+    #region Privates
     private GenericSoundScript _soundFx;
     private GenericSoundScript _music;
+    #endregion
 
+    #region MonoBehavior
     void Awake()
     {
         _soundFx = transform.FindChild("SoundFx_Game").
@@ -21,7 +24,9 @@ public class InGameSounds : MonoBehaviour
         _music.audio.ignoreListenerVolume = true;
         _soundFx.audio.ignoreListenerVolume = true;
     }
+    #endregion
 
+    #region Sounds
     public void Music_InGame_Main()
     {
         _music.LoopClipStart();
@@ -46,4 +51,5 @@ public class InGameSounds : MonoBehaviour
     {
         return _music;
     }
+    #endregion
 }

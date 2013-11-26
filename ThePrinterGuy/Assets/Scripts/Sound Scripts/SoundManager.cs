@@ -4,11 +4,12 @@ using System.Collections.Generic;
 
 public class SoundManager : MonoBehaviour
 {
-    [SerializeField]
-    private static float _fadeTime = 1.0f;
-    [SerializeField]
-    private static float _endMusicVolume = 0.2f;
+    #region Editor Publics
+    [SerializeField] private static float _fadeTime = 1.0f;
+    [SerializeField] private static float _endMusicVolume = 0.2f;
+    #endregion
 
+    #region Privates
     private static bool _isFaded = false;
     private static InGameSounds _inGameSounds;
     private static MainMenuSounds _mainMenuSounds;
@@ -21,7 +22,9 @@ public class SoundManager : MonoBehaviour
     private static GenericSoundScript[] _soundScripts;
     private static List<GenericSoundScript> _scriptList = new List<GenericSoundScript>();
     private static List<float> _soundVolume = new List<float>();
+    #endregion
 
+    #region MonoBehavior
     void Awake()
     {
         _inGameSounds = transform.FindChild("In Game").GetComponent<InGameSounds>();
@@ -43,11 +46,7 @@ public class SoundManager : MonoBehaviour
             _soundVolume.Add(_soundScripts[i].GetVolume());
         }
     }
-
-    public static void thisTest(GameObject go, Vector2 thisPos)
-    {
-        Debug.Log("Successfull subscription to static ");
-    }
+    #endregion
 
     #region Music
     public static void Music_InGame_Main()
@@ -380,6 +379,11 @@ public class SoundManager : MonoBehaviour
     public static void Effect_InGame_Lose()
     {
         _inGameSounds.Effect_InGame_Lose();
+    }
+
+    public static void Effect_InGame_Task_Failed()
+    {
+        _machineSounds.Effect_Machine_TaskMissed();
     }
     #endregion
 

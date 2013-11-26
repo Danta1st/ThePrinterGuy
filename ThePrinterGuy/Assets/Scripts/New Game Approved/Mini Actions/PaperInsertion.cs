@@ -57,6 +57,7 @@ public class PaperInsertion : MonoBehaviour
 		StopGate();		
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
+        GestureManager.OnTap -= TriggerSlide;
 		ActionSequencerItem.OnFailed -= Reset;
     }
 	

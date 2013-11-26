@@ -128,6 +128,8 @@ public class GUIMainMenuCamera : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        SoundManager.Music_Menu_Main();
+
 		if(PlayerPrefs.HasKey("selectedLanguage"))
 		{
 			LocalizationText.SetLanguage(PlayerPrefs.GetString("selectedLanguage"));
@@ -315,6 +317,8 @@ public class GUIMainMenuCamera : MonoBehaviour
 			{
 				if(_isOnStartScreen && _hit.collider.gameObject.name == "TapToPlay")
             	{
+                    SoundManager.Effect_Menu_Intro();               
+
 					//Disable GUI Object
 					_hit.collider.gameObject.SetActive(false);
 					_isOnStartScreen = false;
