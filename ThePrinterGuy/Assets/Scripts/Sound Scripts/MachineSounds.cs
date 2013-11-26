@@ -38,6 +38,11 @@ public class MachineSounds : MonoBehaviour
         _soundFxM.PlayClip(0);
     }
 
+    public void Effect_Machine_TaskMissed()
+    {
+        _soundFxM.PlayClip(1);
+    }
+
     public void Effect_Machine_Smoke1()
     {
         _soundFxS.PlayClip(0);

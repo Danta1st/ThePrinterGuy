@@ -381,6 +381,11 @@ public class SoundManager : MonoBehaviour
     {
         _inGameSounds.Effect_InGame_Lose();
     }
+
+    public static void Effect_InGame_Task_Failed()
+    {
+        _machineSounds.Effect_Machine_TaskMissed();
+    }
     #endregion
 
     #region Menu Sounds
