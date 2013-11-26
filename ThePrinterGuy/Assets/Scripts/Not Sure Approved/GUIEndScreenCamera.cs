@@ -22,7 +22,7 @@ public class GUIEndScreenCamera : MonoBehaviour
 	[SerializeField]
 	private ParticleSystem _particle;
     [SerializeField]
-    private float _endVolume;
+    private int _lastLevelIndex;
 	//[SerializeField]
 	//private int _levelOffset = 0;
     #endregion
@@ -128,7 +128,7 @@ public class GUIEndScreenCamera : MonoBehaviour
 	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
-        _guiCam = GameObject.Find("GUI Camera");
+        _guiCam = GameObject.Find("GUIEndSceneCamera");
         _realGUIList = GameObject.Find("GUI List");
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
@@ -168,7 +168,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 		DisableGUICamera();
 		DisableGUIElementAll();
 	}
-	
 	
     private void AdjustCameraSize()
     {
@@ -227,7 +226,7 @@ public class GUIEndScreenCamera : MonoBehaviour
                     }
 					else if(_hit.collider.gameObject.name == "NextLevelButton")
 					{
-                        if(Application.loadedLevel == 7)
+                        if(Application.loadedLevel == _lastLevelIndex)
                         {
                             GestureManager.OnTap -= CheckCollision;
                             LoadingScreen.Load(ConstantValues.GetStartScene);
@@ -254,16 +253,19 @@ public class GUIEndScreenCamera : MonoBehaviour
 	
 	private void DisplayEndScreenWin(int score)
 	{
-            //SoundManager.FadeAllSources(_endVolume);
             SoundManager.Effect_InGame_Win();
             SoundManager.StopAllSoundEffects();
             SoundManager.FadeAllMusic();
 
+
 		    GetCurrentLevel();
             //Unlocking the next level!
-            int[] highScores = SaveGame.GetPlayerHighscores();
-            highScores[_currentLevel+1] = 0;
-            SaveGame.SavePlayerData(0,0,highScores);
+            if(!(_currentLevel == _lastLevelIndex))
+            {
+                int[] highScores = SaveGame.GetPlayerHighscores();
+                highScores[_currentLevel+1] = 0;
+                SaveGame.SavePlayerData(0,0,highScores);
+            }
 		    _guiCam.camera.enabled = false;
 		    EnableGUICamera();
 		    EnableGUIElementAll();
@@ -276,7 +278,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 
     private void DisplayEndScreenLoose()
     {
-        SoundManager.FadeAllSources(_endVolume);
         SoundManager.Effect_InGame_Lose();
         SoundManager.StopAllSoundEffects();
         SoundManager.FadeAllMusic();
@@ -290,7 +291,7 @@ public class GUIEndScreenCamera : MonoBehaviour
         GUIGameCamera guiGameCameraScript = _realGUIList.GetComponent<GUIGameCamera>();
 
         _levelScore = guiGameCameraScript.GetScore();
-        //nextLevelButton.SetActive(false);
+        nextLevelButton.SetActive(false);
         _isWin = false;
         StartCoroutine("MoveEstimateBar");
     }

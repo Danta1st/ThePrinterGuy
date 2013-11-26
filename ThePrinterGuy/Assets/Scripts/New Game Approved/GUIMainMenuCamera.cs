@@ -238,6 +238,8 @@ public class GUIMainMenuCamera : MonoBehaviour
 
     private void CheckCollision(GameObject _go, Vector2 _screenPosition)
     {
+		Ray _mainCamRay = Camera.main.ScreenPointToRay(_screenPosition);
+		
         if(_isGUI && _canTouch)
         {
             Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
@@ -309,10 +311,12 @@ public class GUIMainMenuCamera : MonoBehaviour
                 }
                 //-----------------------------------------------------------------------//
             }
-            else
-            {
-                if(_isOnStartScreen)
-				{
+            else if(Physics.Raycast(_mainCamRay,out _hit))
+			{
+				if(_isOnStartScreen && _hit.collider.gameObject.name == "TapToPlay")
+            	{
+					//Disable GUI Object
+					_hit.collider.gameObject.SetActive(false);
 					_isOnStartScreen = false;
 					DisableGUIElement("MainMenu");
 					GameObject goLM = GameObject.Find ("elevatorDoor_L_MoveTo");
@@ -336,6 +340,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 					if(OnLevelManagerEvent != null)
 						OnLevelManagerEvent(_go, _screenPosition);
 				}
+				
             }
         }
     }

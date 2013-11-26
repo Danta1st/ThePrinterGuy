@@ -4,10 +4,12 @@ using System.Collections.Generic;
 
 public class SoundManager : MonoBehaviour
 {
-    private static bool _isFaded = false;
+    [SerializeField]
     private static float _fadeTime = 1.0f;
+    [SerializeField]
     private static float _endMusicVolume = 0.2f;
 
+    private static bool _isFaded = false;
     private static InGameSounds _inGameSounds;
     private static MainMenuSounds _mainMenuSounds;
     private static PaperSounds _paperSounds;

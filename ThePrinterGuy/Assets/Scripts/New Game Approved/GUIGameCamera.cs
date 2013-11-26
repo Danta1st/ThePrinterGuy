@@ -23,6 +23,7 @@ public class GUIGameCamera : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeDialogueWindowIn;
     [SerializeField] private float _DialogueWindowOutDuration = 1;
     [SerializeField] private iTween.EaseType _easeTypeDialogueWindowOut;
+	[SerializeField] private float _secondsUntilEndScreen = 1.5f;
     #endregion
 
     #region Private Variables
@@ -721,10 +722,7 @@ public class GUIGameCamera : MonoBehaviour
 
         if(_isLastNode && _sequencerObjectQueue.Count == 0)
         {
-            if(OnGameEnded != null)
-            {
-                OnGameEnded(_score);
-            }
+            StartCoroutine("ShowEndScreen");
         }
     }
 
@@ -732,6 +730,15 @@ public class GUIGameCamera : MonoBehaviour
     {
         return _zone;
     }
+	
+	private IEnumerator ShowEndScreen()
+	{
+		yield return new WaitForSeconds(_secondsUntilEndScreen);
+		if(OnGameEnded != null)
+        {
+            OnGameEnded(_score);
+        }
+	}
     #endregion
 
     #region GUI Save and Load
