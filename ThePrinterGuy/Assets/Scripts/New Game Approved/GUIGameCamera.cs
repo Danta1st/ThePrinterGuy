@@ -537,6 +537,8 @@ public class GUIGameCamera : MonoBehaviour
                     {
 						Settings();
                     }
+
+                    SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }
@@ -560,6 +562,7 @@ public class GUIGameCamera : MonoBehaviour
 						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
         Time.timeScale = 0.0f;
         AudioListener.pause = true;
+        SoundManager.StoreVolumes();
     }
 
     private void CloseIngameMenu()
@@ -598,6 +601,8 @@ public class GUIGameCamera : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
+
 
         LoadGUIState();
 
@@ -628,6 +633,7 @@ public class GUIGameCamera : MonoBehaviour
 		//TODO: Need confirmation before restart.
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(Application.loadedLevel, true);
     }
 	
@@ -636,6 +642,7 @@ public class GUIGameCamera : MonoBehaviour
     {
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(ConstantValues.GetStartScene);
     }
 	

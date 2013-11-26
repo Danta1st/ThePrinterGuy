@@ -21,6 +21,8 @@ public class GUIEndScreenCamera : MonoBehaviour
 	private TargetScores _targetScore;
 	[SerializeField]
 	private ParticleSystem _particle;
+    [SerializeField]
+    private float _endVolume;
 	//[SerializeField]
 	//private int _levelOffset = 0;
     #endregion
@@ -252,8 +254,10 @@ public class GUIEndScreenCamera : MonoBehaviour
 	
 	private void DisplayEndScreenWin(int score)
 	{
-            SoundManager.FadeAllSources();
+            //SoundManager.FadeAllSources(_endVolume);
             SoundManager.Effect_InGame_Win();
+            SoundManager.StopAllSoundEffects();
+            SoundManager.FadeAllMusic();
 
 		    GetCurrentLevel();
             //Unlocking the next level!
@@ -272,8 +276,10 @@ public class GUIEndScreenCamera : MonoBehaviour
 
     private void DisplayEndScreenLoose()
     {
-        SoundManager.FadeAllSources();
+        SoundManager.FadeAllSources(_endVolume);
         SoundManager.Effect_InGame_Lose();
+        SoundManager.StopAllSoundEffects();
+        SoundManager.FadeAllMusic();
 
         GetCurrentLevel();
         //Camera.main.enabled = false;
@@ -284,7 +290,7 @@ public class GUIEndScreenCamera : MonoBehaviour
         GUIGameCamera guiGameCameraScript = _realGUIList.GetComponent<GUIGameCamera>();
 
         _levelScore = guiGameCameraScript.GetScore();
-        nextLevelButton.SetActive(false);
+        //nextLevelButton.SetActive(false);
         _isWin = false;
         StartCoroutine("MoveEstimateBar");
     }
