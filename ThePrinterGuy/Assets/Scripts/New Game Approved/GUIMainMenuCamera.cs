@@ -128,6 +128,8 @@ public class GUIMainMenuCamera : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        SoundManager.Music_Menu_Main();
+
 		if(PlayerPrefs.HasKey("selectedLanguage"))
 		{
 			LocalizationText.SetLanguage(PlayerPrefs.GetString("selectedLanguage"));
