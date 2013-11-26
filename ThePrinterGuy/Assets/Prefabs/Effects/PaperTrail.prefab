@@ -11,7 +11,7 @@ GameObject:
   - 198: {fileID: 19800000}
   - 199: {fileID: 19900000}
   m_Layer: 0
-  m_Name: PaperSpawnGreen
+  m_Name: PaperTrail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,8 +24,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: -.707106829, y: 0, z: 0, w: .707106829}
-  m_LocalPosition: {x: -12.0055237, y: -3.75558519, z: -3.0082171}
-  m_LocalScale: {x: 3.17602324, y: 1.79816294, z: .303852111}
+  m_LocalPosition: {x: -12.0055237, y: -3.75558567, z: -7.01624155}
+  m_LocalScale: {x: 2.94076228, y: 1.66496551, z: .281344503}
   m_Children: []
   m_Father: {fileID: 0}
 --- !u!198 &19800000
@@ -38,7 +38,7 @@ ParticleSystem:
   startDelay: 0
   speed: 1
   randomSeed: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 0
   moveWithTransform: 0
@@ -189,17 +189,22 @@ ParticleSystem:
         m_NumAlphaKeys: 2
       minColor:
         serializedVersion: 2
-        rgba: 4287692747
+        rgba: 4293132176
       maxColor:
         serializedVersion: 2
-        rgba: 4290838272
+        rgba: 4294937344
       minMaxState: 2
     startSize:
-      scalar: 3
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - time: 0
+          value: 1
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
           value: 1
           inSlope: 0
           outSlope: 0
@@ -210,13 +215,18 @@ ParticleSystem:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: .333333343
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+        - time: 1
+          value: 0
           inSlope: 0
           outSlope: 0
           tangentMode: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
-      minMaxState: 3
+      minMaxState: 0
     startRotation:
       scalar: 0
       maxCurve:
@@ -256,8 +266,8 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 2
     enabled: 1
-    type: 0
-    radius: .5
+    type: 5
+    radius: 1
     angle: 25
     length: 5
     boxX: 1
@@ -270,7 +280,7 @@ ParticleSystem:
     enabled: 1
     m_Type: 0
     rate:
-      scalar: 0
+      scalar: 20
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -302,7 +312,7 @@ ParticleSystem:
         m_PreInfinity: 2
         m_PostInfinity: 2
       minMaxState: 0
-    cnt0: 10
+    cnt0: 30
     cnt1: 30
     cnt2: 30
     cnt3: 30
@@ -310,7 +320,7 @@ ParticleSystem:
     time1: 0
     time2: 0
     time3: 0
-    m_BurstCount: 1
+    m_BurstCount: 0
   SizeModule:
     enabled: 1
     curve:
@@ -1077,7 +1087,7 @@ ParticleSystemRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 492421953b85d3941bd35dc01e4ffd1d, type: 2}
+  - {fileID: 2100000, guid: 81e1ce2a70658ee4aac64a9b7c32271c, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
