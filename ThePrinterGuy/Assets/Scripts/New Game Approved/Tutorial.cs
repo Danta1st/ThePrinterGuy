@@ -58,10 +58,30 @@ public class Tutorial : MonoBehaviour {
 			{
 				UpdateTutorial();
 			}
-			else
-			{
-				LoadingScreen.Load(Application.loadedLevel+1);
-			}
+            else
+            {
+                string correspondingLevelName = null;
+                switch (Application.loadedLevelName) {
+                case "Tutorial1":
+                    correspondingLevelName = "Level1";
+                    break;
+                case "Tutorial2":
+                    correspondingLevelName = "Level2";
+                    break;
+                case "Tutorial3":
+                    correspondingLevelName = "Level3";
+                    break;
+                case "Tutorial4":
+                    correspondingLevelName = "Level4";
+                    break;
+                case "Tutorial5":
+                    correspondingLevelName = "Level5";
+                    break;
+                default:
+                    break;
+                }
+                LoadingScreen.Load(correspondingLevelName);
+            }
 		}
 	}
 	

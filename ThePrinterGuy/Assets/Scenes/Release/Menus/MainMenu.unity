@@ -380,6 +380,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audioClips:
   - {fileID: 8300000, guid: a26e1fea4a8e03146b610c3e5bd3fbe3, type: 3}
+  - {fileID: 8300000, guid: 85a1b802bdd5a064e822b2e9e9a6413d, type: 3}
   _randomPitchOnPlay: 0
   _minPitch: .5
   _maxPitch: 1.5
@@ -483,7 +484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioClips:
-  - {fileID: 8300000, guid: b523b43221d854f41bf1c1e0bcd29caa, type: 3}
+  - {fileID: 8300000, guid: 5c70d8b1a3729cb47ac39cfd471e2974, type: 3}
   - {fileID: 8300000, guid: 0b25992985cd2cb46863d4bb681b16ba, type: 3}
   - {fileID: 8300000, guid: 67487b88129127642bc813cfcd7a4fed, type: 3}
   - {fileID: 8300000, guid: 3cb3fde0f83963d49a609e39dcb0ed39, type: 3}
@@ -1302,7 +1303,7 @@ TextMesh:
   m_FontSize: 140
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: b1730e983546c9f47bbd01b77b018871, type: 3}
+  m_Font: {fileID: 12800000, guid: bb1d42aa86493b940b5db5e4e382481b, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
@@ -1319,7 +1320,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: b1730e983546c9f47bbd01b77b018871, type: 3}
+  - {fileID: 2100000, guid: bb1d42aa86493b940b5db5e4e382481b, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -1568,8 +1569,6 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7cf1c9eec12393749b55902aa3f92251, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  m_EditorClassIdentifier: 
   m_EditorClassIdentifier: 
   m_EditorClassIdentifier: 
   m_EditorClassIdentifier: 
@@ -3667,11 +3666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcb6647ec28d042409a763d8eabe9ec9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EditorClassIdentifier: 
-  m_EditorClassIdentifier: 
-  m_EditorClassIdentifier: 
-  m_EditorClassIdentifier: 
-  m_EditorClassIdentifier: 
+  scrollSpeed: .0500000007
 --- !u!1001 &773634132
 Prefab:
   m_ObjectHideFlags: 0
@@ -3887,6 +3882,10 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: -4.37113883e-08
       objectReference: {fileID: 0}
+    - target: {fileID: 3300004, guid: 527267bdd2ab2cd47b722ebb1cf46443, type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 54da96d3510e67b42942d5a7acb130f2, type: 3}
     m_RemovedComponents:
     - {fileID: 9500000, guid: 527267bdd2ab2cd47b722ebb1cf46443, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 527267bdd2ab2cd47b722ebb1cf46443, type: 2}
@@ -4211,7 +4210,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 978fc8195fc95ae4483cb88774f6c018, type: 2}
       propertyPath: _loadingScreenLevelNumber
-      value: 11
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 978fc8195fc95ae4483cb88774f6c018, type: 2}
       propertyPath: _startScreenLevelNumber
@@ -4332,7 +4331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b23ef359d86bcc44d9c86f2bb03b162a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _loadingScreenLevelNumber: 11
+  _loadingScreenLevelNumber: 8
   _startScreenLevelNumber: 0
   _tutorialLevels: 
   _tutorialTipsAmount: 0
@@ -4531,7 +4530,7 @@ TextMesh:
   m_FontSize: 140
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: b1730e983546c9f47bbd01b77b018871, type: 3}
+  m_Font: {fileID: 12800000, guid: 1cbb5412eada62345af315fbe55a2748, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
@@ -4548,7 +4547,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: b1730e983546c9f47bbd01b77b018871, type: 3}
+  - {fileID: 2100000, guid: 1cbb5412eada62345af315fbe55a2748, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -5714,7 +5713,7 @@ MeshFilter:
     type: 2}
   m_PrefabInternal: {fileID: 804057325}
   m_GameObject: {fileID: 1382071787}
-  m_Mesh: {fileID: 4300000, guid: cd9638c2490a3cf469a1f6c5125b855e, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 54da96d3510e67b42942d5a7acb130f2, type: 3}
 --- !u!1 &1387290361
 GameObject:
   m_ObjectHideFlags: 0

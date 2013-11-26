@@ -47,7 +47,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
 	private bool _isWin = false;
-    private GameObject _guiCam;
     private GameObject nextLevelButton;
     private int _levelOffset = 0;
 
@@ -128,7 +127,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
-        _guiCam = GameObject.Find("GUIEndSceneCamera");
         _realGUIList = GameObject.Find("GUI List");
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
@@ -234,7 +232,36 @@ public class GUIEndScreenCamera : MonoBehaviour
                         else
                         {
                             GestureManager.OnTap -= CheckCollision;
-                            LoadingScreen.Load(Application.loadedLevel+1);
+
+                            string correspondingLevelName = null;
+                            int indexOfNextLevel = Application.loadedLevel+1;
+                            switch (indexOfNextLevel) {
+                                case 2:
+                                    correspondingLevelName = "Stage1Cinematics";
+                                    break;
+                                case 3:
+                                    correspondingLevelName = "Tutorial2";
+                                    break;
+                                case 4:
+                                    correspondingLevelName = "Tutorial3";
+                                    break;
+                                case 5:
+                                    correspondingLevelName = "Tutorial4";
+                                    break;
+                                case 6:
+                                    correspondingLevelName = "Tutorial5";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if(correspondingLevelName == null)
+                            {
+                                LoadingScreen.Load(indexOfNextLevel+1, true);
+                            }
+                            else
+                            {
+                                LoadingScreen.Load(correspondingLevelName, true);
+                            }
                         }
 					}
                 }
@@ -266,7 +293,6 @@ public class GUIEndScreenCamera : MonoBehaviour
                 highScores[_currentLevel+1] = 0;
                 SaveGame.SavePlayerData(0,0,highScores);
             }
-		    _guiCam.camera.enabled = false;
 		    EnableGUICamera();
 		    EnableGUIElementAll();
 		    GestureManager.OnTap += CheckCollision;
@@ -284,7 +310,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 
         GetCurrentLevel();
         //Camera.main.enabled = false;
-        _guiCam.camera.enabled = false;
         EnableGUICamera();
         EnableGUIElementAll();
         GestureManager.OnTap += CheckCollision;
