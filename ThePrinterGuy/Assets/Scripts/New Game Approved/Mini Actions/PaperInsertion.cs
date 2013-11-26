@@ -10,15 +10,8 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
     [SerializeField] private List<PaperLightSet> _paperlightset;
-
-	[SerializeField] private ParticleSystem _particleSystemStars;
-	[SerializeField] private ParticleSystem _particleSystemSmoke;
-	[SerializeField] private ParticleSystem _particleSystemIncinerate;
-
-
-//    [SerializeField] private AudioClip clipUp;
-//    [SerializeField] private AudioClip clipDown;
-
+	//Particles - New
+	[SerializeField] private particles _particles;
     #endregion
 
     #region Privates
@@ -32,19 +25,16 @@ public class PaperInsertion : MonoBehaviour
 	private bool _IsSlideLocked		= false;
 	private float _slideTime		= 0.4f;
 	private float _slideWait		= 0.2f;
-	private ArrayList _tempPaper = new ArrayList();
 	
 	//Whatever
 	private GameObject _dynamicObjects;
-
-	private ParticleSystem _particleSmoke;
-	private ParticleSystem _particleStars;  
-	private ParticleSystem _particleFlames;
-	private float _burnTime 	= 0.5f;
 	
 	//Gate positions
 	private Vector3 _beginPosition;
 	private Vector3 _openPosition;
+	
+	//Paper control statement
+	private bool _isPaperEnabled = false;
     #endregion
 
 
@@ -57,16 +47,14 @@ public class PaperInsertion : MonoBehaviour
 	
     void OnEnable()
     {
-		StartGate();
-		
+		StartGate();		
 		BpmSequencer.OnPaperNode += TriggerLight;
 		BpmSequencer.OnPaperNode += EnablePaper;
 		ActionSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
-		StopGate();
-		
+		StopGate();		
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
@@ -94,28 +82,17 @@ public class PaperInsertion : MonoBehaviour
 		//Get dynamic objects to instantiate objects in
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
 		if(_dynamicObjects == null)
-			Debug.LogError("Level Dependency object 'Dynamic Objects' couldn't be found");
+			Debug.LogError("Level Dependency object 'Dynamic Objects' couldn't be found");		
 		
-		//Check for particle systems.
-		if(_particleSystemSmoke != null)
-		{
-			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
-		}
-		else
-			Debug.Log("Smoke Particle not loaded for Paper");
-		if(_particleSystemStars != null)
-		{
-			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
-			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
-		}
-		else
-			Debug.Log("Star Particle not loaded for Paper");
-		if(_particleSystemIncinerate != null)
-		{
-			_particleFlames = (ParticleSystem)Instantiate (_particleSystemIncinerate);
-		}
-		_particleSmoke.transform.parent = _dynamicObjects.transform;
-		_particleStars.transform.parent = _dynamicObjects.transform;
+		//Check if _particles if empty, and throw warning if true
+		if(_particles.complete == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
+		if(_particles.failed == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
+		if(_particles.enablePaper == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
+		if(_particles.disablePaper == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
 
 		InitializeLights();
 		DisablePaper();
@@ -172,30 +149,20 @@ public class PaperInsertion : MonoBehaviour
 
     private void TriggerLight(int itemNumber)
     {
-		if(_paperlightset.Count < itemNumber)
-		{
-			if(OnCorrectPaperInserted != null)
-				OnCorrectPaperInserted();
-			Debug.Log("ERROR PAPER: Number out of index!");
-			return;
-		}
-		foreach(Transform child in gameObject.transform)
-		{
-			if(child.name.Equals("ParticlePos") && _particleSmoke != null)
-			{
-				_particleSmoke.transform.position = child.position;
-				_particleSmoke.transform.rotation = child.rotation;
-				_particleSmoke.Play();
-			}
-		}
+//		if(_paperlightset.Count < itemNumber)
+//		{
+//			if(OnCorrectPaperInserted != null)
+//				OnCorrectPaperInserted();
+//			Debug.Log("ERROR PAPER: Number out of index!");
+//			return;
+//		}
+		
 		if(_paperlightset[itemNumber].isOn == false)
         {
-            //GSS.PlayClip(Random.Range(3, 4));
             TurnOnLight(itemNumber);
         }
         
-		//Method for randomisation
-		
+		//Method for randomisation		
 		/*var identifier = Random.Range(0,_paperlightset.Length);
 
         for(int i = 0; i < _paperlightset.Length; i++)
@@ -243,22 +210,33 @@ public class PaperInsertion : MonoBehaviour
 	//TODO: Paper animations
     private void DisablePaper()
     {
-        for(int i = 0; i < _paperlightset.Count; i++)
-        {
-            _paperlightset[i].paper.SetActive(false);
-			_paperlightset[i].paperToSlide.SetActive(false);
-        }
+		if(_isPaperEnabled)
+		{
+	        for(int i = 0; i < _paperlightset.Count; i++)
+	        {
+				//Spawn particles
+				InstantiateParticles(_particles.disablePaper, _paperlightset[i].paper);
+				//Disable objects
+	            _paperlightset[i].paper.SetActive(false);
+				_paperlightset[i].paperToSlide.SetActive(false);
+	        }
+		}
     }
 
-    private void EnablePaper(int temp)
+    private void EnablePaper(int notUsed)
     {
-		//GestureManager.OnSwipeUp += TriggerSlide;
-		GestureManager.OnTap += TriggerSlide;
-        for(int i = 0; i < _paperlightset.Count; i++)
-        {
-            _paperlightset[i].paper.SetActive(true);
-			_paperlightset[i].paperToSlide.SetActive(true);
-        }
+		if(!_isPaperEnabled)
+		{
+			GestureManager.OnTap += TriggerSlide;
+	        for(int i = 0; i < _paperlightset.Count; i++)
+	        {
+				//Spawn particles
+				InstantiateParticles(_particles.enablePaper, _paperlightset[i].paper);
+				//Enable objects
+	            _paperlightset[i].paper.SetActive(true);
+				_paperlightset[i].paperToSlide.SetActive(true);
+	        }
+		}
     }
 	
 	private void TriggerSlide(GameObject go, Vector2 screenPosition)
@@ -266,6 +244,7 @@ public class PaperInsertion : MonoBehaviour
 		
 		if(go != null)
 		{
+			//Please explain why this code is necessary
 //			int j = 0;
 //			PaperLightSet paper;
 //			int count = _paperlightset.Count;
@@ -308,43 +287,34 @@ public class PaperInsertion : MonoBehaviour
 			if(_isGateOpen)
 			{
 				TurnOffLight(i);
+				
+				//Block the player from sliding
 				_IsSlideLocked = true;
 				
 				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
-				_tempPaper.Add(paper);
 				
+				//Enable Paper Trail or throw warning
+				if(paper.GetComponent<TrailRenderer>() != null)
+					paper.GetComponent<TrailRenderer>().enabled = true;
+				else
+					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");				
 				
+				//Correct color inserted
 				if(colorMatch) 
 				{
-					Reset();
 					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "DestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+													"oncomplete", "TriggerDestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+					
+					if(OnCorrectPaperInserted != null)
+						OnCorrectPaperInserted();
 				}
+				//Wrong color inserted
 				else
 				{
-					Hashtable iTweenParams = new Hashtable();
-					iTweenParams.Add("go", paper);
-					iTweenParams.Add("index", i);
 					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "IncineratePaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));
-				}
-				
-				foreach(Transform child in gameObject.transform)
-				{
-					if(child.name.Equals("ParticlePos") && _particleStars != null)
-					{
-						_particleStars.transform.position = child.position;
-						_particleStars.transform.rotation = child.rotation;
-						_particleStars.Play();
-					}
-				}
-				if(_particleSmoke != null && _particleSmoke.isPlaying && colorMatch)
-					_particleSmoke.Stop();
-				
-				if(OnCorrectPaperInserted != null && colorMatch)
-					OnCorrectPaperInserted();
-				
+													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+				}				
 			}
 			else
 			{
@@ -352,13 +322,9 @@ public class PaperInsertion : MonoBehaviour
 				
 				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
-				_tempPaper.Add(paper);
 				
-				Hashtable iTweenParams = new Hashtable();
-				iTweenParams.Add("go", paper);
-				iTweenParams.Add("index", i);
 				iTween.MoveTo(paper, iTween.Hash("position", _gate.gameObject.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "IncineratePaper", "oncompleteparams", iTweenParams, "oncompletetarget", gameObject));			
+													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));			
 			}
 		}
     }
@@ -370,37 +336,47 @@ public class PaperInsertion : MonoBehaviour
 	
 	IEnumerator DestroyPaper(GameObject go)
 	{
+		//Wait for paper to finish sliding
 		yield return new WaitForSeconds(_slideWait);
-		_tempPaper.Remove(go);
+		
+		//Instantiate particles
+		InstantiateParticles(_particles.complete, go);
+		
+		//Destroy paper
 		Destroy(go);
+		//Allow player to slide again
 		_IsSlideLocked = false;
 	}
 	
-	IEnumerator IncineratePaper(object obj)
+	private void TriggerIncineratePaper(GameObject go)
 	{
-		Hashtable ht = (Hashtable)obj;
-		GameObject go = (GameObject)ht["go"];
-		//int index = (int)ht["index"];
-		_particleFlames.transform.position = go.transform.position;
-		if(_particleFlames != null && _particleFlames.isPlaying)
-			_particleFlames.Stop();
-		_particleFlames.Play ();
-		yield return new WaitForSeconds(_burnTime);
-		_tempPaper.Remove(go);
+		StartCoroutine(IncineratePaper(go));
+	}
+	
+	IEnumerator IncineratePaper(GameObject go)
+	{
+		//wait or paper to finish sliding
+		yield return new WaitForSeconds(_slideWait);
+		
+		//Instantiate particles
+		InstantiateParticles(_particles.failed, go);
+		
+		//Destroy paper
 		Destroy(go);
+		//Allow player to slide again
 		_IsSlideLocked = false;
 	}
 	
+	//-----------
 	public void Reset()
-	{
-		if(_particleSmoke != null && _particleSmoke.isPlaying)
-			_particleSmoke.Stop();
+	{		
 		//GestureManager.OnSwipeUp -= TriggerSlide;
-		GestureManager.OnTap += TriggerSlide;
+		GestureManager.OnTap -= TriggerSlide;
 		DisablePaper();
 		TurnOfAllLights();
 	}
 	
+	//Method for playing the correct swipe sound
 	private void playSlideSound(int i)
 	{
 		//Play Sound
@@ -424,7 +400,29 @@ public class PaperInsertion : MonoBehaviour
 		}
 		
 	}
-    #endregion
+    	
+	//Method for instantiating particles
+	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
+	{
+		foreach(Transform child in posRotGO.transform)
+		{
+			if(child.name.Equals("ParticlePos") && particles != null)
+			{
+				//Instantiate Particle prefab. Rotation solution is a HACK
+				GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+				//Child to DynamicObjects
+				tempParticles.transform.parent = _dynamicObjects.transform;
+				Debug.Log(gameObject.name+" instantiating particles");
+				return;
+			}				
+		}
+		//Instantiate Particle prefab. Rotation solution is a HACK
+		GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+		//Child to DynamicObjects
+		tempParticles1.transform.parent = _dynamicObjects.transform;
+		Debug.Log(gameObject.name+" instantiating particles");
+	}
+	#endregion
 
     #region SubClasses
     [System.Serializable]
@@ -437,5 +435,15 @@ public class PaperInsertion : MonoBehaviour
         public bool isOn = false;
 		public GameObject paperToSlide;
     };
+	
+    [System.Serializable]
+    public class particles
+    {
+		public GameObject complete;
+		public GameObject failed;
+		public GameObject enablePaper;
+		public GameObject disablePaper;
+    };
+	
     #endregion
 }
