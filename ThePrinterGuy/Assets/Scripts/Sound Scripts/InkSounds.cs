@@ -11,13 +11,10 @@ public class InkSounds : MonoBehaviour
     private GameObject _effectObject;
 
     private GenericSoundScript _soundFx;
-    private GenericSoundScript _music;
 
     void Awake()
     {
         _soundFx = transform.FindChild("SoundFx_Ink").
-            GetComponent<GenericSoundScript>();
-        _music = transform.FindChild("Music_Ink").
             GetComponent<GenericSoundScript>();
         _effectObject = transform.FindChild("SoundFx_Ink").gameObject;
     }

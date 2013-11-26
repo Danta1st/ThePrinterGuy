@@ -254,4 +254,12 @@ public class GenericSoundScript : MonoBehaviour
         _audioSource.panLevel = newPanLevel;
     }
     #endregion
+
+    #region General Method
+    public void FadeVolume(float newVolume, float fadeTime)
+    {
+        iTween.AudioTo(gameObject, iTween.Hash("audiosource", gameObject.audio, "volume", newVolume,
+            "time", fadeTime, "easetype", iTween.EaseType.linear));
+    }
+    #endregion
 }
