@@ -83,11 +83,7 @@ public class Ink : MonoBehaviour
 			icc.pathFail[1] = icc.pathSucc[1];
 			icc.pathFail[2] = icc.pathSucc[2];
 			icc.pathFail[2].z -= 1.5f;
-		}
-		
-		
-		
-	
+		}	
 	}
 	
 	void OnEnable()
@@ -104,6 +100,15 @@ public class Ink : MonoBehaviour
 		
 		BpmSequencer.OnInkNode -= StartInkTask;
 		ActionSequencerItem.OnFailed -= InkReset;
+	}
+	
+	void OnDestroy()
+	{
+		StopGates();
+
+		BpmSequencer.OnInkNode -= StartInkTask;
+		ActionSequencerItem.OnFailed -= InkReset;
+		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
 	#region Private Methods	
@@ -202,13 +207,13 @@ public class Ink : MonoBehaviour
 		int count = _machineInks.Count;
 		for(int i = 0; i < count; i++)
 		{
-			icc = _machineInks[j];
-			if(icc.cartridge == null)
-			{
-				_machineInks.Remove(icc);
-				_machineInks.TrimExcess();
-				continue;	
-			}
+			icc = _machineInks[i];
+//			if(icc.cartridge == null)
+//			{
+//				_machineInks.Remove(icc);
+//				_machineInks.TrimExcess();
+//				continue;	
+//			}
 			if(icc.insertableCartridge.gameObject == go)
 			{
 				currIcc = icc;
@@ -216,6 +221,7 @@ public class Ink : MonoBehaviour
 			}
 			j++;
 		}
+
 		
 		if(currIcc == null)
 			return;
@@ -280,24 +286,24 @@ public class Ink : MonoBehaviour
 	
 	private void InkReset()
 	{
-		InkCartridgeClass icc;
-		if(_particleSmoke != null && _particleSmoke.isPlaying)
-			_particleSmoke.Stop();
-		int j = 0;
-		for(int i = 0; i < _machineInks.Count; i++)
-		{
-			icc = _machineInks[j];
-			if(icc.cartridge == null)
-			{
-				_machineInks.Remove(icc);
-				_machineInks.TrimExcess();
-				continue;	
-			}
-			icc.cartridge.gameObject.SetActive(true);
-			icc.cartridgeEmpty = false;
-			icc.insertableCartridge.gameObject.SetActive(false);
-			j++;
-		}
+//		InkCartridgeClass icc;
+//		if(_particleSmoke != null && _particleSmoke.isPlaying)
+//			_particleSmoke.Stop();
+//		int j = 0;
+//		for(int i = 0; i < _machineInks.Count; i++)
+//		{
+//			icc = _machineInks[j];
+//			if(icc.cartridge == null)
+//			{
+//				_machineInks.Remove(icc);
+//				_machineInks.TrimExcess();
+//				continue;	
+//			}
+//			icc.cartridge.gameObject.SetActive(true);
+//			icc.cartridgeEmpty = false;
+//			icc.insertableCartridge.gameObject.SetActive(false);
+//			j++;
+//		}
 		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	

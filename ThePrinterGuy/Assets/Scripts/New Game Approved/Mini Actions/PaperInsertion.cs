@@ -71,6 +71,15 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		ActionSequencerItem.OnFailed -= Reset;
     }
+	
+	void OnDestroy()
+	{
+		StopGate();
+		BpmSequencer.OnPaperNode -= TriggerLight;
+		BpmSequencer.OnPaperNode -= EnablePaper;
+		ActionSequencerItem.OnFailed -= Reset;
+		GestureManager.OnTap -= TriggerSlide;
+	}
 
     #region Monobehaviour Functions
 	void Awake()
@@ -257,20 +266,20 @@ public class PaperInsertion : MonoBehaviour
 		
 		if(go != null)
 		{
-			int j = 0;
-			PaperLightSet paper;
-			int count = _paperlightset.Count;
-			for(int i = 0; i < count; i++)
-			{
-				paper = _paperlightset[j];
-				if(paper.paper == null)
-				{
-					_paperlightset.Remove(paper);
-					_paperlightset.TrimExcess();
-					continue;
-				}
-				j++;
-			}
+//			int j = 0;
+//			PaperLightSet paper;
+//			int count = _paperlightset.Count;
+//			for(int i = 0; i < count; i++)
+//			{
+//				paper = _paperlightset[j];
+//				if(paper.paper == null)
+//				{
+//					_paperlightset.Remove(paper);
+//					_paperlightset.TrimExcess();
+//					continue;
+//				}
+//				j++;
+//			}
 			
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
