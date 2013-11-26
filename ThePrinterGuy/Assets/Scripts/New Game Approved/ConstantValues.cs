@@ -11,4 +11,8 @@ public static class ConstantValues
 	{
 		get { return 2; }
 	}
+	public static int GetLastLevel
+	{
+		get { return 4; }
+	}
 }

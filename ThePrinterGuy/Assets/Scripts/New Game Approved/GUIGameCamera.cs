@@ -23,6 +23,7 @@ public class GUIGameCamera : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeDialogueWindowIn;
     [SerializeField] private float _DialogueWindowOutDuration = 1;
     [SerializeField] private iTween.EaseType _easeTypeDialogueWindowOut;
+	[SerializeField] private float _secondsUntilEndScreen = 1.5f;
     #endregion
 
     #region Private Variables
@@ -537,6 +538,8 @@ public class GUIGameCamera : MonoBehaviour
                     {
 						Settings();
                     }
+
+                    SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }
@@ -560,6 +563,7 @@ public class GUIGameCamera : MonoBehaviour
 						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
         Time.timeScale = 0.0f;
         AudioListener.pause = true;
+        SoundManager.StoreVolumes();
     }
 
     private void CloseIngameMenu()
@@ -598,6 +602,8 @@ public class GUIGameCamera : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
+
 
         LoadGUIState();
 
@@ -628,6 +634,7 @@ public class GUIGameCamera : MonoBehaviour
 		//TODO: Need confirmation before restart.
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(Application.loadedLevel, true);
     }
 	
@@ -636,6 +643,7 @@ public class GUIGameCamera : MonoBehaviour
     {
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(ConstantValues.GetStartScene);
     }
 	
@@ -714,10 +722,7 @@ public class GUIGameCamera : MonoBehaviour
 
         if(_isLastNode && _sequencerObjectQueue.Count == 0)
         {
-            if(OnGameEnded != null)
-            {
-                OnGameEnded(_score);
-            }
+            StartCoroutine("ShowEndScreen");
         }
     }
 
@@ -725,6 +730,15 @@ public class GUIGameCamera : MonoBehaviour
     {
         return _zone;
     }
+	
+	private IEnumerator ShowEndScreen()
+	{
+		yield return new WaitForSeconds(_secondsUntilEndScreen);
+		if(OnGameEnded != null)
+        {
+            OnGameEnded(_score);
+        }
+	}
     #endregion
 
     #region GUI Save and Load

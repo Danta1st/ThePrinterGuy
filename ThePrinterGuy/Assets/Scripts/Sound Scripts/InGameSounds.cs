@@ -16,7 +16,10 @@ public class InGameSounds : MonoBehaviour
 
     void Start()
     {
+        _music.audio.ignoreListenerPause = true;
         _soundFx.audio.ignoreListenerPause = true;
+        _music.audio.ignoreListenerVolume = true;
+        _soundFx.audio.ignoreListenerVolume = true;
     }
 
     public void Music_InGame_Main()
@@ -32,5 +35,15 @@ public class InGameSounds : MonoBehaviour
     public void Effect_InGame_Lose()
     {
         _soundFx.PlayClip(1);
+    }
+
+    public GenericSoundScript GetEffectScript()
+    {
+        return _soundFx;
+    }
+
+    public GenericSoundScript GetMusicScript()
+    {
+        return _music;
     }
 }

@@ -128,7 +128,7 @@ public class GUIEndScreenCamera : MonoBehaviour
 	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
-        _guiCam = GameObject.Find("GUI Camera");
+        _guiCam = GameObject.Find("GUIEndSceneCamera");
         _realGUIList = GameObject.Find("GUI List");
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
@@ -168,7 +168,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 		DisableGUICamera();
 		DisableGUIElementAll();
 	}
-	
 	
     private void AdjustCameraSize()
     {
@@ -254,8 +253,10 @@ public class GUIEndScreenCamera : MonoBehaviour
 	
 	private void DisplayEndScreenWin(int score)
 	{
-            SoundManager.FadeAllSources();
             SoundManager.Effect_InGame_Win();
+            SoundManager.StopAllSoundEffects();
+            SoundManager.FadeAllMusic();
+
 
 		    GetCurrentLevel();
             //Unlocking the next level!
@@ -277,8 +278,9 @@ public class GUIEndScreenCamera : MonoBehaviour
 
     private void DisplayEndScreenLoose()
     {
-        SoundManager.FadeAllSources();
         SoundManager.Effect_InGame_Lose();
+        SoundManager.StopAllSoundEffects();
+        SoundManager.FadeAllMusic();
 
         GetCurrentLevel();
         //Camera.main.enabled = false;
