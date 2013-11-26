@@ -21,6 +21,8 @@ public class GUIEndScreenCamera : MonoBehaviour
 	private TargetScores _targetScore;
 	[SerializeField]
 	private ParticleSystem _particle;
+    [SerializeField]
+    private int _lastLevelIndex;
 	//[SerializeField]
 	//private int _levelOffset = 0;
     #endregion
@@ -126,7 +128,7 @@ public class GUIEndScreenCamera : MonoBehaviour
 	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
-        _guiCam = GameObject.Find("GUI Camera");
+        _guiCam = GameObject.Find("GUIEndSceneCamera");
         _realGUIList = GameObject.Find("GUI List");
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
@@ -166,7 +168,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 		DisableGUICamera();
 		DisableGUIElementAll();
 	}
-	
 	
     private void AdjustCameraSize()
     {
@@ -225,7 +226,7 @@ public class GUIEndScreenCamera : MonoBehaviour
                     }
 					else if(_hit.collider.gameObject.name == "NextLevelButton")
 					{
-                        if(Application.loadedLevel == 7)
+                        if(Application.loadedLevel == _lastLevelIndex)
                         {
                             GestureManager.OnTap -= CheckCollision;
                             LoadingScreen.Load(ConstantValues.GetStartScene);
@@ -257,9 +258,12 @@ public class GUIEndScreenCamera : MonoBehaviour
 
 		    GetCurrentLevel();
             //Unlocking the next level!
-            int[] highScores = SaveGame.GetPlayerHighscores();
-            highScores[_currentLevel+1] = 0;
-            SaveGame.SavePlayerData(0,0,highScores);
+            if(!(_currentLevel == _lastLevelIndex))
+            {
+                int[] highScores = SaveGame.GetPlayerHighscores();
+                highScores[_currentLevel+1] = 0;
+                SaveGame.SavePlayerData(0,0,highScores);
+            }
 		    _guiCam.camera.enabled = false;
 		    EnableGUICamera();
 		    EnableGUIElementAll();
