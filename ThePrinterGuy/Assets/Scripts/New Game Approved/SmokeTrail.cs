@@ -4,6 +4,8 @@ using System.Collections;
 public class SmokeTrail : MonoBehaviour {
 	
 	[SerializeField]
+	private GameObject _object;
+	[SerializeField]
 	private GameObject[] _smokeTrails;
 	
 	// Use this for initialization
