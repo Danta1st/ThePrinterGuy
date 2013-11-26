@@ -3382,7 +3382,7 @@ MonoBehaviour:
   _TaskSequences:
   - task: 2
     beats: 01000000
-    amounts: 0100000002000000010000000200000001000000
+    amounts: 01000000020000000100000002000000
     SpawnInterval: 0
     beatsUntillNextSequence: 10
 --- !u!1 &309679058
@@ -6001,7 +6001,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1463211935}
   m_Father: {fileID: 0}
 --- !u!1 &594216833
 GameObject:
@@ -6595,6 +6596,32 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 185020688}
+--- !u!1 &691414879
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100006, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 691414880}
+  m_Layer: 0
+  m_Name: PaperFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &691414880
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400006, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  m_GameObject: {fileID: 691414879}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.81150842, y: -7.26922607, z: -2.00926208}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1463211935}
 --- !u!1 &691778535
 GameObject:
   m_ObjectHideFlags: 0
@@ -10293,6 +10320,32 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1026945265}
+--- !u!1 &976423280
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100010, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 976423281}
+  m_Layer: 0
+  m_Name: UraniumFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &976423281
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400010, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  m_GameObject: {fileID: 976423280}
+  m_LocalRotation: {x: -.11076197, y: .667783797, z: .101454981, w: .729042828}
+  m_LocalPosition: {x: 9.61240864, y: -7.09998322, z: -.895548105}
+  m_LocalScale: {x: .850000083, y: .849999964, z: .850000083}
+  m_Children: []
+  m_Father: {fileID: 1463211935}
 --- !u!1 &978357290
 GameObject:
   m_ObjectHideFlags: 0
@@ -10485,6 +10538,32 @@ Transform:
   m_Children:
   - {fileID: 181937549}
   m_Father: {fileID: 879453699}
+--- !u!1 &999860622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100008, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 999860623}
+  m_Layer: 0
+  m_Name: BarometerFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &999860623
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400008, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  m_GameObject: {fileID: 999860622}
+  m_LocalRotation: {x: .0233240016, y: .0010530001, z: .0016340001, w: .999726057}
+  m_LocalPosition: {x: -.426397502, y: -2.56918287, z: 10.578455}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1463211935}
 --- !u!1 &1009893186
 GameObject:
   m_ObjectHideFlags: 0
@@ -13727,6 +13806,33 @@ MonoBehaviour:
     starScoreTwo: 5000
     starScoreThree: 10000
   _particle: {fileID: 767059847}
+  _lastLevelIndex: 10
+--- !u!1 &1327631866
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100002, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1327631867}
+  m_Layer: 0
+  m_Name: InkFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1327631867
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400002, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  m_GameObject: {fileID: 1327631866}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: -1}
+  m_LocalPosition: {x: 3.45814753, y: -1.79359102, z: -14.7198334}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1463211935}
 --- !u!1 &1353460040
 GameObject:
   m_ObjectHideFlags: 0
@@ -14685,7 +14791,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400022, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
       propertyPath: _TaskSequences.Array.data[0].amounts.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
       propertyPath: m_LocalPosition.x
@@ -14781,7 +14887,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400022, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
       propertyPath: _TaskSequences.Array.data[0].beats.Array.data[1]
-      value: 6
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11400022, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
       propertyPath: _TaskSequences.Array.data[2].task
@@ -14907,6 +15013,14 @@ Prefab:
       propertyPath: _TaskSequences.Array.data[0].amounts.Array.data[4]
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11400022, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
+      propertyPath: _TaskSequences.Array.data[0].beats.Array.data[2]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400022, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
+      propertyPath: _TaskSequences.Array.data[0].beats.Array.data[3]
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
   m_RootGameObject: {fileID: 1076735491}
@@ -14939,6 +15053,36 @@ Transform:
   m_Children:
   - {fileID: 1876599202}
   m_Father: {fileID: 74948293}
+--- !u!1 &1463211934
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100004, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1463211935}
+  m_Layer: 0
+  m_Name: FocusPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1463211935
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400004, guid: 8d22c24ff32e49d4ba0b72eee9df9bde, type: 2}
+  m_PrefabInternal: {fileID: 1950087516}
+  m_GameObject: {fileID: 1463211934}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.153335571, y: 4.16516113, z: -3.06958008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 999860623}
+  - {fileID: 1327631867}
+  - {fileID: 691414880}
+  - {fileID: 976423281}
+  m_Father: {fileID: 592279356}
 --- !u!1 &1465333692
 GameObject:
   m_ObjectHideFlags: 0
@@ -15751,6 +15895,7 @@ MonoBehaviour:
   _easeTypeDialogueWindowIn: 24
   _DialogueWindowOutDuration: 2
   _easeTypeDialogueWindowOut: 27
+  _secondsUntilEndScreen: 1.5
 --- !u!114 &1525696945
 MonoBehaviour:
   m_ObjectHideFlags: 0
