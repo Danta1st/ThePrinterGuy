@@ -26,7 +26,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     private bool _isGUI = true;
     private bool _canTouch = true;
 	private bool _isOnStartScreen = true;
-	private CreditsScript credits;
+	private Credits credits;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -142,7 +142,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 		lvlManager = gameObject.GetComponent<LevelManager>();
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
-		credits = GameObject.Find("Credits").GetComponent<CreditsScript>();
+		credits = GameObject.Find("Television").GetComponent<Credits>();
 
         _scaleMultiplierX = Screen.width / 1920f;
         _scaleMultiplierY = Screen.height / 1200f;
@@ -238,6 +238,8 @@ public class GUIMainMenuCamera : MonoBehaviour
 
     private void CheckCollision(GameObject _go, Vector2 _screenPosition)
     {
+		Ray _mainCamRay = Camera.main.ScreenPointToRay(_screenPosition);
+		
         if(_isGUI && _canTouch)
         {
             Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
@@ -288,7 +290,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                         if(OnMainScreen != null)
                         {
                             OnMainScreen();
-
+							credits.SetCreditsRunning(false);
                             DisableGUIElementAll();
                         }
                     }
@@ -307,10 +309,12 @@ public class GUIMainMenuCamera : MonoBehaviour
                 }
                 //-----------------------------------------------------------------------//
             }
-            else
-            {
-                if(_isOnStartScreen)
-				{
+            else if(Physics.Raycast(_mainCamRay,out _hit))
+			{
+				if(_isOnStartScreen && _hit.collider.gameObject.name == "TapToPlay")
+            	{
+					//Disable GUI Object
+					_hit.collider.gameObject.SetActive(false);
 					_isOnStartScreen = false;
 					DisableGUIElement("MainMenu");
 					GameObject goLM = GameObject.Find ("elevatorDoor_L_MoveTo");
@@ -334,6 +338,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 					if(OnLevelManagerEvent != null)
 						OnLevelManagerEvent(_go, _screenPosition);
 				}
+				
             }
         }
     }
@@ -391,8 +396,11 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         foreach(GameObject _text in _textList)
         {
-            _text.GetComponent<LocalizationKeywordText>().LocalizeText();
-        }
+			if(_text != null)
+            	_text.GetComponent<LocalizationKeywordText>().LocalizeText();
+			else
+				Debug.LogWarning(gameObject.name+" found no text in _textList");
+        }		
     }
     #endregion
 }

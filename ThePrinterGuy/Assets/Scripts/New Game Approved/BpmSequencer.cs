@@ -38,7 +38,7 @@ public class BpmSequencer : MonoBehaviour {
 	
     public delegate void OnTaskAction(int taskIdentifier);
 	
-    public static event OnTaskAction OnPaperNode;				
+    public static event OnTaskAction OnPaperNode;
     public static event OnTaskAction OnInkNode;
     public static event OnTaskAction OnUraniumRodNode;
     public static event OnTaskAction OnBarometerNode;
@@ -54,6 +54,35 @@ public class BpmSequencer : MonoBehaviour {
     {
 		GUIGameCamera.OnUpdateAction -= UpdateTaskInFocus;
     }
+	
+	void OnDestroy()
+	{
+		GUIGameCamera.OnUpdateAction -= UpdateTaskInFocus;
+		BeatController.OnBeat3rd1 -= CheckBeat;
+		BeatController.OnBeat3rd2 -= CheckBeat;
+		BeatController.OnBeat3rd3 -= CheckBeat;
+		
+		BeatController.OnBeat4th1 -= CheckBeat;
+		BeatController.OnBeat4th2 -= CheckBeat;
+		BeatController.OnBeat4th3 -= CheckBeat;
+		BeatController.OnBeat4th4 -= CheckBeat;
+		
+		BeatController.OnBeat6th1 -= CheckBeat;
+		BeatController.OnBeat6th2 -= CheckBeat;
+		BeatController.OnBeat6th3 -= CheckBeat;
+		BeatController.OnBeat6th4 -= CheckBeat;
+		BeatController.OnBeat6th5 -= CheckBeat;
+		BeatController.OnBeat6th6 -= CheckBeat;
+		
+		BeatController.OnBeat8th1 -= CheckBeat;
+		BeatController.OnBeat8th2 -= CheckBeat;
+		BeatController.OnBeat8th3 -= CheckBeat;
+		BeatController.OnBeat8th4 -= CheckBeat;
+		BeatController.OnBeat8th5 -= CheckBeat;
+		BeatController.OnBeat8th6 -= CheckBeat;
+		BeatController.OnBeat8th7 -= CheckBeat;
+		BeatController.OnBeat8th8 -= CheckBeat;
+	}
     #endregion
 	
 	#region Monebehaviour Functions

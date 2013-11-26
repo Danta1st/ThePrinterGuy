@@ -6,9 +6,10 @@ public class Dialogue : MonoBehaviour {
     #region Editor Publics
     [SerializeField]
     private Color _alertColor;
+    [SerializeField]
+    private GameObject _character;
     #endregion
 
-    private Animation _characterAnimation;
     private Color _oldColor;
     private bool _cameraMovement = false;
     private GameObject _textBG;
@@ -16,6 +17,7 @@ public class Dialogue : MonoBehaviour {
     private string _localizationKey;
     private string[] happyTuple;
     private string[] angryTuple;
+    private Animation _characterAnimation;
     //animation, sound, localzation key
     private List<string[]> happyCollection;
     private List<string[]> angryCollection;
@@ -27,7 +29,7 @@ public class Dialogue : MonoBehaviour {
         happyCollection.Add(new string[] {"Good 01","6","InGameNotBad"});
         angryCollection = new List<string[]>();
         angryCollection.Add(new string[] {"Very Angry 01","11","InGameIdiot"});
-        _characterAnimation = gameObject.GetComponentInChildren<Animation>();
+        _characterAnimation = _character.GetComponent<Animation>();
     }
 
     #region Delegates & Events
