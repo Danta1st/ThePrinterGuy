@@ -114,23 +114,23 @@ public class ScoreManager : MonoBehaviour
 		{
 			case 0:
                 Feedback.Clear();
-                Feedback.Add("Not bad!");
+                Feedback.Add("NOT BAD!");
 				popupSize = 3;
 				break;
             case 1:
                 Feedback.Clear();
-                Feedback.Add("Good!");
+                Feedback.Add("GOOD!");
 				popupSize = 3;
                 break;
 			case 2:
                 Feedback.Clear();
-                Feedback.Add("Great!");
+                Feedback.Add("GREAT!");
 				popupSize = 2;
 				amount = amount * YellowZoneModifier * _multiplier;
 				break;
 			case 3:
                 Feedback.Clear();
-                Feedback.Add("Perfect!");
+                Feedback.Add("PERFECT!");
 				popupSize = 1;
 				amount = amount * GreenZoneModifier * _multiplier;
 				break;
