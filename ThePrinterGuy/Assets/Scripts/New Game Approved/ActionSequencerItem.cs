@@ -31,7 +31,7 @@ public class ActionSequencerItem : MonoBehaviour
     //private bool _isBack = false;
     private Vector3 _destinationPosition;
     private Vector3 _partialPosition;
-    private Vector3[] _path;
+    private Vector3[] _path = new Vector3[2];
     private float _increaseStep = 0.05f;
     private float _currentStep = 0.0f;
     #endregion
@@ -94,7 +94,7 @@ public class ActionSequencerItem : MonoBehaviour
 	}
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
     	_spawnZonePosition = GameObject.Find("SpawnZone").transform.position;
     	_deadZonePosition = GameObject.Find("DeadZone").transform.position;
@@ -109,9 +109,9 @@ public class ActionSequencerItem : MonoBehaviour
         _tempoManagerScript = GameObject.Find("GUI List").GetComponent<TempoManager>();
         _destinationPosition = GameObject.Find("DeadZone").transform.position;
        
-       _path = new Vector3[2];
        _path[0] = _spawnZonePosition;
-       _path[1] = _destinationPosition; 
+       _path[1] = _destinationPosition;
+       _partialPosition = _spawnZonePosition;
        
 		if(_moduleName == "Ink")
 		{
