@@ -66,6 +66,7 @@ public class PaperInsertion : MonoBehaviour
 		StopGate();
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
+		GestureManager.OnTap -= TriggerSlide;
 		ActionSequencerItem.OnFailed -= Reset;
 		GestureManager.OnTap -= TriggerSlide;
 	}
@@ -213,6 +214,7 @@ public class PaperInsertion : MonoBehaviour
     {
 		if(_isPaperEnabled)
 		{
+			GestureManager.OnTap -= TriggerSlide;
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 				//Spawn particles
