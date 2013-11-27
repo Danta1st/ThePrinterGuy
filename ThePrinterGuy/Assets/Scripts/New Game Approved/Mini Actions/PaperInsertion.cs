@@ -59,8 +59,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= EnablePaper;
         GestureManager.OnTap -= TriggerSlide;
 		ActionSequencerItem.OnFailed -= Reset;
-    }
-	
+    }	
 	void OnDestroy()
 	{
 		StopGate();
@@ -299,8 +298,8 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				
 				//Enable Paper Trail or throw warning
-				if(paper.GetComponent<TrailRenderer>() != null)
-					paper.GetComponent<TrailRenderer>().enabled = true;
+				if(paper.GetComponentInChildren<TrailRenderer>() != null)
+					paper.GetComponentInChildren<TrailRenderer>().enabled = true;
 				else
 					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");				
 				
@@ -406,23 +405,26 @@ public class PaperInsertion : MonoBehaviour
 	//Method for instantiating particles
 	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
 	{
-		foreach(Transform child in posRotGO.transform)
+		if(particles != null)
 		{
-			if(child.name.Equals("ParticlePos") && particles != null)
+			foreach(Transform child in posRotGO.transform)
 			{
-				//Instantiate Particle prefab. Rotation solution is a HACK
-				GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
-				//Child to DynamicObjects
-				tempParticles.transform.parent = _dynamicObjects.transform;
-				Debug.Log(gameObject.name+" instantiating particles");
-				return;
-			}				
+				if(child.name.Equals("ParticlePos") && particles != null)
+				{
+					//Instantiate Particle prefab. Rotation solution is a HACK
+					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+					//Child to DynamicObjects
+					tempParticles.transform.parent = _dynamicObjects.transform;
+					Debug.Log(gameObject.name+" instantiating particles");
+					return;
+				}				
+			}
+			//Instantiate Particle prefab. Rotation solution is a HACK
+			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+			//Child to DynamicObjects
+			tempParticles1.transform.parent = _dynamicObjects.transform;
+			Debug.Log(gameObject.name+" instantiating particles");
 		}
-		//Instantiate Particle prefab. Rotation solution is a HACK
-		GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
-		//Child to DynamicObjects
-		tempParticles1.transform.parent = _dynamicObjects.transform;
-		Debug.Log(gameObject.name+" instantiating particles");
 	}
 	#endregion
 
