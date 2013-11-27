@@ -88,7 +88,8 @@ public class UraniumRods : MonoBehaviour
 		var go = _rods[itemNumber].rod;
 		//if(_rodsAndStates[go] == false) //QUICKFIX: Enables ability to choose same rod several times in a row
         //{
-            Spring(go, itemNumber);
+		
+            StartCoroutine(Spring(go, itemNumber));
 
             _rodsAndStates[go] = true;
 		
@@ -125,12 +126,15 @@ public class UraniumRods : MonoBehaviour
         }*/
     }
 
-    private void Spring(GameObject go, int identifier)
+    private IEnumerator Spring(GameObject go, int identifier)
     {
 		//Play sound
 		SoundManager.Effect_UraniumRods_Hammer();
 		//Move rod
-        iTween.MoveTo(go, iTween.Hash("position", _rods[identifier].rodMoveTo.transform.position, "time", _outTime,
+		if(iTween.Count (go) > 0)
+			yield return new WaitForSeconds(_inTime);
+        
+		iTween.MoveTo(go, iTween.Hash("position", _rods[identifier].rodMoveTo.transform.position, "time", _outTime,
                                         "easetype", _easeTypeOut));
     }
 
