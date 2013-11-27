@@ -46,7 +46,7 @@ public class GUIEndScreenCamera : MonoBehaviour
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
-	private bool _isWin = false;
+	private bool _isWin = true;
     private GameObject nextLevelButton;
     private int _levelOffset = 0;
 
@@ -276,6 +276,8 @@ public class GUIEndScreenCamera : MonoBehaviour
 	
 	private void DisplayEndScreenWin(int score)
 	{
+            if(_isWin)
+            {
             SoundManager.Effect_InGame_Win();
             SoundManager.StopAllSoundEffects();
             SoundManager.FadeAllMusic();
@@ -294,12 +296,13 @@ public class GUIEndScreenCamera : MonoBehaviour
 		    GestureManager.OnTap += CheckCollision;
 
 		    _levelScore = score;
-		    _isWin = true;
 		    StartCoroutine("MoveEstimateBar");
+            }
 	}
 
     private void DisplayEndScreenLoose()
     {
+        _isWin = false;
         SoundManager.Effect_InGame_Lose();
         SoundManager.StopAllSoundEffects();
         SoundManager.FadeAllMusic();
@@ -313,7 +316,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 
         _levelScore = guiGameCameraScript.GetScore();
         nextLevelButton.SetActive(false);
-        _isWin = false;
         StartCoroutine("MoveEstimateBar");
     }
 	
