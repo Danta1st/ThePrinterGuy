@@ -20,6 +20,10 @@ public class LevelManager : MonoBehaviour
     private iTween.EaseType _easeType;
     [SerializeField]
     private int _levelBoxCount;
+    [SerializeField]
+    private iTween.EaseType _easyTypeOfLevelParentObjectIn = iTween.EaseType.easeOutBack;
+    [SerializeField]
+    private iTween.EaseType _easyTypeOfLevelParentObjectOut = iTween.EaseType.easeInBack;
 
     private GameObject _selectedStageChar;
     private GameObject _lookTarget;
@@ -32,6 +36,9 @@ public class LevelManager : MonoBehaviour
     private int[] highScores;
 	private enum MainMenuStates { MainMenu, LevelSelection, Options, Credits };
 	private MainMenuStates state = MainMenuStates.MainMenu;
+    private GameObject LevelParentObject;
+    int indexChar;
+    int minIndex;
 
 
     public delegate void CreditsView();
@@ -285,7 +292,7 @@ public class LevelManager : MonoBehaviour
 	        tmpPos.z = _charUnlockedDistance;
 	
 	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveForwardAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
-	
+
 	        LevelBoxesAppear(go);
 	        Animation characterAnimation = go.GetComponentInChildren<Animation>();
 	        characterAnimation.CrossFade("Selection");
@@ -300,9 +307,11 @@ public class LevelManager : MonoBehaviour
 
     void LevelBoxesAppear(GameObject go)
     {
-        int indexChar = _stageCharacters.IndexOf(go);
+        LevelParentObject = go.transform.FindChild("stageLevelSelection").gameObject;
+        iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(1,1,1),"time", 1f, "easeType", _easyTypeOfLevelParentObjectIn));
 
-        int minIndex = indexChar * _levelBoxCount;
+        indexChar = _stageCharacters.IndexOf(go);
+        minIndex = indexChar * _levelBoxCount;
 
         for(int i = minIndex; i < (minIndex + _levelBoxCount); i++)
         {
@@ -320,7 +329,7 @@ public class LevelManager : MonoBehaviour
 	        tmpPos.z = _charLockedDistance;
 	
 	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveBackAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
-	
+
 	        LevelBoxesDisappear(go);
 		}
     }
@@ -332,13 +341,15 @@ public class LevelManager : MonoBehaviour
 
     void LevelBoxesDisappear(GameObject go)
     {
-//        GameObject tmpGo = go.transform.FindChild("stageLevelSelection").gameObject;
-//        tmpGo.SetActive(false);
+        LevelParentObject = go.transform.FindChild("stageLevelSelection").gameObject;
+        iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(0,0,0),"time", 1f, "easeType", _easyTypeOfLevelParentObjectOut, "onComplete", "LevelBoxesDisappearAfterEaseOut", "onCompleteTarget", gameObject));
+        indexChar = _stageCharacters.IndexOf(go);
+        minIndex = indexChar * _levelBoxCount;
+    }
 
-        int indexChar = _stageCharacters.IndexOf(go);
 
-        int minIndex = indexChar * _levelBoxCount;
-
+     void LevelBoxesDisappearAfterEaseOut()
+     {
         for(int i = minIndex; i < (minIndex + _levelBoxCount); i++)
         {
 

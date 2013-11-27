@@ -1658,7 +1658,8 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9500000, guid: a0890daa48ddd454ca7afd9c65102636, type: 3}
   m_ParentPrefab: {fileID: 100100000, guid: a0890daa48ddd454ca7afd9c65102636, type: 3}
   m_RootGameObject: {fileID: 1132626806}
   m_IsPrefabParent: 0
@@ -2753,7 +2754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _loadingScreenLevelNumber: 8
-  _startScreenLevelNumber: 2
+  _startScreenLevelNumber: 0
   _tutorialLevels: 
   _tutorialTipsAmount: 0
   _funnyTipsAmount: 0
@@ -3210,7 +3211,6 @@ GameObject:
   - 4: {fileID: 1132626810}
   - 33: {fileID: 1132626809}
   - 23: {fileID: 1132626808}
-  - 95: {fileID: 1132626807}
   m_Layer: 0
   m_Name: bossOffice01
   m_TagString: Untagged
@@ -3218,19 +3218,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &1132626807
-Animator:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 9500000, guid: a0890daa48ddd454ca7afd9c65102636,
-    type: 3}
-  m_PrefabInternal: {fileID: 498178520}
-  m_GameObject: {fileID: 1132626806}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: a0890daa48ddd454ca7afd9c65102636, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_ApplyRootMotion: 1
-  m_AnimatePhysics: 0
 --- !u!23 &1132626808
 Renderer:
   m_ObjectHideFlags: 0
