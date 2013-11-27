@@ -68,7 +68,6 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		GestureManager.OnTap -= TriggerSlide;
 		ActionSequencerItem.OnFailed -= Reset;
-		GestureManager.OnTap -= TriggerSlide;
 	}
 
     #region Monobehaviour Functions
@@ -372,9 +371,7 @@ public class PaperInsertion : MonoBehaviour
 	
 	//-----------
 	public void Reset()
-	{		
-		//GestureManager.OnSwipeUp -= TriggerSlide;
-		GestureManager.OnTap -= TriggerSlide;
+	{
 		DisablePaper();
 		TurnOfAllLights();
 	}
