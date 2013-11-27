@@ -36,7 +36,8 @@ public class GUIEndScreenCamera : MonoBehaviour
 	}
 	
     #region Private Variables
-    private Camera _guiCamera;
+    private Camera _guiEndScreenCam;
+	private Camera _guiInGameCam;
     private GameObject _realGUIList;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
@@ -74,13 +75,13 @@ public class GUIEndScreenCamera : MonoBehaviour
     public void EnableGUICamera()
     {
         _isGUI = true;
-        _guiCamera.gameObject.SetActive(true);
+        _guiEndScreenCam.gameObject.SetActive(true);
     }
 
     public void DisableGUICamera()
     {
         _isGUI = false;
-        _guiCamera.gameObject.SetActive(false);
+        _guiEndScreenCam.gameObject.SetActive(false);
     }
 
     public void EnableGUIElement(string _name)
@@ -128,8 +129,9 @@ public class GUIEndScreenCamera : MonoBehaviour
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _realGUIList = GameObject.Find("GUI List");
-        _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
-        transform.position = _guiCamera.transform.position;
+        _guiEndScreenCam = GameObject.Find("GUIEndSceneCamera").camera;
+		_guiInGameCam = GameObject.Find ("GUI Camera").camera;
+        transform.position = _guiEndScreenCam.transform.position;
 
         foreach(GameObject _guiObject in _guiList)
         {
@@ -167,14 +169,14 @@ public class GUIEndScreenCamera : MonoBehaviour
     {
         float _aspectRatio = 1920f / 1200f;
         float _startCameraSize = 600f;
-        float _newCameraSize = _guiCamera.orthographicSize * _scaleMultiplierY;
+        float _newCameraSize = _guiEndScreenCam.orthographicSize * _scaleMultiplierY;
 
         foreach(GameObject _guiObject in _guiList)
         {
-            _guiCamera.aspect = _aspectRatio;
-            _guiCamera.orthographicSize = _startCameraSize;
+            _guiEndScreenCam.aspect = _aspectRatio;
+            _guiEndScreenCam.orthographicSize = _startCameraSize;
 
-            Vector3 _startPosition = _guiCamera.WorldToViewportPoint(_guiObject.transform.position);
+            Vector3 _startPosition = _guiEndScreenCam.WorldToViewportPoint(_guiObject.transform.position);
 
             if(_guiObject.name == "BG")
             {
@@ -188,11 +190,11 @@ public class GUIEndScreenCamera : MonoBehaviour
                 _guiObject.transform.localScale *= _scaleMultiplierY;
             }
 
-            _guiCamera.ResetAspect();
-            _guiCamera.orthographicSize = _newCameraSize;
-            _guiObject.transform.position = _guiCamera.ViewportToWorldPoint(_startPosition);
+            _guiEndScreenCam.ResetAspect();
+            _guiEndScreenCam.orthographicSize = _newCameraSize;
+            _guiObject.transform.position = _guiEndScreenCam.ViewportToWorldPoint(_startPosition);
         }
-        _guiCamera.orthographicSize = _newCameraSize;
+        _guiEndScreenCam.orthographicSize = _newCameraSize;
     }
 	
     private void CheckCollision(GameObject _go, Vector2 _screenPosition)
@@ -200,7 +202,7 @@ public class GUIEndScreenCamera : MonoBehaviour
         if(_isGUI && _canTouch)
         {
 
-            Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
+            Ray _ray = _guiEndScreenCam.ScreenPointToRay(_screenPosition);
 
             if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
             {
@@ -291,6 +293,9 @@ public class GUIEndScreenCamera : MonoBehaviour
                 highScores[_currentLevel+1] = 0;
                 SaveGame.SavePlayerData(0,0,highScores);
             }
+			
+			_guiInGameCam.enabled = false;
+
 		    EnableGUICamera();
 		    EnableGUIElementAll();
 		    GestureManager.OnTap += CheckCollision;
@@ -308,6 +313,7 @@ public class GUIEndScreenCamera : MonoBehaviour
         SoundManager.FadeAllMusic();
 
         GetCurrentLevel();
+		_guiInGameCam.enabled = false;
         //Camera.main.enabled = false;
         EnableGUICamera();
         EnableGUIElementAll();
