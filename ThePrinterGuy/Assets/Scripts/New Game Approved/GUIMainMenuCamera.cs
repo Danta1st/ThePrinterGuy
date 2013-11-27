@@ -15,6 +15,8 @@ public class GUIMainMenuCamera : MonoBehaviour
     private GameObject[] _textList;
     [SerializeField]
     private iTween.EaseType _easeTypeCamera;
+	[SerializeField]
+	private ButtonTextures _menuTextures;
     #endregion
 
     #region Private Variables
@@ -27,6 +29,10 @@ public class GUIMainMenuCamera : MonoBehaviour
     private bool _canTouch = true;
 	private bool _isOnStartScreen = true;
 	private Credits credits;
+	private GameObject _optionsButton;
+	private GameObject _creditsButton;
+	private GameObject _menuButtonLeft;
+	private GameObject _menuButtonRight;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -178,18 +184,22 @@ public class GUIMainMenuCamera : MonoBehaviour
             }*/
             if(_guiObject.name == "MenuButtonLeft")
             {
+				_menuButtonLeft = _guiObject;
                 _guiObject.SetActive(false);
             }
             if(_guiObject.name == "MenuButtonRight")
             {
+				_menuButtonRight = _guiObject;
                 _guiObject.SetActive(false);
             }
             if(_guiObject.name == "CreditsButton")
             {
+				_creditsButton = _guiObject;
                 _guiObject.SetActive(false);
             }
             if(_guiObject.name == "OptionsButton")
             {
+				_optionsButton = _guiObject;
                 _guiObject.SetActive(false);
             }
 
@@ -264,8 +274,9 @@ public class GUIMainMenuCamera : MonoBehaviour
                     {
                         if(OnOptionsScreen != null)
                         {
+							_optionsButton.renderer.material.mainTexture = _menuTextures.OptionsButtonPressed;
+							
                             OnOptionsScreen();
-
                             DisableGUIElementAll();
                         }
                     }
@@ -282,6 +293,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     {
                         if(OnMainScreen != null)
                         {
+							_optionsButton.renderer.material.mainTexture = _menuTextures.OptionsButton;
                             OnMainScreen();
 
                             DisableGUIElementAll();
@@ -409,4 +421,13 @@ public class GUIMainMenuCamera : MonoBehaviour
         }		
     }
     #endregion
+}
+
+[System.Serializable]
+public class ButtonTextures
+{
+	public Texture OptionsButton;
+	public Texture OptionsButtonPressed;
+	public Texture CreditsButton;
+	public Texture CreditsButtonPressed;
 }
