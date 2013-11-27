@@ -6109,14 +6109,14 @@ MonoBehaviour:
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
-  _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
-    type: 2}
-  _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
-    type: 2}
-  _particleSystemExplosion: {fileID: 19800000, guid: 479902545a73e9f4e8a6f3401d14e39c,
-    type: 2}
   _easeTypeOpen: 27
   _easeTypeClose: 16
+  _particles:
+    enable: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    disable: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    complete: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    failed: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    smoke: {fileID: 100000, guid: 6d48f3139c66f7748b144125757ec218, type: 2}
 --- !u!1 &594216833
 GameObject:
   m_ObjectHideFlags: 0
@@ -9545,6 +9545,7 @@ GameObject:
   - 33: {fileID: 872762062}
   - 23: {fileID: 872762061}
   - 135: {fileID: 872762060}
+  - 114: {fileID: 872762064}
   - 114: {fileID: 872762063}
   m_Layer: 0
   m_Name: InsertableInk0
@@ -9616,6 +9617,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _floatAmount: {x: .200000003, y: .200000003, z: 0}
+  _speedFloat: .100000001
+  _easeTypeFloat: 21
+--- !u!114 &872762064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 11400000, guid: d0ac35c5681b4db40a01e6fe1f5c9524,
+    type: 2}
+  m_PrefabInternal: {fileID: 551741240}
+  m_GameObject: {fileID: 872762058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b689685585f0c04894df72a317740d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _floatAmount: {x: .200000003, y: .200000003, z: .200000003}
   _speedFloat: .100000001
   _easeTypeFloat: 21
 --- !u!1 &875041506
@@ -10434,7 +10450,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 2.71000004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1277302772}
   - {fileID: 872762059}
   - {fileID: 902572459}
   - {fileID: 2141641210}
@@ -13786,32 +13801,6 @@ Transform:
   m_Children:
   - {fileID: 1036132805}
   m_Father: {fileID: 110949059}
---- !u!1 &1277302771
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 100002, guid: d0ac35c5681b4db40a01e6fe1f5c9524, type: 2}
-  m_PrefabInternal: {fileID: 551741240}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1277302772}
-  m_Layer: 0
-  m_Name: InkFocusPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1277302772
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 400002, guid: d0ac35c5681b4db40a01e6fe1f5c9524, type: 2}
-  m_PrefabInternal: {fileID: 551741240}
-  m_GameObject: {fileID: 1277302771}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 4.37113883e-08}
-  m_LocalPosition: {x: .0301445182, y: 6.60302687, z: 10.1878605}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 937874910}
 --- !u!1 &1277862454
 GameObject:
   m_ObjectHideFlags: 0

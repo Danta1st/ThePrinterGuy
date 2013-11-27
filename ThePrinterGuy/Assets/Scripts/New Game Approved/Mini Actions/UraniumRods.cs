@@ -231,17 +231,20 @@ public class UraniumRods : MonoBehaviour
 	//Method for instantiating particles
 	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
 	{
-		foreach(Transform child in posRotGO.transform)
+		if(particles != null)
 		{
-			if(child.name.Equals("ParticlePos") && particles != null)
+			foreach(Transform child in posRotGO.transform)
 			{
-				//Instantiate Particle prefab. Rotation solution is a HACK
-				GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.FromToRotation(particles.transform.up, -child.up));
-				//Child to DynamicObjects
-				tempParticles.transform.parent = _dynamicObjects.transform;
-				Debug.Log(gameObject.name+" instantiating particles");
-			}
-		}		
+				if(child.name.Equals("ParticlePos") && particles != null)
+				{
+					//Instantiate Particle prefab. Rotation solution is a HACK
+					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.FromToRotation(particles.transform.up, -child.up));
+					//Child to DynamicObjects
+					tempParticles.transform.parent = _dynamicObjects.transform;
+					Debug.Log(gameObject.name+" instantiating particles");
+				}
+			}	
+		}
 	}
     #endregion
 	
