@@ -4710,6 +4710,10 @@ Prefab:
       propertyPath: _levelOffset
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: d284d3839aae167448e0c05568c8d021, type: 2}
+      propertyPath: _lastLevelIndex
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d284d3839aae167448e0c05568c8d021, type: 2}
   m_RootGameObject: {fileID: 786445043}
@@ -9944,6 +9948,7 @@ GameObject:
   - 33: {fileID: 872762062}
   - 23: {fileID: 872762061}
   - 135: {fileID: 872762060}
+  - 114: {fileID: 872762063}
   m_Layer: 0
   m_Name: InsertableInk0
   m_TagString: Untagged
@@ -10002,6 +10007,21 @@ MeshFilter:
   m_PrefabInternal: {fileID: 1225145142}
   m_GameObject: {fileID: 872762058}
   m_Mesh: {fileID: 4300004, guid: 65f73292c19918b4daf22b32c30f4031, type: 3}
+--- !u!114 &872762063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 11400000, guid: d0ac35c5681b4db40a01e6fe1f5c9524,
+    type: 2}
+  m_PrefabInternal: {fileID: 1225145142}
+  m_GameObject: {fileID: 872762058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b689685585f0c04894df72a317740d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _floatAmount: {x: .200000003, y: .200000003, z: .200000003}
+  _speedFloat: .100000001
+  _easeTypeFloat: 21
 --- !u!1 &875828043
 GameObject:
   m_ObjectHideFlags: 0
@@ -10741,7 +10761,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 2.71000004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1277302772}
   - {fileID: 872762059}
   - {fileID: 902572459}
   - {fileID: 2141641210}
@@ -14138,32 +14157,6 @@ Transform:
   m_Children:
   - {fileID: 1036132805}
   m_Father: {fileID: 110949059}
---- !u!1 &1277302771
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 100002, guid: d0ac35c5681b4db40a01e6fe1f5c9524, type: 2}
-  m_PrefabInternal: {fileID: 1225145142}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1277302772}
-  m_Layer: 0
-  m_Name: InkFocusPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1277302772
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 400002, guid: d0ac35c5681b4db40a01e6fe1f5c9524, type: 2}
-  m_PrefabInternal: {fileID: 1225145142}
-  m_GameObject: {fileID: 1277302771}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 4.37113883e-08}
-  m_LocalPosition: {x: .0301445182, y: 6.60302687, z: 10.1878605}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 937874910}
 --- !u!1 &1282796050
 GameObject:
   m_ObjectHideFlags: 0
@@ -14714,7 +14707,7 @@ MonoBehaviour:
     starScoreTwo: 5000
     starScoreThree: 10000
   _particle: {fileID: 767059847}
-  _lastLevelIndex: 10
+  _lastLevelIndex: 7
 --- !u!1 &1324182631
 GameObject:
   m_ObjectHideFlags: 0
@@ -14749,7 +14742,7 @@ TrailRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 132016773}
   m_GameObject: {fileID: 1324182631}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_LightmapIndex: 255
@@ -15084,6 +15077,73 @@ Transform:
   - {fileID: 210984139}
   - {fileID: 1679327587}
   m_Father: {fileID: 2120056774}
+--- !u!1 &1378747773
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100050, guid: 2c4b6b7d85ead9043ab047b32b4f8d04, type: 2}
+  m_PrefabInternal: {fileID: 132016773}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1378747774}
+  - 96: {fileID: 1378747775}
+  m_Layer: 0
+  m_Name: PaperTrailEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1378747774
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400050, guid: 2c4b6b7d85ead9043ab047b32b4f8d04, type: 2}
+  m_PrefabInternal: {fileID: 132016773}
+  m_GameObject: {fileID: 1378747773}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1720005099}
+--- !u!96 &1378747775
+TrailRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 9600004, guid: 2c4b6b7d85ead9043ab047b32b4f8d04,
+    type: 2}
+  m_PrefabInternal: {fileID: 132016773}
+  m_GameObject: {fileID: 1378747773}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_Time: 5
+  m_StartWidth: 1
+  m_EndWidth: 1
+  m_Colors:
+    m_Color[0]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[1]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[2]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[3]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[4]:
+      serializedVersion: 2
+      rgba: 16777215
+  m_MinVertexDistance: .100000001
+  m_Autodestruct: 0
 --- !u!1 &1379102687
 GameObject:
   m_ObjectHideFlags: 0
@@ -15890,7 +15950,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _loadingScreenLevelNumber: 8
-  _startScreenLevelNumber: 2
+  _startScreenLevelNumber: 0
   _tutorialLevels: 
   _tutorialTipsAmount: 0
   _funnyTipsAmount: 0
@@ -18966,7 +19026,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1378747774}
   m_Father: {fileID: 107352240}
 --- !u!23 &1720005100
 Renderer:
@@ -22603,7 +22664,7 @@ TrailRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 132016773}
   m_GameObject: {fileID: 2074729125}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_LightmapIndex: 255
