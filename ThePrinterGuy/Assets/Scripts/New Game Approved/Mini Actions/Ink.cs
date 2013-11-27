@@ -279,9 +279,9 @@ public class Ink : MonoBehaviour
 		_particleExplosion.Play();
 		_particleExplosion.transform.position = icc.insertableCartridge.position;
 		icc.insertableCartridge.transform.position = icc.insertableStartPos;
+		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 		yield return new WaitForSeconds(_particleExplosion.duration);
 		_canSlide = true;
-		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 	}
 	
 	private void InkReset()

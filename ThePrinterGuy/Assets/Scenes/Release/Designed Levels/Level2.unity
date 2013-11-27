@@ -1489,7 +1489,7 @@ Transform:
   m_PrefabInternal: {fileID: 1454094619}
   m_GameObject: {fileID: 91273824}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 44, y: 522, z: 1}
+  m_LocalPosition: {x: 44, y: 565, z: 2}
   m_LocalScale: {x: 120, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 1402616629}
@@ -4648,6 +4648,61 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+--- !u!1 &428219912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100358, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
+  m_PrefabInternal: {fileID: 1454094619}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 428219913}
+  - 33: {fileID: 428219915}
+  - 23: {fileID: 428219914}
+  m_Layer: 0
+  m_Name: BoxStartFront
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &428219913
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400358, guid: de75dd5ce5d7ff84384d2694efafc227, type: 2}
+  m_PrefabInternal: {fileID: 1454094619}
+  m_GameObject: {fileID: 428219912}
+  m_LocalRotation: {x: 0, y: 0, z: .707106829, w: -.707106829}
+  m_LocalPosition: {x: 40, y: 540.000122, z: 1}
+  m_LocalScale: {x: 200, y: 300, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1402616629}
+--- !u!23 &428219914
+Renderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 2300074, guid: de75dd5ce5d7ff84384d2694efafc227,
+    type: 2}
+  m_PrefabInternal: {fileID: 1454094619}
+  m_GameObject: {fileID: 428219912}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 08993625dc636ca44b0c1c0298215412, type: 2}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+--- !u!33 &428219915
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 3300064, guid: de75dd5ce5d7ff84384d2694efafc227,
+    type: 2}
+  m_PrefabInternal: {fileID: 1454094619}
+  m_GameObject: {fileID: 428219912}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &437178142
 GameObject:
   m_ObjectHideFlags: 0
@@ -8604,7 +8659,7 @@ Transform:
   m_PrefabInternal: {fileID: 1454094619}
   m_GameObject: {fileID: 794635640}
   m_LocalRotation: {x: 0, y: 0, z: -.707106829, w: .707106829}
-  m_LocalPosition: {x: -240, y: 455, z: 1}
+  m_LocalPosition: {x: -240, y: 455, z: 2}
   m_LocalScale: {x: 120, y: 50, z: 1}
   m_Children: []
   m_Father: {fileID: 655076456}
@@ -9569,7 +9624,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 83571ea9383a45349b92a1cbf20b874f, type: 2}
+  - {fileID: 2100000, guid: 642abf7431e01bf49b50eee086942284, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -10504,32 +10559,6 @@ Transform:
   m_Children:
   - {fileID: 1031661656}
   m_Father: {fileID: 1128414741}
---- !u!1 &978357290
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 100008, guid: 115a0a30446272d489b48c24c87e25a0, type: 2}
-  m_PrefabInternal: {fileID: 1425174403}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 978357291}
-  m_Layer: 0
-  m_Name: UraniumFocusPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &978357291
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 400008, guid: 115a0a30446272d489b48c24c87e25a0, type: 2}
-  m_PrefabInternal: {fileID: 1425174403}
-  m_GameObject: {fileID: 978357290}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2001756223}
 --- !u!1 &984135774
 GameObject:
   m_ObjectHideFlags: 0
@@ -13199,7 +13228,7 @@ Transform:
   m_GameObject: {fileID: 1267563064}
   m_LocalRotation: {x: -.110762171, y: .667783558, z: .101455159, w: .729043007}
   m_LocalPosition: {x: 8.65054321, y: -3.18727279, z: -4.03618288}
-  m_LocalScale: {x: .850000024, y: .850000024, z: .850000024}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2001756223}
   m_Father: {fileID: 0}
@@ -13224,10 +13253,10 @@ MonoBehaviour:
   - rod: {fileID: 1912170958}
     rodMoveTo: {fileID: 974153894}
     startPos: {x: 0, y: 0, z: 0}
-  _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
-    type: 2}
-  _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
-    type: 2}
+  _particles:
+    _spring: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    _hammerBegan: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    _hammerComplete: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
 --- !u!1 &1270094602
 GameObject:
   m_ObjectHideFlags: 0
@@ -13974,7 +14003,7 @@ Transform:
   m_PrefabInternal: {fileID: 951817582}
   m_GameObject: {fileID: 1353460040}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -37.9502754, y: 4.7788496, z: 7.71857834}
+  m_LocalPosition: {x: -37.9502754, y: -8.08827591, z: 18.9255772}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 904475291}
@@ -14362,12 +14391,13 @@ Transform:
   - {fileID: 896527107}
   - {fileID: 1145277571}
   - {fileID: 1107822570}
-  - {fileID: 1733819172}
+  - {fileID: 428219913}
   - {fileID: 1866015297}
   - {fileID: 91273825}
   - {fileID: 1920832315}
   - {fileID: 1437106736}
   - {fileID: 1719080823}
+  - {fileID: 1733819172}
   m_Father: {fileID: 655076456}
 --- !u!1 &1409819892
 GameObject:
@@ -16766,7 +16796,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 1619933850}
-  - 95: {fileID: 1619933851}
   m_Layer: 0
   m_Name: BoxDoorWindowProps
   m_TagString: Untagged
@@ -16788,19 +16817,6 @@ Transform:
   - {fileID: 1849505071}
   - {fileID: 749219961}
   m_Father: {fileID: 515658681}
---- !u!95 &1619933851
-Animator:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 9500000, guid: 5a3df8dd02873f640badd6df54deefcb,
-    type: 2}
-  m_PrefabInternal: {fileID: 951817582}
-  m_GameObject: {fileID: 1619933849}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: a9158dd1b33cedd4c838e62a4e90dc46, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_ApplyRootMotion: 1
-  m_AnimatePhysics: 0
 --- !u!1 &1630229337
 GameObject:
   m_ObjectHideFlags: 0
@@ -17946,7 +17962,7 @@ GameObject:
   - 33: {fileID: 443743477}
   - 23: {fileID: 896527108}
   m_Layer: 0
-  m_Name: BoxStart
+  m_Name: BoxStartBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17959,8 +17975,8 @@ Transform:
   m_PrefabInternal: {fileID: 1454094619}
   m_GameObject: {fileID: 1733819171}
   m_LocalRotation: {x: 0, y: 0, z: .707106829, w: -.707106829}
-  m_LocalPosition: {x: 40, y: 540.000122, z: 2}
-  m_LocalScale: {x: 200, y: 300, z: 1}
+  m_LocalPosition: {x: 39.999939, y: 540.000244, z: 10}
+  m_LocalScale: {x: 200.000092, y: 300.000153, z: 1}
   m_Children: []
   m_Father: {fileID: 1402616629}
 --- !u!1 &1740802193
@@ -19698,7 +19714,7 @@ Transform:
   m_PrefabInternal: {fileID: 951817582}
   m_GameObject: {fileID: 1933079901}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -43.0561905, y: 2.00997639, z: 7.19385529}
+  m_LocalPosition: {x: -43.0561905, y: -7.83426285, z: -8.88201141}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 904475291}
@@ -20273,7 +20289,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 978357291}
   - {fileID: 2082446328}
   - {fileID: 2024402612}
   - {fileID: 566065777}
@@ -21178,10 +21193,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _transitionTime: 2
   _easeType: 21
-  _uraniumFocus: {fileID: 978357291}
-  _inkFocus: {fileID: 0}
-  _barometerFocus: {fileID: 0}
-  _paperFocus: {fileID: 0}
+  _uraniumFocus: {fileID: 329552270}
+  _inkFocus: {fileID: 134036368}
+  _barometerFocus: {fileID: 109734198}
+  _paperFocus: {fileID: 1202596529}
   _overviewFocus: {fileID: 0}
 --- !u!114 &2096159581
 MonoBehaviour:
