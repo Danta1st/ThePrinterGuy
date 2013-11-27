@@ -220,10 +220,37 @@ public class LevelManager : MonoBehaviour
 			{
 	            int index = _gameLevels.IndexOf(go);
 	
-	            if(_gameLevelsUnlocked[index])
-	            {
-	                LoadingScreen.Load(index+1, true);
-	            }
+                if(_gameLevelsUnlocked[index])
+                {
+                    string correspondingLevelName = null;
+                    switch (index) {
+                        case 0:
+                            correspondingLevelName = "Stage1Cinematics";
+                            break;
+                        case 1:
+                            correspondingLevelName = "Tutorial2";
+                            break;
+                        case 2:
+                            correspondingLevelName = "Tutorial3";
+                            break;
+                        case 3:
+                            correspondingLevelName = "Tutorial4";
+                            break;
+                        case 4:
+                            correspondingLevelName = "Tutorial5";
+                            break;
+                        default:
+                            break;
+                    }
+                    if(correspondingLevelName == null)
+                    {
+                        LoadingScreen.Load(index+1, true);
+                    }
+                    else
+                    {
+                        LoadingScreen.Load(correspondingLevelName, true);
+                    }
+                }
         	}
 		} else if(go == null && _selectedStageChar != null) {
 			state = MainMenuStates.MainMenu;

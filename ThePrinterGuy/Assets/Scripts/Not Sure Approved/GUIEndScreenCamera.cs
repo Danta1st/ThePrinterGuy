@@ -47,7 +47,6 @@ public class GUIEndScreenCamera : MonoBehaviour
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
 	private bool _isWin = false;
-    private GameObject _guiCam;
     private GameObject nextLevelButton;
     private int _levelOffset = 0;
 
@@ -128,22 +127,17 @@ public class GUIEndScreenCamera : MonoBehaviour
 	{
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
-        _guiCam = GameObject.Find("GUIEndSceneCamera");
         _realGUIList = GameObject.Find("GUI List");
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
 
-     /*   foreach(GameObject _guiObject in _guiList)
+        foreach(GameObject _guiObject in _guiList)
         {
             if(_guiObject.name == "GUIButtons")
             {
                 nextLevelButton = _guiObject.transform.FindChild("NextLevelButton").gameObject;
-                if(Application.loadedLevel == 7)
-                {
-                    nextLevelButton.SetActive(false);
-                }
             }
-        };*/
+        };
 
         _scaleMultiplierX = Screen.width / 1920f;
         _scaleMultiplierY = Screen.height / 1200f;
@@ -234,7 +228,36 @@ public class GUIEndScreenCamera : MonoBehaviour
                         else
                         {
                             GestureManager.OnTap -= CheckCollision;
-                            LoadingScreen.Load(Application.loadedLevel+1);
+
+                            string correspondingLevelName = null;
+                            int indexOfNextLevel = Application.loadedLevel+1;
+                            switch (indexOfNextLevel) {
+                                case 2:
+                                    correspondingLevelName = "Stage1Cinematics";
+                                    break;
+                                case 3:
+                                    correspondingLevelName = "Tutorial2";
+                                    break;
+                                case 4:
+                                    correspondingLevelName = "Tutorial3";
+                                    break;
+                                case 5:
+                                    correspondingLevelName = "Tutorial4";
+                                    break;
+                                case 6:
+                                    correspondingLevelName = "Tutorial5";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            if(correspondingLevelName == null)
+                            {
+                                LoadingScreen.Load(indexOfNextLevel, true);
+                            }
+                            else
+                            {
+                                LoadingScreen.Load(correspondingLevelName, true);
+                            }
                         }
 					}
                 }
@@ -253,8 +276,10 @@ public class GUIEndScreenCamera : MonoBehaviour
 	
 	private void DisplayEndScreenWin(int score)
 	{
-            SoundManager.FadeAllSources();
             SoundManager.Effect_InGame_Win();
+            SoundManager.StopAllSoundEffects();
+            SoundManager.FadeAllMusic();
+
 
 		    GetCurrentLevel();
             //Unlocking the next level!
@@ -264,7 +289,6 @@ public class GUIEndScreenCamera : MonoBehaviour
                 highScores[_currentLevel+1] = 0;
                 SaveGame.SavePlayerData(0,0,highScores);
             }
-		    _guiCam.camera.enabled = false;
 		    EnableGUICamera();
 		    EnableGUIElementAll();
 		    GestureManager.OnTap += CheckCollision;
@@ -276,12 +300,12 @@ public class GUIEndScreenCamera : MonoBehaviour
 
     private void DisplayEndScreenLoose()
     {
-        SoundManager.FadeAllSources();
         SoundManager.Effect_InGame_Lose();
+        SoundManager.StopAllSoundEffects();
+        SoundManager.FadeAllMusic();
 
         GetCurrentLevel();
         //Camera.main.enabled = false;
-        _guiCam.camera.enabled = false;
         EnableGUICamera();
         EnableGUIElementAll();
         GestureManager.OnTap += CheckCollision;

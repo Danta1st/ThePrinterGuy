@@ -24,6 +24,9 @@ public class GUIGameCamera : MonoBehaviour
     [SerializeField] private float _DialogueWindowOutDuration = 1;
     [SerializeField] private iTween.EaseType _easeTypeDialogueWindowOut;
 	[SerializeField] private float _secondsUntilEndScreen = 1.5f;
+	[SerializeField] private iTween.EaseType _easeTypeTextMove;
+	[SerializeField] private iTween.EaseType _easeTypeTextPunch;
+	[SerializeField] private TextPositionalOffset _offsetValues;
     #endregion
 
     #region Private Variables
@@ -285,6 +288,22 @@ public class GUIGameCamera : MonoBehaviour
 			// Writes "SpeechBubbleExample" from the LocalizationText.xml
 			EnableGUIElement("SpeechBubble");
 			_guiSpeechTextScript.WriteText("SpeechBubbleExample");
+		} 
+		if(Input.GetKeyDown(KeyCode.Y))
+		{
+			PopupTextBig("PERFECT!");
+		}
+		if(Input.GetKeyDown(KeyCode.U))
+		{
+			PopupTextMedium("GREAT!");
+		}
+		if(Input.GetKeyDown(KeyCode.I))
+		{
+			PopupTextSmall("GOOD!");
+		}
+		if(Input.GetKeyDown(KeyCode.O))
+		{
+			PopupTextSmall("NOT BAD!");
 		}
 	#endif
     }
@@ -414,8 +433,9 @@ public class GUIGameCamera : MonoBehaviour
 	
 	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
 	{	
-		float _xPopupPos = Random.Range(0.35f,0.65f);
-		float _yPopupPos = Random.Range(0.35f,0.45f);
+		
+		float _xPopupPos = Random.Range(_offsetValues.startX,_offsetValues.endX);
+		float _yPopupPos = Random.Range(_offsetValues.startY,_offsetValues.endY);
 		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 1.2f;
@@ -438,14 +458,14 @@ public class GUIGameCamera : MonoBehaviour
 		_particleSystems[0].particleSystem.startColor = _trailColor;
 		_particleSystems[1].particleSystem.startColor = _circleColor;
 		
-		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
-			_fadeInDuration + _fadeOutDuration);
+		iTween.MoveTo(_popupTextObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			"time", (_fadeInDuration + _fadeOutDuration), "easetype", _easeTypeTextMove));
 		
-		iTween.MoveTo(_popupObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
-			_fadeInDuration + _fadeOutDuration);
+		iTween.MoveTo(_popupObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			"time", (_fadeInDuration + _fadeOutDuration), "easetype", _easeTypeTextMove));
 		
-		iTween.PunchScale(_popupTextObject, new Vector3(_punchAmmount,_punchAmmount,0f), 
-			_fadeOutDuration);
+		iTween.PunchScale(_popupTextObject, iTween.Hash("amount", new Vector3(_punchAmmount,_punchAmmount,0f), 
+			"time", _fadeOutDuration, "easetype", _easeTypeTextPunch));
 		
 		iTween.FadeFrom(_popupTextObject, 0f, _fadeInDuration);
 		yield return new WaitForSeconds(_fadeInDuration);
@@ -538,6 +558,8 @@ public class GUIGameCamera : MonoBehaviour
                     {
 						Settings();
                     }
+
+                    SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }
@@ -561,6 +583,7 @@ public class GUIGameCamera : MonoBehaviour
 						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
         Time.timeScale = 0.0f;
         AudioListener.pause = true;
+        SoundManager.StoreVolumes();
     }
 
     private void CloseIngameMenu()
@@ -599,6 +622,8 @@ public class GUIGameCamera : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
+
 
         LoadGUIState();
 
@@ -629,6 +654,7 @@ public class GUIGameCamera : MonoBehaviour
 		//TODO: Need confirmation before restart.
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(Application.loadedLevel, true);
     }
 	
@@ -637,6 +663,7 @@ public class GUIGameCamera : MonoBehaviour
     {
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(ConstantValues.GetStartScene);
     }
 	
@@ -823,4 +850,13 @@ public class GUIGameCamera : MonoBehaviour
         _currentTaskType = "Barometers";
     }
     #endregion
+}
+
+[System.Serializable]
+public class TextPositionalOffset
+{
+	public float startX = 0.35f;
+	public float endX = 0.65f;
+	public float startY = 0.35f;
+	public float endY = 0.45f;
 }

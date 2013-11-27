@@ -30,6 +30,7 @@ public class GenericSoundScript : MonoBehaviour
     private float _volumeMAX = 1.0f;
     #endregion
 
+    #region MonoBehavior
     void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -39,6 +40,7 @@ public class GenericSoundScript : MonoBehaviour
     {
         _audioSource.clip = _audioClips[0];
     }
+    #endregion
 
     #region Set Clip
     public void AssignClip()
@@ -260,6 +262,12 @@ public class GenericSoundScript : MonoBehaviour
     {
         iTween.AudioTo(gameObject, iTween.Hash("audiosource", gameObject.audio, "volume", newVolume,
             "time", fadeTime, "easetype", iTween.EaseType.linear));
+            //, "oncomplete", "Pause", "oncompletetarget", gameObject));
+    }
+
+    public void Pause()
+    {
+        //Debug.Log("DONNNEEE + " + Time.time);
     }
     #endregion
 }

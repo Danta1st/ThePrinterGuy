@@ -9,8 +9,8 @@ public class Ink : MonoBehaviour
 	[SerializeField] private ParticleSystem _particleSystemStars;
 	[SerializeField] private ParticleSystem _particleSystemSmoke;
 	[SerializeField] private ParticleSystem _particleSystemExplosion;
-    [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
-    [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
+    [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutBack;
+    [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeInExpo;
 
     #endregion
 	
