@@ -1288,7 +1288,7 @@ GameObject:
   - 4: {fileID: 400168}
   - 33: {fileID: 3300028}
   - 23: {fileID: 2300056}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BoxStartBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2753,7 +2753,7 @@ GameObject:
   - 4: {fileID: 400358}
   - 33: {fileID: 3300064}
   - 23: {fileID: 2300074}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BoxStartFront
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3640,8 +3640,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100148}
   m_LocalRotation: {x: 0, y: 0, z: .707106829, w: -.707106829}
-  m_LocalPosition: {x: -35, y: 50, z: 10}
-  m_LocalScale: {x: 1080, y: 950, z: 1}
+  m_LocalPosition: {x: 44.6001015, y: -3.01323962, z: 10}
+  m_LocalScale: {x: 917.505615, y: 703, z: 1}
   m_Children: []
   m_Father: {fileID: 400068}
 --- !u!4 &400150
@@ -3744,9 +3744,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100168}
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: 890, y: 460, z: 10}
-  m_LocalScale: {x: 200.000137, y: 300.000214, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 835.319214, y: 460, z: 10}
+  m_LocalScale: {x: 286.799988, y: 300, z: 1}
   m_Children: []
   m_Father: {fileID: 400254}
 --- !u!4 &400170
@@ -4487,7 +4487,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100292}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 43.9999428, y: 530, z: 3}
+  m_LocalPosition: {x: 43.999958, y: 399.097656, z: 3}
   m_LocalScale: {x: 120, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 400068}
@@ -4879,8 +4879,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100358}
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: 890, y: 460, z: 1}
-  m_LocalScale: {x: 200.000046, y: 300.000061, z: 1}
+  m_LocalPosition: {x: 835.319214, y: 460, z: 1}
+  m_LocalScale: {x: 286.799988, y: 300, z: 1}
   m_Children: []
   m_Father: {fileID: 400254}
 --- !u!20 &2000000
@@ -5656,7 +5656,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100168}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!33 &3300030
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -6238,10 +6238,6 @@ MonoBehaviour:
   _paperPrefab: {fileID: 100000, guid: 1b994fe32a117b6488d696045eb4bebd, type: 2}
   _uraniumRodPrefab: {fileID: 100000, guid: eb1da3e75dd519c47900b9c89dc087f6, type: 2}
   _barometerPrefab: {fileID: 100000, guid: 729fe1e5d0891e04e9809430ecbb4c93, type: 2}
-  _DialogueWindowInDuration: 2
-  _easeTypeDialogueWindowIn: 24
-  _DialogueWindowOutDuration: 2
-  _easeTypeDialogueWindowOut: 27
   _secondsUntilEndScreen: 1.5
   _easeTypeTextMove: 21
   _easeTypeTextPunch: 21
@@ -6250,6 +6246,13 @@ MonoBehaviour:
     endX: .649999976
     startY: .349999994
     endY: .449999988
+  LevelPlayTexture: {fileID: 2800000, guid: 657957243df4ab54ab8f8be434e06cc2, type: 3}
+  LevelPlayPressedTexture: {fileID: 2800000, guid: c9fb5c0c0b2111c4ab04207dff194a0f,
+    type: 3}
+  LevelReplayPressedTexture: {fileID: 2800000, guid: 5a046818f13f1ff41bed9e8f970f96fc,
+    type: 3}
+  LevelQuitPressedTexture: {fileID: 2800000, guid: 20e026b3bce89e441962546114412f77,
+    type: 3}
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1
