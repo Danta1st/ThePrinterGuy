@@ -197,7 +197,7 @@ public class Ink : MonoBehaviour
 	
 	#region Insertable Ink
 	
-	//FIXME: remake to instantiate new ink instead of moving current
+	//POLISH: Remake to instantiate new ink instead of moving current
 	private void InsertCartridge(GameObject go)
 	{
 		if(go == null || !_canSlide)
@@ -227,13 +227,7 @@ public class Ink : MonoBehaviour
 		//Succesfull swipe
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
-			_canSlide = false;
-			
-			//Broadcast task done
-	        if(OnCorrectInkInserted != null)
-	        {
-	            OnCorrectInkInserted();
-	        }
+			_canSlide = false;			
 			
 			//Move the ink
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathSucc, 
@@ -243,7 +237,6 @@ public class Ink : MonoBehaviour
 		//Failed swipe
 		else
 		{
-
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathFail, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
 							"oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
@@ -269,10 +262,17 @@ public class Ink : MonoBehaviour
 			_particleSmoke.particleSystem.Stop();		
 
         InkReset();
+		
+			//Broadcast task done
+	        if(OnCorrectInkInserted != null)
+	        {
+	            OnCorrectInkInserted();
+	        }
 
-        icc.insertableCartridge.position = icc.insertableStartPos;
-        _canSlide = true;
+        icc.insertableCartridge.transform.position = icc.insertableStartPos;
 		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
+		
+        _canSlide = true;
 	}	
 	
 	private void InkFailed(InkCartridgeClass icc)
@@ -280,7 +280,7 @@ public class Ink : MonoBehaviour
 		//Instantiate fail particles
 		InstantiateParticles(_particles.failed, icc.cartridge.gameObject);
 		//Play sound
-        SoundManager.Effect_Ink_WrongSlot();		
+        SoundManager.Effect_Ink_WrongSlot();	
 		
 		icc.insertableCartridge.transform.position = icc.insertableStartPos;
 		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
@@ -315,7 +315,7 @@ public class Ink : MonoBehaviour
 	}
 	
 	private void StartInkTask(int itemNumber)
-	{
+	{		
 		//Subscribe to gesture
 		GestureManager.OnSwipeRight += InsertCartridge;
 		
@@ -392,7 +392,6 @@ public class Ink : MonoBehaviour
 					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
 					//Child to DynamicObjects
 					tempParticles.transform.parent = _dynamicObjects.transform;
-					Debug.Log(gameObject.name+" instantiating particles");
 					return;
 				}				
 			}
@@ -400,7 +399,6 @@ public class Ink : MonoBehaviour
 			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
 			//Child to DynamicObjects
 			tempParticles1.transform.parent = _dynamicObjects.transform;
-			Debug.Log(gameObject.name+" instantiating particles");
 		}
 	}
 	#endregion
