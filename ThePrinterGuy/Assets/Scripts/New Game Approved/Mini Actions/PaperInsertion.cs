@@ -221,6 +221,7 @@ public class PaperInsertion : MonoBehaviour
 	            _paperlightset[i].paper.SetActive(false);
 				_paperlightset[i].paperToSlide.SetActive(false);
 	        }
+            _isPaperEnabled = false;
 		}
     }
 
@@ -237,6 +238,7 @@ public class PaperInsertion : MonoBehaviour
 	            _paperlightset[i].paper.SetActive(true);
 				_paperlightset[i].paperToSlide.SetActive(true);
 	        }
+            _isPaperEnabled = true;
 		}
     }
 	
