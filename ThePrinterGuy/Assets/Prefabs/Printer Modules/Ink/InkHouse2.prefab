@@ -11,7 +11,7 @@ GameObject:
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
   - 135: {fileID: 13500002}
-  - 114: {fileID: 11400006}
+  - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: InsertableInk0
   m_TagString: Untagged
@@ -171,21 +171,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &100022
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400022}
-  m_Layer: 0
-  m_Name: InkFocusPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &100024
 GameObject:
   m_ObjectHideFlags: 1
@@ -316,7 +301,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 400022}
   - {fileID: 400002}
   - {fileID: 400004}
   - {fileID: 400016}
@@ -338,17 +322,6 @@ Transform:
   m_Children:
   - {fileID: 400018}
   m_Father: {fileID: 0}
---- !u!4 &400022
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100022}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: -1}
-  m_LocalPosition: {x: -2.23862982, y: 2.37157011, z: 7.44517517}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400018}
 --- !u!4 &400024
 Transform:
   m_ObjectHideFlags: 1
@@ -571,6 +544,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100016}
   m_Mesh: {fileID: 4300006, guid: e4688803b1696a2468c5a72e701aeb08, type: 3}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b689685585f0c04894df72a317740d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _floatAmount: {x: .200000003, y: .200000003, z: .200000003}
+  _speedFloat: .100000001
+  _easeTypeFloat: 21
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -626,21 +613,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b689685585f0c04894df72a317740d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _floatAmount: {x: 0, y: .200000003, z: 0}
-  _speedFloat: .100000001
-  _easeTypeFloat: 21
---- !u!114 &11400006
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b689685585f0c04894df72a317740d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _floatAmount: {x: 0, y: .200000003, z: 0}
+  _floatAmount: {x: .200000003, y: .200000003, z: .200000003}
   _speedFloat: .100000001
   _easeTypeFloat: 21
 --- !u!135 &13500000

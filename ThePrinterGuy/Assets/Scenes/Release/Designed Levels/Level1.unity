@@ -3748,7 +3748,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 2074729126}
   m_Father: {fileID: 644654019}
 --- !u!23 &299425535
 Renderer:
@@ -4302,7 +4303,6 @@ Transform:
   - {fileID: 180473957}
   - {fileID: 939553483}
   - {fileID: 1083621932}
-  - {fileID: 2074729126}
   - {fileID: 377597930}
   - {fileID: 557310528}
   - {fileID: 681624626}
@@ -4341,12 +4341,11 @@ MonoBehaviour:
     paper: {fileID: 1607729002}
     isOn: 0
     paperToSlide: {fileID: 299425533}
-  _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
-    type: 2}
-  _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
-    type: 2}
-  _particleSystemIncinerate: {fileID: 19800000, guid: f4f349063707fd24287add0a2c86bfe2,
-    type: 2}
+  _particles:
+    complete: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    failed: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    enablePaper: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    disablePaper: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
 --- !u!1 &355948111
 GameObject:
   m_ObjectHideFlags: 0
@@ -6990,7 +6989,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 643623830}
-  - 95: {fileID: 643623831}
   m_Layer: 0
   m_Name: BoxDoorWindowProps
   m_TagString: Untagged
@@ -7012,19 +7010,6 @@ Transform:
   - {fileID: 1931076620}
   - {fileID: 1360803613}
   m_Father: {fileID: 324630582}
---- !u!95 &643623831
-Animator:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 9500000, guid: 5a3df8dd02873f640badd6df54deefcb,
-    type: 2}
-  m_PrefabInternal: {fileID: 971225205}
-  m_GameObject: {fileID: 643623829}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: a9158dd1b33cedd4c838e62a4e90dc46, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_ApplyRootMotion: 1
-  m_AnimatePhysics: 0
 --- !u!1 &644654018
 GameObject:
   m_ObjectHideFlags: 0
@@ -9160,10 +9145,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _transitionTime: 2
   _easeType: 21
-  _uraniumFocus: {fileID: 0}
-  _inkFocus: {fileID: 0}
-  _barometerFocus: {fileID: 0}
-  _paperFocus: {fileID: 2074729126}
+  _uraniumFocus: {fileID: 358180784}
+  _inkFocus: {fileID: 1052228600}
+  _barometerFocus: {fileID: 291220182}
+  _paperFocus: {fileID: 250430476}
   _overviewFocus: {fileID: 0}
 --- !u!114 &777208490
 MonoBehaviour:
@@ -11177,6 +11162,73 @@ Transform:
   m_Children:
   - {fileID: 97432921}
   m_Father: {fileID: 140676507}
+--- !u!1 &967776227
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100048, guid: 2c4b6b7d85ead9043ab047b32b4f8d04, type: 2}
+  m_PrefabInternal: {fileID: 1965531314}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 967776228}
+  - 96: {fileID: 967776229}
+  m_Layer: 0
+  m_Name: PaperTrailEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &967776228
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400048, guid: 2c4b6b7d85ead9043ab047b32b4f8d04, type: 2}
+  m_PrefabInternal: {fileID: 1965531314}
+  m_GameObject: {fileID: 967776227}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1727419464}
+--- !u!96 &967776229
+TrailRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 9600002, guid: 2c4b6b7d85ead9043ab047b32b4f8d04,
+    type: 2}
+  m_PrefabInternal: {fileID: 1965531314}
+  m_GameObject: {fileID: 967776227}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_Time: 5
+  m_StartWidth: 1
+  m_EndWidth: 1
+  m_Colors:
+    m_Color[0]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[1]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[2]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[3]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[4]:
+      serializedVersion: 2
+      rgba: 16777215
+  m_MinVertexDistance: .100000001
+  m_Autodestruct: 0
 --- !u!1001 &971225205
 Prefab:
   m_ObjectHideFlags: 0
@@ -16657,7 +16709,7 @@ Transform:
   m_PrefabInternal: {fileID: 971225205}
   m_GameObject: {fileID: 1543602914}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -37.9502754, y: 4.7788496, z: 7.71857834}
+  m_LocalPosition: {x: -37.9502754, y: -8.08827591, z: 18.9255772}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2087867674}
@@ -16839,7 +16891,7 @@ Transform:
   m_PrefabInternal: {fileID: 971225205}
   m_GameObject: {fileID: 1563912739}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -43.0561905, y: 2.00997639, z: 7.19385529}
+  m_LocalPosition: {x: -43.0561905, y: -7.83426285, z: -8.88201141}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2087867674}
@@ -18398,7 +18450,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 967776228}
   m_Father: {fileID: 941421436}
 --- !u!23 &1727419465
 Renderer:
@@ -21320,8 +21373,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 2074729126}
+  - 96: {fileID: 2074729127}
   m_Layer: 0
-  m_Name: PaperFocusPoint
+  m_Name: PaperTrailEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21334,10 +21388,50 @@ Transform:
   m_PrefabInternal: {fileID: 1965531314}
   m_GameObject: {fileID: 2074729125}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.97293305, y: 3.89368486, z: .685556889}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 343580936}
+  m_Father: {fileID: 299425534}
+--- !u!96 &2074729127
+TrailRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 9600000, guid: 2c4b6b7d85ead9043ab047b32b4f8d04,
+    type: 2}
+  m_PrefabInternal: {fileID: 1965531314}
+  m_GameObject: {fileID: 2074729125}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_Time: 5
+  m_StartWidth: 1
+  m_EndWidth: 1
+  m_Colors:
+    m_Color[0]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[1]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[2]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[3]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[4]:
+      serializedVersion: 2
+      rgba: 16777215
+  m_MinVertexDistance: .100000001
+  m_Autodestruct: 0
 --- !u!1 &2080618694
 GameObject:
   m_ObjectHideFlags: 0
