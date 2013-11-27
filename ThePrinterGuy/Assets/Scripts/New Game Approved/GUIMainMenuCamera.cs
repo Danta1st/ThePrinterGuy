@@ -430,4 +430,6 @@ public class ButtonTextures
 	public Texture OptionsButtonPressed;
 	public Texture CreditsButton;
 	public Texture CreditsButtonPressed;
+	public Texture BackToLevelSelecButton;
+	public Texture BackToLevelSelecButtonPressed;
 }
