@@ -131,17 +131,13 @@ public class GUIEndScreenCamera : MonoBehaviour
         _guiCamera = GameObject.Find("GUIEndSceneCamera").camera;
         transform.position = _guiCamera.transform.position;
 
-     /*   foreach(GameObject _guiObject in _guiList)
+        foreach(GameObject _guiObject in _guiList)
         {
             if(_guiObject.name == "GUIButtons")
             {
                 nextLevelButton = _guiObject.transform.FindChild("NextLevelButton").gameObject;
-                if(Application.loadedLevel == 7)
-                {
-                    nextLevelButton.SetActive(false);
-                }
             }
-        };*/
+        };
 
         _scaleMultiplierX = Screen.width / 1920f;
         _scaleMultiplierY = Screen.height / 1200f;
@@ -256,7 +252,7 @@ public class GUIEndScreenCamera : MonoBehaviour
                             }
                             if(correspondingLevelName == null)
                             {
-                                LoadingScreen.Load(indexOfNextLevel+1, true);
+                                LoadingScreen.Load(indexOfNextLevel, true);
                             }
                             else
                             {
