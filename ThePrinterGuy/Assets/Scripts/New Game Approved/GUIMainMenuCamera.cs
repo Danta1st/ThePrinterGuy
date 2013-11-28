@@ -425,7 +425,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         DisableGUIElementAll();
         EnableGUIElement("OptionsButton");
-        EnableGUIElement("CreditsButton");
+        //EnableGUIElement("CreditsButton");
     }
 
     private void SwitchToMainMenu()
@@ -444,7 +444,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 			_isOnStartScreen = false;
 			
         	EnableGUIElement("OptionsButton");
-        	EnableGUIElement("CreditsButton");
+        	//EnableGUIElement("CreditsButton");
 			
 
 	        List<GameObject> stageChars = lvlManager.GetStageCharacters();
