@@ -136,11 +136,20 @@ public class GUIMainMenuCamera : MonoBehaviour
     }
     #endregion
 
+    void Awake()
+    {
+        GameObject thisSoundRelay = GameObject.FindGameObjectWithTag("AudioRelay");
+
+        if(thisSoundRelay == null)
+        {
+            Instantiate(Resources.Load("Prefabs/SoundRelay"));
+        }
+    }
+
     #region Start and Update
     // Use this for initialization
     void Start()
     {
-        SoundManager.Music_Menu_Main();
         _danishCheck.renderer.enabled = false;
         _englishCheck.renderer.enabled = false;
         _soundCheck.renderer.enabled = false;
@@ -234,14 +243,14 @@ public class GUIMainMenuCamera : MonoBehaviour
 				_optionsButton = _guiObject;
                 _guiObject.SetActive(false);
             }
-
-
         }
         //--------------------------------------------------//
 
         EnableGUICamera();
         SwitchToMainMenu();
 		UpdateText();
+
+        SoundManager.Music_Menu_Main();
     }
     #endregion
 

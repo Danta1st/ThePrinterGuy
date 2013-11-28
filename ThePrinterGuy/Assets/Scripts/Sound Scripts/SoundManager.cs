@@ -41,6 +41,7 @@ public class SoundManager : MonoBehaviour
 
         if(_audioRelay != null && _audioRelay != gameObject)
         {
+            Debug.Log("DELETING NEW SOUND SOURCE");
             Destroy(gameObject);
         }
 
@@ -96,6 +97,7 @@ public class SoundManager : MonoBehaviour
         if(Application.isLoadingLevel)
         {
             StopAllSoundSources();
+            FadeAllSourcesUp();
         }
     }
     #endregion
