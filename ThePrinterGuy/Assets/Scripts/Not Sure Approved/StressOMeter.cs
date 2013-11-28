@@ -99,7 +99,7 @@ public class StressOMeter : MonoBehaviour
 
 //        PathManager.OnCamPosChangedBeginAction += GiveNewPanLevel;
 
-        ActionSequencerItem.OnFailed += ReductPointsFailed;
+        BpmSequencerItem.OnFailed += ReductPointsFailed;
     }
 
     void OnDisable()
@@ -111,7 +111,7 @@ public class StressOMeter : MonoBehaviour
 
 //        PathManager.OnCamPosChangedBeginAction -= GiveNewPanLevel;
 
-        ActionSequencerItem.OnFailed -= ReductPointsFailed;
+        BpmSequencerItem.OnFailed -= ReductPointsFailed;
     }
     #endregion
 

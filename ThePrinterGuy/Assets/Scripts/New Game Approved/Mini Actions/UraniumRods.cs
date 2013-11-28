@@ -30,17 +30,17 @@ public class UraniumRods : MonoBehaviour
     void OnEnable()
     {
 		BpmSequencer.OnUraniumRodNode += TriggerSpring;
-		ActionSequencerItem.OnFailed += Reset;
+		BpmSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
 		BpmSequencer.OnUraniumRodNode -= TriggerSpring;
-		ActionSequencerItem.OnFailed -= Reset;
+		BpmSequencerItem.OnFailed -= Reset;
     }	
 	void OnDestroy()
 	{
 		BpmSequencer.OnUraniumRodNode -= TriggerSpring;
-		ActionSequencerItem.OnFailed -= Reset;		
+		BpmSequencerItem.OnFailed -= Reset;		
 	}
 
     void Awake()
@@ -88,7 +88,8 @@ public class UraniumRods : MonoBehaviour
 		var go = _rods[itemNumber].rod;
 		//if(_rodsAndStates[go] == false) //QUICKFIX: Enables ability to choose same rod several times in a row
         //{
-            Spring(go, itemNumber);
+		
+            StartCoroutine(Spring(go, itemNumber));
 
             _rodsAndStates[go] = true;
 		
@@ -125,12 +126,15 @@ public class UraniumRods : MonoBehaviour
         }*/
     }
 
-    private void Spring(GameObject go, int identifier)
+    private IEnumerator Spring(GameObject go, int identifier)
     {
 		//Play sound
 		SoundManager.Effect_UraniumRods_Hammer();
 		//Move rod
-        iTween.MoveTo(go, iTween.Hash("position", _rods[identifier].rodMoveTo.transform.position, "time", _outTime,
+		if(iTween.Count (go) > 0)
+			yield return new WaitForSeconds(_inTime);
+        
+		iTween.MoveTo(go, iTween.Hash("position", _rods[identifier].rodMoveTo.transform.position, "time", _outTime,
                                         "easetype", _easeTypeOut));
     }
 
@@ -231,17 +235,20 @@ public class UraniumRods : MonoBehaviour
 	//Method for instantiating particles
 	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
 	{
-		foreach(Transform child in posRotGO.transform)
+		if(particles != null)
 		{
-			if(child.name.Equals("ParticlePos") && particles != null)
+			foreach(Transform child in posRotGO.transform)
 			{
-				//Instantiate Particle prefab. Rotation solution is a HACK
-				GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.FromToRotation(particles.transform.up, -child.up));
-				//Child to DynamicObjects
-				tempParticles.transform.parent = _dynamicObjects.transform;
-				Debug.Log(gameObject.name+" instantiating particles");
-			}
-		}		
+				if(child.name.Equals("ParticlePos") && particles != null)
+				{
+					//Instantiate Particle prefab. Rotation solution is a HACK
+					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.FromToRotation(particles.transform.up, -child.up));
+					//Child to DynamicObjects
+					tempParticles.transform.parent = _dynamicObjects.transform;
+					Debug.Log(gameObject.name+" instantiating particles");
+				}
+			}	
+		}
 	}
     #endregion
 	

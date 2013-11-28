@@ -50,7 +50,7 @@ public class PaperInsertion : MonoBehaviour
 		StartGate();		
 		BpmSequencer.OnPaperNode += TriggerLight;
 		BpmSequencer.OnPaperNode += EnablePaper;
-		ActionSequencerItem.OnFailed += Reset;
+		BpmSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
@@ -58,16 +58,15 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
         GestureManager.OnTap -= TriggerSlide;
-		ActionSequencerItem.OnFailed -= Reset;
-    }
-	
+		BpmSequencerItem.OnFailed -= Reset;
+    }	
 	void OnDestroy()
 	{
 		StopGate();
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
-		ActionSequencerItem.OnFailed -= Reset;
 		GestureManager.OnTap -= TriggerSlide;
+		BpmSequencerItem.OnFailed -= Reset;
 	}
 
     #region Monobehaviour Functions
@@ -213,6 +212,7 @@ public class PaperInsertion : MonoBehaviour
     {
 		if(_isPaperEnabled)
 		{
+			GestureManager.OnTap -= TriggerSlide;
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 				//Spawn particles
@@ -221,6 +221,7 @@ public class PaperInsertion : MonoBehaviour
 	            _paperlightset[i].paper.SetActive(false);
 				_paperlightset[i].paperToSlide.SetActive(false);
 	        }
+            _isPaperEnabled = false;
 		}
     }
 
@@ -237,6 +238,7 @@ public class PaperInsertion : MonoBehaviour
 	            _paperlightset[i].paper.SetActive(true);
 				_paperlightset[i].paperToSlide.SetActive(true);
 	        }
+            _isPaperEnabled = true;
 		}
     }
 	
@@ -296,8 +298,8 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				
 				//Enable Paper Trail or throw warning
-				if(paper.GetComponent<TrailRenderer>() != null)
-					paper.GetComponent<TrailRenderer>().enabled = true;
+				if(paper.GetComponentInChildren<TrailRenderer>() != null)
+					paper.GetComponentInChildren<TrailRenderer>().enabled = true;
 				else
 					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");				
 				
@@ -370,9 +372,7 @@ public class PaperInsertion : MonoBehaviour
 	
 	//-----------
 	public void Reset()
-	{		
-		//GestureManager.OnSwipeUp -= TriggerSlide;
-		GestureManager.OnTap -= TriggerSlide;
+	{
 		DisablePaper();
 		TurnOfAllLights();
 	}
@@ -405,23 +405,26 @@ public class PaperInsertion : MonoBehaviour
 	//Method for instantiating particles
 	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
 	{
-		foreach(Transform child in posRotGO.transform)
+		if(particles != null)
 		{
-			if(child.name.Equals("ParticlePos") && particles != null)
+			foreach(Transform child in posRotGO.transform)
 			{
-				//Instantiate Particle prefab. Rotation solution is a HACK
-				GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
-				//Child to DynamicObjects
-				tempParticles.transform.parent = _dynamicObjects.transform;
-				Debug.Log(gameObject.name+" instantiating particles");
-				return;
-			}				
+				if(child.name.Equals("ParticlePos") && particles != null)
+				{
+					//Instantiate Particle prefab. Rotation solution is a HACK
+					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+					//Child to DynamicObjects
+					tempParticles.transform.parent = _dynamicObjects.transform;
+					Debug.Log(gameObject.name+" instantiating particles");
+					return;
+				}				
+			}
+			//Instantiate Particle prefab. Rotation solution is a HACK
+			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+			//Child to DynamicObjects
+			tempParticles1.transform.parent = _dynamicObjects.transform;
+			Debug.Log(gameObject.name+" instantiating particles");
 		}
-		//Instantiate Particle prefab. Rotation solution is a HACK
-		GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
-		//Child to DynamicObjects
-		tempParticles1.transform.parent = _dynamicObjects.transform;
-		Debug.Log(gameObject.name+" instantiating particles");
 	}
 	#endregion
 
