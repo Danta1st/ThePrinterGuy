@@ -14,10 +14,6 @@ public class BpmSequencerItem : MonoBehaviour {
     //Prepare for hack!
     private Transform _spawnZonePosition;
     private Transform _deadZonePosition;
-    private Vector3 _bufferZonePosition;
-    private Vector3 _greenZonePosition;
-    private Vector3 _yellowZonePosition;
-    private Vector3 _redZonePosition;
     //---------------------//
     
 	//Adjusts the lenght and thereby distance of icons on the sequencer bar
@@ -282,6 +278,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                KillTask();
 			}		
 			break;
 		case "Ink":
@@ -313,6 +310,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                KillTask();
 			}	
 			break;
 		case "UraniumRod":
@@ -344,6 +342,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                KillTask();
 			}	
 			break;
 		case "Barometer":
@@ -374,7 +373,8 @@ public class BpmSequencerItem : MonoBehaviour {
 	
 	private void KillTask()
 	{
-		
+		//TODO: implement kill particle task
+        Destroy(gameObject);
 	}
 	
 	//Method for instantiating particles
@@ -457,6 +457,7 @@ public class BpmSequencerItem : MonoBehaviour {
     [System.Serializable]
     public class Particles
     {
-        public GameObject death;
+		public GameObject completed;
+        public GameObject failed;
     };
 }
