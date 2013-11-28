@@ -30,17 +30,17 @@ public class UraniumRods : MonoBehaviour
     void OnEnable()
     {
 		BpmSequencer.OnUraniumRodNode += TriggerSpring;
-		ActionSequencerItem.OnFailed += Reset;
+		BpmSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
 		BpmSequencer.OnUraniumRodNode -= TriggerSpring;
-		ActionSequencerItem.OnFailed -= Reset;
+		BpmSequencerItem.OnFailed -= Reset;
     }	
 	void OnDestroy()
 	{
 		BpmSequencer.OnUraniumRodNode -= TriggerSpring;
-		ActionSequencerItem.OnFailed -= Reset;		
+		BpmSequencerItem.OnFailed -= Reset;		
 	}
 
     void Awake()

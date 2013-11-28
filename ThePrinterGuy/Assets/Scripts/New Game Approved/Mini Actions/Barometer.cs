@@ -29,14 +29,14 @@ public class Barometer : MonoBehaviour
     void OnEnable()
     {
 //		ActionSequencerManager.OnBarometerNode += TriggerBreakBarometer;
-		ActionSequencerItem.OnFailed += Reset;
+		BpmSequencerItem.OnFailed += Reset;
 		
 		BpmSequencer.OnBarometerNode += TriggerBreakBarometer;
     }
     void OnDisable()
     {
 //		ActionSequencerManager.OnBarometerNode -= TriggerBreakBarometer;
-		ActionSequencerItem.OnFailed -= Reset;
+		BpmSequencerItem.OnFailed -= Reset;
 		
 		BpmSequencer.OnBarometerNode -= TriggerBreakBarometer;
     }
