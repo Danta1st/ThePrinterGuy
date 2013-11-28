@@ -75,17 +75,23 @@ public class Dialogue : MonoBehaviour {
         _characterAnimation.CrossFade(angryTuple[0]);
         PlaySound(angryTuple[1]);
         _localizationKey = angryTuple[2];
+		
         if(OnDialogueStart != null){
             OnDialogueStart(_localizationKey);
         }
+		
         iTween.ColorFrom(Camera.main.gameObject, Color.red, 2f);
+		
         _oldColor = Camera.main.backgroundColor;
+		
         iTween.ValueTo(gameObject, iTween.Hash("from", _oldColor, "to", _alertColor, "time", 0.1f, "onupdate", "changeSkyboxValue"));
         iTween.ValueTo(gameObject, iTween.Hash("from", _alertColor, "to", _oldColor, "time", 0.1f, "onupdate", "changeSkyboxValue", "delay", 0.1f));
-        if(!_cameraMovement)
+        
+		if(!_cameraMovement)
         {
             iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f,0.5f,0.5f), "time", 0.2f));
         }
+		
         _characterAnimation.CrossFadeQueued("Idle");
         StartCoroutine(CheckIfAnimationStopped(angryTuple[0]));
     }

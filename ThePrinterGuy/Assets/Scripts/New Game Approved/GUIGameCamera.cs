@@ -709,21 +709,29 @@ public class GUIGameCamera : MonoBehaviour
             _queuedObject = _sequencerObjectQueue.Peek();
 
             Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
-            ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
-            _zone = _actionSequencerItemScript.GetZoneStatus();
+			BpmSequencerItem _bpmSequencerItem = _queuedObject.GetComponent<BpmSequencerItem>();
+            //ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
+            _zone = _bpmSequencerItem.GetZoneStatus();
+			
             if(OnTaskEnd != null)
                 OnTaskEnd(_currentTaskType, _zone);
-            EndZone(_queuedObject);
+			
+            EndZone(_queuedObject, true);
         }
     }
 
-    public void EndZone(GameObject _go)
+    public void EndZone(GameObject _go, bool shouldDestroy)
     {
+		_greenZoneScript.GreenOff();
+		
 		_sequencerObjectQueue.Dequeue();
         _sequencerObjectQueue.TrimExcess();
-        Destroy(_go);
+		
+		if(shouldDestroy)
+			Destroy(_go);
+		
         _queuedObject = null;
-		_greenZoneScript.GreenOff();
+		
         if(OnUpdateAction != null)
         {
             OnUpdateAction();
@@ -734,6 +742,11 @@ public class GUIGameCamera : MonoBehaviour
             StartCoroutine("ShowEndScreen");
         }
     }
+	
+	public void DestroyTask(GameObject go)
+	{
+		Destroy(go);
+	}
 
     public int GetZone()
     {
