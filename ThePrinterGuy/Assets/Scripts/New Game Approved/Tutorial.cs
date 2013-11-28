@@ -4,14 +4,24 @@ using System.Collections.Generic;
 
 public class Tutorial : MonoBehaviour {
 	
+	#region SerializeField
+	[SerializeField]
+    private LayerMask _layerMaskGUI;
     [SerializeField]
     private GameObject[] _guiList;
 	[SerializeField]
 	private Texture2D[] _tutorialEnglish;
 	[SerializeField]
 	private Texture2D[] _tutorialDanish;
+	#endregion
 	
 	#region Private Variables
+	private GameObject _nextObject;
+	private GameObject _previousObject;
+	
+	private RaycastHit _hit;
+	private bool _isGUI = true;
+    private bool _canTouch = true;
     private Camera _guiCamera;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
@@ -22,6 +32,18 @@ public class Tutorial : MonoBehaviour {
 	private int _index = 0;
 	
 	private bool _once = false;
+	#endregion
+	
+	#region Enable and Disable
+	void OnEnable()
+	{
+		GestureManager.OnTap += CheckCollision;
+	}
+	
+	void OnDisable()
+	{
+		GestureManager.OnTap -= CheckCollision;
+	}
 	#endregion
 	
 	// Use this for initialization
@@ -44,46 +66,55 @@ public class Tutorial : MonoBehaviour {
             {
 				_tutorialScreenObject = _guiObject;
             }
+            if(_guiObject.name == "NextButton")
+            {
+            	_nextObject = _guiObject;
+            }
+            if(_guiObject.name == "BackButton")
+            {
+            	_previousObject = _guiObject;
+            }
         }
         //--------------------------------------------------//
 		UpdateLanguage();
-		UpdateTutorial();
+		UpdatePage();
+		_previousObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetMouseButtonDown(0))
-		{
-			if(_tutorialScreenObject != null && _index < _tutorialList.Count)
-			{
-				UpdateTutorial();
-			}
-            else
-            {
-                string correspondingLevelName = null;
-                switch (Application.loadedLevelName) {
-                case "Tutorial1":
-                    correspondingLevelName = "Level1";
-                    break;
-                case "Tutorial2":
-                    correspondingLevelName = "Level2";
-                    break;
-                case "Tutorial3":
-                    correspondingLevelName = "Level3";
-                    break;
-                case "Tutorial4":
-                    correspondingLevelName = "Level4";
-                    break;
-                case "Tutorial5":
-                    correspondingLevelName = "Level5";
-                    break;
-                default:
-                    break;
-                }
-                LoadingScreen.Load(correspondingLevelName);
-            }
-		}
+
 	}
+	
+    private void CheckCollision(GameObject _go, Vector2 _screenPosition)
+    {
+		Ray _mainCamRay = Camera.main.ScreenPointToRay(_screenPosition);
+		
+        if(_isGUI && _canTouch)
+        {
+            Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
+
+            if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
+            {
+                //General GUI layer mask.
+                //-----------------------------------------------------------------------//
+                if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
+                {
+                    if(_hit.collider.gameObject.name == "NextButton")
+                    {
+						NextPage();
+						UpdatePage();
+                    }
+                    else if(_hit.collider.gameObject.name == "BackButton")
+                    {
+						PreviousPage();
+						UpdatePage();
+                    }
+                }
+                //-----------------------------------------------------------------------//
+            }
+        }
+    }
 	
     private void AdjustCameraSize()
     {
@@ -137,9 +168,53 @@ public class Tutorial : MonoBehaviour {
 		}
 	}
 	
-	private void UpdateTutorial()
+	private void UpdatePage()
 	{
 		_tutorialScreenObject.renderer.material.mainTexture = _tutorialList[_index];
+	}
+	
+	private void NextPage()
+	{
 		_index++;
+		
+		if(_index > _tutorialList.Count)
+		{
+            string correspondingLevelName = null;
+            switch (Application.loadedLevelName) {
+            case "Tutorial1":
+                correspondingLevelName = "Level1";
+                break;
+            case "Tutorial2":
+                correspondingLevelName = "Level2";
+                break;
+            case "Tutorial3":
+                correspondingLevelName = "Level3";
+                break;
+            case "Tutorial4":
+                correspondingLevelName = "Level4";
+                break;
+            case "Tutorial5":
+                correspondingLevelName = "Level5";
+                break;
+            default:
+                break;
+            }
+            LoadingScreen.Load(correspondingLevelName);
+		}
+		else
+		{
+			_previousObject.SetActive(true);
+		}
+	}
+	
+	private void PreviousPage()
+	{
+		_index--;
+		
+		if(_index <= 0)
+		{
+			_index = 0;
+			_previousObject.SetActive(false);
+		}
 	}
 }
