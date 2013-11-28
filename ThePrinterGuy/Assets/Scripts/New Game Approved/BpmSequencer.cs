@@ -348,27 +348,6 @@ public class BpmSequencer : MonoBehaviour {
 		}		
 	}	
 		
-	/*
-	private void SwitchDimmer()
-	{		
-		switch(_TaskSequences[_sequenceIndex].task.ToString())
-		{
-		case "Paper":
-			//Paper methods
-			break;
-		case "Ink":
-			//Ink Methods
-			break;
-		case "UraniumRod":
-			//Uranium Methods
-			break;
-		case "Barometer":
-			//Barometer Methods
-			break;
-		}
-	}
-	*/
-	
 	//Task Spawning Logic Hell!
 	private void SpawnTask()
 	{
