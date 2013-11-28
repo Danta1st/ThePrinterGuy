@@ -129,4 +129,9 @@ public class VoiceSounds : MonoBehaviour
     {
         _voiceBoss.PlayClip(20);
     }
+
+    public GenericSoundScript GetEffectScript()
+    {
+        return _voiceBoss;
+    }
 }
