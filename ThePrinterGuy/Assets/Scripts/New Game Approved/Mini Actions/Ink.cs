@@ -92,7 +92,7 @@ public class Ink : MonoBehaviour
 		StartGates();
 		
 		BpmSequencer.OnInkNode += StartInkTask;
-		ActionSequencerItem.OnFailed += InkReset;
+		BpmSequencerItem.OnFailed += InkReset;
 	}
 	
 	void OnDisable()
@@ -100,7 +100,7 @@ public class Ink : MonoBehaviour
 		StopGates();
 		
 		BpmSequencer.OnInkNode -= StartInkTask;
-		ActionSequencerItem.OnFailed -= InkReset;
+		BpmSequencerItem.OnFailed -= InkReset;
 	}
 	
 	void OnDestroy()
@@ -108,7 +108,7 @@ public class Ink : MonoBehaviour
 		StopGates();
 
 		BpmSequencer.OnInkNode -= StartInkTask;
-		ActionSequencerItem.OnFailed -= InkReset;
+		BpmSequencerItem.OnFailed -= InkReset;
 		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	

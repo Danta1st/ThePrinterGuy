@@ -43,13 +43,13 @@ public class InkController : MonoBehaviour
 	void OnEnable ()
 	{
 		BpmSequencer.OnInkNode += EnableInkTask;
-		ActionSequencerItem.OnFailed += DisableInkTask;
+		BpmSequencerItem.OnFailed += DisableInkTask;
 	}
 	
 	void OnDisable ()
 	{
 		BpmSequencer.OnInkNode -= EnableInkTask;
-		ActionSequencerItem.OnFailed -= DisableInkTask;
+		BpmSequencerItem.OnFailed -= DisableInkTask;
 	}
 	
 	

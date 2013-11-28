@@ -50,7 +50,7 @@ public class PaperInsertion : MonoBehaviour
 		StartGate();		
 		BpmSequencer.OnPaperNode += TriggerLight;
 		BpmSequencer.OnPaperNode += EnablePaper;
-		ActionSequencerItem.OnFailed += Reset;
+		BpmSequencerItem.OnFailed += Reset;
     }
     void OnDisable()
     {
@@ -58,7 +58,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
         GestureManager.OnTap -= TriggerSlide;
-		ActionSequencerItem.OnFailed -= Reset;
+		BpmSequencerItem.OnFailed -= Reset;
     }	
 	void OnDestroy()
 	{
@@ -66,7 +66,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		GestureManager.OnTap -= TriggerSlide;
-		ActionSequencerItem.OnFailed -= Reset;
+		BpmSequencerItem.OnFailed -= Reset;
 	}
 
     #region Monobehaviour Functions
