@@ -278,6 +278,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                KillTask();
 			}		
 			break;
 		case "Ink":
@@ -309,6 +310,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                KillTask();
 			}	
 			break;
 		case "UraniumRod":
@@ -340,6 +342,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                KillTask();
 			}	
 			break;
 		case "Barometer":
@@ -371,6 +374,7 @@ public class BpmSequencerItem : MonoBehaviour {
 	private void KillTask()
 	{
 		//TODO: implement kill particle task
+        Destroy(gameObject);
 	}
 	
 	//Method for instantiating particles
