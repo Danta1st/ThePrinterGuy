@@ -166,10 +166,10 @@ public class GUIMainMenuCamera : MonoBehaviour
             if(PlayerPrefs.GetString("Sound") == "On")
             {
                 _soundCheck.renderer.enabled = true;
-                Camera.main.audio.mute = false;
+//                Camera.main.audio.mute = false;
             }
-            else
-                 Camera.main.audio.mute = true;
+//            else
+//                 Camera.main.audio.mute = true;
         }
         else
         {
@@ -300,12 +300,14 @@ public class GUIMainMenuCamera : MonoBehaviour
                         {
                             _soundCheck.renderer.enabled = false;
                             PlayerPrefs.SetString("Sound", "Off");
+                            SoundManager.CheckAudioToogle();
                             //AudioListener.pause = true - does not seem to work! :(
                         }
                         else
                         {
                             _soundCheck.renderer.enabled = true;
                             PlayerPrefs.SetString("Sound", "On");
+                            SoundManager.CheckAudioToogle();
                         }
                     }
                     else if(_hit.collider.gameObject.name == "MusicButton")

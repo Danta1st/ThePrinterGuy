@@ -21,7 +21,7 @@ public class SoundManager : MonoBehaviour
     private static VoiceSounds _voiceSounds;
     private static MachineSounds _machineSounds;
 
-    private static GenericSoundScript[] _audioScripts;
+    private static GenericSoundScript[] _audioScripts = new GenericSoundScript[30];
     private static List<GenericSoundScript> _audioScriptList = new List<GenericSoundScript>();
 
     private static List<float> _audioVolume = new List<float>();
@@ -29,7 +29,7 @@ public class SoundManager : MonoBehaviour
     private static List<GenericSoundScript> _soundFxScripts = new List<GenericSoundScript>();
     private static List<GenericSoundScript> _musicScripts = new List<GenericSoundScript>();
 
-    private static GameObject _audioRelayList;
+    private static GameObject _audioRelay;
     #endregion
 
     #region MonoBehavior
@@ -37,14 +37,25 @@ public class SoundManager : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
 
-        _audioRelayList = GameObject.FindGameObjectWithTag("AudioRelay");
+        _audioRelay = GameObject.FindGameObjectWithTag("AudioRelay");
 
-        if(_audioRelayList != null && _audioRelayList != gameObject)
+        if(_audioRelay != null && _audioRelay != gameObject)
         {
             Destroy(gameObject);
         }
 
-        CheckAudioToogle();
+        if(PlayerPrefs.HasKey("Sound"))
+        {
+            if(PlayerPrefs.GetString("Sound") == "On")
+            {
+                _allSoundOn = false;
+            }
+
+            else if(PlayerPrefs.GetString("Sound") == "Off")
+            {
+                _allSoundOn = true;
+            }
+        }
 
         _inGameSounds = transform.FindChild("In Game").GetComponent<InGameSounds>();
         _mainMenuSounds = transform.FindChild("Main Menu").GetComponent<MainMenuSounds>();
@@ -76,6 +87,8 @@ public class SoundManager : MonoBehaviour
 
         _musicScripts.Add(_inGameSounds.GetMusicScript());
         _musicScripts.Add(_mainMenuSounds.GetMusicScript());
+
+        ToogleAudio();
     }
 
     void Update()
@@ -545,15 +558,15 @@ public class SoundManager : MonoBehaviour
 
     public static void CheckAudioToogle()
     {
-        if(PlayerPrefs.HasKey("SOUND ON"))
+        if(PlayerPrefs.HasKey("Sound"))
         {
-            if(PlayerPrefs.GetString("SOUND ON") == "SOUND ON")
+            if(PlayerPrefs.GetString("Sound") == "On")
             {
                 _allSoundOn = false;
                 ToogleAudio();
             }
 
-            else
+            else if(PlayerPrefs.GetString("Sound") == "Off")
             {
                 _allSoundOn = true;
                 ToogleAudio();
