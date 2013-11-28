@@ -99,6 +99,11 @@ public class PathManager : MonoBehaviour {
             MoveReversed("UraniumBarometer", _uraniumFocus);
         else if(_lookingAt == _inkFocus)
             MoveReversed("UraniumInk", _uraniumFocus);
+
+
+        SoundManager.PaperTray_LowerVolume();
+        SoundManager.Ink_LowerVolume();
+        SoundManager.UraniumRods_RaiseVolume();
     }
 
     private void TriggerMoveInk(int itemNumber)
@@ -111,6 +116,10 @@ public class PathManager : MonoBehaviour {
             Move("UraniumInk", _inkFocus);
         else if(_lookingAt == _barometerFocus)
             Move("BarometerInk", _inkFocus);
+
+        SoundManager.PaperTray_LowerVolume();
+        SoundManager.Ink_RaiseVolume();
+        SoundManager.UraniumRods_LowerVolume();
     }
 
     private void TriggerMoveBarometer(int itemNumber)
@@ -135,6 +144,10 @@ public class PathManager : MonoBehaviour {
             MoveReversed("PaperBarometer",_paperFocus);
         else if(_lookingAt == _inkFocus)
             MoveReversed("PaperInk",_paperFocus);
+
+        SoundManager.PaperTray_RaiseVolume();
+        SoundManager.Ink_LowerVolume();
+        SoundManager.UraniumRods_LowerVolume();
     }
 
     //Move Functions
