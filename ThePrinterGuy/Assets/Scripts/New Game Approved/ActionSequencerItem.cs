@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ActionSequencerItem : MonoBehaviour
 {
+	/*
     #region SerializeField
     [SerializeField] private string _moduleName;
     [SerializeField] private iTween.EaseType _easeTypeActionSequencerItem;
@@ -61,9 +62,10 @@ public class ActionSequencerItem : MonoBehaviour
 		}
 		
 		BeatController.OnBeat4th1 += StartMove;
-		BeatController.OnBeat4th2 += StartMove;
+		BeatController.OnBeat4th2 += StartMove;	
 		BeatController.OnBeat4th3 += StartMove;
 		BeatController.OnBeat4th4 += StartMove;
+		
 		//BpmManager.OnBeat += StartMove;
 	}
 	
@@ -85,7 +87,7 @@ public class ActionSequencerItem : MonoBehaviour
 		{
 			TempoManager.OnBarometerTempo -= StartScale;
 		}
-		
+				
 		BeatController.OnBeat4th1 -= StartMove;
 		BeatController.OnBeat4th2 -= StartMove;
 		BeatController.OnBeat4th3 -= StartMove;
@@ -138,6 +140,8 @@ public class ActionSequencerItem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		//FIXME: create method for this behavior. Change to percentage of path (Beat)
+		//Think switch with _currentStep
 		if(transform.position.x < _bufferZonePosition.x)
 		{
 			_statusZone = "Buffer";
@@ -167,7 +171,7 @@ public class ActionSequencerItem : MonoBehaviour
 			{
 				OnFailed();
 			}
-			_guiGameCameraScript.EndZone(gameObject);
+			_guiGameCameraScript.EndZone(gameObject, true);
 		}
     }
 
@@ -196,7 +200,7 @@ public class ActionSequencerItem : MonoBehaviour
 	
 	public void StartMove()
 	{
-		iTween.MoveTo(gameObject, iTween.Hash("position", _partialPosition, "time", 0.4f,
+		iTween.MoveTo(gameObject, iTween.Hash("position", _partialPosition, "time", 0.2f,
                                                     "easeType", iTween.EaseType.easeOutBack));
         _partialPosition = iTween.PointOnPath(_path, _currentStep);
         _currentStep = _currentStep + _increaseStep;
@@ -219,4 +223,5 @@ public class ActionSequencerItem : MonoBehaviour
 
         return _zone;
     }
+	*/
 }
