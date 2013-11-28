@@ -112,6 +112,9 @@ public class BpmSequencer : MonoBehaviour {
 	
 	private void TriggerSubscribeToBeat()
 	{
+		if(_sequenceIndex >= _TaskSequences.Length)
+			return;
+		
 		if(_TaskSequences[_sequenceIndex].beats.Length != 0)
 		{
 			for(int i = 0; i < _TaskSequences[_sequenceIndex].beats.Length; i++)
@@ -229,6 +232,9 @@ public class BpmSequencer : MonoBehaviour {
 	
 	private void TriggerUnsubscribeFromBeat()
 	{
+		if(_sequenceIndex >= _TaskSequences.Length)
+			return;
+		
 		if(_TaskSequences[_sequenceIndex].beats.Length != 0)
 		{
 			for(int i = 0; i < _TaskSequences[_sequenceIndex].beats.Length; i++)
@@ -427,7 +433,7 @@ public class BpmSequencer : MonoBehaviour {
 			{
 				BpmManager.OnBeat -= WaitForBaseBeats;
 				
-				if(_sequenceIndex+1 <= _TaskSequences.Length-1)
+				if(_sequenceIndex < _TaskSequences.Length)
 				{
 					_sequenceIndex++;
 					//Debug.Log(gameObject.name+" Increasing _sequencerIndex to: "+_sequenceIndex);
