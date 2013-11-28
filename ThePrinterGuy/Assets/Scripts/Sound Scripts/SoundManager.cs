@@ -11,6 +11,8 @@ public class SoundManager : MonoBehaviour
 
     #region Privates
     private static bool _isFaded = false;
+    private static bool _allSoundOn = true;
+
     private static InGameSounds _inGameSounds;
     private static MainMenuSounds _mainMenuSounds;
     private static PaperSounds _paperSounds;
@@ -19,14 +21,43 @@ public class SoundManager : MonoBehaviour
     private static VoiceSounds _voiceSounds;
     private static MachineSounds _machineSounds;
 
-    private static GenericSoundScript[] _soundScripts;
-    private static List<GenericSoundScript> _scriptList = new List<GenericSoundScript>();
-    private static List<float> _soundVolume = new List<float>();
+    private static GenericSoundScript[] _audioScripts = new GenericSoundScript[30];
+    private static List<GenericSoundScript> _audioScriptList = new List<GenericSoundScript>();
+
+    private static List<float> _audioVolume = new List<float>();
+
+    private static List<GenericSoundScript> _soundFxScripts = new List<GenericSoundScript>();
+    private static List<GenericSoundScript> _musicScripts = new List<GenericSoundScript>();
+
+    private static GameObject _audioRelay;
     #endregion
 
     #region MonoBehavior
     void Awake()
     {
+        DontDestroyOnLoad(gameObject);
+
+        _audioRelay = GameObject.FindGameObjectWithTag("AudioRelay");
+
+        if(_audioRelay != null && _audioRelay != gameObject)
+        {
+            Debug.Log("DELETING NEW SOUND SOURCE");
+            Destroy(gameObject);
+        }
+
+        if(PlayerPrefs.HasKey("Sound"))
+        {
+            if(PlayerPrefs.GetString("Sound") == "On")
+            {
+                _allSoundOn = false;
+            }
+
+            else if(PlayerPrefs.GetString("Sound") == "Off")
+            {
+                _allSoundOn = true;
+            }
+        }
+
         _inGameSounds = transform.FindChild("In Game").GetComponent<InGameSounds>();
         _mainMenuSounds = transform.FindChild("Main Menu").GetComponent<MainMenuSounds>();
         _paperSounds = transform.FindChild("PaperTray").GetComponent<PaperSounds>();
@@ -38,12 +69,35 @@ public class SoundManager : MonoBehaviour
 
     void Start()
     {
-        _soundScripts = FindObjectsOfType(typeof(GenericSoundScript)) as GenericSoundScript[];
+        _audioScripts = FindObjectsOfType(typeof(GenericSoundScript)) as GenericSoundScript[];
 
-        for(int i = 0; i <_soundScripts.Length; i++)
+        for(int i = 0; i <_audioScripts.Length; i++)
         {
-            _scriptList.Add(_soundScripts[i]);
-            _soundVolume.Add(_soundScripts[i].GetVolume());
+            _audioScriptList.Add(_audioScripts[i]);
+            _audioVolume.Add(_audioScripts[i].GetVolume());
+        }
+
+        _soundFxScripts.Add(_inkSounds.GetEffectScript());
+        _soundFxScripts.Add(_machineSounds.GetEffectScriptCogwheels());
+        _soundFxScripts.Add(_machineSounds.GetEffectScriptMachine());
+        _soundFxScripts.Add(_machineSounds.GetEffectScriptSmoke());
+        _soundFxScripts.Add(_paperSounds.GetEffectScript());
+        _soundFxScripts.Add(_rodSounds.GetEffectScript());
+        _soundFxScripts.Add(_mainMenuSounds.GetEffectScript());
+        _soundFxScripts.Add(_voiceSounds.GetEffectScript());
+
+        _musicScripts.Add(_inGameSounds.GetMusicScript());
+        _musicScripts.Add(_mainMenuSounds.GetMusicScript());
+
+        ToogleAudio();
+    }
+
+    void Update()
+    {
+        if(Application.isLoadingLevel)
+        {
+            StopAllSoundSources();
+            FadeAllSourcesUp();
         }
     }
     #endregion
@@ -432,48 +486,94 @@ public class SoundManager : MonoBehaviour
     #region General Methods
     public static void FadeAllSourcesUp()
     {
-        foreach(GenericSoundScript gss in _soundScripts)
+        foreach(GenericSoundScript gss in _audioScripts)
         {
-            int index = _scriptList.IndexOf(gss);
-            gss.FadeVolume(_soundVolume[index], _fadeTime);
+            int index = _audioScriptList.IndexOf(gss);
+            gss.FadeVolume(_audioVolume[index], _fadeTime);
         }
     }
 
     public static void FadeAllSources(float volume)
     {
-        foreach(GenericSoundScript gss in _soundScripts)
+        foreach(GenericSoundScript gss in _audioScripts)
         {
-            int index = _scriptList.IndexOf(gss);
+            int index = _audioScriptList.IndexOf(gss);
             gss.FadeVolume(volume, _fadeTime);
         }
     }
 
     public static void StoreVolumes()
     {
-        Debug.Log("Storing volume");
-
-        foreach(GenericSoundScript gss in _soundScripts)
+        foreach(GenericSoundScript gss in _audioScripts)
         {
-            int index = _scriptList.IndexOf(gss);
-            _soundVolume[index] = gss.GetVolume();
+            int index = _audioScriptList.IndexOf(gss);
+            _audioVolume[index] = gss.GetVolume();
             gss.SetVolume(0.0f);
         }
     }
 
     public static void StopAllSoundEffects()
     {
-        _inkSounds.GetEffectScript().SetVolume(0.0f);
-        _machineSounds.GetEffectScriptCogwheels().SetVolume(0.0f);
-        _machineSounds.GetEffectScriptMachine().SetVolume(0.0f);
-        _machineSounds.GetEffectScriptSmoke().SetVolume(0.0f);
-        _paperSounds .GetEffectScript().SetVolume(0.0f);
-        _rodSounds.GetEffectScript().SetVolume(0.0f);
+        foreach(GenericSoundScript gss in _soundFxScripts)
+        {
+            gss.SetVolume(0.0f);
+        }
     }
 
     public static void FadeAllMusic()
     {
-        _inGameSounds.GetMusicScript().FadeVolume(_endMusicVolume, _fadeTime);
-        _mainMenuSounds.GetMusicScript().FadeVolume(_endMusicVolume, _fadeTime);
+        foreach(GenericSoundScript gss in _musicScripts)
+        {
+            gss.FadeVolume(_endMusicVolume, _fadeTime);
+        }
+    }
+
+    public static void ToogleAudio()
+    {
+        if(_allSoundOn)
+        {
+            _allSoundOn = false;
+            foreach(GenericSoundScript gss in _audioScripts)
+            {
+                gss.audio.mute = true;
+            }
+        }
+
+        else if(!_allSoundOn)
+        {
+            _allSoundOn = true;
+            foreach(GenericSoundScript gss in _audioScripts)
+            {
+                gss.audio.mute = false;
+            }
+        }
+    }
+
+    public static void StopAllSoundSources()
+    {
+        foreach(GenericSoundScript gss in _audioScripts)
+        {
+            gss.audio.Stop();
+            gss.audio.loop = false;
+        }
+    }
+
+    public static void CheckAudioToogle()
+    {
+        if(PlayerPrefs.HasKey("Sound"))
+        {
+            if(PlayerPrefs.GetString("Sound") == "On")
+            {
+                _allSoundOn = false;
+                ToogleAudio();
+            }
+
+            else if(PlayerPrefs.GetString("Sound") == "Off")
+            {
+                _allSoundOn = true;
+                ToogleAudio();
+            }
+        }
     }
     #endregion
 }
