@@ -264,7 +264,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                 {
                     if(_hit.collider.gameObject.name == "SoundButton")
                     {
-
+                        SoundManager.ToogleAudio();
                     }
                     else if(_hit.collider.gameObject.name == "MusicButton")
                     {
