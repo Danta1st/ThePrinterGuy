@@ -6,6 +6,7 @@ public class BpmSequencerItem : MonoBehaviour {
     #region SerializeField
     [SerializeField] private string _moduleName;
     [SerializeField] private iTween.EaseType _easeTypeMove = iTween.EaseType.easeInSine;
+	[SerializeField] Particles _particles;
     #endregion
 	
 	//-----------------------------
@@ -26,6 +27,7 @@ public class BpmSequencerItem : MonoBehaviour {
     private GUIGameCamera _guiGameCameraScript;
     private TempoManager _tempoManagerScript;
     private GreenZone _greenZoneScript;
+	private GameObject _dynamicObjects;
 	
     private string _statusZone = "";
     private int _zone = 0;
@@ -65,7 +67,8 @@ public class BpmSequencerItem : MonoBehaviour {
 	
     // Use this for initialization
     void Awake()
-    {		
+    {
+		_dynamicObjects = GameObject.Find("Dynamic Objects");
     	_spawnZonePosition 	= GameObject.Find("SpawnZone").transform; //GameObject.Find("SpawnZone").transform;
     	_deadZonePosition 	= GameObject.Find("DeadZone").transform;
     	
@@ -369,6 +372,36 @@ public class BpmSequencerItem : MonoBehaviour {
         return _zone;
     }
 	
+	private void KillTask()
+	{
+		
+	}
+	
+	//Method for instantiating particles
+	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
+	{
+		if(particles != null)
+		{
+			foreach(Transform child in posRotGO.transform)
+			{
+				if(child.name.Equals("ParticlePos") && particles != null)
+				{
+					//Instantiate Particle prefab. Rotation solution is a HACK
+					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+					//Child to DynamicObjects
+					tempParticles.transform.parent = _dynamicObjects.transform;
+					Debug.Log(gameObject.name+" instantiating particles");
+					return;
+				}				
+			}
+			//Instantiate Particle prefab. Rotation solution is a HACK
+			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+			//Child to DynamicObjects
+			tempParticles1.transform.parent = _dynamicObjects.transform;
+			Debug.Log(gameObject.name+" instantiating particles");
+		}
+	}
+	
 	//Initialization
 	private void InitializeStepLenghts(int _stepMultiplier)
 	{
@@ -419,5 +452,11 @@ public class BpmSequencerItem : MonoBehaviour {
         public int maxFourths = 0;
         public int maxSixths = 0;
         public int maxEights = 0;
+    };
+	
+    [System.Serializable]
+    public class Particles
+    {
+        public GameObject death;
     };
 }
