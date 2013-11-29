@@ -12,6 +12,7 @@ public class SoundManager : MonoBehaviour
     #region Privates
     private static bool _isFaded = false;
     private static bool _allSoundOn = false;
+    private static bool _hasReset = false;
 
     private static InGameSounds _inGameSounds;
     private static MainMenuSounds _mainMenuSounds;
@@ -98,10 +99,15 @@ public class SoundManager : MonoBehaviour
 
     void Update()
     {
-        if(Application.isLoadingLevel)
+        if(Application.isLoadingLevel && !_hasReset)
         {
+            _hasReset = true;
             StopAllSoundSources();
-            FadeAllSourcesUp();
+        }
+
+        if(!Application.isLoadingLevel)
+        {
+            _hasReset = false;
         }
     }
     #endregion
