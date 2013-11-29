@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ActionSequencerItem : MonoBehaviour
 {
+	/*
     #region SerializeField
     [SerializeField] private string _moduleName;
     [SerializeField] private iTween.EaseType _easeTypeActionSequencerItem;
@@ -10,6 +11,7 @@ public class ActionSequencerItem : MonoBehaviour
 
     #region Private Variables
     //Prepare for hack!
+    private Vector3 _spawnZonePosition;
     private Vector3 _deadZonePosition;
     private Vector3 _bufferZonePosition;
     private Vector3 _greenZonePosition;
@@ -29,6 +31,10 @@ public class ActionSequencerItem : MonoBehaviour
     //private bool _once = false;
     //private bool _isBack = false;
     private Vector3 _destinationPosition;
+    private Vector3 _partialPosition;
+    private Vector3[] _path = new Vector3[2];
+    private float _increaseStep = 0.05f;
+    private float _currentStep = 0.0f;
     #endregion
 
     #region Delegates and Events
@@ -40,45 +46,59 @@ public class ActionSequencerItem : MonoBehaviour
 	{
 		if(_moduleName == "Ink")
 		{
-			TempoManager.OnInkTempo += StartTween;
+			TempoManager.OnInkTempo += StartScale;
 		}
 		else if(_moduleName == "Paper")
 		{
-			TempoManager.OnPaperTempo += StartTween;
+			TempoManager.OnPaperTempo += StartScale;
 		}
 		else if(_moduleName == "UraniumRod")
 		{
-			TempoManager.OnUraniumRodTempo += StartTween;
+			TempoManager.OnUraniumRodTempo += StartScale;
 		}
 		else if(_moduleName == "Barometer")
 		{
-			TempoManager.OnBarometerTempo += StartTween;
+			TempoManager.OnBarometerTempo += StartScale;
 		}
+		
+		BeatController.OnBeat4th1 += StartMove;
+		BeatController.OnBeat4th2 += StartMove;	
+		BeatController.OnBeat4th3 += StartMove;
+		BeatController.OnBeat4th4 += StartMove;
+		
+		//BpmManager.OnBeat += StartMove;
 	}
 	
 	void OnDisable()
 	{
 		if(_moduleName == "Ink")
 		{
-			TempoManager.OnInkTempo -= StartTween;
+			TempoManager.OnInkTempo -= StartScale;
 		}
 		else if(_moduleName == "Paper")
 		{
-			TempoManager.OnPaperTempo -= StartTween;
+			TempoManager.OnPaperTempo -= StartScale;
 		}
 		else if(_moduleName == "UraniumRod")
 		{
-			TempoManager.OnUraniumRodTempo -= StartTween;
+			TempoManager.OnUraniumRodTempo -= StartScale;
 		}
 		else if(_moduleName == "Barometer")
 		{
-			TempoManager.OnBarometerTempo -= StartTween;
+			TempoManager.OnBarometerTempo -= StartScale;
 		}
+				
+		BeatController.OnBeat4th1 -= StartMove;
+		BeatController.OnBeat4th2 -= StartMove;
+		BeatController.OnBeat4th3 -= StartMove;
+		BeatController.OnBeat4th4 -= StartMove;
+		//BpmManager.OnBeat -= StartMove;
 	}
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
+    	_spawnZonePosition = GameObject.Find("SpawnZone").transform.position;
     	_deadZonePosition = GameObject.Find("DeadZone").transform.position;
     	_bufferZonePosition = GameObject.Find("BufferZone").transform.position;
     	_greenZonePosition = GameObject.Find("GreenZone").transform.position;
@@ -90,6 +110,10 @@ public class ActionSequencerItem : MonoBehaviour
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _tempoManagerScript = GameObject.Find("GUI List").GetComponent<TempoManager>();
         _destinationPosition = GameObject.Find("DeadZone").transform.position;
+       
+       _path[0] = _spawnZonePosition;
+       _path[1] = _destinationPosition;
+       _partialPosition = _spawnZonePosition;
        
 		if(_moduleName == "Ink")
 		{
@@ -111,14 +135,13 @@ public class ActionSequencerItem : MonoBehaviour
 			_time = _tempoManagerScript.GetBarometerTime();
 			_ms = _tempoManagerScript.GetBarometerMs();
 		}
-		
-		iTween.MoveTo(gameObject, iTween.Hash("position", _destinationPosition, "time", _time,
-                                                    "easeType", _easeTypeActionSequencerItem));
     }
 
     // Update is called once per frame
     void Update()
     {
+		//FIXME: create method for this behavior. Change to percentage of path (Beat)
+		//Think switch with _currentStep
 		if(transform.position.x < _bufferZonePosition.x)
 		{
 			_statusZone = "Buffer";
@@ -148,7 +171,7 @@ public class ActionSequencerItem : MonoBehaviour
 			{
 				OnFailed();
 			}
-			_guiGameCameraScript.EndZone(gameObject);
+			_guiGameCameraScript.EndZone(gameObject, true);
 		}
     }
 
@@ -170,10 +193,18 @@ public class ActionSequencerItem : MonoBehaviour
 //        }
 //    }
 
-    public void StartTween()
+    public void StartScale()
     {
         iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", _ms));
     }
+	
+	public void StartMove()
+	{
+		iTween.MoveTo(gameObject, iTween.Hash("position", _partialPosition, "time", 0.2f,
+                                                    "easeType", iTween.EaseType.easeOutBack));
+        _partialPosition = iTween.PointOnPath(_path, _currentStep);
+        _currentStep = _currentStep + _increaseStep;
+	}
 	
     public int GetZoneStatus()
     {
@@ -192,4 +223,5 @@ public class ActionSequencerItem : MonoBehaviour
 
         return _zone;
     }
+	*/
 }

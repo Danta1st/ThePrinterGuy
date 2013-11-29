@@ -15,6 +15,14 @@ public class GUIMainMenuCamera : MonoBehaviour
     private GameObject[] _textList;
     [SerializeField]
     private iTween.EaseType _easeTypeCamera;
+	[SerializeField]
+	private ButtonTextures _menuTextures;
+    [SerializeField]
+    private GameObject _danishCheck;
+    [SerializeField]
+    private GameObject _englishCheck;
+    [SerializeField]
+    private GameObject _soundCheck;
     #endregion
 
     #region Private Variables
@@ -27,6 +35,10 @@ public class GUIMainMenuCamera : MonoBehaviour
     private bool _canTouch = true;
 	private bool _isOnStartScreen = true;
 	private Credits credits;
+	private GameObject _optionsButton;
+	private GameObject _creditsButton;
+	private GameObject _menuButtonLeft;
+	private GameObject _menuButtonRight;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -124,21 +136,56 @@ public class GUIMainMenuCamera : MonoBehaviour
     }
     #endregion
 
+    void Awake()
+    {
+        GameObject thisSoundRelay = GameObject.FindGameObjectWithTag("AudioRelay");
+
+        if(thisSoundRelay == null)
+        {
+            Instantiate(Resources.Load("Prefabs/SoundRelay"));
+        }
+    }
+
     #region Start and Update
     // Use this for initialization
     void Start()
     {
-        SoundManager.Music_Menu_Main();
+        _danishCheck.renderer.enabled = false;
+        _englishCheck.renderer.enabled = false;
+        _soundCheck.renderer.enabled = false;
 
 		if(PlayerPrefs.HasKey("selectedLanguage"))
 		{
-			LocalizationText.SetLanguage(PlayerPrefs.GetString("selectedLanguage"));
+            string selectedLanguage = PlayerPrefs.GetString("selectedLanguage");
+			LocalizationText.SetLanguage(selectedLanguage);
+            if(selectedLanguage == "EN")
+                _englishCheck.renderer.enabled = true;
+            else
+                _danishCheck.renderer.enabled = true;
 		}
 		else
 		{
 			LocalizationText.SetLanguage("EN");
 			PlayerPrefs.SetString("selectedLanguage", "EN");
+            _englishCheck.renderer.enabled = true;
 		}
+        //HandleSoundOptionsButtons
+        if(PlayerPrefs.HasKey("Sound"))
+        {
+            if(PlayerPrefs.GetString("Sound") == "On")
+            {
+                _soundCheck.renderer.enabled = true;
+//                Camera.main.audio.mute = false;
+            }
+//            else
+//                 Camera.main.audio.mute = true;
+        }
+        else
+        {
+            PlayerPrefs.SetString("Sound", "On");
+            _soundCheck.renderer.enabled = true;
+        }
+
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
 		lvlManager = gameObject.GetComponent<LevelManager>();
@@ -178,28 +225,32 @@ public class GUIMainMenuCamera : MonoBehaviour
             }*/
             if(_guiObject.name == "MenuButtonLeft")
             {
+				_menuButtonLeft = _guiObject;
                 _guiObject.SetActive(false);
             }
             if(_guiObject.name == "MenuButtonRight")
             {
+				_menuButtonRight = _guiObject;
                 _guiObject.SetActive(false);
             }
             if(_guiObject.name == "CreditsButton")
             {
+				_creditsButton = _guiObject;
                 _guiObject.SetActive(false);
             }
             if(_guiObject.name == "OptionsButton")
             {
+				_optionsButton = _guiObject;
                 _guiObject.SetActive(false);
             }
-
-
         }
         //--------------------------------------------------//
 
         EnableGUICamera();
         SwitchToMainMenu();
 		UpdateText();
+
+        SoundManager.Music_Menu_Main();
     }
     #endregion
 
@@ -254,7 +305,19 @@ public class GUIMainMenuCamera : MonoBehaviour
                 {
                     if(_hit.collider.gameObject.name == "SoundButton")
                     {
-
+                        if(_soundCheck.renderer.enabled == true)
+                        {
+                            _soundCheck.renderer.enabled = false;
+                            PlayerPrefs.SetString("Sound", "Off");
+                            SoundManager.CheckAudioToogle();
+                            //AudioListener.pause = true - does not seem to work! :(
+                        }
+                        else
+                        {
+                            _soundCheck.renderer.enabled = true;
+                            PlayerPrefs.SetString("Sound", "On");
+                            SoundManager.CheckAudioToogle();
+                        }
                     }
                     else if(_hit.collider.gameObject.name == "MusicButton")
                     {
@@ -264,8 +327,9 @@ public class GUIMainMenuCamera : MonoBehaviour
                     {
                         if(OnOptionsScreen != null)
                         {
+							//_optionsButton.renderer.material.mainTexture = _menuTextures.OptionsButtonPressed;
+							
                             OnOptionsScreen();
-
                             DisableGUIElementAll();
                         }
                     }
@@ -282,6 +346,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     {
                         if(OnMainScreen != null)
                         {
+							_optionsButton.renderer.material.mainTexture = _menuTextures.OptionsButton;
                             OnMainScreen();
 
                             DisableGUIElementAll();
@@ -299,12 +364,16 @@ public class GUIMainMenuCamera : MonoBehaviour
                     else if(_hit.collider.gameObject.name == "DanishButton")
                     {
 						PlayerPrefs.SetString("selectedLanguage", "DK");
+                        _danishCheck.renderer.enabled = true;
+                        _englishCheck.renderer.enabled = false;
                         LocalizationText.SetLanguage("DK");
                         UpdateText();
                     }
                     else if(_hit.collider.gameObject.name == "EnglishButton")
                     {
 						PlayerPrefs.SetString("selectedLanguage", "EN");
+                        _danishCheck.renderer.enabled = false;
+                        _englishCheck.renderer.enabled = true;
                         LocalizationText.SetLanguage("EN");
                         UpdateText();
                     }
@@ -353,7 +422,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         DisableGUIElementAll();
         EnableGUIElement("Credits");
-        EnableGUIElement("MenuButtonRight");
+        EnableGUIElement("MenuButtonLeft");
     }
 
     private void ChangeToOptions()
@@ -367,7 +436,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         DisableGUIElementAll();
         EnableGUIElement("OptionsButton");
-        EnableGUIElement("CreditsButton");
+        //EnableGUIElement("CreditsButton");
     }
 
     private void SwitchToMainMenu()
@@ -386,7 +455,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 			_isOnStartScreen = false;
 			
         	EnableGUIElement("OptionsButton");
-        	EnableGUIElement("CreditsButton");
+        	//EnableGUIElement("CreditsButton");
 			
 
 	        List<GameObject> stageChars = lvlManager.GetStageCharacters();
@@ -409,4 +478,15 @@ public class GUIMainMenuCamera : MonoBehaviour
         }		
     }
     #endregion
+}
+
+[System.Serializable]
+public class ButtonTextures
+{
+	public Texture OptionsButton;
+	public Texture OptionsButtonPressed;
+	public Texture CreditsButton;
+	public Texture CreditsButtonPressed;
+	public Texture BackToLevelSelecButton;
+	public Texture BackToLevelSelecButtonPressed;
 }

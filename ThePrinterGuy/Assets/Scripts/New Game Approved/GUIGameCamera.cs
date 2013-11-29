@@ -18,12 +18,15 @@ public class GUIGameCamera : MonoBehaviour
     [SerializeField] private GameObject _paperPrefab;
     [SerializeField] private GameObject _uraniumRodPrefab;
     [SerializeField] private GameObject _barometerPrefab;
-	//Dialogue variables
-    [SerializeField] private float _DialogueWindowInDuration = 1;
-    [SerializeField] private iTween.EaseType _easeTypeDialogueWindowIn;
-    [SerializeField] private float _DialogueWindowOutDuration = 1;
-    [SerializeField] private iTween.EaseType _easeTypeDialogueWindowOut;
 	[SerializeField] private float _secondsUntilEndScreen = 1.5f;
+	[SerializeField] private iTween.EaseType _easeTypeTextMove;
+	[SerializeField] private iTween.EaseType _easeTypeTextPunch;
+	[SerializeField] private TextPositionalOffset _offsetValues;
+    //Pressed and Non-pressed icon textures
+    [SerializeField] private Texture2D LevelPlayTexture;
+    [SerializeField] private Texture2D LevelPlayPressedTexture;
+    [SerializeField] private Texture2D LevelReplayPressedTexture;
+    [SerializeField] private Texture2D LevelQuitPressedTexture;
     #endregion
 
     #region Private Variables
@@ -37,10 +40,8 @@ public class GUIGameCamera : MonoBehaviour
     private float _timeScale = 0.0f;
 	private ParticleSystem[] _particleSystems;
     private bool _waitForMe = false;
-    private GameObject _guiDialogueWindow;
-    private Vector3 _guiDialogueWindowMoveToPoint;
-    private Vector3 _guiDialogueWindowMoveFromPoint;
     private string _currentTaskType;
+    private GameObject resumeButtom;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -109,8 +110,6 @@ public class GUIGameCamera : MonoBehaviour
 		BpmSequencer.OnLastNode += LastNode;
 		
         ScoreManager.OnTaskCompleted += CheckZone;
-        //Dialogue.OnDialogueStart += DialogueWindowIn;
-        //Dialogue.OnDialogueEnd += DialogueWindowOut;
 
     }
 
@@ -129,8 +128,6 @@ public class GUIGameCamera : MonoBehaviour
 		BpmSequencer.OnLastNode -= LastNode;
 		
         ScoreManager.OnTaskCompleted -= CheckZone;
-        //Dialogue.OnDialogueStart -= DialogueWindowIn;
-        //Dialogue.OnDialogueEnd -= DialogueWindowOut;
     }
 
     public void EnableGUICamera()
@@ -238,13 +235,6 @@ public class GUIGameCamera : MonoBehaviour
 				_speechTextObject = _guiObject.transform.FindChild("SpeechText").gameObject;
 				_guiSpeechTextScript = _speechTextObject.GetComponent<GUISpeechText>();
 			}
-
-            if(_guiObject.name == "GUIDialogue")
-            {
-                _guiDialogueWindow = _guiObject.transform.FindChild("RenderTexture").gameObject;
-                //_guiDialogueWindowMoveFromPoint = _guiObject.transform.FindChild("RenderTexture").transform.position;
-                //_guiDialogueWindowMoveToPoint = _guiObject.transform.FindChild("MoveToPoint").transform.position;
-            }
         }
         //--------------------------------------------------//
 
@@ -285,6 +275,22 @@ public class GUIGameCamera : MonoBehaviour
 			// Writes "SpeechBubbleExample" from the LocalizationText.xml
 			EnableGUIElement("SpeechBubble");
 			_guiSpeechTextScript.WriteText("SpeechBubbleExample");
+		} 
+		if(Input.GetKeyDown(KeyCode.Y))
+		{
+			PopupTextBig("PERFECT!");
+		}
+		if(Input.GetKeyDown(KeyCode.U))
+		{
+			PopupTextMedium("GREAT!");
+		}
+		if(Input.GetKeyDown(KeyCode.I))
+		{
+			PopupTextSmall("GOOD!");
+		}
+		if(Input.GetKeyDown(KeyCode.O))
+		{
+			PopupTextSmall("NOT BAD!");
 		}
 	#endif
     }
@@ -414,8 +420,9 @@ public class GUIGameCamera : MonoBehaviour
 	
 	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
 	{	
-		float _xPopupPos = Random.Range(0.35f,0.65f);
-		float _yPopupPos = Random.Range(0.35f,0.45f);
+		
+		float _xPopupPos = Random.Range(_offsetValues.startX,_offsetValues.endX);
+		float _yPopupPos = Random.Range(_offsetValues.startY,_offsetValues.endY);
 		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 1.2f;
@@ -438,14 +445,14 @@ public class GUIGameCamera : MonoBehaviour
 		_particleSystems[0].particleSystem.startColor = _trailColor;
 		_particleSystems[1].particleSystem.startColor = _circleColor;
 		
-		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
-			_fadeInDuration + _fadeOutDuration);
+		iTween.MoveTo(_popupTextObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			"time", (_fadeInDuration + _fadeOutDuration), "easetype", _easeTypeTextMove));
 		
-		iTween.MoveTo(_popupObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
-			_fadeInDuration + _fadeOutDuration);
+		iTween.MoveTo(_popupObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			"time", (_fadeInDuration + _fadeOutDuration), "easetype", _easeTypeTextMove));
 		
-		iTween.PunchScale(_popupTextObject, new Vector3(_punchAmmount,_punchAmmount,0f), 
-			_fadeOutDuration);
+		iTween.PunchScale(_popupTextObject, iTween.Hash("amount", new Vector3(_punchAmmount,_punchAmmount,0f), 
+			"time", _fadeOutDuration, "easetype", _easeTypeTextPunch));
 		
 		iTween.FadeFrom(_popupTextObject, 0f, _fadeInDuration);
 		yield return new WaitForSeconds(_fadeInDuration);
@@ -514,25 +521,28 @@ public class GUIGameCamera : MonoBehaviour
                 {
                     if(_hit.collider.gameObject.name == "PauseButton")
                     {
-                        OpenIngameMenu();
                         if(OnPause != null)
                             OnPause();
+                        OpenIngameMenu();
                     }
                     else if(_hit.collider.gameObject.name == "ResumeButton")
                     {
+                        _hit.collider.gameObject.renderer.material.mainTexture = LevelPlayPressedTexture;
                         CloseIngameMenu();
                     }
                     else if(_hit.collider.gameObject.name == "RestartButton")
                     {
-                        RestartLevel();
+                        _hit.collider.gameObject.renderer.material.mainTexture = LevelReplayPressedTexture;
                         if(OnRestart != null)
                             OnRestart();
+                        RestartLevel();
                     }
                     else if(_hit.collider.gameObject.name == "QuitButton")
                     {
-                        QuitLevel();
+                        _hit.collider.gameObject.renderer.material.mainTexture = LevelQuitPressedTexture;
                         if(OnToMainMenuFromLevel != null)
                             OnToMainMenuFromLevel();
+                        QuitLevel();
                     }
                     else if(_hit.collider.gameObject.name == "SettingsButton")
                     {
@@ -572,7 +582,6 @@ public class GUIGameCamera : MonoBehaviour
         float _end = 3.0f;
         _canTouch = false;
         UnpauseTimer(_start, _end);
-
     }
 
     private void UnpauseTimer(float _start, float _end)
@@ -589,7 +598,6 @@ public class GUIGameCamera : MonoBehaviour
 				iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", -_statsOverviewMoveAmount,
 								"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true,
                     "oncomplete", "UnPauseTimeScale", "oncompletetarget", gameObject));
-
                 break;
 
                 //ToDo: Insert flashy numbers counting down from 3 to 1 --> Request from Nicolai.
@@ -603,7 +611,8 @@ public class GUIGameCamera : MonoBehaviour
         Time.timeScale = 1.0f;
         AudioListener.pause = false;
         SoundManager.FadeAllSourcesUp();
-
+        //Resets the play icon back to the non-pressed.
+        _hit.collider.gameObject.renderer.material.mainTexture = LevelPlayTexture;
 
         LoadGUIState();
 
@@ -700,21 +709,29 @@ public class GUIGameCamera : MonoBehaviour
             _queuedObject = _sequencerObjectQueue.Peek();
 
             Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
-            ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
-            _zone = _actionSequencerItemScript.GetZoneStatus();
+			BpmSequencerItem _bpmSequencerItem = _queuedObject.GetComponent<BpmSequencerItem>();
+            //ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
+            _zone = _bpmSequencerItem.GetZoneStatus();
+			
             if(OnTaskEnd != null)
                 OnTaskEnd(_currentTaskType, _zone);
-            EndZone(_queuedObject);
+			
+            EndZone(_queuedObject, true);
         }
     }
 
-    public void EndZone(GameObject _go)
+    public void EndZone(GameObject _go, bool shouldDestroy)
     {
+		_greenZoneScript.GreenOff();
+		
 		_sequencerObjectQueue.Dequeue();
         _sequencerObjectQueue.TrimExcess();
-        Destroy(_go);
+		
+		if(shouldDestroy)
+			Destroy(_go);
+		
         _queuedObject = null;
-		_greenZoneScript.GreenOff();
+		
         if(OnUpdateAction != null)
         {
             OnUpdateAction();
@@ -725,6 +742,11 @@ public class GUIGameCamera : MonoBehaviour
             StartCoroutine("ShowEndScreen");
         }
     }
+	
+	public void DestroyTask(GameObject go)
+	{
+		Destroy(go);
+	}
 
     public int GetZone()
     {
@@ -787,20 +809,6 @@ public class GUIGameCamera : MonoBehaviour
         _waitForMe = true;
     }
     #endregion
-
-//    #region DialogueWindow
-//    private void DialogueWindowIn()
-//    {
-//        Debug.Log("DialogueWindowIn");
-//        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveToPoint, "duration", _DialogueWindowInDuration, "easetype", _easeTypeDialogueWindowIn));
-//    }
-//
-//    private void DialogueWindowOut()
-//    {
-//        Debug.Log("DialogueWindowOut");
-//        iTween.MoveTo(_guiDialogueWindow, iTween.Hash("position", _guiDialogueWindowMoveFromPoint, "duration", _DialogueWindowOutDuration, "easetype", _easeTypeDialogueWindowOut));
-//    }
-//    #endregion
 	
 	private void UpdateText()
 	{
@@ -830,4 +838,13 @@ public class GUIGameCamera : MonoBehaviour
         _currentTaskType = "Barometers";
     }
     #endregion
+}
+
+[System.Serializable]
+public class TextPositionalOffset
+{
+	public float startX = 0.35f;
+	public float endX = 0.65f;
+	public float startY = 0.35f;
+	public float endY = 0.45f;
 }

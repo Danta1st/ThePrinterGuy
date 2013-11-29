@@ -3,9 +3,9 @@ using System.Collections;
 
 public class ItemIdleState : MonoBehaviour {
 	
-	[SerializeField] private Vector3 _floatAmount;
-	[SerializeField] private float _speedFloat;
-	[SerializeField] private iTween.EaseType _easeTypeFloat;
+	[SerializeField] private Vector3 _floatAmount = new Vector3(0.2f, 0.2f, 0.2f);
+	[SerializeField] private float _speedFloat = 0.1f;
+	[SerializeField] private iTween.EaseType _easeTypeFloat = iTween.EaseType.linear;
 	
 	//[SerializeField]
 	private Vector3 _rotationAmount;

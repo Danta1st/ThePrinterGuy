@@ -52,14 +52,15 @@ GameObject:
   m_IsActive: 0
 --- !u!1 &100006
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400002}
+  - 96: {fileID: 9600000}
   m_Layer: 0
-  m_Name: PaperFocusPoint
+  m_Name: PaperTrailEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -417,10 +418,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.97293305, y: 3.89368486, z: .685556889}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 400026}
+  m_Father: {fileID: 400044}
 --- !u!4 &400004
 Transform:
   m_ObjectHideFlags: 1
@@ -564,7 +565,6 @@ Transform:
   - {fileID: 400030}
   - {fileID: 400024}
   - {fileID: 400022}
-  - {fileID: 400002}
   - {fileID: 400020}
   - {fileID: 400018}
   - {fileID: 400014}
@@ -673,7 +673,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 400002}
   m_Father: {fileID: 400040}
 --- !u!4 &400046
 Transform:
@@ -1122,6 +1123,45 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2, y: .5, z: 3}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!96 &9600000
+TrailRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Enabled: 0
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_Time: 5
+  m_StartWidth: 1
+  m_EndWidth: 1
+  m_Colors:
+    m_Color[0]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[1]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[2]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[3]:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_Color[4]:
+      serializedVersion: 2
+      rgba: 16777215
+  m_MinVertexDistance: .100000001
+  m_Autodestruct: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1172,12 +1212,11 @@ MonoBehaviour:
     paper: {fileID: 100038}
     isOn: 0
     paperToSlide: {fileID: 100044}
-  _particleSystemStars: {fileID: 19800000, guid: fa663695d618edb4891e7064f5c404dc,
-    type: 2}
-  _particleSystemSmoke: {fileID: 19800000, guid: 6d48f3139c66f7748b144125757ec218,
-    type: 2}
-  _particleSystemIncinerate: {fileID: 19800000, guid: f4f349063707fd24287add0a2c86bfe2,
-    type: 2}
+  _particles:
+    complete: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    failed: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    enablePaper: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
+    disablePaper: {fileID: 100000, guid: f0000dde682735942b92155ee051d430, type: 2}
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1

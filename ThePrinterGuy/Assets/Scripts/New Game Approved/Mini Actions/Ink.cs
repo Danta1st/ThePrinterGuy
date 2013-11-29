@@ -6,11 +6,11 @@ public class Ink : MonoBehaviour
 {
 	#region Editor Publics
 	[SerializeField] private List<InkCartridgeClass> _machineInks;
-	[SerializeField] private ParticleSystem _particleSystemStars;
-	[SerializeField] private ParticleSystem _particleSystemSmoke;
-	[SerializeField] private ParticleSystem _particleSystemExplosion;
-    [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutCirc;
-    [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
+	//Smoothing
+    [SerializeField] private iTween.EaseType _easeTypeOpen  = iTween.EaseType.easeOutBack;
+    [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeInExpo;
+	//Particles
+	[SerializeField] private Particles _particles;
 
     #endregion
 	
@@ -26,11 +26,8 @@ public class Ink : MonoBehaviour
 	private List<string> pathNameSucc = new List<string>();
 	private List<string> pathNameFail = new List<string>();
 	
-	// Particlesystem
-	private ParticleSystem _particleStars;
-	private ParticleSystem _particleSmoke;
-	private ParticleSystem _particleExplosion;
-	
+	//References
+	private GameObject _particleSmoke;	
 	private GameObject _dynamicObjects;
     #endregion
 	
@@ -41,6 +38,7 @@ public class Ink : MonoBehaviour
 
 	void Awake () 
 	{
+		//Paths for ink sliding
 		pathNameSucc.Add("Ink0");
 		pathNameSucc.Add("Ink1");
 		pathNameSucc.Add("Ink2");
@@ -49,49 +47,52 @@ public class Ink : MonoBehaviour
 		pathNameFail.Add("Ink1Collision");
 		pathNameFail.Add("Ink2Collision");
 		pathNameFail.Add("Ink3Collision");
+		//Get dynamic object reference
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
-		if(_particleSystemSmoke != null)
-		{
-			_particleSmoke = (ParticleSystem)Instantiate(_particleSystemSmoke);
-		}
-		else
-			Debug.Log("Smoke Particle not loaded for Ink");
-		if(_particleSystemStars != null)
-		{
-			_particleStars = (ParticleSystem)Instantiate(_particleSystemStars);
-			_particleStars.renderer.material.shader = Shader.Find("Transparent/Diffuse");
-		}
-		if(_particleSystemExplosion != null)
-		{
-			_particleExplosion = (ParticleSystem)Instantiate (_particleSystemExplosion);
-		}
-		else
-			Debug.Log("Star Particle not loaded for Ink");
 		
-		_particleSmoke.transform.parent = _dynamicObjects.transform;
-		_particleStars.transform.parent = _dynamicObjects.transform;
+		//Check if _particles if empty, and throw warning if true
+		if(_particles.complete == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
+		if(_particles.failed == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
+		if(_particles.enable == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
+		if(_particles.disable == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
+		if(_particles.smoke == null)
+			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
+		
+		//Instantiate smoke
+		if(_particles.smoke != null)
+		{
+			_particleSmoke = (GameObject) Instantiate(_particles.smoke);
+			_particleSmoke.transform.parent = _dynamicObjects.transform;
+		}
 		
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
+			//Remember beginPositions - Why?
 			icc.insertableStartPos = icc.insertableCartridge.position;
+			//Succes path
 			icc.pathSucc = new Vector3[3];
 			icc.pathSucc[0] = icc.insertableCartridge.position;
 			icc.pathSucc[2] = icc.cartridge.position;
 			icc.pathSucc[1] = new Vector3(icc.pathSucc[2].x, icc.pathSucc[2].y, icc.pathSucc[2].z + 0.5f * (icc.pathSucc[0].z - icc.pathSucc[2].z));
+			//Fail path
 			icc.pathFail = new Vector3[3];
 			icc.pathFail[0] = icc.pathSucc[0];
 			icc.pathFail[1] = icc.pathSucc[1];
 			icc.pathFail[2] = icc.pathSucc[2];
 			icc.pathFail[2].z -= 1.5f;
 		}	
-	}
+	}	
 	
 	void OnEnable()
 	{
 		StartGates();
 		
 		BpmSequencer.OnInkNode += StartInkTask;
-		ActionSequencerItem.OnFailed += InkReset;
+		BpmSequencerItem.OnFailed += InkReset;
 	}
 	
 	void OnDisable()
@@ -99,7 +100,7 @@ public class Ink : MonoBehaviour
 		StopGates();
 		
 		BpmSequencer.OnInkNode -= StartInkTask;
-		ActionSequencerItem.OnFailed -= InkReset;
+		BpmSequencerItem.OnFailed -= InkReset;
 	}
 	
 	void OnDestroy()
@@ -107,21 +108,18 @@ public class Ink : MonoBehaviour
 		StopGates();
 
 		BpmSequencer.OnInkNode -= StartInkTask;
-		ActionSequencerItem.OnFailed -= InkReset;
+		BpmSequencerItem.OnFailed -= InkReset;
 		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
-	#region Private Methods	
+	#region Class Methods	
 	#region Gates and Machines Ink
 	// Cartridge gate functions
 	private void StartGates()
     {
 		BeatController.OnBeat8th7 += CloseGates;
-		//TODO: Insert lid close sounds
+		//TODO: Insert close gate sound?
 		BeatController.OnBeat8th3 += OpenGates;
-//		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen1;
-//		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen2;
-//		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen3;
 		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen4;
     }
 
@@ -129,6 +127,7 @@ public class Ink : MonoBehaviour
     {
 		BeatController.OnBeat8th7 -= CloseGates;
 		BeatController.OnBeat8th3 -= OpenGates;
+		//TODO: unsubscribe sound? 
     }
 	
 	private void OpenGates()
@@ -163,7 +162,7 @@ public class Ink : MonoBehaviour
 		}
     }
 
-    void CloseGates()
+    private void CloseGates()
     {
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
@@ -197,10 +196,14 @@ public class Ink : MonoBehaviour
 	#endregion
 	
 	#region Insertable Ink
+	
+	//POLISH: Remake to instantiate new ink instead of moving current
 	private void InsertCartridge(GameObject go)
 	{
 		if(go == null || !_canSlide)
 			return;
+		
+		//TODO: Needs comments. What is happening? try to clean this method to work on the InkCartridgeClass instead of list?
 		InkCartridgeClass currIcc = null;
 		InkCartridgeClass icc;
 		int j = 0;
@@ -208,12 +211,7 @@ public class Ink : MonoBehaviour
 		for(int i = 0; i < count; i++)
 		{
 			icc = _machineInks[i];
-//			if(icc.cartridge == null)
-//			{
-//				_machineInks.Remove(icc);
-//				_machineInks.TrimExcess();
-//				continue;	
-//			}
+			
 			if(icc.insertableCartridge.gameObject == go)
 			{
 				currIcc = icc;
@@ -226,109 +224,128 @@ public class Ink : MonoBehaviour
 		if(currIcc == null)
 			return;
 		
+		//Succesfull swipe
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
-			_canSlide = false;
+			_canSlide = false;			
+			
+			//Move the ink
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathSucc, 
-						  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
+						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
+							"oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 		}
+		//Failed swipe
 		else
 		{
-
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathFail, 
-							  "easetype", _easeTypeSlide, "time", _inkMoveSpeed, "oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
+						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
+							"oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
 		}
 	}
 	
 	private void InkSuccess(InkCartridgeClass icc)
 	{
-		icc.cartridgeEmpty = false;
-//		icc.cartridge.gameObject.SetActive(true);
-		icc.cartridge.renderer.material.mainTexture = icc.full;
-		if(_particleSmoke != null && _particleSmoke.isPlaying)
-			_particleSmoke.Stop();
-		foreach(Transform child in icc.cartridge.transform)
-		{
-			if(child.name.Equals("ParticlePos") && _particleStars != null)
-			{
-				_particleStars.transform.position = child.position;
-				_particleStars.transform.rotation = child.rotation;
-				_particleStars.Play();
-			}
-		}
+		//Unsubsribe gesture
 		GestureManager.OnSwipeRight -= InsertCartridge;
+		
+		icc.cartridgeEmpty = false;
+		icc.cartridge.renderer.material.mainTexture = icc.full;
+		
+		//Instantiate particles
+		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
+		
+		//Play sound
+		SoundManager.Effect_Ink_RightSlot();
+		
+		//Stop Smoke
+		if(_particleSmoke != null)
+			_particleSmoke.particleSystem.Stop();		
 
-        if(OnCorrectInkInserted != null)
-        {
-            InkReset();
-            OnCorrectInkInserted();
-        }
+        InkReset();
+		
+			//Broadcast task done
+	        if(OnCorrectInkInserted != null)
+	        {
+	            OnCorrectInkInserted();
+	        }
 
-        icc.insertableCartridge.position = icc.insertableStartPos;
+        icc.insertableCartridge.transform.position = icc.insertableStartPos;
+		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
+		
         _canSlide = true;
-		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
-	}
+	}	
 	
-	private IEnumerator InkFailed(InkCartridgeClass icc)
+	private void InkFailed(InkCartridgeClass icc)
 	{
-		if(_particleExplosion != null && _particleExplosion.isPlaying)
-			_particleExplosion.Stop();
-
-        SoundManager.Effect_Ink_WrongSlot();
-
-		_particleExplosion.Play();
-		_particleExplosion.transform.position = icc.insertableCartridge.position;
+		//Instantiate fail particles
+		InstantiateParticles(_particles.failed, icc.cartridge.gameObject);
+		//Play sound
+        SoundManager.Effect_Ink_WrongSlot();	
+		
 		icc.insertableCartridge.transform.position = icc.insertableStartPos;
-		yield return new WaitForSeconds(_particleExplosion.duration);
-		_canSlide = true;
 		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
+		
+		_canSlide = true;
 	}
 	
 	private void InkReset()
 	{
-//		InkCartridgeClass icc;
-//		if(_particleSmoke != null && _particleSmoke.isPlaying)
-//			_particleSmoke.Stop();
-//		int j = 0;
-//		for(int i = 0; i < _machineInks.Count; i++)
-//		{
-//			icc = _machineInks[j];
-//			if(icc.cartridge == null)
-//			{
-//				_machineInks.Remove(icc);
-//				_machineInks.TrimExcess();
-//				continue;	
-//			}
-//			icc.cartridge.gameObject.SetActive(true);
-//			icc.cartridgeEmpty = false;
-//			icc.insertableCartridge.gameObject.SetActive(false);
-//			j++;
-//		}
+		//Unsubscribe from gesture
 		GestureManager.OnSwipeRight -= InsertCartridge;
+		
+		//TODO: Comment this properly
+		InkCartridgeClass icc;
+		//FIXME: Particles
+		if(_particleSmoke != null)
+			_particleSmoke.particleSystem.Stop();
+		
+		int j = 0;
+		for(int i = 0; i < _machineInks.Count; i++)
+		{
+			icc = _machineInks[j];
+			icc.cartridge.gameObject.SetActive(true);
+			
+			//Instantiate particles
+			InstantiateParticles(_particles.disable, icc.cartridge.gameObject);
+			
+			icc.cartridgeEmpty = false;
+			icc.insertableCartridge.gameObject.SetActive(false);
+			j++;
+		}
 	}
 	
 	private void StartInkTask(int itemNumber)
-	{
+	{		
+		//Subscribe to gesture
+		GestureManager.OnSwipeRight += InsertCartridge;
+		
+		//Activate all cartridges
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
+			//Instantiate particles
+			InstantiateParticles(_particles.enable, icc.cartridge.gameObject);
+			//Activate cartridge
 			icc.insertableCartridge.gameObject.SetActive(true);
 		}
-		if(_machineInks.Count < itemNumber + 1)
-		{
-			if(OnCorrectInkInserted != null)
-            {
-                OnCorrectInkInserted();
-            }
-
-			Debug.Log("ERROR INK: Number out of index!");
-			return;
-		}
+		
+		//TODO: Comment on why this is necessary if put in again!
+//		if(_machineInks.Count < itemNumber + 1)
+//		{
+//			if(OnCorrectInkInserted != null)
+//            {
+//                OnCorrectInkInserted();
+//            }
+//
+//			Debug.Log("ERROR INK: Number out of index!");
+//			return;
+//		}
 		
 		if(_machineInks[itemNumber].cartridgeEmpty == false)
         {
             EmptyCartridge(itemNumber);
         }
 		
+		//Randomisation method for ink calls
 		/*var identifier = Random.Range(0,_machineInks.Count);
 		
         for(int i = 0; i < _machineInks.Count; i++)
@@ -344,29 +361,51 @@ public class Ink : MonoBehaviour
                 identifier = 0;
         }*/
 		
-		GestureManager.OnSwipeRight += InsertCartridge;
 	}
 	
 	private void EmptyCartridge(int iccnumber)
 	{
+		//FIXME: particles
 		foreach(Transform child in _machineInks[iccnumber].cartridge.transform)
 		{
 			if(child.name.Equals("ParticlePos") && _particleSmoke != null)
 			{
 				_particleSmoke.transform.position = child.position;
 				_particleSmoke.transform.rotation = child.rotation;
-				_particleSmoke.Play();
+				_particleSmoke.particleSystem.Play();
 			}
 		}
 		_machineInks[iccnumber].cartridgeEmpty = true;
-//		_machineInks[iccnumber].cartridge.gameObject.SetActive(false);
 		_machineInks[iccnumber].cartridge.renderer.material.mainTexture = _machineInks[iccnumber].empty;
 	}
-	
+		
+	//Method for instantiating particles
+	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
+	{
+		if(particles != null)
+		{
+			foreach(Transform child in posRotGO.transform)
+			{
+				if(child.name.Equals("ParticlePos") && particles != null)
+				{
+					//Instantiate Particle prefab. Rotation solution is a HACK
+					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+					//Child to DynamicObjects
+					tempParticles.transform.parent = _dynamicObjects.transform;
+					return;
+				}				
+			}
+			//Instantiate Particle prefab. Rotation solution is a HACK
+			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+			//Child to DynamicObjects
+			tempParticles1.transform.parent = _dynamicObjects.transform;
+		}
+	}
 	#endregion
 	#endregion
 	
 	#region SubClasses
+	//Cartridge class
     [System.Serializable]
     public class InkCartridgeClass
     {
@@ -378,16 +417,22 @@ public class Ink : MonoBehaviour
 		public float startWait = 1f;
 		public OpenDirection lidDirection;
 		
-		[HideInInspector]
-		public Vector3[] pathSucc = new Vector3[3];
-		[HideInInspector]
-		public Vector3[] pathFail = new Vector3[3];
-		[HideInInspector]
-		public Vector3 insertableStartPos;
-		[HideInInspector]
-        public bool lidIsOpen = false;
-		[HideInInspector]
-		public bool cartridgeEmpty = false;
+		[HideInInspector] public Vector3[] pathSucc = new Vector3[3];
+		[HideInInspector] public Vector3[] pathFail = new Vector3[3];
+		[HideInInspector] public Vector3 insertableStartPos;
+		[HideInInspector] public bool lidIsOpen = false;
+		[HideInInspector] public bool cartridgeEmpty = false;
+    };
+	
+	//Particles class
+    [System.Serializable]
+    public class Particles
+    {
+		public GameObject enable;
+		public GameObject disable;
+		public GameObject complete;
+		public GameObject failed;
+		public GameObject smoke;
     };
 	
 	public enum OpenDirection
