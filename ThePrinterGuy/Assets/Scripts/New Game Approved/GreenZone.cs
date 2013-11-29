@@ -3,22 +3,18 @@ using System.Collections;
 
 public class GreenZone : MonoBehaviour {
 	
-	[SerializeField]
-	private Texture2D _greenOn;
-	[SerializeField]
-	private Texture2D _greenOff;
-    [SerializeField]
-    private GameObject _greenInnerGlow;
-    [SerializeField]
-    private GameObject _ring;
-    [SerializeField]
-    private Texture2D _ringLit;
-    [SerializeField]
-    private Texture2D _ringUnlit;
+	[SerializeField] private Texture2D _greenOn;
+	[SerializeField] private Texture2D _greenOff;
+    [SerializeField] private GameObject _greenInnerGlow;
+//    [SerializeField] private GameObject _yellowInnerGlow;
+    [SerializeField] private GameObject _ring;
+    [SerializeField] private Texture2D _ringLit;
+    [SerializeField] private Texture2D _ringUnlit;
 	
 	// Use this for initialization
 	void Start () {
 	    _greenInnerGlow.renderer.enabled = false;
+//		_yellowInnerGlow.renderer.enabled = false;
 	}
 	
 	// Update is called once per frame
@@ -39,4 +35,17 @@ public class GreenZone : MonoBehaviour {
         _ring.renderer.material.mainTexture = _ringUnlit;
         _greenInnerGlow.renderer.enabled = false;
 	}
+	
+//	public void YellowOn()
+//	{
+//        _yellowInnerGlow.renderer.enabled = true;
+//		renderer.material.mainTexture = _greenOn;
+//        _ring.renderer.material.mainTexture = _ringLit;
+//	}
+//	public void YellowOff()
+//	{
+//		renderer.material.mainTexture = _greenOff;
+//        _ring.renderer.material.mainTexture = _ringUnlit;
+//        _greenInnerGlow.renderer.enabled = false;
+//	}
 }
