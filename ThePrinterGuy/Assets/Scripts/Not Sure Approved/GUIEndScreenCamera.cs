@@ -315,7 +315,7 @@ public class GUIEndScreenCamera : MonoBehaviour
             }
 	}
 
-    private void DisplayEndScreenLoose()
+    private void DisplayEndScreenLoose(int _score)
     {
         _isWin = false;
         SoundManager.Effect_InGame_Lose();
