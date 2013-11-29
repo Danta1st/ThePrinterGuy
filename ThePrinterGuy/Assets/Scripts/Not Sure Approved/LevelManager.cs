@@ -4,26 +4,17 @@ using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField]
-    private float _charLockedDistance = 12.0f;
-    [SerializeField]
-    private float _charUnlockedDistance = 10.0f;
-    [SerializeField]
-    private float _charMoveTime = 2.0f;
-    [SerializeField]
-    private List<GameObject> _stageCharacters = new List<GameObject>();
-    [SerializeField]
-    private List<GameObject> _gameLevels = new List<GameObject>();
+    [SerializeField] private float _charLockedDistance = 12.0f;
+    [SerializeField] private float _charUnlockedDistance = 10.0f;
+    [SerializeField] private float _charMoveTime = 2.0f;
+    [SerializeField] private List<GameObject> _stageCharacters = new List<GameObject>();
+    [SerializeField] private List<GameObject> _gameLevels = new List<GameObject>();
     //[SerializeField]
     private List<bool> _gameLevelsUnlocked = new List<bool>();
-    [SerializeField]
-    private iTween.EaseType _easeType;
-    [SerializeField]
-    private int _levelBoxCount;
-    [SerializeField]
-    private iTween.EaseType _easyTypeOfLevelParentObjectIn = iTween.EaseType.easeOutBack;
-    [SerializeField]
-    private iTween.EaseType _easyTypeOfLevelParentObjectOut = iTween.EaseType.easeInBack;
+    [SerializeField] private iTween.EaseType _easeType;
+    [SerializeField] private int _levelBoxCount;
+    [SerializeField] private iTween.EaseType _easyTypeOfLevelParentObjectIn = iTween.EaseType.easeOutBack;
+    [SerializeField] private iTween.EaseType _easyTypeOfLevelParentObjectOut = iTween.EaseType.easeInBack;
 
     private GameObject _selectedStageChar;
     private GameObject _lookTarget;
