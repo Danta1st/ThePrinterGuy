@@ -61,7 +61,7 @@ public class PathManager : MonoBehaviour {
 //		ActionSequencerManager.OnUraniumRodNode -= TriggerMoveUranium;
 		
 		BpmSequencer.OnPaperNode 		-= TriggerMovePaper;
-		BpmSequencer.OnInkNode 		-= TriggerMoveInk;
+		BpmSequencer.OnInkNode 			-= TriggerMoveInk;
 		BpmSequencer.OnUraniumRodNode 	-= TriggerMoveUranium;
 		BpmSequencer.OnBarometerNode 	-= TriggerMoveBarometer;
     }
@@ -69,7 +69,7 @@ public class PathManager : MonoBehaviour {
     #region Monohevaiour Methods
     void Start()
     {
-        _lookTargetDelay = _transitionTime / 1.5f;
+        _lookTargetDelay = _transitionTime / 2.0f;
     }
     #endregion
 
@@ -159,10 +159,8 @@ public class PathManager : MonoBehaviour {
 			if(OnCamPosChangeBegan != null)
 				OnCamPosChangeBegan();
 			
-			_lookingAt = lookTarget;
 			_queuedMoveTo = null;
-            _isMoving = true;
-			
+            _isMoving = true;			
 			
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPath(pathName),
                                                     "time", _transitionTime,
@@ -187,7 +185,6 @@ public class PathManager : MonoBehaviour {
 			if(OnCamPosChangeBegan != null)
 				OnCamPosChangeBegan();
 			
-			_lookingAt = lookTarget;
 			_queuedMoveTo = null;
             _isMoving = true;
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPathReversed(pathName),
@@ -211,6 +208,7 @@ public class PathManager : MonoBehaviour {
 		if(OnCamPosChangeEnded != null)
 			OnCamPosChangeEnded();
 		
+		_lookingAt = tf;
         _isMoving = false;
 		if(_queuedMoveTo != null)
 		{
