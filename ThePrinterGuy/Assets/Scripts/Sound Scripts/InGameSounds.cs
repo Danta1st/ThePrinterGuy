@@ -14,6 +14,11 @@ public class InGameSounds : MonoBehaviour
             GetComponent<GenericSoundScript>();
     }
 
+    void Start()
+    {
+        _soundFx.audio.ignoreListenerPause = true;
+    }
+
     public void Music_InGame_Main()
     {
         _music.LoopClipStart();

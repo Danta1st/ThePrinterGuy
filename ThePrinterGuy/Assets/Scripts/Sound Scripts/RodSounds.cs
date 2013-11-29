@@ -11,13 +11,10 @@ public class RodSounds : MonoBehaviour
     private GameObject _effectObject;
 
     private GenericSoundScript _soundFx;
-    private GenericSoundScript _music;
 
     void Awake()
     {
         _soundFx = transform.FindChild("SoundFx_Uranium Rods").
-            GetComponent<GenericSoundScript>();
-        _music = transform.FindChild("Music_Uranium Rods").
             GetComponent<GenericSoundScript>();
         _effectObject = transform.FindChild("SoundFx_Uranium Rods").gameObject;
     }
