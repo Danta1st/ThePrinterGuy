@@ -103,12 +103,14 @@ public class Tutorial : MonoBehaviour {
                     if(_hit.collider.gameObject.name == "NextButton")
                     {
 						NextPage();
-						UpdatePage();
+                        if(_index < _tutorialList.Count)
+                            UpdatePage();
                     }
                     else if(_hit.collider.gameObject.name == "BackButton")
                     {
 						PreviousPage();
-						UpdatePage();
+                        if(_index < _tutorialList.Count)
+                            UpdatePage();
                     }
                 }
                 //-----------------------------------------------------------------------//
@@ -177,7 +179,7 @@ public class Tutorial : MonoBehaviour {
 	{
 		_index++;
 		
-		if(_index > _tutorialList.Count)
+		if(_index > _tutorialList.Count-1)
 		{
             string correspondingLevelName = null;
             switch (Application.loadedLevelName) {
@@ -216,5 +218,6 @@ public class Tutorial : MonoBehaviour {
 			_index = 0;
 			_previousObject.SetActive(false);
 		}
+        UpdatePage();
 	}
 }
