@@ -40,9 +40,9 @@ public class HighscoreSceneScript : MonoBehaviour
 	private float alphaFloat;
 	
 	[SerializeField]
-	private static float _fadeInTime = 0.2f;
+	private float _fadeInTime = 0.2f;
 	[SerializeField]
-	private static float _fadeOutTime = 0.2f;
+	private float _fadeOutTime = 0.2f;
 		
 	public delegate void FailedLevelAction(int score);
     public static event FailedLevelAction OnFailedLevel;
@@ -63,17 +63,17 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	void Start () 
 	{
-		if(!_isPrepared)
+		if(!_isPrepared || _guiList == null)
 			return;
 		GetCurrentLevel();
-		//GoToHighScoreScreen(2, 1000, true, 200, 300, 1000); // TESTCODE - REMOVE LOAD FROM THE METHOD FIRST
 		_guiCamera = GameObject.Find ("GUI Camera").camera;
 		
 		_scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
-		AdjustCameraSize();
+
 		foreach(GameObject _guiObject in _guiList)
         {
+			Debug.Log("WAT");
             if(_guiObject.name == "IngameMenu")
             {
                 nextLevelButton = _guiObject.transform.FindChild("NextButton").gameObject;
@@ -93,7 +93,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			else if(_textObject.name == "SpeechText")
 				_speechText = _textObject.GetComponent<TextMesh>();
         }
-		
+		AdjustCameraSize();
 		if(!_isPrepared)
 		{
 			Debug.LogError("HighscoreScene not properly Prepared! Use 'HighscoreSceneScript.PrepareHighScoreScreen(int, int, bool, int, int, int)' before switching to Highscore screen.");
@@ -130,8 +130,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		_lastScore = score;
 		_win = win;
 		
-		
-		Application.LoadLevelAsync(ConstantValues.GetHighScoreScreenLevel);
+		StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
 	}
 	
 	private void DrawQuad(Color aColor,float aAlpha)
@@ -150,7 +149,7 @@ public class HighscoreSceneScript : MonoBehaviour
         GL.End();
         GL.PopMatrix();
     }
- 
+	
     private IEnumerator FadeToHSScreen(float aFadeOutTime, float aFadeInTime, Color aColor)
     {
         alphaFloat = 0.0f;
@@ -172,6 +171,11 @@ public class HighscoreSceneScript : MonoBehaviour
         }
 	}
 	
+	private void StartFadeHS(float aFadeOutTime, float aFadeInTime, Color aColor)
+    {
+		StartCoroutine(FadeToHSScreen(aFadeOutTime, aFadeInTime, aColor));
+    }
+	
 	private void AdjustCameraSize()
     {
         float _aspectRatio = 1920f / 1200f;
@@ -180,6 +184,12 @@ public class HighscoreSceneScript : MonoBehaviour
 
         foreach(GameObject _guiObject in _guiList)
         {
+			if(_guiObject == null)
+			{
+				Debug.Log(gameObject.name);
+				return;
+			}
+			
             _guiCamera.aspect = _aspectRatio;
             _guiCamera.orthographicSize = _startCameraSize;
 
