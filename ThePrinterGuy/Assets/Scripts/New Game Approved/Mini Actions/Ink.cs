@@ -279,7 +279,7 @@ public class Ink : MonoBehaviour
 	private void InkFailed(InkCartridgeClass icc)
 	{
 		//Instantiate fail particles
-		InstantiateParticles(_particles.failed, icc.cartridge.gameObject);
+		InstantiateParticlesToWordPos(_particles.failed, icc.cartridge.gameObject);
 		//Play sound
         SoundManager.Effect_Ink_WrongSlot();	
 		
