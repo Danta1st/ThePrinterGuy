@@ -39,6 +39,11 @@ public class GenericSoundScript : MonoBehaviour
     void Start()
     {
         _audioSource.clip = _audioClips[0];
+
+//        if(gameObject.transform.parent.name == "In Game" || gameObject.transform.parent.name == "Main Menu")
+//        {
+            gameObject.audio.ignoreListenerPause = true;
+//        }
     }
     #endregion
 
