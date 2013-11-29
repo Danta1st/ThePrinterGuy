@@ -50,7 +50,7 @@ public class StressOMeter : MonoBehaviour
     #endregion
     
 	#region Delegates & Events
-    public delegate void GameFailed();
+    public delegate void GameFailed(int _score);
     public static event GameFailed OnGameFailed;
 
     public delegate void AngryZoneTriggered();
@@ -337,7 +337,7 @@ public class StressOMeter : MonoBehaviour
         if(OnGameFailed != null && _rotationScale == _stressMAX && !_isDead)
         {
             _isDead = true;
-            OnGameFailed();
+            OnGameFailed(GameObject.Find("GUI List").GetComponent<GUIGameCamera>().GetScore());
         }
 
 		if((_happyZone < _rotationScale && _inHappyZone) || (_rotationScale < _angryZone && _inAngryZone) && _canTrigger)
