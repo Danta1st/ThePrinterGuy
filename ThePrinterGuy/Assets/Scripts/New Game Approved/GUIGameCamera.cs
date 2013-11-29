@@ -1,32 +1,36 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class GUIGameCamera : MonoBehaviour
 {
     #region Editor Publics
-    [SerializeField]
-    private LayerMask _layerMaskGUI;
+    [SerializeField] private LayerMask _layerMaskGUI;
     //List of all gui elements.
-    [SerializeField]
-    private GameObject[] _guiList;
-	[SerializeField]
-    private GameObject[] _textList;
-	[SerializeField]
-	private iTween.EaseType _easeTypeIngameMenu;
-	[SerializeField]
-    private GameObject _popupTextPrefab;
-    [SerializeField]
-    private GameObject _inkPrefab;
-    [SerializeField]
-    private GameObject _paperPrefab;
-    [SerializeField]
-    private GameObject _uraniumRodPrefab;
-    [SerializeField]
-    private GameObject _barometerPrefab;
+    [SerializeField] private GameObject[] _guiList;
+	[SerializeField] private GameObject[] _textList;
+	[SerializeField] private iTween.EaseType _easeTypeIngameMenu = iTween.EaseType.easeOutBack;
+	//Feedback prefabs for rewards (points)
+	[SerializeField] private GameObject _popupPrefab;
+	[SerializeField] private GameObject _popupTextPrefab;
+	//Task Prefabs for the sequencer
+    [SerializeField] private GameObject _inkPrefab;
+    [SerializeField] private GameObject _paperPrefab;
+    [SerializeField] private GameObject _uraniumRodPrefab;
+    [SerializeField] private GameObject _barometerPrefab;
+	[SerializeField] private float _secondsUntilEndScreen = 1.5f;
+	[SerializeField] private iTween.EaseType _easeTypeTextMove;
+	[SerializeField] private iTween.EaseType _easeTypeTextPunch;
+	[SerializeField] private TextPositionalOffset _offsetValues;
+    //Pressed and Non-pressed icon textures
+    [SerializeField] private Texture2D LevelPlayTexture;
+    [SerializeField] private Texture2D LevelPlayPressedTexture;
+    [SerializeField] private Texture2D LevelReplayPressedTexture;
+    [SerializeField] private Texture2D LevelQuitPressedTexture;
     #endregion
 
     #region Private Variables
+    private GreenZone _greenZoneScript;
 	private Camera _guiCamera;
     private float _scaleMultiplierX;
     private float _scaleMultiplierY;
@@ -34,6 +38,10 @@ public class GUIGameCamera : MonoBehaviour
     private bool _isGUI = false;
     private bool _canTouch = true;
     private float _timeScale = 0.0f;
+	private ParticleSystem[] _particleSystems;
+    private bool _waitForMe = false;
+    private string _currentTaskType;
+    private GameObject resumeButtom;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -43,7 +51,7 @@ public class GUIGameCamera : MonoBehaviour
     private float _statsOverviewDuration = 1.0f;
 	
 	//Highscore Variables.
-	private static int _score = 0;
+	private int _score = 0;
 	private string _strScore = "0";
 	private GameObject _scoreValueObject;
 	private GameObject _star1Object;
@@ -61,7 +69,7 @@ public class GUIGameCamera : MonoBehaviour
     private int _zone = 0;
     private bool _isLastNode = false;
 	
-	//Speech bubble
+	//Dialogue variables - Speech bubble
 	private GameObject _speechTextObject;
 	private GUISpeechText _guiSpeechTextScript;
     #endregion
@@ -70,25 +78,56 @@ public class GUIGameCamera : MonoBehaviour
 	public delegate void OnUpdateActionAction();
 	public static event OnUpdateActionAction OnUpdateAction;
 
-    public delegate void GameEndedAction();
+    public delegate void GameEndedAction(int score);
     public static event GameEndedAction OnGameEnded;
+
+    public delegate void PauseAction();
+    public static event PauseAction OnPause;
+
+    public delegate void RestartAction();
+    public static event RestartAction OnRestart;
+
+    public delegate void ToMainMenuFromLevelAction();
+    public static event ToMainMenuFromLevelAction OnToMainMenuFromLevel;
+
+
+    public delegate void TaskEndAction(string type, int zone);
+    public static event TaskEndAction OnTaskEnd;
 	#endregion
 
     #region Enable and Disable
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
-        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
-        ActionSequencerManager.OnLastNode += LastNode;
-        ScoreManager.TaskCompleted += CheckZone;
+//        ActionSequencerManager.OnCreateNewNode += InstantiateNodeAction;
+//        ActionSequencerManager.OnLastNode += LastNode;
+        BpmSequencer.OnPaperNode += SetCurrentTaskTypeToPaper;
+        BpmSequencer.OnInkNode += SetCurrentTaskTypeToInk;
+        BpmSequencer.OnUraniumRodNode += SetCurrentTaskTypeToRod;
+        BpmSequencer.OnBarometerNode += SetCurrentTaskTypeToBarometer;
+		
+		BpmSequencer.OnCreateNewNode += InstantiateNodeAction;
+		BpmSequencer.OnLastNode += LastNode;
+		
+        ScoreManager.OnTaskCompleted += CheckZone;
+
     }
 
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
-        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
-        ActionSequencerManager.OnLastNode -= LastNode;
-        ScoreManager.TaskCompleted -= CheckZone;
+//        ActionSequencerManager.OnCreateNewNode -= InstantiateNodeAction;
+//        ActionSequencerManager.OnLastNode -= LastNode;
+
+        BpmSequencer.OnPaperNode -= SetCurrentTaskTypeToPaper;
+        BpmSequencer.OnInkNode -= SetCurrentTaskTypeToInk;
+        BpmSequencer.OnUraniumRodNode -= SetCurrentTaskTypeToRod;
+        BpmSequencer.OnBarometerNode -= SetCurrentTaskTypeToBarometer;
+		
+		BpmSequencer.OnCreateNewNode -= InstantiateNodeAction;
+		BpmSequencer.OnLastNode -= LastNode;
+		
+        ScoreManager.OnTaskCompleted -= CheckZone;
     }
 
     public void EnableGUICamera()
@@ -149,7 +188,8 @@ public class GUIGameCamera : MonoBehaviour
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
-        transform.position = _guiCamera.transform.position;
+
+		transform.position = _guiCamera.transform.position;
 
         _scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
@@ -197,16 +237,8 @@ public class GUIGameCamera : MonoBehaviour
 			}
         }
         //--------------------------------------------------//
-		if(GUIMainMenuCamera.languageSetting == "EN")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
-		else if(GUIMainMenuCamera.languageSetting == "DK")
-		{
-			LocalizationText.SetLanguage(GUIMainMenuCamera.languageSetting);
-			UpdateText();
-		}
+
+		UpdateText();
 		
         EnableGUICamera();
 		
@@ -214,16 +246,26 @@ public class GUIGameCamera : MonoBehaviour
 		_star2Object.SetActive(false);
 		_star3Object.SetActive(false);
 		
+		_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
     }
 
     // Update is called once per frame
     void Update()
     {
+	#if UNITY_EDITOR
 		if(Input.GetKeyDown(KeyCode.N))
 		{
-			IncreaseScore(1000);
+			IncreaseScorePopup(1000);
 		}
-
+		if(Input.GetKeyDown(KeyCode.B))
+		{
+			IncreaseScorePopup(2000);
+		}
+		if(Input.GetKeyDown(KeyCode.V))
+		{
+			IncreaseScorePopup(10000);
+		}
+		
         if(Input.GetKeyDown(KeyCode.L))
         {
             CheckZone();
@@ -233,7 +275,24 @@ public class GUIGameCamera : MonoBehaviour
 			// Writes "SpeechBubbleExample" from the LocalizationText.xml
 			EnableGUIElement("SpeechBubble");
 			_guiSpeechTextScript.WriteText("SpeechBubbleExample");
+		} 
+		if(Input.GetKeyDown(KeyCode.Y))
+		{
+			PopupTextBig("PERFECT!");
 		}
+		if(Input.GetKeyDown(KeyCode.U))
+		{
+			PopupTextMedium("GREAT!");
+		}
+		if(Input.GetKeyDown(KeyCode.I))
+		{
+			PopupTextSmall("GOOD!");
+		}
+		if(Input.GetKeyDown(KeyCode.O))
+		{
+			PopupTextSmall("NOT BAD!");
+		}
+	#endif
     }
     #endregion
 	
@@ -247,22 +306,33 @@ public class GUIGameCamera : MonoBehaviour
     #region Class Methods
 
     #region Highscore
-	public void IncreaseScore(float _amount, string popUpText)
+	public void IncreaseScore(float _amount)
 	{
 		
 		_score += (int)_amount;
 		_strScore = _score.ToString();
-		PopupText(popUpText);
 		ShowScore();
 		ShowStars();
 	}
 	
-	public void IncreaseScore(float _amount)
+	public void IncreaseScorePopup(float _amount)
 	{
 		_score += (int)_amount;
 		_strScore = _score.ToString();
 		string _strAmount = _amount.ToString();
-		PopupText(_strAmount);
+		if(_amount <= 1000)
+		{
+			PopupTextSmall(_strAmount);
+		}
+		else if(_amount > 1000 && _amount < 10000)
+		{
+			PopupTextMedium(_strAmount);
+		}
+		else
+		{
+			PopupTextBig(_strAmount);
+		}
+		
 		ShowScore();
 		ShowStars();
 	}
@@ -281,10 +351,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(false);
 			_star3Object.SetActive(false);
 			
-			if(_isStar1Spawned)
+			if(!_isStar1Spawned)
 			{
 				iTween.PunchScale(_star1Object, new Vector3(20f,20f,0f),1f);
-				_isStar1Spawned = false;
+				_isStar1Spawned = true;
 			}
 			
 		}
@@ -294,10 +364,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(true);
 			_star3Object.SetActive(false);
 			
-			if(_isStar2Spawned)
+			if(!_isStar2Spawned)
 			{
 				iTween.PunchScale(_star2Object, new Vector3(20f,20f,0f),1f);
-				_isStar2Spawned = false;
+				_isStar2Spawned = true;
 			}
 			
 		}
@@ -308,10 +378,10 @@ public class GUIGameCamera : MonoBehaviour
 			_star3Object.SetActive(true);
 			
 			
-			if(_isStar3Spawned)
+			if(!_isStar3Spawned)
 			{
 				iTween.PunchScale(_star3Object, new Vector3(20f,20f,0f),1f);
-				_isStar3Spawned = false;
+				_isStar3Spawned = true;
 			}
 		}
 		else
@@ -320,24 +390,40 @@ public class GUIGameCamera : MonoBehaviour
 			_star2Object.SetActive(false);
 			_star3Object.SetActive(false);
 			
-			_isStar1Spawned = true;
-			_isStar2Spawned = true;
-			_isStar3Spawned = true;
+			_isStar1Spawned = false;
+			_isStar2Spawned = false;
+			_isStar3Spawned = false;
 			
 			
 		}
 	}
 	
-	public void PopupText(string _str)
+	public void PopupTextSmall(string _str)
 	{
-		StartCoroutine("InstantiatePopup", _str);
+		PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
 	}
 	
-	private IEnumerator InstantiatePopup(string _str)
+	public void PopupTextMedium(string _str)
+	{
+		PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
+	}
+	
+	public void PopupTextBig(string _str)
+	{
+		PopupText(_str, 10f, 100f, new Color(1f ,0.7f ,0f, 1f), new Color(1f ,0.7f ,0f, 0.7f));
+	}
+	
+	public void PopupText(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
+	{
+		StartCoroutine(InstantiatePopup(_str, _circles, _starTrail, _trailColor, _circleColor));
+	}
+	
+	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
 	{	
-		float _xPopupPos = Random.Range(0.35f,0.65f);
-		float _yPopupPos = Random.Range(0.3f,0.4f);
-		float _fontSize = 200f;
+		
+		float _xPopupPos = Random.Range(_offsetValues.startX,_offsetValues.endX);
+		float _yPopupPos = Random.Range(_offsetValues.startY,_offsetValues.endY);
+		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 1.2f;
 		float _punchAmmount = -10f;
@@ -346,24 +432,41 @@ public class GUIGameCamera : MonoBehaviour
 		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
 		
+		GameObject _popupObject = (GameObject)Instantiate(_popupPrefab, _popupTextPos , Quaternion.identity);
 		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
 		
-		iTween.MoveTo(_popupTextObject, _popupTextPos + new Vector3(0f,_moveLength,0f), 
-			_fadeInDuration + _fadeOutDuration);
+		_particleSystems = _popupObject.GetComponentsInChildren<ParticleSystem>();
 		
-		iTween.PunchScale(_popupTextObject, new Vector3(_punchAmmount,_punchAmmount,0f), 
-			_fadeOutDuration);
+		_particleSystems[0].particleSystem.emissionRate = _starTrail;
+		_particleSystems[1].particleSystem.emissionRate = _circles;
+		_particleSystems[0].particleSystem.startColor = _trailColor;
+		_particleSystems[1].particleSystem.startColor = _circleColor;
+		
+		iTween.MoveTo(_popupTextObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			"time", (_fadeInDuration + _fadeOutDuration), "easetype", _easeTypeTextMove));
+		
+		iTween.MoveTo(_popupObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
+			"time", (_fadeInDuration + _fadeOutDuration), "easetype", _easeTypeTextMove));
+		
+		iTween.PunchScale(_popupTextObject, iTween.Hash("amount", new Vector3(_punchAmmount,_punchAmmount,0f), 
+			"time", _fadeOutDuration, "easetype", _easeTypeTextPunch));
 		
 		iTween.FadeFrom(_popupTextObject, 0f, _fadeInDuration);
 		yield return new WaitForSeconds(_fadeInDuration);
 		iTween.FadeTo(_popupTextObject, 0f, _fadeOutDuration);
 		yield return new WaitForSeconds(_fadeOutDuration);
 		Destroy(_popupTextObject);
+		Destroy(_popupObject);
 		
 	}
+
+    public int GetScore()
+    {
+        return _score;
+    }
     #endregion
 
 	private void AdjustCameraSize()
@@ -418,24 +521,35 @@ public class GUIGameCamera : MonoBehaviour
                 {
                     if(_hit.collider.gameObject.name == "PauseButton")
                     {
+                        if(OnPause != null)
+                            OnPause();
                         OpenIngameMenu();
                     }
                     else if(_hit.collider.gameObject.name == "ResumeButton")
                     {
+                        _hit.collider.gameObject.renderer.material.mainTexture = LevelPlayPressedTexture;
                         CloseIngameMenu();
                     }
                     else if(_hit.collider.gameObject.name == "RestartButton")
                     {
+                        _hit.collider.gameObject.renderer.material.mainTexture = LevelReplayPressedTexture;
+                        if(OnRestart != null)
+                            OnRestart();
                         RestartLevel();
                     }
                     else if(_hit.collider.gameObject.name == "QuitButton")
                     {
+                        _hit.collider.gameObject.renderer.material.mainTexture = LevelQuitPressedTexture;
+                        if(OnToMainMenuFromLevel != null)
+                            OnToMainMenuFromLevel();
                         QuitLevel();
                     }
                     else if(_hit.collider.gameObject.name == "SettingsButton")
                     {
 						Settings();
                     }
+
+                    SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }
@@ -456,7 +570,10 @@ public class GUIGameCamera : MonoBehaviour
 		EnableGUIElement("BGIngameMenu");
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
-						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu));
+						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
+        Time.timeScale = 0.0f;
+        AudioListener.pause = true;
+        SoundManager.StoreVolumes();
     }
 
     private void CloseIngameMenu()
@@ -464,10 +581,10 @@ public class GUIGameCamera : MonoBehaviour
         float _start = 0.0f;
         float _end = 3.0f;
         _canTouch = false;
-        StartCoroutine(UnpauseTimer(_start, _end));
+        UnpauseTimer(_start, _end);
     }
 
-    IEnumerator UnpauseTimer(float _start, float _end)
+    private void UnpauseTimer(float _start, float _end)
     {
         while(true)
         {
@@ -479,30 +596,64 @@ public class GUIGameCamera : MonoBehaviour
             {
                 _canTouch = true;
 				iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", -_statsOverviewMoveAmount,
-								"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu));
-                yield return new WaitForSeconds(_statsOverviewDuration+0.1f);
-                LoadGUIState();
-				DisableGUIElement("IngameMenu");
-				DisableGUIElement("StatsOverview");
-				DisableGUIElement("BGIngameMenu");
+								"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true,
+                    "oncomplete", "UnPauseTimeScale", "oncompletetarget", gameObject));
                 break;
+
+                //ToDo: Insert flashy numbers counting down from 3 to 1 --> Request from Nicolai.
+                //This should happen after the menu has disappeared and the ingame gui appeared, but before the game resumes.
             }
-            yield return new WaitForSeconds(1);
         }
     }
+
+    private void UnPauseTimeScale()
+    {
+        Time.timeScale = 1.0f;
+        AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
+        //Resets the play icon back to the non-pressed.
+        _hit.collider.gameObject.renderer.material.mainTexture = LevelPlayTexture;
+
+        LoadGUIState();
+
+        while(!_waitForMe)
+        {
+            //NAILED IT!!!!
+        }
+
+        DisableGUIElement("IngameMenu");
+        DisableGUIElement("StatsOverview");
+        DisableGUIElement("BGIngameMenu");
+
+    }
+
+    private void DelayToStart()
+    {
+        LoadGUIState();
+        DisableGUIElement("IngameMenu");
+        DisableGUIElement("StatsOverview");
+        DisableGUIElement("BGIngameMenu");
+    }
+
     #endregion
 
     #region GUI Restart, Quit and Settings
     private void RestartLevel()
     {
-		//Need confirmation before restart.
-        Application.LoadLevel(Application.loadedLevel);
+		//TODO: Need confirmation before restart.
+		Time.timeScale = 1.0f;
+        AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
+        LoadingScreen.Load(Application.loadedLevel, true);
     }
 	
 	//TODO: Quit button functionality.
     private void QuitLevel()
     {
-        //Application.LoadLevel("SOMETHING SCENE");
+		Time.timeScale = 1.0f;
+        AudioListener.pause = false;
+        SoundManager.FadeAllSourcesUp();
+        LoadingScreen.Load(ConstantValues.GetStartScene);
     }
 	
 	//TODO: Settings button functionality.
@@ -537,8 +688,9 @@ public class GUIGameCamera : MonoBehaviour
             _sequencerObject = _barometerPrefab;
         }
 
-        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 1);
-        GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, Quaternion.identity);
+        _spawnPoint = new Vector3(_spawnPoint.x, _spawnPoint.y, 4);
+        GameObject _nodeItem = (GameObject)Instantiate(_sequencerObject, _spawnPoint, _sequencerObject.transform.localRotation);
+		//TODO: Set _nodeItem parent to DynamicObjects
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);
 		if(_sequencerObjectQueue.Count == 1)
@@ -555,18 +707,29 @@ public class GUIGameCamera : MonoBehaviour
         if(_sequencerObjectQueue.Count > 0)
         {
             _queuedObject = _sequencerObjectQueue.Peek();
-            ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
 
-            _zone = _actionSequencerItemScript.GetZoneStatus();
-            EndZone(_queuedObject);
+            Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
+			BpmSequencerItem _bpmSequencerItem = _queuedObject.GetComponent<BpmSequencerItem>();
+            //ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
+            _zone = _bpmSequencerItem.GetZoneStatus();
+			
+            if(OnTaskEnd != null)
+                OnTaskEnd(_currentTaskType, _zone);
+			
+            EndZone(_queuedObject, true);
         }
     }
 
-    public void EndZone(GameObject _go)
+    public void EndZone(GameObject _go, bool shouldDestroy)
     {
+		_greenZoneScript.GreenOff();
+		
 		_sequencerObjectQueue.Dequeue();
         _sequencerObjectQueue.TrimExcess();
-        Destroy(_go);
+		
+		if(shouldDestroy)
+			Destroy(_go);
+		
         _queuedObject = null;
 		
         if(OnUpdateAction != null)
@@ -576,23 +739,42 @@ public class GUIGameCamera : MonoBehaviour
 
         if(_isLastNode && _sequencerObjectQueue.Count == 0)
         {
-            if(OnGameEnded != null)
-            {
-                OnGameEnded();
-            }
+            StartCoroutine("ShowEndScreen");
         }
     }
+	
+	public void DestroyTask(GameObject go)
+	{
+		Destroy(go);
+	}
 
     public int GetZone()
     {
         return _zone;
     }
+	
+	private IEnumerator ShowEndScreen()
+	{
+		yield return new WaitForSeconds(_secondsUntilEndScreen);
+		if(OnGameEnded != null)
+        {
+            OnGameEnded(_score);
+        }
+	}
     #endregion
 
     #region GUI Save and Load
     private void SaveGUIState()
     {
         _timeScale = Time.timeScale;
+		
+		if(_sequencerObjectQueue.Count > 0)
+		{
+			foreach(GameObject obj in _sequencerObjectQueue)
+			{
+				obj.SetActive(false);
+			}
+		}
 
         foreach(GameObject _gui in _guiList)
         {
@@ -606,13 +788,25 @@ public class GUIGameCamera : MonoBehaviour
 
     private void LoadGUIState()
     {
-        Time.timeScale = _timeScale;
-
+        _waitForMe = false;
+		
+		if(_sequencerObjectQueue.Count > 0)
+		{
+			foreach(GameObject obj in _sequencerObjectQueue)
+			{
+				obj.SetActive(true);
+			}
+		}
+		
         foreach(GameObject _gui in _guiSaveList)
         {
             _gui.SetActive(true);
         }
+
         _guiSaveList.Clear();
+
+        Time.timeScale = _timeScale;
+        _waitForMe = true;
     }
     #endregion
 	
@@ -625,4 +819,32 @@ public class GUIGameCamera : MonoBehaviour
 	}
 	
     #endregion
+
+    #region GA
+    private void SetCurrentTaskTypeToPaper(int stateNumber)
+    {
+        _currentTaskType = "Paper";
+    }
+    private void SetCurrentTaskTypeToInk(int stateNumber)
+    {
+        _currentTaskType = "Ink";
+    }
+    private void SetCurrentTaskTypeToRod(int stateNumber)
+    {
+        _currentTaskType = "Rods";
+    }
+    private void SetCurrentTaskTypeToBarometer(int stateNumber)
+    {
+        _currentTaskType = "Barometers";
+    }
+    #endregion
+}
+
+[System.Serializable]
+public class TextPositionalOffset
+{
+	public float startX = 0.35f;
+	public float endX = 0.65f;
+	public float startY = 0.35f;
+	public float endY = 0.45f;
 }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -42,14 +42,14 @@ public class InkController : MonoBehaviour
 	//TODO: Handle gesture allowance
 	void OnEnable ()
 	{
-		ActionSequencerManager.OnInkNode += EnableInkTask;
-		ActionSequencerItem.OnFailed += DisableInkTask;
+		BpmSequencer.OnInkNode += EnableInkTask;
+		BpmSequencerItem.OnFailed += DisableInkTask;
 	}
 	
 	void OnDisable ()
 	{
-		ActionSequencerManager.OnInkNode -= EnableInkTask;
-		ActionSequencerItem.OnFailed -= DisableInkTask;
+		BpmSequencer.OnInkNode -= EnableInkTask;
+		BpmSequencerItem.OnFailed -= DisableInkTask;
 	}
 	
 	
@@ -73,7 +73,7 @@ public class InkController : MonoBehaviour
 	#endregion
 	
 	#region delegate methods
-	private void EnableInkTask()
+	private void EnableInkTask(int temp)
 	{
 		GestureManager.OnSwipeRight += InsertInk;
 		

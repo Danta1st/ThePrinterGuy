@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ActionSequencerManager : MonoBehaviour {
-
+	
+	/*
     #region SerializeField Variables
     [SerializeField]
     private ActionSequencerList[] _actionSequencerList;
@@ -30,16 +31,16 @@ public class ActionSequencerManager : MonoBehaviour {
 	public delegate void DefaultCamPosAction();
     public static event DefaultCamPosAction OnDefaultCamPos;
 	
-    public delegate void PaperNodeAction();
+    public delegate void PaperNodeAction(int itemNumber);
     public static event PaperNodeAction OnPaperNode;
 
-    public delegate void InkNodeAction();
+    public delegate void InkNodeAction(int itemNumber);
     public static event InkNodeAction OnInkNode;
 
-    public delegate void UraniumRodNodeAction();
+    public delegate void UraniumRodNodeAction(int itemNumber);
     public static event UraniumRodNodeAction OnUraniumRodNode;
 
-    public delegate void BarometerNodeAction();
+    public delegate void BarometerNodeAction(int itemNumber);
     public static event BarometerNodeAction OnBarometerNode;
     #endregion
 
@@ -61,7 +62,7 @@ public class ActionSequencerManager : MonoBehaviour {
     {
 		_guiGameCam = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
         _timer = gameObject.AddComponent<TimerUtilities>();
-        _startTimeStamp = 40;
+        _startTimeStamp = 300;
         _timer.StartTimer(_startTimeStamp, true);
         _timer.ResumeTimer();
 	}
@@ -119,28 +120,28 @@ public class ActionSequencerManager : MonoBehaviour {
 	        {
 	            if(OnPaperNode != null)
 	            {
-	                OnPaperNode();
+	                OnPaperNode(_actionSequencerList[_focusIndex].itemNumber - 1);
 	            }
 	        }
 	        else if(_focusItem == "Ink")
 	        {
 	            if(OnInkNode != null)
 	            {
-	                OnInkNode();
+	                OnInkNode(_actionSequencerList[_focusIndex].itemNumber - 1);
 	            }
 	        }
 	        else if(_focusItem == "UraniumRod")
 	        {
 	            if(OnUraniumRodNode != null)
 	            {
-	                OnUraniumRodNode();
+	                OnUraniumRodNode(_actionSequencerList[_focusIndex].itemNumber - 1);
 	            }
 	        }
 	        else if(_focusItem == "Barometer")
 	        {
 	            if(OnBarometerNode != null)
 	            {
-	                OnBarometerNode();
+	                OnBarometerNode(_actionSequencerList[_focusIndex].itemNumber - 1);
 	            }
 	        }
             _focusIndex++;
@@ -154,6 +155,8 @@ public class ActionSequencerManager : MonoBehaviour {
     {
         public float timeStamp;
         public ActionItem actionItem = ActionItem.None;
+		[Range(1,5)]
+		public int itemNumber = 1;
 
         public enum ActionItem
         {
@@ -164,5 +167,7 @@ public class ActionSequencerManager : MonoBehaviour {
             Barometer
         };
     };
+		
     #endregion
+    */
 }

@@ -5,51 +5,79 @@ using System.Collections.Generic;
 public class ScoreManager : MonoBehaviour 
 {
 	#region Publics
-	[SerializeField]
-	private int InkPointsBase = 100;
-	[SerializeField]
-	private int PaperPointsBase = 100;
-	[SerializeField]
-	private int BarometerPointsBase = 100;
-	[SerializeField]
-	private int RodPointsBase = 100;
-	[SerializeField]
-	private float YellowZoneModifier = 1.2f;
-	[SerializeField]
-	private float GreenZoneModifier = 1.5f;
-	[SerializeField]
-	private List<string> Feedback;
+	//Task points
+	[SerializeField] private int InkPointsBase = 100;
+	[SerializeField] private int PaperPointsBase = 100;
+	[SerializeField] private int BarometerPointsBase = 100;
+	[SerializeField] private int RodPointsBase = 100;
+	//Zone Modifiers
+	[SerializeField] private float YellowZoneModifier = 1.2f;
+	[SerializeField] private float GreenZoneModifier = 1.5f;
+	//StressOMeter Modifiers
+	[SerializeField] private List<string> Feedback;
+	[SerializeField] private ScoreMultipliers _scoreMultiplier;
 	#endregion
 	
 	#region Privates
 	private GUIGameCamera guiGameCameraScript;
+	private float _multiplier;
 	#endregion
 	
 	#region Delegates and Events
-	public delegate void OnTaskCompleted();
-	public static event OnTaskCompleted TaskCompleted;
+	public delegate void OnTaskCompletedAction();
+	public static event OnTaskCompletedAction OnTaskCompleted;
 	#endregion
 	
 	#region Unity Methods
 	void Start () 
 	{
 		guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
+		_multiplier = _scoreMultiplier.slightlyHappyZoneMultiplier;
 	}
+	/*void Update()
+	{
+		if(Input.GetKeyDown(KeyCode.C))
+		{
+			InkSuccess();
+		}
+	}*/
 	
 	void OnEnable()
 	{
+		//Task Succes Subscriptions
 		Ink.OnCorrectInkInserted += InkSuccess;
 		PaperInsertion.OnCorrectPaperInserted += PaperSuccess;
 		Barometer.OnBarometerFixed += BarometerSuccess;
 		UraniumRods.OnRodHammered += RodSuccess;
+		
+		//StressOMeter Subscriptions
+		StressOMeter.OnHappyZone += EnableHappyMultiplier;
+		StressOMeter.OnZoneLeft += DisableHappyMultiplier;
 	}
 	
 	void OnDisable()
 	{
+		//Task Succes Subscriptions
 		Ink.OnCorrectInkInserted -= InkSuccess;
 		PaperInsertion.OnCorrectPaperInserted -= PaperSuccess;
 		Barometer.OnBarometerFixed -= BarometerSuccess;
 		UraniumRods.OnRodHammered -= RodSuccess;
+	
+		//StressOMeter Subscriptions
+		StressOMeter.OnAngryZone -= EnableHappyMultiplier;
+		StressOMeter.OnZoneLeft -= DisableHappyMultiplier;
+	}
+	#endregion
+	
+	#region delegate methods
+	private void EnableHappyMultiplier()
+	{
+		_multiplier = _scoreMultiplier.happyZoneMultiplier;
+	}
+	
+	private void DisableHappyMultiplier()
+	{
+		_multiplier = _scoreMultiplier.slightlyHappyZoneMultiplier;
 	}
 	#endregion
 	
@@ -75,9 +103,10 @@ public class ScoreManager : MonoBehaviour
 	{
 		int colorHit = 0;
 		bool pointsGranted = false;
+		int popupSize = 1;
 		
-		if(TaskCompleted != null)
-			TaskCompleted();
+		if(OnTaskCompleted != null)
+			OnTaskCompleted();
 
 		colorHit = guiGameCameraScript.GetZone();
 
@@ -85,22 +114,25 @@ public class ScoreManager : MonoBehaviour
 		{
 			case 0:
                 Feedback.Clear();
-                Feedback.Add("Not in a Zone!");
+                Feedback.Add("NOT BAD!");
+				popupSize = 3;
 				break;
             case 1:
                 Feedback.Clear();
-                Feedback.Add("Red Zone!");
+                Feedback.Add("GOOD!");
+				popupSize = 3;
                 break;
 			case 2:
                 Feedback.Clear();
-                Feedback.Add("Yellow Zone!");
-				amount = amount * YellowZoneModifier;
+                Feedback.Add("GREAT!");
+				popupSize = 2;
+				amount = amount * YellowZoneModifier * _multiplier;
 				break;
 			case 3:
                 Feedback.Clear();
-                Feedback.Add("Green Zone!");
-                Feedback.Add("Perfect!");
-				amount = amount * GreenZoneModifier;
+                Feedback.Add("PERFECT!");
+				popupSize = 1;
+				amount = amount * GreenZoneModifier * _multiplier;
 				break;
 			default:
 				break;
@@ -118,11 +150,39 @@ public class ScoreManager : MonoBehaviour
 				{
 					amount = 0;	
 				}
-				guiGameCameraScript.IncreaseScore(amount, s);
+				
+				guiGameCameraScript.IncreaseScore(amount);
+				
+				if(popupSize == 1)
+				{
+					guiGameCameraScript.PopupTextBig(s);
+				}
+				else if(popupSize == 2)
+				{
+					guiGameCameraScript.PopupTextMedium(s);
+				}
+				else if(popupSize == 3)
+				{
+					guiGameCameraScript.PopupTextSmall(s);
+				}
+				else
+				{
+					guiGameCameraScript.PopupTextSmall(s);
+				}
+				
 				pointsGranted = true;
 				yield return new WaitForSeconds(0.2f);
 			}
 		}
 	}
 	#endregion
+}
+
+[System.Serializable]
+public class ScoreMultipliers
+{
+	public float happyZoneMultiplier = 1.2f;
+	public float slightlyAngryZoneMultiplier = 1f;
+	public float slightlyHappyZoneMultiplier = 1f;
+	public float angryZoneMultiplier = 0.8f;
 }

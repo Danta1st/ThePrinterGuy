@@ -25,6 +25,81 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100002
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400002}
+  m_Layer: 0
+  m_Name: InkFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400004}
+  m_Layer: 0
+  m_Name: FocusPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100006
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400006}
+  m_Layer: 0
+  m_Name: PaperFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100008
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400008}
+  m_Layer: 0
+  m_Name: BarometerFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100010
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400010}
+  m_Layer: 0
+  m_Name: UraniumFocusPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -34,8 +109,68 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 400004}
   m_Father: {fileID: 0}
+--- !u!4 &400002
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: -1}
+  m_LocalPosition: {x: 3.45814753, y: -1.79359102, z: -14.7198334}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400004}
+--- !u!4 &400004
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -.153335571, y: 4.16516113, z: -3.06958008}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 400008}
+  - {fileID: 400002}
+  - {fileID: 400006}
+  - {fileID: 400010}
+  m_Father: {fileID: 400000}
+--- !u!4 &400006
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.64976978, y: -7.75471115, z: -6.94906044}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400004}
+--- !u!4 &400008
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100008}
+  m_LocalRotation: {x: .0233240016, y: .0010530001, z: .0016340001, w: .999726057}
+  m_LocalPosition: {x: -.426397502, y: -2.56918287, z: 10.578455}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400004}
+--- !u!4 &400010
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_LocalRotation: {x: -.11076197, y: .667783797, z: .101454981, w: .729042828}
+  m_LocalPosition: {x: 9.61240864, y: -7.09998322, z: -.895548105}
+  m_LocalScale: {x: .850000083, y: .849999964, z: .850000083}
+  m_Children: []
+  m_Father: {fileID: 400004}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -50,14 +185,14 @@ MonoBehaviour:
   pathName: BarometerInk
   pathColor: {r: 1, g: .724138081, b: 0, a: 1}
   nodes:
-  - {x: -15.2427197, y: 2.45959091, z: 4.11346722}
-  - {x: -21.5294018, y: 0, z: 11.8434906}
-  - {x: 0, y: 0, z: 23.5639114}
-  - {x: 5.23999977, y: 5.45202398, z: 13.4016504}
+  - {x: -2.942662, y: .862833023, z: 16.0150909}
+  - {x: 39.2519264, y: 0, z: 8.25605583}
+  - {x: 26.2658463, y: 4.60471249, z: -29.3016243}
+  - {x: 12.1000299, y: .815938473, z: -22.5924492}
   nodeCount: 4
   initialized: 1
   initialName: New Path 6
-  pathVisible: 0
+  pathVisible: 1
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -72,14 +207,14 @@ MonoBehaviour:
   pathName: UraniumInk
   pathColor: {r: 0, g: 1, b: .0482759476, a: 1}
   nodes:
-  - {x: 17.9359303, y: -2.25409698, z: 3.27652693}
-  - {x: 26.2732925, y: 3.53999996, z: 14.3214035}
-  - {x: 9.9363842, y: 5.45202398, z: 19.9099998}
-  - {x: 5.23999977, y: 5.45202398, z: 13.4016504}
+  - {x: 17.9359303, y: .0633945465, z: -4.72347307}
+  - {x: 35.6403275, y: 3.53999996, z: -9.1270237}
+  - {x: 26.5404606, y: 7.14227629, z: -32.5981522}
+  - {x: 12.1000299, y: .815938473, z: -22.5924492}
   nodeCount: 4
   initialized: 1
   initialName: New Path 5
-  pathVisible: 0
+  pathVisible: 1
 --- !u!114 &11400004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -94,11 +229,11 @@ MonoBehaviour:
   pathName: UraniumBarometer
   pathColor: {r: .655172467, g: 1, b: 0, a: 1}
   nodes:
-  - {x: 17.9359303, y: -2.25409698, z: 3.27652693}
-  - {x: 25.0781708, y: 10.5449419, z: 16.9545879}
-  - {x: 0, y: 6.03772163, z: 26.3482323}
-  - {x: -23.9345093, y: 4.27468348, z: 7.18342209}
-  - {x: -15.2427197, y: 2.45959091, z: 4.11346722}
+  - {x: 17.9359303, y: .0633945465, z: -4.72347307}
+  - {x: 39.9335251, y: 5.94681263, z: 2.13410091}
+  - {x: 32.2917595, y: 6.03772163, z: 26.3482323}
+  - {x: 2.53428102, y: 4.27468348, z: 34.3440819}
+  - {x: -2.942662, y: .862833023, z: 16.0150909}
   nodeCount: 5
   initialized: 1
   initialName: New Path 4
@@ -117,15 +252,15 @@ MonoBehaviour:
   pathName: PaperInk
   pathColor: {r: 1, g: 0, b: .475862026, a: 1}
   nodes:
-  - {x: -15.8846598, y: 0, z: -8.96931839}
-  - {x: -22.0799999, y: 13.0213127, z: -9.32075977}
-  - {x: -17.145752, y: 16.5950241, z: 14.8697033}
-  - {x: 0, y: 6.84387207, z: 25.9336224}
-  - {x: 5.23999977, y: 5.45202446, z: 13.4016533}
+  - {x: -17.2808704, y: 0, z: -4.99368811}
+  - {x: -28.6903687, y: 2.23463058, z: -11.1632242}
+  - {x: -3.83145142, y: 16.5950241, z: -43.5491333}
+  - {x: 24.2594337, y: 9.76736069, z: -33.7562027}
+  - {x: 12.1000299, y: .815938473, z: -22.5924492}
   nodeCount: 5
   initialized: 1
   initialName: New Path 3
-  pathVisible: 0
+  pathVisible: 1
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -140,10 +275,11 @@ MonoBehaviour:
   pathName: PaperBarometer
   pathColor: {r: .158620834, g: 0, b: 1, a: 1}
   nodes:
-  - {x: -15.8846598, y: 0, z: -8.96931839}
-  - {x: -25.9985275, y: 10.3135681, z: -3.28868866}
-  - {x: -15.2427177, y: 2.45959091, z: 4.11346722}
-  nodeCount: 3
+  - {x: -17.2808704, y: 0, z: -4.99368811}
+  - {x: -32.7730179, y: 6.79547882, z: 2.17488098}
+  - {x: -12.3726654, y: .862833023, z: 28.8580513}
+  - {x: -2.942662, y: .862833023, z: 16.0150909}
+  nodeCount: 4
   initialized: 1
   initialName: New Path 2
   pathVisible: 0
@@ -161,11 +297,11 @@ MonoBehaviour:
   pathName: PaperUranium
   pathColor: {r: 0, g: 1, b: .751724243, a: 1}
   nodes:
-  - {x: -15.8846569, y: 0, z: -8.96931839}
+  - {x: -17.2808704, y: 0, z: -4.99368811}
   - {x: -18.7701683, y: 6.94022322, z: -16.7732639}
   - {x: 10.6968136, y: 8.23894882, z: -19.1417542}
-  - {x: 26.3487549, y: 0, z: -4.46752548}
-  - {x: 17.9359264, y: -2.25409698, z: 3.2765274}
+  - {x: 26.3487549, y: 3.35072708, z: -4.46752548}
+  - {x: 17.9359264, y: .0633945465, z: -4.72347307}
   nodeCount: 5
   initialized: 1
   initialName: New Path 1
@@ -184,11 +320,10 @@ MonoBehaviour:
   pathName: BeginInk
   pathColor: {r: .784313738, g: 0, b: 0, a: 1}
   nodes:
-  - {x: 23, y: 8, z: -31}
-  - {x: 26.3949432, y: 7.63362885, z: -20.6722794}
-  - {x: 23.327589, y: 3.27713108, z: -14.5515366}
-  - {x: 14.1332541, y: .643746853, z: -14.4083319}
-  nodeCount: 4
+  - {x: 11.10112, y: 11.4912834, z: -42.2492142}
+  - {x: 20.7332268, y: 8.06874657, z: -31.6677303}
+  - {x: 12.1000252, y: .815938473, z: -22.592453}
+  nodeCount: 3
   initialized: 1
   initialName: New Path 4
   pathVisible: 1
@@ -214,7 +349,7 @@ MonoBehaviour:
   nodeCount: 5
   initialized: 1
   initialName: New Path 3
-  pathVisible: 1
+  pathVisible: 0
 --- !u!114 &11400016
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -231,11 +366,11 @@ MonoBehaviour:
   nodes:
   - {x: 23, y: 8, z: -31}
   - {x: 37.2655907, y: 5.23000002, z: -10}
-  - {x: 17.9359303, y: -2.25409698, z: -4.72347307}
+  - {x: 17.9359303, y: .0633945465, z: -4.72347307}
   nodeCount: 3
   initialized: 1
   initialName: New Path 2
-  pathVisible: 1
+  pathVisible: 0
 --- !u!114 &11400018
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -257,7 +392,7 @@ MonoBehaviour:
   nodeCount: 4
   initialized: 1
   initialName: New Path 1
-  pathVisible: 1
+  pathVisible: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

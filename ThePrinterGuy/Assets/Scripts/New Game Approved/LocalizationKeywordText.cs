@@ -22,4 +22,9 @@ public class LocalizationKeywordText : MonoBehaviour {
     {
         gameObject.GetComponent<TextMesh>().text = LocalizationText.GetText(_stringText);
     }
+	
+	public void SetStringText(string LocaleText)
+	{
+		_stringText = LocaleText;
+	}
 }
