@@ -5,17 +5,31 @@ public class GAPlayerAnalytics : MonoBehaviour {
     float beatsSinceLevelLoad = 0;
 
 	// Use this for initialization
-	void Start () {
+	void OnEnable()
+    {
         BpmManager.OnBeat += UpdateBeat;
         GUIGameCamera.OnPause += PlayerPause;
         GUIGameCamera.OnRestart += PlayerRestartLevel;
         GUIGameCamera.OnToMainMenuFromLevel += PlayerToMainMenuFromLevel;
-        //HighscoreSceneScript.OnFailedLevel += PlayerFailedLevel;
-        //HighscoreSceneScript.OnCompletedLevel += PlayerCompletedLevel;
+        GUIEndScreenCamera.OnFailedLevel += PlayerFailedLevel;
+        GUIEndScreenCamera.OnCompletedLevel += PlayerCompletedLevel;
         StressOMeter.OnStressIncrease += StressIncrease;
         StressOMeter.OnStressDecrease += StressDecrease;
         GUIGameCamera.OnTaskEnd += TaskEnd;
 	}
+
+    void OnDisable()
+    {
+        BpmManager.OnBeat -= UpdateBeat;
+        GUIGameCamera.OnPause -= PlayerPause;
+        GUIGameCamera.OnRestart -= PlayerRestartLevel;
+        GUIGameCamera.OnToMainMenuFromLevel -= PlayerToMainMenuFromLevel;
+        GUIEndScreenCamera.OnFailedLevel -= PlayerFailedLevel;
+        GUIEndScreenCamera.OnCompletedLevel -= PlayerCompletedLevel;
+        StressOMeter.OnStressIncrease -= StressIncrease;
+        StressOMeter.OnStressDecrease -= StressDecrease;
+        GUIGameCamera.OnTaskEnd -= TaskEnd;
+    }
 
     private void UpdateBeat()
     {

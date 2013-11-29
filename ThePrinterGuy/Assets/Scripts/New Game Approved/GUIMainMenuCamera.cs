@@ -429,7 +429,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         DisableGUIElementAll();
         EnableGUIElement("OptionsMenu");
-        EnableGUIElement("MenuButtonRight");
+        EnableGUIElement("MenuButtonLeft");
     }
 
     private void ChangeToMain()

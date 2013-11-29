@@ -57,7 +57,15 @@ public class GUIEndScreenCamera : MonoBehaviour
 	private int _currentLevel = 0;
 	private int _levelHighscore = 0;
     #endregion
-	
+
+    #region Delegates & Events
+    public delegate void FailedLevelAction(float score);
+    public static event FailedLevelAction OnFailedLevel;
+ 
+    public delegate void CompletedLevelAction(float score);
+    public static event CompletedLevelAction OnCompletedLevel;
+	#endregion
+
     #region Enable and Disable
     void OnEnable()
     {
@@ -301,11 +309,13 @@ public class GUIEndScreenCamera : MonoBehaviour
 		    GestureManager.OnTap += CheckCollision;
 
 		    _levelScore = score;
+            if(OnCompletedLevel != null)
+                OnCompletedLevel((float) _levelScore);
 		    StartCoroutine("MoveEstimateBar");
             }
 	}
 
-    private void DisplayEndScreenLoose()
+    private void DisplayEndScreenLoose(int _score)
     {
         _isWin = false;
         SoundManager.Effect_InGame_Lose();
@@ -321,6 +331,8 @@ public class GUIEndScreenCamera : MonoBehaviour
         GUIGameCamera guiGameCameraScript = _realGUIList.GetComponent<GUIGameCamera>();
 
         _levelScore = guiGameCameraScript.GetScore();
+        if(OnFailedLevel != null)
+            OnFailedLevel((float) _levelScore);
         nextLevelButton.SetActive(false);
         StartCoroutine("MoveEstimateBar");
     }
