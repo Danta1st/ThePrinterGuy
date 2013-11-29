@@ -253,6 +253,7 @@ public class Ink : MonoBehaviour
 		
 		//Instantiate particles
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
+        InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);
 		
 		//Play sound
 		SoundManager.Effect_Ink_RightSlot();
@@ -401,6 +402,28 @@ public class Ink : MonoBehaviour
 			tempParticles1.transform.parent = _dynamicObjects.transform;
 		}
 	}
+
+    private void InstantiateParticlesToWordPos(GameObject particles, GameObject posRotGO)
+ {
+     if(particles != null)
+     {
+         foreach(Transform child in posRotGO.transform)
+         {
+             if(child.name.Equals("ParticleWordPos") && particles != null)
+             {
+                 //Instantiate Particle prefab. Rotation solution is a HACK
+                 GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+                 //Child to DynamicObjects
+                 tempParticles.transform.parent = _dynamicObjects.transform;
+                 return;
+             }               
+         }
+         //Instantiate Particle prefab. Rotation solution is a HACK
+         GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+         //Child to DynamicObjects
+         tempParticles1.transform.parent = _dynamicObjects.transform;
+     }
+ }
 	#endregion
 	#endregion
 	
@@ -431,6 +454,7 @@ public class Ink : MonoBehaviour
 		public GameObject enable;
 		public GameObject disable;
 		public GameObject complete;
+        public GameObject completeClick;
 		public GameObject failed;
 		public GameObject smoke;
     };
