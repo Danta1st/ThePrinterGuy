@@ -65,6 +65,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	{
 		if(!_isPrepared || _guiList == null)
 			return;
+		
 		GetCurrentLevel();
 		_guiCamera = GameObject.Find ("GUI Camera").camera;
 		
@@ -73,7 +74,6 @@ public class HighscoreSceneScript : MonoBehaviour
 
 		foreach(GameObject _guiObject in _guiList)
         {
-			Debug.Log("WAT");
             if(_guiObject.name == "IngameMenu")
             {
                 nextLevelButton = _guiObject.transform.FindChild("NextButton").gameObject;
@@ -252,6 +252,14 @@ public class HighscoreSceneScript : MonoBehaviour
 	private void LaunchEndScreen()
 	{
 		GestureManager.OnTap += CheckCollision;
+		if(_isWin)
+		{
+			SoundManager.Effect_InGame_Win();
+		}
+		else
+		{
+			SoundManager.Effect_InGame_Lose();
+		}
 		_levelScore = _lastScore;
 		StartCoroutine("MoveEstimateBar");
 	}
