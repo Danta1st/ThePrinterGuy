@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -49,6 +50,10 @@ public class GUIGameCamera : MonoBehaviour
     private GameObject _statsOverviewObject;
     private Vector3 _statsOverviewMoveAmount;
     private float _statsOverviewDuration = 1.0f;
+	
+	//PauseScreen Objects
+	private GameObject _pauseCurrScore;
+	private GameObject _pauseHighScore;
 	
 	//Highscore Variables.
 	private int _score = 0;
@@ -208,6 +213,9 @@ public class GUIGameCamera : MonoBehaviour
 
         //Find specific gui objects in the gui list.
         //--------------------------------------------------//
+		_pauseCurrScore = GameObject.Find("CurrentScoreValue").gameObject;
+		_pauseHighScore = GameObject.Find("HighscoreValue").gameObject;
+		
         foreach(GameObject _guiObject in _guiList)
         {
 			if(_guiObject.name == "IngameMenu" || _guiObject.name == "BGIngameMenu")
@@ -217,6 +225,7 @@ public class GUIGameCamera : MonoBehaviour
 			
             if(_guiObject.name == "StatsOverview")
             {
+				
                 _statsOverviewObject = _guiObject;
 
                 Vector3 _tempStatsOverviewPos = new Vector3(_statsOverviewObject.transform.position.x, _statsOverviewObject.transform.position.y, 1);
@@ -247,7 +256,7 @@ public class GUIGameCamera : MonoBehaviour
 			}
         }
         //--------------------------------------------------//
-
+		
 		UpdateText();
 		
         EnableGUICamera();
@@ -431,8 +440,8 @@ public class GUIGameCamera : MonoBehaviour
 	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
 	{	
 		
-		float _xPopupPos = Random.Range(_offsetValues.startX,_offsetValues.endX);
-		float _yPopupPos = Random.Range(_offsetValues.startY,_offsetValues.endY);
+		float _xPopupPos = UnityEngine.Random.Range(_offsetValues.startX,_offsetValues.endX);
+		float _yPopupPos = UnityEngine.Random.Range(_offsetValues.startY,_offsetValues.endY);
 		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 1.2f;
@@ -578,6 +587,17 @@ public class GUIGameCamera : MonoBehaviour
         EnableGUIElement("IngameMenu");
 		EnableGUIElement("StatsOverview");
 		EnableGUIElement("BGIngameMenu");
+		
+		try
+		{
+			_pauseCurrScore.GetComponent<TextMesh>().text = GetScore().ToString();
+			int[] highScores = SaveGame.GetPlayerHighscores();
+			_pauseHighScore.GetComponent<TextMesh>().text = highScores[Application.loadedLevel].ToString();
+		}
+		catch(Exception e)
+		{
+			Debug.LogError("HighScore error! " + e.Message);
+		}
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
 						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
