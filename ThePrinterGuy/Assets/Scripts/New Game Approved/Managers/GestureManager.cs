@@ -128,7 +128,14 @@ public class GestureManager : MonoBehaviour
 	
 	void Start()
 	{
-		Screen.sleepTimeout = SleepTimeout.SystemSetting;
+		//TODO: Move this setting to the sound carry over object
+		//Screen settings
+		Screen.sleepTimeout = SleepTimeout.NeverSleep;
+		Screen.autorotateToLandscapeLeft = true;
+		Screen.autorotateToLandscapeRight = true;
+		Screen.autorotateToPortrait = false;
+		Screen.autorotateToPortraitUpsideDown = false;
+		Screen.orientation = ScreenOrientation.AutoRotation;
 	}
 
     void Update()
