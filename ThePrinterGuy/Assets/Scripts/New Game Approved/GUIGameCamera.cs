@@ -183,6 +183,16 @@ public class GUIGameCamera : MonoBehaviour
 
     #region Start and Update
     // Use this for initialization
+    void Awake()
+    {
+        GameObject thisSoundRelay = GameObject.FindGameObjectWithTag("AudioRelay");
+
+        if(thisSoundRelay == null)
+        {
+            Instantiate(Resources.Load("Prefabs/SoundRelay"));
+        }
+    }
+
     void Start()
     {
         //GUI Camera and rescale of GUI elements.
