@@ -36,7 +36,14 @@ public class HighscoreSceneScript : MonoBehaviour
 	private static int _lastScore;
 	private static bool _win;
 	private static bool _isPrepared = false;
+	private Material _material = null;
+	private float alphaFloat;
 	
+	[SerializeField]
+	private static float _fadeInTime = 0.2f;
+	[SerializeField]
+	private static float _fadeOutTime = 0.2f;
+		
 	public delegate void FailedLevelAction(int score);
     public static event FailedLevelAction OnFailedLevel;
 	
@@ -44,6 +51,11 @@ public class HighscoreSceneScript : MonoBehaviour
     public static event CompletedLevelAction OnCompletedLevel;
 	
 	// Use this for initialization
+	void Awake()
+	{
+		_material = new Material("Shader \"Plane/No zTest\" { SubShader { Pass { Blend SrcAlpha OneMinusSrcAlpha ZWrite Off Cull Off Fog { Mode Off } BindChannels { Bind \"Color\",color } } } }");
+	}
+	
 	void OnDisable()
 	{
 		GestureManager.OnTap -= CheckCollision;
@@ -117,7 +129,47 @@ public class HighscoreSceneScript : MonoBehaviour
 		_levelCompleted = level;
 		_lastScore = score;
 		_win = win;
+		
+		
 		Application.LoadLevelAsync(ConstantValues.GetHighScoreScreenLevel);
+	}
+	
+	private void DrawQuad(Color aColor,float aAlpha)
+    {
+        aColor.a = aAlpha;
+        _material.SetPass(0);
+		
+        GL.Color(aColor);
+        GL.PushMatrix();
+        GL.LoadOrtho();
+        GL.Begin(GL.QUADS);
+        GL.Vertex3(0, 0, -1);
+        GL.Vertex3(0, 1, -1);
+        GL.Vertex3(1, 1, -1);
+        GL.Vertex3(1, 0, -1);
+        GL.End();
+        GL.PopMatrix();
+    }
+ 
+    private IEnumerator FadeToHSScreen(float aFadeOutTime, float aFadeInTime, Color aColor)
+    {
+        alphaFloat = 0.0f;
+		
+        while (alphaFloat<1.0f)
+        {
+            yield return new WaitForEndOfFrame();
+            alphaFloat = Mathf.Clamp01(alphaFloat + Time.deltaTime / aFadeOutTime);
+            DrawQuad(aColor, alphaFloat);
+        }
+		
+		Application.LoadLevel(ConstantValues.GetHighScoreScreenLevel);
+		
+        while (alphaFloat>0.0f)
+        {
+            yield return new WaitForEndOfFrame();
+	        alphaFloat = Mathf.Clamp01(alphaFloat - Time.deltaTime / aFadeInTime);
+	        DrawQuad(aColor, alphaFloat);
+        }
 	}
 	
 	private void AdjustCameraSize()

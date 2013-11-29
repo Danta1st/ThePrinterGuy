@@ -580,9 +580,17 @@ public class GUIGameCamera : MonoBehaviour
 		
 		try
 		{
+			// TODO: FIX NÅR HIGHSCORESYSTEMET ER FIXED
 			_pauseCurrScore.GetComponent<TextMesh>().text = GetScore().ToString();
 			int[] highScores = SaveGame.GetPlayerHighscores();
-			_pauseHighScore.GetComponent<TextMesh>().text = highScores[Application.loadedLevel].ToString();
+			if(Application.loadedLevel > highScores.Length)
+			{
+				_pauseHighScore.GetComponent<TextMesh>().text = "0";
+			}
+			else
+			{
+				_pauseHighScore.GetComponent<TextMesh>().text = highScores[Application.loadedLevel].ToString();
+			}
 		}
 		catch(Exception e)
 		{
