@@ -3,21 +3,31 @@ using System.Collections;
 
 public class RodSounds : MonoBehaviour
 {
+    #region Editor Publics
     [SerializeField] private iTween.EaseType _easeType;
     [SerializeField] private float _lowVolume = 0.8f;
     [SerializeField] private float _highVolume = 1.0f;
     [SerializeField] private float _fadeTime = 2.0f;
+    #endregion
 
+    #region Privates
     private GameObject _effectObject;
-
     private GenericSoundScript _soundFx;
+    #endregion
 
+    #region MonoBehavior
     void Awake()
     {
         _soundFx = transform.FindChild("SoundFx_Uranium Rods").
             GetComponent<GenericSoundScript>();
         _effectObject = transform.FindChild("SoundFx_Uranium Rods").gameObject;
     }
+
+    void Start()
+    {
+        _soundFx.audio.volume = _lowVolume;
+    }
+    #endregion
 
     public void LowerVolume()
     {
@@ -31,6 +41,7 @@ public class RodSounds : MonoBehaviour
             "time", _fadeTime, "easetype", _easeType));
     }
 
+    #region Sounds
     public void Effect_UraniumRods_Popup1()
     {
         _soundFx.PlayClip(0);
@@ -54,5 +65,11 @@ public class RodSounds : MonoBehaviour
     public void Effect_UraniumRods_Hammer()
     {
         _soundFx.PlayClip(4);
+    }
+    #endregion
+
+    public GenericSoundScript GetEffectScript()
+    {
+        return _soundFx;
     }
 }

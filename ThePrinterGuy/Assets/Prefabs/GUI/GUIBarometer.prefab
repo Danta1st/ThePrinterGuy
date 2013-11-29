@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 33: {fileID: 3300000}
   - 23: {fileID: 2300000}
-  - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: GUIBarometer
   m_TagString: ActionNode
@@ -54,7 +54,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &11400000
+--- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -62,11 +62,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f710fe33c8d07e24abc37c8672389523, type: 3}
+  m_Script: {fileID: 11500000, guid: 4800d7e44cad0354d9b814fb413a275e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _moduleName: Barometer
-  _easeTypeActionSequencerItem: 21
+  _easeTypeMove: 12
+  _particles:
+    death: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

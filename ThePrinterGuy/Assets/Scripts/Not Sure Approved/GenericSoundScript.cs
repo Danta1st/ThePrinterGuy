@@ -30,6 +30,7 @@ public class GenericSoundScript : MonoBehaviour
     private float _volumeMAX = 1.0f;
     #endregion
 
+    #region MonoBehavior
     void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
@@ -39,6 +40,7 @@ public class GenericSoundScript : MonoBehaviour
     {
         _audioSource.clip = _audioClips[0];
     }
+    #endregion
 
     #region Set Clip
     public void AssignClip()
@@ -69,24 +71,28 @@ public class GenericSoundScript : MonoBehaviour
     public void LoopClipStart()
     {
         _shouldLoop = true;
-        StartCoroutine(PlayLoopingClip(_audioClips[0]));
+        //StartCoroutine(PlayLoopingClip(_audioClips[0]));
+        PlayLoopingClip(_audioClips[0]);
     }
 
     public void LoopClipStart(int index)
     {
         _shouldLoop = true;
-        StartCoroutine(PlayLoopingClip(_audioClips[index]));
+        //StartCoroutine(PlayLoopingClip(_audioClips[index]));
+        PlayLoopingClip(_audioClips[index]);
     }
 
     public void LoopCurrentClipStart()
     {
         _shouldLoop = true;
-        StartCoroutine(PlayLoopingClip(_audioSource.clip));
+        //StartCoroutine(PlayLoopingClip(_audioSource.clip));
+        PlayLoopingClip(_audioSource.clip);
     }
 
     public void LoopClipStop()
     {
         _shouldLoop = false;
+        _audioSource.loop = false;
     }
     #endregion
 
@@ -114,17 +120,18 @@ public class GenericSoundScript : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayLoopingClip(AudioClip thisClip)
+    private void PlayLoopingClip(AudioClip thisClip)
     {
         _audioSource.Stop();
 
         if(_shouldLoop)// && !_audioSource.isPlaying)
         {
             _audioSource.clip = thisClip;
+            _audioSource.loop = true;
             _audioSource.Play();
-
-            yield return new WaitForSeconds(_audioSource.clip.length);
-            PlayLoopingClip(_audioSource.clip);
+//
+//            yield return new WaitForSeconds(_audioSource.clip.length);
+//            PlayLoopingClip(_audioSource.clip);
         }
     }
     #endregion
@@ -260,6 +267,12 @@ public class GenericSoundScript : MonoBehaviour
     {
         iTween.AudioTo(gameObject, iTween.Hash("audiosource", gameObject.audio, "volume", newVolume,
             "time", fadeTime, "easetype", iTween.EaseType.linear));
+            //, "oncomplete", "Pause", "oncompletetarget", gameObject));
+    }
+
+    public void Pause()
+    {
+        //Debug.Log("DONNNEEE + " + Time.time);
     }
     #endregion
 }
