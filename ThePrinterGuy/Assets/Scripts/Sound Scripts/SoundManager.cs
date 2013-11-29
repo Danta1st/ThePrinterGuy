@@ -11,7 +11,8 @@ public class SoundManager : MonoBehaviour
 
     #region Privates
     private static bool _isFaded = false;
-    private static bool _allSoundOn = true;
+    private static bool _allSoundOn = false;
+    private static bool _hasReset = false;
 
     private static InGameSounds _inGameSounds;
     private static MainMenuSounds _mainMenuSounds;
@@ -89,15 +90,24 @@ public class SoundManager : MonoBehaviour
         _musicScripts.Add(_inGameSounds.GetMusicScript());
         _musicScripts.Add(_mainMenuSounds.GetMusicScript());
 
+        _mainMenuSounds.GetMusicScript().audio.ignoreListenerPause = true;
+        _mainMenuSounds.GetEffectScript().audio.ignoreListenerPause = true;
+        _inGameSounds.GetMusicScript().audio.ignoreListenerPause = true;
+
         ToogleAudio();
     }
 
     void Update()
     {
-        if(Application.isLoadingLevel)
+        if(Application.isLoadingLevel && !_hasReset)
         {
+            _hasReset = true;
             StopAllSoundSources();
-            FadeAllSourcesUp();
+        }
+
+        if(!Application.isLoadingLevel)
+        {
+            _hasReset = false;
         }
     }
     #endregion
@@ -510,6 +520,9 @@ public class SoundManager : MonoBehaviour
             _audioVolume[index] = gss.GetVolume();
             gss.SetVolume(0.0f);
         }
+
+//        FadeAllMusic();
+//        StopAllSoundEffects();
     }
 
     public static void StopAllSoundEffects()
