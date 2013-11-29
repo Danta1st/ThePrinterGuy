@@ -136,11 +136,20 @@ public class GUIMainMenuCamera : MonoBehaviour
     }
     #endregion
 
+    void Awake()
+    {
+        GameObject thisSoundRelay = GameObject.FindGameObjectWithTag("AudioRelay");
+
+        if(thisSoundRelay == null)
+        {
+            Instantiate(Resources.Load("Prefabs/SoundRelay"));
+        }
+    }
+
     #region Start and Update
     // Use this for initialization
     void Start()
     {
-        SoundManager.Music_Menu_Main();
         _danishCheck.renderer.enabled = false;
         _englishCheck.renderer.enabled = false;
         _soundCheck.renderer.enabled = false;
@@ -166,10 +175,10 @@ public class GUIMainMenuCamera : MonoBehaviour
             if(PlayerPrefs.GetString("Sound") == "On")
             {
                 _soundCheck.renderer.enabled = true;
-                Camera.main.audio.mute = false;
+//                Camera.main.audio.mute = false;
             }
-            else
-                 Camera.main.audio.mute = true;
+//            else
+//                 Camera.main.audio.mute = true;
         }
         else
         {
@@ -234,14 +243,14 @@ public class GUIMainMenuCamera : MonoBehaviour
 				_optionsButton = _guiObject;
                 _guiObject.SetActive(false);
             }
-
-
         }
         //--------------------------------------------------//
 
         EnableGUICamera();
         SwitchToMainMenu();
 		UpdateText();
+
+        SoundManager.Music_Menu_Main();
     }
     #endregion
 
@@ -300,12 +309,14 @@ public class GUIMainMenuCamera : MonoBehaviour
                         {
                             _soundCheck.renderer.enabled = false;
                             PlayerPrefs.SetString("Sound", "Off");
+                            SoundManager.CheckAudioToogle();
                             //AudioListener.pause = true - does not seem to work! :(
                         }
                         else
                         {
                             _soundCheck.renderer.enabled = true;
                             PlayerPrefs.SetString("Sound", "On");
+                            SoundManager.CheckAudioToogle();
                         }
                     }
                     else if(_hit.collider.gameObject.name == "MusicButton")
@@ -418,7 +429,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         DisableGUIElementAll();
         EnableGUIElement("OptionsMenu");
-        EnableGUIElement("MenuButtonRight");
+        EnableGUIElement("MenuButtonLeft");
     }
 
     private void ChangeToMain()

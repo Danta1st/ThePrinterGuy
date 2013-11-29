@@ -29,7 +29,7 @@ public class MainMenuSounds : MonoBehaviour
     #region Sounds
     public void Music_Menu_Main()
     {
-        _music.LoopClipStart(0);
+        _music.LoopClipStart();
     }
 
     public void Effect_Menu_Intro()
