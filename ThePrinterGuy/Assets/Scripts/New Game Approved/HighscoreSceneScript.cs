@@ -11,11 +11,11 @@ public class HighscoreSceneScript : MonoBehaviour
 	[SerializeField] private ParticleSystem _particle;
 	[SerializeField] private GameObject[] _textList;
 	
-	public class TargetScores 
+	public static class _targetScore 
 	{
-		public int starScoreOne;
-		public int starScoreTwo;
-		public int starScoreThree;
+		public static int starScoreOne;
+		public static int starScoreTwo;
+		public static int starScoreThree;
 	}
 	
 	private Camera _guiCamera;
@@ -32,7 +32,6 @@ public class HighscoreSceneScript : MonoBehaviour
 	private TextMesh _speechText;
 	private int _levelOffset = 0;
 	
-	private static TargetScores _targetScore;
 	private static int _levelCompleted;
 	private static int _lastScore;
 	private static bool _win;
@@ -52,7 +51,10 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	void Start () 
 	{
-		//PrepareHighScoreScreen(2, 1000, true, new TargetScores { starScoreOne = 100, starScoreTwo = 200, starScoreThree = 1000 }); // TESTCODE
+		if(!_isPrepared)
+			return;
+		GetCurrentLevel();
+		//GoToHighScoreScreen(2, 1000, true, 200, 300, 1000); // TESTCODE - REMOVE LOAD FROM THE METHOD FIRST
 		_guiCamera = GameObject.Find ("GUI Camera").camera;
 		
 		_scaleMultiplierX = Screen.width / 1920f;
@@ -79,9 +81,10 @@ public class HighscoreSceneScript : MonoBehaviour
 			else if(_textObject.name == "SpeechText")
 				_speechText = _textObject.GetComponent<TextMesh>();
         }
+		
 		if(!_isPrepared)
 		{
-			Debug.LogError("HighscoreScene not properly Prepared! Use 'HighscoreSceneScript.PrepareHighScoreScreen(int, int, bool, HighscoreScreenScript.TargetScores)' before switching to Highscore screen.");
+			Debug.LogError("HighscoreScene not properly Prepared! Use 'HighscoreSceneScript.PrepareHighScoreScreen(int, int, bool, int, int, int)' before switching to Highscore screen.");
 			GestureManager.OnTap += CheckCollision;
 			return;
 		}
@@ -105,13 +108,16 @@ public class HighscoreSceneScript : MonoBehaviour
 		}
 	}
 	
-	public static void PrepareHighScoreScreen(int level, int score, bool win, TargetScores ts)
+	public void GoToHighScoreScreen(int level, int score, bool win, int starScoreOneInput, int starScoreTwoInput, int starScoreThreeInput)
 	{
+		_targetScore.starScoreOne = starScoreOneInput;
+		_targetScore.starScoreTwo = starScoreTwoInput;
+		_targetScore.starScoreThree = starScoreThreeInput;
 		_isPrepared = true;
 		_levelCompleted = level;
 		_lastScore = score;
 		_win = win;
-		_targetScore = ts;
+		Application.LoadLevelAsync(ConstantValues.GetHighScoreScreenLevel);
 	}
 	
 	private void AdjustCameraSize()
@@ -156,7 +162,6 @@ public class HighscoreSceneScript : MonoBehaviour
             {
                 if(_hit.collider.gameObject.name == "RestartButton")
                 {
-					Debug.Log(_levelCompleted);
                     GestureManager.OnTap -= CheckCollision;
 					LoadingScreen.Load(_levelCompleted, true);
                 }
@@ -311,12 +316,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			
 	private void GetCurrentLevel()
 	{
-        if(_levelCompleted == 4)
-            _currentLevel = 1;
-        else if(_levelCompleted == 2)
-            _currentLevel = 2;
-        else if(_levelCompleted == 3)
-            _currentLevel = 3;
+        _currentLevel = Application.loadedLevel - 2;
 	}
 	
 	private void InsertSpeechText(string text)
