@@ -279,12 +279,13 @@ public class LevelManager : MonoBehaviour
     void BeginMoveForwardAnimation(GameObject go)
     {
 		if(go != null) {
+			GUIMainMenuCamera.OnLevelManagerEvent -= SelectStage;
 	        Vector3 tmpPos = go.transform.position;
 	        tmpPos.z = _charUnlockedDistance;
 	
+			LevelBoxesAppear(go);
 	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveForwardAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
 
-	        LevelBoxesAppear(go);
 	        Animation characterAnimation = go.GetComponentInChildren<Animation>();
 	        characterAnimation.CrossFade("Selection");
 	        characterAnimation.CrossFadeQueued("Idle");
@@ -293,7 +294,7 @@ public class LevelManager : MonoBehaviour
 
     void OnMoveForwardAnimationEnd(GameObject go)
     {
-
+		GUIMainMenuCamera.OnLevelManagerEvent += SelectStage;
     }
 
     void LevelBoxesAppear(GameObject go)
