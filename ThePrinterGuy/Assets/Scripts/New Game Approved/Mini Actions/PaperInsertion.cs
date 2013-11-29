@@ -445,6 +445,7 @@ public class PaperInsertion : MonoBehaviour
     {
 		public GameObject complete;
 		public GameObject failed;
+        public GameObject swipe;
 		public GameObject enablePaper;
 		public GameObject disablePaper;
     };
