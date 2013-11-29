@@ -69,7 +69,7 @@ public class PathManager : MonoBehaviour {
     #region Monohevaiour Methods
     void Start()
     {
-        _lookTargetDelay = _transitionTime / 2;
+        _lookTargetDelay = _transitionTime / 1.5f;
     }
     #endregion
 
@@ -162,6 +162,8 @@ public class PathManager : MonoBehaviour {
 			_lookingAt = lookTarget;
 			_queuedMoveTo = null;
             _isMoving = true;
+			
+			
             iTween.MoveTo(gameObject, iTween.Hash("path", iTweenPath.GetPath(pathName),
                                                     "time", _transitionTime,
                                                     "easetype", _easeType,
