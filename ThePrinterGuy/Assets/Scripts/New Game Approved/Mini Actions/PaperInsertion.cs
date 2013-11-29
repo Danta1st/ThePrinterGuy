@@ -329,6 +329,8 @@ public class PaperInsertion : MonoBehaviour
 				iTween.MoveTo(paper, iTween.Hash("position", _gate.gameObject.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
 													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));			
 			}
+
+            InstantiateParticlesAtPaper(_particles.swipe, gameObject);
 		}
     }
 	
@@ -417,7 +419,7 @@ public class PaperInsertion : MonoBehaviour
 					tempParticles.transform.parent = _dynamicObjects.transform;
 					Debug.Log(gameObject.name+" instantiating particles");
 					return;
-				}				
+				}
 			}
 			//Instantiate Particle prefab. Rotation solution is a HACK
 			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
@@ -426,6 +428,30 @@ public class PaperInsertion : MonoBehaviour
 			Debug.Log(gameObject.name+" instantiating particles");
 		}
 	}
+
+    private void InstantiateParticlesAtPaper(GameObject particles, GameObject posRotGO)
+ {
+     if(particles != null)
+     {
+         foreach(Transform child in posRotGO.transform)
+         {
+             if(child.name.Equals("ParticlePaperPos") && particles != null)
+             {
+                 //Instantiate Particle prefab. Rotation solution is a HACK
+                 GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+                 //Child to DynamicObjects
+                 tempParticles.transform.parent = _dynamicObjects.transform;
+                 Debug.Log(gameObject.name+" instantiating particles");
+                 return;
+             }
+         }
+         //Instantiate Particle prefab. Rotation solution is a HACK
+         GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+         //Child to DynamicObjects
+         tempParticles1.transform.parent = _dynamicObjects.transform;
+         Debug.Log(gameObject.name+" instantiating particles");
+     }
+ }
 	#endregion
 
     #region SubClasses
@@ -445,6 +471,7 @@ public class PaperInsertion : MonoBehaviour
     {
 		public GameObject complete;
 		public GameObject failed;
+        public GameObject swipe;
 		public GameObject enablePaper;
 		public GameObject disablePaper;
     };
