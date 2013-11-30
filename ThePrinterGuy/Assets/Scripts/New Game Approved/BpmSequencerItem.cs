@@ -45,6 +45,9 @@ public class BpmSequencerItem : MonoBehaviour {
     #region Delegates and Events
     public delegate void FailedAction();
     public static event FailedAction OnFailed;
+	
+	public delegate void FailedActionWithItem(string type);
+    public static event FailedActionWithItem OnFailedWithItem;
     #endregion
 	
 	void OnEnable()
@@ -61,7 +64,10 @@ public class BpmSequencerItem : MonoBehaviour {
 	}
 	void OnDestroy()
 	{
-		UnsubscribeBeatAndScale(_moduleName);		
+		UnsubscribeBeatAndScale(_moduleName);
+		
+		if(_statusZone == "Green")
+			KillComplete();
 	}
 	
     // Use this for initialization
@@ -264,7 +270,10 @@ public class BpmSequencerItem : MonoBehaviour {
 			if(_steps.stepsMoved == red)
 				_statusZone = "Red";
 			else if(_steps.stepsMoved == yellow)
+			{
 				_statusZone = "Yellow";
+				_greenZoneScript.YellowOn();
+			}
 			else if(_steps.stepsMoved == green)
 			{
 				_statusZone = "Green";
@@ -281,6 +290,9 @@ public class BpmSequencerItem : MonoBehaviour {
 					
 					if(OnFailed != null)				
 						OnFailed();
+					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
 					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
@@ -315,6 +327,9 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailed != null)				
 						OnFailed();
 					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
+					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
@@ -347,6 +362,9 @@ public class BpmSequencerItem : MonoBehaviour {
 					
 					if(OnFailed != null)				
 						OnFailed();
+					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
 					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
@@ -396,7 +414,6 @@ public class BpmSequencerItem : MonoBehaviour {
 
 	private void KillFailed()
 	{
-		//TODO: implement kill particle task
         InstantiateParticles(_particles.failed, gameObject);
         Destroy(gameObject);
 	}

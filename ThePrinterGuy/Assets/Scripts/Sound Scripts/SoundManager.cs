@@ -727,4 +727,41 @@ public class SoundManager : MonoBehaviour
         }
     }
     #endregion
+
+    #region Dialogue Methods
+    public static void Voice_Boss_Random_FireYou()
+    {
+        _voiceSounds.Voice_Boss_Random_FireYou();
+    }
+
+    public static void Voice_Boss_Random_GiveUp()
+    {
+        _voiceSounds.Voice_Boss_Random_GiveUp();
+    }
+
+    public static void Voice_Boss_Random_Idiot()
+    {
+        _voiceSounds.Voice_Boss_Random_Idiot();
+    }
+
+    public static void Voice_Boss_Random_Bravo()
+    {
+        _voiceSounds.Voice_Boss_Random_Bravo();
+    }
+
+    public static void Voice_Boss_Random_KeepGoing()
+    {
+        _voiceSounds.Voice_Boss_Random_KeepGoing();
+    }
+
+    public static void Voice_Boss_Random_Know()
+    {
+        _voiceSounds.Voice_Boss_Random_Know();
+    }
+
+    public static void Voice_Boss_Random_NotBad()
+    {
+        _voiceSounds.Voice_Boss_Random_NotBad();
+    }
+    #endregion
 }
