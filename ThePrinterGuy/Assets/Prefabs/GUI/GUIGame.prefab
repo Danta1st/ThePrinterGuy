@@ -69,7 +69,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &100034
 GameObject:
   m_ObjectHideFlags: 1
@@ -356,7 +356,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &100172
 GameObject:
   m_ObjectHideFlags: 0
@@ -504,6 +504,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!1 &100248
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400248}
+  m_Layer: 0
+  m_Name: Stress'O'Meter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &100254
 GameObject:
   m_ObjectHideFlags: 0
@@ -2788,10 +2803,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -285.974548, y: -210.882324, z: -29.6845551}
-  m_LocalScale: {x: 50, y: 50, z: 50}
+  m_LocalPosition: {x: -.600000024, y: -2.5, z: 0}
+  m_LocalScale: {x: .5, y: .5, z: .5}
   m_Children: []
-  m_Father: {fileID: 400202}
+  m_Father: {fileID: 400248}
 --- !u!4 &400008
 Transform:
   m_ObjectHideFlags: 1
@@ -3092,7 +3107,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400636}
-  - {fileID: 400000}
   - {fileID: 400028}
   - {fileID: 400170}
   m_Father: {fileID: 400254}
@@ -3142,6 +3156,18 @@ Transform:
   m_LocalScale: {x: 100, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 400126}
+--- !u!4 &400248
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100248}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: -4.37113883e-08}
+  m_LocalPosition: {x: -1.15769076, y: 3.36834455, z: 3.28257132}
+  m_LocalScale: {x: 2, y: 1.50000024, z: .5}
+  m_Children:
+  - {fileID: 400000}
+  m_Father: {fileID: 400636}
 --- !u!4 &400254
 Transform:
   m_ObjectHideFlags: 1
@@ -4920,11 +4946,12 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100632}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -4.37113883e-08}
-  m_LocalPosition: {x: -291.072327, y: -190.718018, z: 138.080734}
+  m_LocalPosition: {x: -232.100037, y: -149.029541, z: 220}
   m_LocalScale: {x: 50, y: 50, z: 50}
   m_Children:
   - {fileID: 400634}
   - {fileID: 400632}
+  - {fileID: 400248}
   - {fileID: 400630}
   - {fileID: 400628}
   m_Father: {fileID: 400202}
@@ -5040,7 +5067,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 793107a11e0a36041be2914d4b6913ca, type: 2}
+  - {fileID: 2100000, guid: 966e7b8890bfe3a4ea8176024cc7e562, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -6058,7 +6085,7 @@ Animation:
   m_GameObject: {fileID: 100632}
   m_Enabled: 1
   serializedVersion: 3
-  m_Animation: {fileID: 7400018, guid: f0c60dbab9a249440a1a2f7b8cbefd14, type: 3}
+  m_Animation: {fileID: 7400000, guid: f0c60dbab9a249440a1a2f7b8cbefd14, type: 3}
   m_Animations:
   - {fileID: 7400000, guid: f0c60dbab9a249440a1a2f7b8cbefd14, type: 3}
   - {fileID: 7400006, guid: f0c60dbab9a249440a1a2f7b8cbefd14, type: 3}
@@ -6118,9 +6145,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3c42004421b6d44da3fae64c5439beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inZonePoints: 7
+  _inZonePoints: 7.5
   _failedPoints: -15
-  _quoteWaitTime: 7
+  _quoteWaitTime: 10
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6167,7 +6194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _alertColor: {r: .522058845, g: .211412281, b: .211412281, a: .0196078438}
-  _character: {fileID: 100632}
+  _character: {fileID: 0}
 --- !u!114 &11400014
 MonoBehaviour:
   m_ObjectHideFlags: 1
