@@ -25,22 +25,20 @@ public class HighscoreSceneScript : MonoBehaviour
 	private GameObject nextLevelButton;
 	private bool _isWin = false;
 	private int _levelScore = 0;
-	private int _currentLevel = 0;
 	private int _levelHighscore = 0;
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
-	private int _levelOffset = 0;
 	
 	private static int _levelCompleted;
 	private static int _lastScore;
 	private static bool _win;
 	private static bool _isPrepared = false;
 	
-	public delegate void FailedLevelAction(int score);
+	public delegate void FailedLevelAction(float score);
     public static event FailedLevelAction OnFailedLevel;
 	
-	public delegate void CompletedLevelAction(int score);
+	public delegate void CompletedLevelAction(float score);
     public static event CompletedLevelAction OnCompletedLevel;
 	
 	// Use this for initialization
@@ -51,9 +49,9 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	void Start () 
 	{
+        //CRAZY HACK!!!
 		if(!_isPrepared)
-			return;
-		GetCurrentLevel();
+			return; //HACKY HACKY HACK
 		//GoToHighScoreScreen(2, 1000, true, 200, 300, 1000); // TESTCODE - REMOVE LOAD FROM THE METHOD FIRST
 		_guiCamera = GameObject.Find ("GUI Camera").camera;
 		
@@ -94,14 +92,14 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_win)
 		{
 			if(OnCompletedLevel != null)
-				OnCompletedLevel(_lastScore);
+				OnCompletedLevel((float)_lastScore);
 			_isWin = true;
 			LaunchEndScreen();
 		}
 		else
 		{
 			if(OnFailedLevel != null)
-				OnFailedLevel(_lastScore);
+				OnFailedLevel((float)_lastScore);
 			_isWin = false;
 			nextLevelButton.SetActive(false);
 			LaunchEndScreen();
@@ -228,11 +226,11 @@ public class HighscoreSceneScript : MonoBehaviour
 		int currency = SaveGame.GetPlayerCurrency();
 		int premiumCurrency = SaveGame.GetPlayerPremiumCurrency();
 		int[] highScores = SaveGame.GetPlayerHighscores();
-		_levelHighscore = highScores[_currentLevel - _levelOffset];
+		_levelHighscore = highScores[_levelCompleted];
 		
 		if(_levelScore > _levelHighscore && _isWin)
 		{
-			highScores[_currentLevel - _levelOffset] = _levelScore;
+			highScores[_levelCompleted] = _levelScore;
 			_levelHighscore = _levelScore;
 			SaveGame.SavePlayerData(currency, premiumCurrency, highScores);
 		}
@@ -312,11 +310,6 @@ public class HighscoreSceneScript : MonoBehaviour
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
 		
 		FindHighscore();
-	}
-			
-	private void GetCurrentLevel()
-	{
-        _currentLevel = Application.loadedLevel - 2;
 	}
 	
 	private void InsertSpeechText(string text)
