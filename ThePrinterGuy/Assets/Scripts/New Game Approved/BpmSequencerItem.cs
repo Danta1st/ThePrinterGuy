@@ -64,7 +64,10 @@ public class BpmSequencerItem : MonoBehaviour {
 	}
 	void OnDestroy()
 	{
-		UnsubscribeBeatAndScale(_moduleName);		
+		UnsubscribeBeatAndScale(_moduleName);
+		
+		if(_statusZone == "Green")
+			KillComplete();
 	}
 	
     // Use this for initialization
@@ -267,7 +270,10 @@ public class BpmSequencerItem : MonoBehaviour {
 			if(_steps.stepsMoved == red)
 				_statusZone = "Red";
 			else if(_steps.stepsMoved == yellow)
+			{
 				_statusZone = "Yellow";
+				_greenZoneScript.YellowOn();
+			}
 			else if(_steps.stepsMoved == green)
 			{
 				_statusZone = "Green";
@@ -408,7 +414,6 @@ public class BpmSequencerItem : MonoBehaviour {
 
 	private void KillFailed()
 	{
-		//TODO: implement kill particle task
         InstantiateParticles(_particles.failed, gameObject);
         Destroy(gameObject);
 	}

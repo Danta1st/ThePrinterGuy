@@ -12,6 +12,7 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private List<PaperLightSet> _paperlightset;
 	//Particles - New
 	[SerializeField] private particles _particles;
+    [SerializeField] private GameObject _paperParticles;
     #endregion
 
     #region Privates
@@ -184,8 +185,11 @@ public class PaperInsertion : MonoBehaviour
     {
         if(_paperlightset[i].isOn == false)
         {
+
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].on;
             _paperlightset[i].isOn = true;
+            _paperParticles.transform.position = _paperlightset[i].paperToSlide.transform.position;
+            _paperParticles.SetActive(true);
         }
     }
 
@@ -195,6 +199,7 @@ public class PaperInsertion : MonoBehaviour
         {
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].off;
             _paperlightset[i].isOn = false;
+            _paperParticles.SetActive(false);
         }
     }
 
