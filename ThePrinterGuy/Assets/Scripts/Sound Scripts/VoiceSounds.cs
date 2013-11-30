@@ -9,11 +9,11 @@ public class VoiceSounds : MonoBehaviour
 
     void Awake()
     {
-        _voiceBoss = transform.FindChild("Boss_EndScene").
+        _voiceBoss = transform.FindChild("Boss_Oneliners").
             GetComponent<GenericSoundScript>();
         _voiceBossEnd = transform.FindChild("Boss_EndScene").
             GetComponent<GenericSoundScript>();
-        _voiceBossMumbling = transform.FindChild("Boss_EndScene").
+        _voiceBossMumbling = transform.FindChild("Boss_Mumbling").
             GetComponent<GenericSoundScript>();
     }
 

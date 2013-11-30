@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Dialogue : MonoBehaviour {
+public class Dialogue : MonoBehaviour
+{
     #region Editor Publics
     [SerializeField]
     private Color _alertColor;
@@ -34,9 +35,11 @@ public class Dialogue : MonoBehaviour {
 
     #region Delegates & Events
     public delegate void DialogueStart(string localizationKey);
+
     public static event DialogueStart OnDialogueStart;
 
     public delegate void DialogueEnd();
+
     public static event DialogueEnd OnDialogueEnd;
     #endregion
 
@@ -65,7 +68,9 @@ public class Dialogue : MonoBehaviour {
         _characterAnimation.CrossFade(happyTuple[0]);
         PlaySound(happyTuple[1]);
         if(OnDialogueStart != null)
+        {
             OnDialogueStart(happyTuple[2]);
+        }
         _characterAnimation.CrossFadeQueued("Idle");
     }
 
@@ -75,23 +80,24 @@ public class Dialogue : MonoBehaviour {
         _characterAnimation.CrossFade(angryTuple[0]);
         PlaySound(angryTuple[1]);
         _localizationKey = angryTuple[2];
-		
-        if(OnDialogueStart != null){
+     
+        if(OnDialogueStart != null)
+        {
             OnDialogueStart(_localizationKey);
         }
-		
+     
         iTween.ColorFrom(Camera.main.gameObject, Color.red, 2f);
-		
+     
         _oldColor = Camera.main.backgroundColor;
-		
+     
         iTween.ValueTo(gameObject, iTween.Hash("from", _oldColor, "to", _alertColor, "time", 0.1f, "onupdate", "changeSkyboxValue"));
         iTween.ValueTo(gameObject, iTween.Hash("from", _alertColor, "to", _oldColor, "time", 0.1f, "onupdate", "changeSkyboxValue", "delay", 0.1f));
         
-		if(!_cameraMovement)
+        if(!_cameraMovement)
         {
-            iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f,0.5f,0.5f), "time", 0.2f));
+            iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f, 0.5f, 0.5f), "time", 0.2f));
         }
-		
+     
         _characterAnimation.CrossFadeQueued("Idle");
         StartCoroutine(CheckIfAnimationStopped(angryTuple[0]));
     }
@@ -113,15 +119,17 @@ public class Dialogue : MonoBehaviour {
 
     private void PlaySound(string sound)
     {
-        switch (sound) {
-        case "6":
-            //SoundManager.Voice_Boss_6();
-            break;
-        case "11":
-            //SoundManager.Voice_Boss_11();
-            break;
-        default:
-        break;
+        Debug.Log("PlaySound");
+        switch(sound)
+        {
+            case "6":
+                SoundManager.Voice_Boss_Happy_NotBad_1();
+                break;
+            case "11":
+                SoundManager.Voice_Boss_Angry_Idiot_2();
+                break;
+            default:
+                break;
         }
     }
 
@@ -132,7 +140,9 @@ public class Dialogue : MonoBehaviour {
             yield return new WaitForSeconds(1f);
         }
         if(OnDialogueEnd != null)
+        {
             OnDialogueEnd();
+        }
     }
 
 }
