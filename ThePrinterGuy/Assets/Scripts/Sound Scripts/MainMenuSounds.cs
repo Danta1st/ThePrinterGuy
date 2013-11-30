@@ -67,7 +67,7 @@ public class MainMenuSounds : MonoBehaviour
         _soundFx.PlayClip(6);
     }
 
-    public void Effect_Menu_Options()
+    public void Effect_Task_Unmatched()
     {
         _soundFx.PlayClip(7);
     }

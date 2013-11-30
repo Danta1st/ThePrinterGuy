@@ -14,6 +14,8 @@ public class BpmSequencerItem : MonoBehaviour {
     //Prepare for hack!
     private Transform _spawnZonePosition;
     private Transform _deadZonePosition;
+    private Transform _failedPos;
+    private Transform _perfectPos;
     //---------------------//
     
 	//Adjusts the lenght and thereby distance of icons on the sequencer bar
@@ -30,6 +32,7 @@ public class BpmSequencerItem : MonoBehaviour {
 	
 	//Tempo wobbler variables
 	private float _ms;
+    private float _TaskKillTime = 0.4f;
 	
 	//Movement Variables
 	private StepLenghts _stepLenghts = new StepLenghts();
@@ -67,7 +70,10 @@ public class BpmSequencerItem : MonoBehaviour {
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
     	_spawnZonePosition 	= GameObject.Find("SpawnZone").transform; //GameObject.Find("SpawnZone").transform;
     	_deadZonePosition 	= GameObject.Find("DeadZone").transform;
-    	
+
+        _perfectPos = GameObject.Find("PerfectPos").transform;
+        _failedPos = GameObject.Find("FailedPos").transform;
+
     	_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
     
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
@@ -263,6 +269,7 @@ public class BpmSequencerItem : MonoBehaviour {
 			{
 				_statusZone = "Green";
 				_greenZoneScript.GreenOn();
+//                KillTaskPerfect();
 			}
 			else if(_steps.stepsMoved >= dead)
 			{
@@ -278,7 +285,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
-                KillTask();
+                KillTaskFailed();
 			}		
 			break;
 		case "Ink":
@@ -295,6 +302,7 @@ public class BpmSequencerItem : MonoBehaviour {
 			{
 				_statusZone = "Green";
 				_greenZoneScript.GreenOn();
+//                KillTaskPerfect();
 			}
 			else if(_steps.stepsMoved >= dead)
 			{
@@ -310,7 +318,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
-                KillTask();
+                KillTaskFailed();
 			}	
 			break;
 		case "UraniumRod":
@@ -327,6 +335,7 @@ public class BpmSequencerItem : MonoBehaviour {
 			{
 				_statusZone = "Green";
 				_greenZoneScript.GreenOn();
+//                KillTaskPerfect();
 			}
 			else if(_steps.stepsMoved >= dead)
 			{
@@ -342,7 +351,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
-                KillTask();
+                KillTaskFailed();
 			}	
 			break;
 		case "Barometer":
@@ -370,13 +379,35 @@ public class BpmSequencerItem : MonoBehaviour {
 
         return _zone;
     }
-	
-	private void KillTask()
+
+    private void KillTaskFailed()
+    {
+        iTween.MoveTo(gameObject, iTween.Hash("position", _failedPos, "time", _TaskKillTime, "easetype", iTween.EaseType.linear,
+            "oncomplete", "KillFailed", "oncompletetarget", gameObject));
+        iTween.ScaleTo(gameObject, iTween.Hash("scale", new Vector3(0.0f, 0.0f, 0.0f), "time", _TaskKillTime, "easetype", iTween.EaseType.linear));
+    }
+
+    private void KillTaskPerfect()
+    {
+        iTween.MoveTo(gameObject, iTween.Hash("position", _perfectPos, "time", _TaskKillTime, "easetype", iTween.EaseType.linear,
+            "oncomplete", "KillComplete", "oncompletetarget", gameObject));
+        iTween.ScaleTo(gameObject, iTween.Hash("scale", new Vector3(0.0f, 0.0f, 0.0f), "time", _TaskKillTime, "easetype", iTween.EaseType.linear));
+    }
+
+	private void KillFailed()
 	{
 		//TODO: implement kill particle task
+        InstantiateParticles(_particles.failed, gameObject);
         Destroy(gameObject);
 	}
-	
+
+    private void KillComplete()
+ {
+     //TODO: implement kill particle task
+        InstantiateParticles(_particles.completed, gameObject);
+        Destroy(gameObject);
+ }
+
 	//Method for instantiating particles
 	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
 	{
