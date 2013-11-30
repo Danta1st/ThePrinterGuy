@@ -237,7 +237,14 @@ public class GUICutsceneCamera : MonoBehaviour
 		_durationText = _subtitleTimerList[_textIndex].duration;
 		
 		float _textLength = _textInFocus.GetComponent<TextMesh>().text.Length;
-		_bgTextMultiplier = _textLength / 50f;
+		if(_textLength < 40)
+		{
+			_bgTextMultiplier = _textLength / 40f;	
+		}
+		else{
+			_bgTextMultiplier = _textLength / 55f;	
+		}
+		
 		Vector3 _size = new Vector3(_bgTextStartSize.x*_bgTextMultiplier, _bgTextStartSize.y, _bgTextStartSize.z);
 		_bgText.transform.localScale = _size;
 		
