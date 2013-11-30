@@ -115,10 +115,10 @@ public class Dialogue : MonoBehaviour {
     {
         switch (sound) {
         case "6":
-            SoundManager.Voice_Boss_6();
+            //SoundManager.Voice_Boss_6();
             break;
         case "11":
-            SoundManager.Voice_Boss_11();
+            //SoundManager.Voice_Boss_11();
             break;
         default:
         break;
