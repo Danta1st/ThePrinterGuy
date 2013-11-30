@@ -25,25 +25,35 @@ public class HighscoreSceneScript : MonoBehaviour
 	private GameObject nextLevelButton;
 	private bool _isWin = false;
 	private int _levelScore = 0;
-	private int _currentLevel = 0;
 	private int _levelHighscore = 0;
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
-	private int _levelOffset = 0;
 	
 	private static int _levelCompleted;
 	private static int _lastScore;
 	private static bool _win;
 	private static bool _isPrepared = false;
-	
-	public delegate void FailedLevelAction(int score);
+	private Material _material = null;
+	private float alphaFloat;
+
+	[SerializeField]
+	private float _fadeInTime = 0.2f;
+	[SerializeField]
+	private float _fadeOutTime = 0.2f;
+		
+	public delegate void FailedLevelAction(float score);
     public static event FailedLevelAction OnFailedLevel;
 	
-	public delegate void CompletedLevelAction(int score);
+	public delegate void CompletedLevelAction(float score);
     public static event CompletedLevelAction OnCompletedLevel;
 	
 	// Use this for initialization
+	void Awake()
+	{
+		_material = new Material("Shader \"Plane/No zTest\" { SubShader { Pass { Blend SrcAlpha OneMinusSrcAlpha ZWrite Off Cull Off Fog { Mode Off } BindChannels { Bind \"Color\",color } } } }");
+	}
+	
 	void OnDisable()
 	{
 		GestureManager.OnTap -= CheckCollision;
@@ -51,15 +61,18 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	void Start () 
 	{
+        //CRAZY HACK!!!
 		if(!_isPrepared)
-			return;
-		GetCurrentLevel();
+			return; //HACKY HACKY HACK
 		//GoToHighScoreScreen(2, 1000, true, 200, 300, 1000); // TESTCODE - REMOVE LOAD FROM THE METHOD FIRST
+		if(!_isPrepared || _guiList == null)
+			return;
+
 		_guiCamera = GameObject.Find ("GUI Camera").camera;
 		
 		_scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
-		AdjustCameraSize();
+
 		foreach(GameObject _guiObject in _guiList)
         {
             if(_guiObject.name == "IngameMenu")
@@ -81,7 +94,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			else if(_textObject.name == "SpeechText")
 				_speechText = _textObject.GetComponent<TextMesh>();
         }
-		
+		AdjustCameraSize();
 		if(!_isPrepared)
 		{
 			Debug.LogError("HighscoreScene not properly Prepared! Use 'HighscoreSceneScript.PrepareHighScoreScreen(int, int, bool, int, int, int)' before switching to Highscore screen.");
@@ -94,14 +107,14 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_win)
 		{
 			if(OnCompletedLevel != null)
-				OnCompletedLevel(_lastScore);
+				OnCompletedLevel((float)_lastScore);
 			_isWin = true;
 			LaunchEndScreen();
 		}
 		else
 		{
 			if(OnFailedLevel != null)
-				OnFailedLevel(_lastScore);
+				OnFailedLevel((float)_lastScore);
 			_isWin = false;
 			nextLevelButton.SetActive(false);
 			LaunchEndScreen();
@@ -117,8 +130,52 @@ public class HighscoreSceneScript : MonoBehaviour
 		_levelCompleted = level;
 		_lastScore = score;
 		_win = win;
-		Application.LoadLevelAsync(ConstantValues.GetHighScoreScreenLevel);
+		
+		StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
 	}
+	
+	private void DrawQuad(Color aColor,float aAlpha)
+    {
+        aColor.a = aAlpha;
+        _material.SetPass(0);
+		
+        GL.Color(aColor);
+        GL.PushMatrix();
+        GL.LoadOrtho();
+        GL.Begin(GL.QUADS);
+        GL.Vertex3(0, 0, -1);
+        GL.Vertex3(0, 1, -1);
+        GL.Vertex3(1, 1, -1);
+        GL.Vertex3(1, 0, -1);
+        GL.End();
+        GL.PopMatrix();
+    }
+	
+    private IEnumerator FadeToHSScreen(float aFadeOutTime, float aFadeInTime, Color aColor)
+    {
+        alphaFloat = 0.0f;
+		
+        while (alphaFloat<1.0f)
+        {
+            yield return new WaitForEndOfFrame();
+            alphaFloat = Mathf.Clamp01(alphaFloat + Time.deltaTime / aFadeOutTime);
+            DrawQuad(aColor, alphaFloat);
+        }
+		
+		Application.LoadLevel(ConstantValues.GetHighScoreScreenLevel);
+		
+        while (alphaFloat>0.0f)
+        {
+            yield return new WaitForEndOfFrame();
+	        alphaFloat = Mathf.Clamp01(alphaFloat - Time.deltaTime / aFadeInTime);
+	        DrawQuad(aColor, alphaFloat);
+        }
+	}
+	
+	private void StartFadeHS(float aFadeOutTime, float aFadeInTime, Color aColor)
+    {
+		StartCoroutine(FadeToHSScreen(aFadeOutTime, aFadeInTime, aColor));
+    }
 	
 	private void AdjustCameraSize()
     {
@@ -128,6 +185,12 @@ public class HighscoreSceneScript : MonoBehaviour
 
         foreach(GameObject _guiObject in _guiList)
         {
+			if(_guiObject == null)
+			{
+				Debug.Log(gameObject.name);
+				return;
+			}
+			
             _guiCamera.aspect = _aspectRatio;
             _guiCamera.orthographicSize = _startCameraSize;
 
@@ -190,6 +253,14 @@ public class HighscoreSceneScript : MonoBehaviour
 	private void LaunchEndScreen()
 	{
 		GestureManager.OnTap += CheckCollision;
+		if(_isWin)
+		{
+			SoundManager.Effect_InGame_Win();
+		}
+		else
+		{
+			SoundManager.Effect_InGame_Lose();
+		}
 		_levelScore = _lastScore;
 		StartCoroutine("MoveEstimateBar");
 	}
@@ -228,11 +299,11 @@ public class HighscoreSceneScript : MonoBehaviour
 		int currency = SaveGame.GetPlayerCurrency();
 		int premiumCurrency = SaveGame.GetPlayerPremiumCurrency();
 		int[] highScores = SaveGame.GetPlayerHighscores();
-		_levelHighscore = highScores[_currentLevel - _levelOffset];
+		_levelHighscore = highScores[_levelCompleted];
 		
 		if(_levelScore > _levelHighscore && _isWin)
 		{
-			highScores[_currentLevel - _levelOffset] = _levelScore;
+			highScores[_levelCompleted] = _levelScore;
 			_levelHighscore = _levelScore;
 			SaveGame.SavePlayerData(currency, premiumCurrency, highScores);
 		}
@@ -312,11 +383,6 @@ public class HighscoreSceneScript : MonoBehaviour
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
 		
 		FindHighscore();
-	}
-			
-	private void GetCurrentLevel()
-	{
-        _currentLevel = Application.loadedLevel - 2;
 	}
 	
 	private void InsertSpeechText(string text)

@@ -18,13 +18,17 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	public void DisplayEndScreenWin(int _score)
 	{
-		HighscoreSceneScript hss = new HighscoreSceneScript();
+		SoundManager.StopAllSoundEffects();
+        SoundManager.FadeAllMusic();
+		HighscoreSceneScript hss = gameObject.AddComponent<HighscoreSceneScript>();
 		hss.GoToHighScoreScreen(Application.loadedLevel, _score, true, 100, 300, 500);
 	}
 	
 	public void DisplayEndScreenLoose(int _score)
 	{
-		HighscoreSceneScript hss = new HighscoreSceneScript();
+		SoundManager.StopAllSoundEffects();
+        SoundManager.FadeAllMusic();
+		HighscoreSceneScript hss = gameObject.AddComponent<HighscoreSceneScript>();
 		hss.GoToHighScoreScreen(Application.loadedLevel, _score, false, 100, 300, 500);
 	}
 }

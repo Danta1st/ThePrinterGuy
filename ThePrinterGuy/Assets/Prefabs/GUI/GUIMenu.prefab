@@ -186,6 +186,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100022
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400022}
+  - 65: {fileID: 6500016}
+  m_Layer: 8
+  m_Name: ResetButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &100026
 GameObject:
   m_ObjectHideFlags: 1
@@ -214,7 +230,7 @@ GameObject:
   - 4: {fileID: 400028}
   - 65: {fileID: 6500006}
   m_Layer: 8
-  m_Name: MusicButton
+  m_Name: SubtitleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -292,6 +308,7 @@ Transform:
   - {fileID: 400028}
   - {fileID: 400018}
   - {fileID: 400030}
+  - {fileID: 400022}
   m_Father: {fileID: 400004}
 --- !u!4 &400008
 Transform:
@@ -368,6 +385,17 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 229.678864, y: 363.60434, z: 2}
   m_LocalScale: {x: 257.283295, y: 154.386795, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400006}
+--- !u!4 &400022
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100022}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -699.924377, y: -243.924957, z: 2}
+  m_LocalScale: {x: 200.000015, y: 200.000015, z: 1}
   m_Children: []
   m_Father: {fileID: 400006}
 --- !u!4 &400026
@@ -670,6 +698,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &6500016
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100022}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!92 &9200000
 Behaviour:
   m_ObjectHideFlags: 1
@@ -720,9 +760,7 @@ MonoBehaviour:
   - {fileID: 100026}
   - {fileID: 100006}
   _textList:
-  - {fileID: 0}
   - {fileID: 100018}
-  - {fileID: 0}
   _easeTypeCamera: 21
   _menuTextures:
     OptionsButton: {fileID: 2800000, guid: 635ea95aa5200fe4bacf3075886f5cdb, type: 3}
@@ -735,6 +773,7 @@ MonoBehaviour:
   _danishCheck: {fileID: 0}
   _englishCheck: {fileID: 0}
   _soundCheck: {fileID: 0}
+  _subtitleCheck: {fileID: 0}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
