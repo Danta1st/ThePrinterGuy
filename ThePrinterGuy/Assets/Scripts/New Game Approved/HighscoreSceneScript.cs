@@ -36,17 +36,13 @@ public class HighscoreSceneScript : MonoBehaviour
 	private static bool _isPrepared = false;
 	private Material _material = null;
 	private float alphaFloat;
-	
-<<<<<<< HEAD
-	public delegate void FailedLevelAction(float score);
-=======
+
 	[SerializeField]
 	private float _fadeInTime = 0.2f;
 	[SerializeField]
 	private float _fadeOutTime = 0.2f;
 		
-	public delegate void FailedLevelAction(int score);
->>>>>>> b0409490cd80228a27864556f58e570a23a8e31b
+	public delegate void FailedLevelAction(float score);
     public static event FailedLevelAction OnFailedLevel;
 	
 	public delegate void CompletedLevelAction(float score);
@@ -65,17 +61,13 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	void Start () 
 	{
-<<<<<<< HEAD
         //CRAZY HACK!!!
 		if(!_isPrepared)
 			return; //HACKY HACKY HACK
 		//GoToHighScoreScreen(2, 1000, true, 200, 300, 1000); // TESTCODE - REMOVE LOAD FROM THE METHOD FIRST
-=======
 		if(!_isPrepared || _guiList == null)
 			return;
-		
-		GetCurrentLevel();
->>>>>>> b0409490cd80228a27864556f58e570a23a8e31b
+
 		_guiCamera = GameObject.Find ("GUI Camera").camera;
 		
 		_scaleMultiplierX = Screen.width / 1920f;
