@@ -27,9 +27,18 @@ public class Dialogue : MonoBehaviour
     void Awake()
     {
         happyCollection = new List<string[]>();
-        happyCollection.Add(new string[] {"Good 01","6","InGameNotBad"});
+        happyCollection.Add(new string[] {"Good 02","6","InGameBravo"});
+        happyCollection.Add(new string[] {"Good 02","7","InGameKeepItGoing"});
+        happyCollection.Add(new string[] {"Good 02","8","InGameHaveKnown"});
+        happyCollection.Add(new string[] {"Good 02","9","InGameNoRaise"});
+        happyCollection.Add(new string[] {"Good 02","10","InGameNotBad"});
+
         angryCollection = new List<string[]>();
-        angryCollection.Add(new string[] {"Very Angry 01","11","InGameIdiot"});
+        angryCollection.Add(new string[] {"Angry 02","1","InGameGrandmother"});
+        angryCollection.Add(new string[] {"Angry 06","2","InGameGiveUp"});
+        angryCollection.Add(new string[] {"Angry 03","3","InGameIdiot"});
+        angryCollection.Add(new string[] {"Very Angry 02","4","InGameCompleteIdiot"});
+        angryCollection.Add(new string[] {"Angry 01","5","InGameAreAnIdiot"});
         _characterAnimation = _character.GetComponent<Animation>();
     }
 
@@ -122,11 +131,35 @@ public class Dialogue : MonoBehaviour
         Debug.Log("PlaySound");
         switch(sound)
         {
-            case "6":
-                SoundManager.Voice_Boss_Happy_NotBad_1();
+            case "1":
+                SoundManager.Voice_Boss_Random_FireYou();
                 break;
-            case "11":
-                SoundManager.Voice_Boss_Angry_Idiot_2();
+            case "2":
+                SoundManager.Voice_Boss_Random_GiveUp();
+                break;
+            case "3":
+                SoundManager.Voice_Boss_Random_Idiot();
+                break;
+            case "4":
+                SoundManager.Voice_Boss_Angry_Idiot_3();
+                break;
+            case "5":
+                SoundManager.Voice_Boss_Angry_Idiot_4();
+                break;
+            case "6":
+                SoundManager.Voice_Boss_Random_Bravo();
+                break;
+            case "7":
+                SoundManager.Voice_Boss_Random_KeepGoing();
+                break;
+            case "8":
+                SoundManager.Voice_Boss_Random_Know();
+                break;
+            case "9":
+                SoundManager.Voice_Boss_Happy_NoRaise_1();
+                break;
+            case "10":
+                SoundManager.Voice_Boss_Random_NotBad();
                 break;
             default:
                 break;
