@@ -1250,6 +1250,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100160
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400160}
+  m_Layer: 0
+  m_Name: PerfectPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &100162
 GameObject:
   m_ObjectHideFlags: 1
@@ -1354,6 +1369,21 @@ GameObject:
   - 4: {fileID: 400174}
   m_Layer: 0
   m_Name: Bind_RightHandMiddle1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100176
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400176}
+  m_Layer: 0
+  m_Name: FailedPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3659,6 +3689,17 @@ Transform:
   m_Children:
   - {fileID: 400014}
   m_Father: {fileID: 400020}
+--- !u!4 &400160
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100160}
+  m_LocalRotation: {x: 0, y: 0, z: .707106829, w: .707106829}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalScale: {x: .00454545347, y: .0049019591, z: 10}
+  m_Children: []
+  m_Father: {fileID: 400204}
 --- !u!4 &400162
 Transform:
   m_ObjectHideFlags: 1
@@ -3741,6 +3782,17 @@ Transform:
   m_Children:
   - {fileID: 400038}
   m_Father: {fileID: 400136}
+--- !u!4 &400176
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100176}
+  m_LocalRotation: {x: 0, y: 0, z: .707106829, w: .707106829}
+  m_LocalPosition: {x: 1.12196972e-07, y: -.900454402, z: 0}
+  m_LocalScale: {x: .00454545347, y: .0049019591, z: 10}
+  m_Children: []
+  m_Father: {fileID: 400204}
 --- !u!4 &400178
 Transform:
   m_ObjectHideFlags: 1
@@ -3909,7 +3961,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 44.0000648, y: -500.804443, z: 3}
   m_LocalScale: {x: 204.000015, y: 220, z: .100000001}
-  m_Children: []
+  m_Children:
+  - {fileID: 400176}
+  - {fileID: 400160}
   m_Father: {fileID: 400068}
 --- !u!4 &400206
 Transform:
