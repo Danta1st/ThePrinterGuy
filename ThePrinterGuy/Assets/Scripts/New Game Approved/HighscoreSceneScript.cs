@@ -16,6 +16,13 @@ public class HighscoreSceneScript : MonoBehaviour
 		public static int starScoreOne;
 		public static int starScoreTwo;
 		public static int starScoreThree;
+		public static int perfectInk;
+		public static int perfectPaper;
+		public static int perfectUran;
+		public static int failedInk;
+		public static int failedPaper;
+		public static int failedUran;
+		public static int _totalNodes;
 	}
 	
 	private Camera _guiCamera;
@@ -66,7 +73,6 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(!_isPrepared || _guiList == null)
 			return;
 		
-		GetCurrentLevel();
 		_guiCamera = GameObject.Find ("GUI Camera").camera;
 		
 		_scaleMultiplierX = Screen.width / 1920f;
@@ -120,17 +126,17 @@ public class HighscoreSceneScript : MonoBehaviour
 		}
 	}
 	
-	public void GoToHighScoreScreen(int level, int score, bool win, int starScoreOneInput, int starScoreTwoInput, int starScoreThreeInput)
+	public void GoToHighScoreScreen(int level, int score, bool win)
 	{
-		_targetScore.starScoreOne = starScoreOneInput;
-		_targetScore.starScoreTwo = starScoreTwoInput;
-		_targetScore.starScoreThree = starScoreThreeInput;
 		_isPrepared = true;
 		_levelCompleted = level;
 		_lastScore = score;
 		_win = win;
 		
-		StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
+		if(_win)
+			StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
+		else
+			StartFadeHS(_fadeOutTime, _fadeInTime, Color.red);
 	}
 	
 	private void DrawQuad(Color aColor,float aAlpha)
@@ -298,11 +304,11 @@ public class HighscoreSceneScript : MonoBehaviour
 		int currency = SaveGame.GetPlayerCurrency();
 		int premiumCurrency = SaveGame.GetPlayerPremiumCurrency();
 		int[] highScores = SaveGame.GetPlayerHighscores();
-		_levelHighscore = highScores[_currentLevel - _levelOffset];
+		_levelHighscore = highScores[_levelCompleted];
 		
 		if(_levelScore > _levelHighscore && _isWin)
 		{
-			highScores[_currentLevel - _levelOffset] = _levelScore;
+			highScores[_levelCompleted] = _levelScore;
 			_levelHighscore = _levelScore;
 			SaveGame.SavePlayerData(currency, premiumCurrency, highScores);
 		}
@@ -316,11 +322,11 @@ public class HighscoreSceneScript : MonoBehaviour
 		Vector3 scoreBarPos = _progressBar.transform.localPosition;
 		Vector3 scoreBarScale = _progressBar.transform.localScale;
 		
-		float startPos = scoreBarPos.x;
+		float startPos = scoreBarPos.y;
 		float deltaScale = 0f;
 		
-		scoreBarPos.x = -0.5f;
-		scoreBarScale.x = 0f;
+		scoreBarPos.y = -0.5f;
+		scoreBarScale.y = 0f;
 		
 		_progressBar.transform.localScale = scoreBarScale;
 		_progressBar.transform.localPosition = scoreBarPos;
@@ -350,10 +356,10 @@ public class HighscoreSceneScript : MonoBehaviour
 			if(isScaling) {
 				if(i >= _targetScore.starScoreThree)
 					isScaling = false;
-				scoreBarScale.x = (float)i / (float)_targetScore.starScoreThree;
-				deltaScale = scoreBarScale.x - _progressBar.transform.localScale.x;
+				scoreBarScale.y = (float)i / (float)_targetScore.starScoreThree;
+				deltaScale = scoreBarScale.y - _progressBar.transform.localScale.y;
 				_progressBar.transform.localScale = scoreBarScale;
-				scoreBarPos.x = scoreBarPos.x + deltaScale / 2f;
+				scoreBarPos.y = scoreBarPos.y + deltaScale / 2f;
 				_progressBar.transform.localPosition = scoreBarPos;
 			}
 			
@@ -374,7 +380,7 @@ public class HighscoreSceneScript : MonoBehaviour
 				i++;
 			}
 	
-			yield return new WaitForSeconds(0.01f);
+			yield return new WaitForSeconds(0.1f);
 		}
 		if(_isWin)
 			InsertSpeechText(LocalizationText.GetText("WinText1"));
@@ -382,11 +388,6 @@ public class HighscoreSceneScript : MonoBehaviour
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
 		
 		FindHighscore();
-	}
-			
-	private void GetCurrentLevel()
-	{
-        _currentLevel = Application.loadedLevel - 2;
 	}
 	
 	private void InsertSpeechText(string text)
