@@ -45,6 +45,9 @@ public class BpmSequencerItem : MonoBehaviour {
     #region Delegates and Events
     public delegate void FailedAction();
     public static event FailedAction OnFailed;
+	
+	public delegate void FailedActionWithItem(string type);
+    public static event FailedActionWithItem OnFailedWithItem;
     #endregion
 	
 	void OnEnable()
@@ -288,6 +291,9 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailed != null)				
 						OnFailed();
 					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
+					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
@@ -321,6 +327,9 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailed != null)				
 						OnFailed();
 					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
+					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
@@ -353,6 +362,9 @@ public class BpmSequencerItem : MonoBehaviour {
 					
 					if(OnFailed != null)				
 						OnFailed();
+					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
 					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
