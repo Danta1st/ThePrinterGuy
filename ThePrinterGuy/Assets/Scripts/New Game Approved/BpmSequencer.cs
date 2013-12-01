@@ -9,6 +9,7 @@ public class BpmSequencer : MonoBehaviour {
 	
 	#region Privates
 	private GUIGameCamera _gGameCam;
+    private HighscoreScreenLoader _highscoreScreenLoader;
 	
 	//Task Spawning
     private int _sequenceIndex = 0;
@@ -89,7 +90,12 @@ public class BpmSequencer : MonoBehaviour {
 	void Awake()
 	{
 		_gGameCam = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
-		_gGameCam.GetComponent<HighscoreScreenLoader>().SetTotalNodes(_TaskSequences.Length);
+		_highscoreScreenLoader = _gGameCam.GetComponent<HighscoreScreenLoader>();
+        _highscoreScreenLoader.SetTotalNodes(countTotalNodes());
+        _highscoreScreenLoader.SetRodTotalNodes(countRodTotalNodes());
+        _highscoreScreenLoader.SetInkTotalNodes(countInkTotalNodes());
+        _highscoreScreenLoader.SetPaperTotalNodes(countPaperTotalNodes());
+        _highscoreScreenLoader.SetBarometerTotalNodes(countBarometerTotalNodes());
 	}
 		
 	void Update()
@@ -99,7 +105,61 @@ public class BpmSequencer : MonoBehaviour {
 	#endregion
 	
 	#region Class Methods
-	
+    #region Counting ALL the nodes!
+    private int countRodTotalNodes()
+    {
+        int result = 0;
+        foreach(TaskSequence sequence in _TaskSequences)
+        {
+            if(sequence.task == TaskSequence.Tasks.UraniumRod)
+                result += sequence.amounts.Length;
+        }
+
+        return result;
+    }
+
+    private int countInkTotalNodes()
+    {
+        int result = 0;
+        foreach(TaskSequence sequence in _TaskSequences)
+        {
+            if(sequence.task == TaskSequence.Tasks.Ink)
+                result += sequence.amounts.Length;
+        }
+
+        return result;
+    }
+
+    private int countPaperTotalNodes()
+    {
+        int result = 0;
+        foreach(TaskSequence sequence in _TaskSequences)
+        {
+            if(sequence.task == TaskSequence.Tasks.Paper)
+                result += sequence.amounts.Length;
+        }
+
+        return result;
+    }
+
+    private int countBarometerTotalNodes()
+    {
+        int result = 0;
+        foreach(TaskSequence sequence in _TaskSequences)
+        {
+            if(sequence.task == TaskSequence.Tasks.Barometer)
+                result += sequence.amounts.Length;
+        }
+
+        return result;
+    }
+
+    private int countTotalNodes()
+    {
+        return countRodTotalNodes() + countInkTotalNodes() + countPaperTotalNodes() + countBarometerTotalNodes();
+    }
+    #endregion
+
 	//Subscription Methods
 	private void CheckSubscription()
 	{
