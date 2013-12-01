@@ -29,6 +29,12 @@ public class PaperInsertion : MonoBehaviour
 	
 	//Whatever
 	private GameObject _dynamicObjects;
+    private GameObject _conveyorBelt;
+    private GameObject _roller1;
+    private GameObject _roller2;
+    private GameObject _roller3;
+    private GameObject _roller4;
+    private List<GameObject> _rollers = new List<GameObject>();
 	
 	//Gate positions
 	private Vector3 _beginPosition;
@@ -98,8 +104,24 @@ public class PaperInsertion : MonoBehaviour
 
 		InitializeLights();
 		DisablePaper();
+
+        _conveyorBelt = transform.FindChild("convoyeBelt").gameObject;
+        _roller1 = transform.FindChild("roller1").gameObject;
+        _roller2 = transform.FindChild("roller2").gameObject;
+        _roller3 = transform.FindChild("roller3").gameObject;
+        _roller4 = transform.FindChild("roller4").gameObject;
+
+        _rollers.Add(_roller1);
+        _rollers.Add(_roller2);
+        _rollers.Add(_roller3);
+        _rollers.Add(_roller4);
 	}
     #endregion
+
+    void Update()
+    {
+        RollConvoreBelt();
+    }
 
     #region Class Methods
     //Gate Methods
@@ -124,7 +146,7 @@ public class PaperInsertion : MonoBehaviour
         if(!_isGateOpen)
         {
 			iTween.MoveTo(_gate, iTween.Hash("position", _openPosition, "time", _openTime, "easetype", _easeTypeOpen));
-			
+
             _isGateOpen = true;
         }
     }
@@ -460,26 +482,33 @@ public class PaperInsertion : MonoBehaviour
 	}
 
     private void InstantiateParticlesAtPaper(GameObject particles, GameObject posRotGO)
- {
-     if(particles != null)
-     {
-         foreach(Transform child in posRotGO.transform)
-         {
-             if(child.name.Equals("ParticlePaperPos") && particles != null)
-             {
-                 //Instantiate Particle prefab. Rotation solution is a HACK
-                 GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
-                 //Child to DynamicObjects
-                 tempParticles.transform.parent = _dynamicObjects.transform;
-                 return;
-             }
-         }
-         //Instantiate Particle prefab. Rotation solution is a HACK
-         GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
-         //Child to DynamicObjects
-         tempParticles1.transform.parent = _dynamicObjects.transform;
-     }
- }
+    {
+        if(particles != null)
+        {
+            foreach(Transform child in posRotGO.transform)
+            {
+                if(child.name.Equals("ParticlePaperPos") && particles != null)
+                {
+                    //Instantiate Particle prefab. Rotation solution is a HACK
+                    GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+                    //Child to DynamicObjects
+                    tempParticles.transform.parent = _dynamicObjects.transform;
+                    return;
+                }
+            }
+
+            //Instantiate Particle prefab. Rotation solution is a HACK
+            GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+            //Child to DynamicObjects
+            tempParticles1.transform.parent = _dynamicObjects.transform;
+        }
+    }
+
+    public void RollConvoreBelt()
+    {
+        Vector2 thisOffset = _conveyorBelt.renderer.material.mainTextureOffset;
+        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, -0.001f));
+    }
 	#endregion
 
     #region SubClasses
