@@ -490,7 +490,7 @@ public class PaperInsertion : MonoBehaviour
         public Texture on;
         public Texture off;
         public GameObject paper;
-        public bool isOn = false;
+        [HideInInspector] public bool isOn = false;
 		public GameObject paperToSlide;
     };
 	
