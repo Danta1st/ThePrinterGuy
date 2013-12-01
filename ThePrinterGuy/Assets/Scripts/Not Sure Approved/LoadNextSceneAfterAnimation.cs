@@ -18,6 +18,8 @@ public class LoadNextSceneAfterAnimation : MonoBehaviour
     void Start()
     {
         SoundManager.Music_CutScene_Main();
+        iTween.MoveFrom(Camera.main.gameObject, iTween.Hash("position", new Vector3(-3.737667f, 3.327735f, 7.618786f), "easeType", iTween.EaseType.linear, "time", 3f));
+        iTween.RotateFrom(Camera.main.gameObject, iTween.Hash("rotation", new Vector3(23.81647f, 141.8127f, 359.106f), "easeType", iTween.EaseType.linear, "time", 3f));
     }
 
     // Update is called once per frame

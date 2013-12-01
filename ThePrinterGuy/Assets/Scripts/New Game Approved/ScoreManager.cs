@@ -82,6 +82,36 @@ public class ScoreManager : MonoBehaviour
 	#endregion
 	
 	#region Public Methods
+    public ScoreMultipliers GetScoreMultipliers()
+    {
+        return _scoreMultiplier;
+    }
+
+    public float GetGreenZoneModifier()
+    {
+        return GreenZoneModifier;
+    }
+
+    public float GetPaperPointsBase()
+    {
+        return PaperPointsBase;
+    }
+
+    public float GetBarometerPointsBase()
+    {
+        return BarometerPointsBase;
+    }
+
+    public float GetInkPointsBase()
+    {
+        return InkPointsBase;
+    }
+
+    public float GetRodPointsBase()
+    {
+        return RodPointsBase;
+    }
+
 	public void InkSuccess()
 	{
 		StartCoroutine_Auto(GOCRAZY(InkPointsBase));
@@ -104,6 +134,8 @@ public class ScoreManager : MonoBehaviour
 		int colorHit = 0;
 		bool pointsGranted = false;
 		int popupSize = 1;
+        int maxAmount = 0;
+        ScoreMultipliers sm = new ScoreMultipliers();
 		
 		if(OnTaskCompleted != null)
 			OnTaskCompleted();
