@@ -2842,7 +2842,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -109, y: 0, z: 0}
+  m_LocalPosition: {x: -109, y: -689, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 400126}
@@ -2897,7 +2897,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100056}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -100, z: 0}
+  m_LocalPosition: {x: 0, y: 14, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
   m_Father: {fileID: 400126}
@@ -2981,7 +2981,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100126}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -750, y: -440, z: 5}
+  m_LocalPosition: {x: -725, y: 178, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400056}
@@ -3159,7 +3159,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100206}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 109, y: 0, z: 0}
+  m_LocalPosition: {x: 109, y: -689, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 400126}
@@ -3181,7 +3181,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100236}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -689, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 1}
   m_Children: []
   m_Father: {fileID: 400126}
@@ -3212,7 +3212,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100260}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3000, z: 5.13645935}
+  m_LocalPosition: {x: 0, y: -3000, z: -31.0639801}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400172}
@@ -5000,7 +5000,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: .300000012
-  far clip plane: 250
+  far clip plane: 350
   field of view: 60
   orthographic: 1
   orthographic size: 600
@@ -6302,7 +6302,7 @@ MonoBehaviour:
   - {fileID: 100034}
   - {fileID: 100144}
   - {fileID: 100186}
-  _easeTypeIngameMenu: 21
+  _easeTypeIngameMenu: 27
   _popupPrefab: {fileID: 100000, guid: cbbbf51210202ad43ab9101b5af378e6, type: 2}
   _popupTextPrefab: {fileID: 100002, guid: cbbbf51210202ad43ab9101b5af378e6, type: 2}
   _inkPrefab: {fileID: 100000, guid: 3718ae121210bbe4888edfec727f9384, type: 2}
@@ -6317,13 +6317,15 @@ MonoBehaviour:
     endX: .649999976
     startY: .349999994
     endY: .449999988
-  LevelPlayTexture: {fileID: 2800000, guid: 657957243df4ab54ab8f8be434e06cc2, type: 3}
-  LevelPlayPressedTexture: {fileID: 2800000, guid: c9fb5c0c0b2111c4ab04207dff194a0f,
-    type: 3}
-  LevelReplayPressedTexture: {fileID: 2800000, guid: 5a046818f13f1ff41bed9e8f970f96fc,
-    type: 3}
-  LevelQuitPressedTexture: {fileID: 2800000, guid: 20e026b3bce89e441962546114412f77,
-    type: 3}
+  _buttonTextures:
+    pause: {fileID: 2800000, guid: faebabfe6b5711c4db28c445446bac24, type: 3}
+    pausePressed: {fileID: 2800000, guid: 105dc1008ffc0ac49900fcb25f1f1cca, type: 3}
+    resume: {fileID: 2800000, guid: 12ce6179a1780454ca8ce830ffea4e19, type: 3}
+    resumePressed: {fileID: 2800000, guid: a5e696f961854124697824fbdcf1491d, type: 3}
+    restart: {fileID: 2800000, guid: d81b70c9a08407949b7c1c9b702c5d36, type: 3}
+    restartPressed: {fileID: 2800000, guid: 60113f5181b39b441b74684359e17a8d, type: 3}
+    home: {fileID: 2800000, guid: 188a948084568c14cae24b07e0c4b14a, type: 3}
+    homePressed: {fileID: 2800000, guid: 5d4b5e2fa7e1edd45aeebce292e90ad5, type: 3}
 --- !u!114 &11400020
 MonoBehaviour:
   m_ObjectHideFlags: 1

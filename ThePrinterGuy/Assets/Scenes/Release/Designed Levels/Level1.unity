@@ -1982,46 +1982,6 @@ Transform:
   m_Children:
   - {fileID: 1209367121}
   m_Father: {fileID: 1576988794}
---- !u!1001 &393423796
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-  m_RootGameObject: {fileID: 740801074}
-  m_IsPrefabParent: 0
-  m_IsExploded: 1
 --- !u!1 &396098122
 GameObject:
   m_ObjectHideFlags: 0
@@ -3158,6 +3118,46 @@ MeshFilter:
   m_PrefabInternal: {fileID: 728101659}
   m_GameObject: {fileID: 525680186}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &529560709
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
+  m_RootGameObject: {fileID: 740801074}
+  m_IsPrefabParent: 0
+  m_IsExploded: 1
 --- !u!1 &530782788
 GameObject:
   m_ObjectHideFlags: 0
@@ -4074,7 +4074,7 @@ Transform:
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 100000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-  m_PrefabInternal: {fileID: 393423796}
+  m_PrefabInternal: {fileID: 529560709}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 740801076}
@@ -4091,7 +4091,7 @@ MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 11400000, guid: 90cbbb91463ea754daa79d21e457e449,
     type: 2}
-  m_PrefabInternal: {fileID: 393423796}
+  m_PrefabInternal: {fileID: 529560709}
   m_GameObject: {fileID: 740801074}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -4101,14 +4101,29 @@ MonoBehaviour:
   _TaskSequences:
   - task: 0
     beats: 05000000
-    amounts: 01000000010000000100000001000000
+    amounts: 010000000100000001000000010000000100000001000000
     SpawnInterval: 0
-    beatsUntillNextSequence: 10
+    beatsUntillNextSequence: 0
+  - task: 0
+    beats: 06000000
+    amounts: 01000000
+    SpawnInterval: 0
+    beatsUntillNextSequence: 8
+  - task: 0
+    beats: 05000000
+    amounts: 010000000100000001000000010000000100000001000000
+    SpawnInterval: 0
+    beatsUntillNextSequence: 0
+  - task: 0
+    beats: 06000000
+    amounts: 01000000
+    SpawnInterval: 0
+    beatsUntillNextSequence: 0
 --- !u!4 &740801076
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 400000, guid: 90cbbb91463ea754daa79d21e457e449, type: 2}
-  m_PrefabInternal: {fileID: 393423796}
+  m_PrefabInternal: {fileID: 529560709}
   m_GameObject: {fileID: 740801074}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -7039,7 +7054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b23ef359d86bcc44d9c86f2bb03b162a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _loadingScreenLevelNumber: 7
+  _loadingScreenLevelNumber: 12
   _startScreenLevelNumber: 0
   _tutorialLevels: 
   _tutorialTipsAmount: 0
@@ -8451,7 +8466,7 @@ MonoBehaviour:
   - {fileID: 210984138}
   - {fileID: 1174458286}
   - {fileID: 1137932055}
-  _easeTypeIngameMenu: 21
+  _easeTypeIngameMenu: 27
   _popupPrefab: {fileID: 100000, guid: cbbbf51210202ad43ab9101b5af378e6, type: 2}
   _popupTextPrefab: {fileID: 100002, guid: cbbbf51210202ad43ab9101b5af378e6, type: 2}
   _inkPrefab: {fileID: 100000, guid: 3718ae121210bbe4888edfec727f9384, type: 2}
@@ -8466,13 +8481,15 @@ MonoBehaviour:
     endX: .649999976
     startY: .349999994
     endY: .449999988
-  LevelPlayTexture: {fileID: 2800000, guid: 657957243df4ab54ab8f8be434e06cc2, type: 3}
-  LevelPlayPressedTexture: {fileID: 2800000, guid: c9fb5c0c0b2111c4ab04207dff194a0f,
-    type: 3}
-  LevelReplayPressedTexture: {fileID: 2800000, guid: 5a046818f13f1ff41bed9e8f970f96fc,
-    type: 3}
-  LevelQuitPressedTexture: {fileID: 2800000, guid: 20e026b3bce89e441962546114412f77,
-    type: 3}
+  _buttonTextures:
+    pause: {fileID: 2800000, guid: faebabfe6b5711c4db28c445446bac24, type: 3}
+    pausePressed: {fileID: 2800000, guid: 105dc1008ffc0ac49900fcb25f1f1cca, type: 3}
+    resume: {fileID: 2800000, guid: 12ce6179a1780454ca8ce830ffea4e19, type: 3}
+    resumePressed: {fileID: 2800000, guid: a5e696f961854124697824fbdcf1491d, type: 3}
+    restart: {fileID: 2800000, guid: d81b70c9a08407949b7c1c9b702c5d36, type: 3}
+    restartPressed: {fileID: 2800000, guid: 60113f5181b39b441b74684359e17a8d, type: 3}
+    home: {fileID: 2800000, guid: 188a948084568c14cae24b07e0c4b14a, type: 3}
+    homePressed: {fileID: 2800000, guid: 5d4b5e2fa7e1edd45aeebce292e90ad5, type: 3}
 --- !u!114 &1525696945
 MonoBehaviour:
   m_ObjectHideFlags: 0
