@@ -1,5 +1,38 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100000
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400000}
+  - 33: {fileID: 3300002}
+  - 23: {fileID: 2300008}
+  - 114: {fileID: 11400004}
+  m_Layer: 0
+  m_Name: stressometerArrow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100002
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400002}
+  m_Layer: 0
+  m_Name: StressOmeterArrow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &100008
 GameObject:
   m_ObjectHideFlags: 1
@@ -538,7 +571,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &100286
 GameObject:
   m_ObjectHideFlags: 1
@@ -2778,7 +2811,30 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
+--- !u!4 &400000
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -4.37113883e-08}
+  m_LocalPosition: {x: 1.8922716e-15, y: 0, z: -174}
+  m_LocalScale: {x: 30, y: 30, z: 30}
+  m_Children: []
+  m_Father: {fileID: 400002}
+--- !u!4 &400002
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: -4.37113883e-08}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: .0199999996, y: .0199999996, z: .0199999996}
+  m_Children:
+  - {fileID: 400000}
+  m_Father: {fileID: 400636}
 --- !u!4 &400008
 Transform:
   m_ObjectHideFlags: 1
@@ -4914,6 +4970,7 @@ Transform:
   - {fileID: 400632}
   - {fileID: 400630}
   - {fileID: 400628}
+  - {fileID: 400002}
   m_Father: {fileID: 400202}
 --- !u!4 &400638
 Transform:
@@ -5021,6 +5078,24 @@ Renderer:
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
   - {fileID: 2100000, guid: 1cbb5412eada62345af315fbe55a2748, type: 3}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+--- !u!23 &2300008
+Renderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: 82ddcb12dd9680f4b8eaa5ab932628bf, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -5591,6 +5666,13 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!33 &3300002
+MeshFilter:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Mesh: {fileID: 4300000, guid: 89a9104861f7f8e47b1c71334a1e3852, type: 3}
 --- !u!33 &3300010
 MeshFilter:
   m_ObjectHideFlags: 1
@@ -6093,6 +6175,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stringText: HighscoreMenuText
+--- !u!114 &11400004
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3c42004421b6d44da3fae64c5439beb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inZonePoints: 7
+  _failedPoints: -15
+  _quoteWaitTime: 7
 --- !u!114 &11400006
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6142,7 +6238,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _alertColor: {r: .522058845, g: .211412281, b: .211412281, a: .0196078438}
-  _character: {fileID: 0}
+  _character: {fileID: 100632}
 --- !u!114 &11400014
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6282,10 +6378,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae53958837b419040bd7f4d8ad91c133, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _greenOn: {fileID: 2800000, guid: 7fc0569870d431f4fb262ce0f9f9d955, type: 3}
-  _greenOff: {fileID: 2800000, guid: 9481402cd0641104fb0df50cadc9e1d8, type: 3}
-  _greenInnerGlow: {fileID: 100638}
-  _yellowInnerGlow: {fileID: 100282}
+  _green: {fileID: 2800000, guid: ca68a45fe19fadd449a0f2f1962a9461, type: 3}
+  _yellow: {fileID: 2800000, guid: 2d5cb27e935d002429d981091ce0c0a4, type: 3}
+  _red: {fileID: 2800000, guid: ac4965f51b00bc34e9b5165ba2a3ab53, type: 3}
   _ring: {fileID: 100088}
   _ringLit: {fileID: 2800000, guid: 6c9cf39ee06ca384a937912ea35f6957, type: 3}
   _ringUnlit: {fileID: 2800000, guid: 6c9cf39ee06ca384a937912ea35f6957, type: 3}
