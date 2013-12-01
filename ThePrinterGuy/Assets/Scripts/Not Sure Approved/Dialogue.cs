@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Dialogue : MonoBehaviour {
+public class Dialogue : MonoBehaviour
+{
     #region Editor Publics
     [SerializeField]
     private Color _alertColor;
@@ -26,17 +27,28 @@ public class Dialogue : MonoBehaviour {
     void Awake()
     {
         happyCollection = new List<string[]>();
-        happyCollection.Add(new string[] {"Good 01","6","InGameNotBad"});
+        happyCollection.Add(new string[] {"Good 02","6","InGameBravo"});
+        happyCollection.Add(new string[] {"Good 02","7","InGameKeepItGoing"});
+        happyCollection.Add(new string[] {"Good 02","8","InGameHaveKnown"});
+        happyCollection.Add(new string[] {"Good 02","9","InGameNoRaise"});
+        happyCollection.Add(new string[] {"Good 02","10","InGameNotBad"});
+
         angryCollection = new List<string[]>();
-        angryCollection.Add(new string[] {"Very Angry 01","11","InGameIdiot"});
+        angryCollection.Add(new string[] {"Angry 02","1","InGameGrandmother"});
+        angryCollection.Add(new string[] {"Angry 06","2","InGameGiveUp"});
+        angryCollection.Add(new string[] {"Angry 03","3","InGameIdiot"});
+        angryCollection.Add(new string[] {"Very Angry 02","4","InGameCompleteIdiot"});
+        angryCollection.Add(new string[] {"Angry 01","5","InGameAreAnIdiot"});
         _characterAnimation = _character.GetComponent<Animation>();
     }
 
     #region Delegates & Events
     public delegate void DialogueStart(string localizationKey);
+
     public static event DialogueStart OnDialogueStart;
 
     public delegate void DialogueEnd();
+
     public static event DialogueEnd OnDialogueEnd;
     #endregion
 
@@ -65,7 +77,9 @@ public class Dialogue : MonoBehaviour {
         _characterAnimation.CrossFade(happyTuple[0]);
         PlaySound(happyTuple[1]);
         if(OnDialogueStart != null)
+        {
             OnDialogueStart(happyTuple[2]);
+        }
         _characterAnimation.CrossFadeQueued("Idle");
     }
 
@@ -75,23 +89,24 @@ public class Dialogue : MonoBehaviour {
         _characterAnimation.CrossFade(angryTuple[0]);
         PlaySound(angryTuple[1]);
         _localizationKey = angryTuple[2];
-		
-        if(OnDialogueStart != null){
+     
+        if(OnDialogueStart != null)
+        {
             OnDialogueStart(_localizationKey);
         }
-		
+     
         iTween.ColorFrom(Camera.main.gameObject, Color.red, 2f);
-		
+     
         _oldColor = Camera.main.backgroundColor;
-		
+     
         iTween.ValueTo(gameObject, iTween.Hash("from", _oldColor, "to", _alertColor, "time", 0.1f, "onupdate", "changeSkyboxValue"));
         iTween.ValueTo(gameObject, iTween.Hash("from", _alertColor, "to", _oldColor, "time", 0.1f, "onupdate", "changeSkyboxValue", "delay", 0.1f));
         
-		if(!_cameraMovement)
+        if(!_cameraMovement)
         {
-            iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f,0.5f,0.5f), "time", 0.2f));
+            iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f, 0.5f, 0.5f), "time", 0.2f));
         }
-		
+     
         _characterAnimation.CrossFadeQueued("Idle");
         StartCoroutine(CheckIfAnimationStopped(angryTuple[0]));
     }
@@ -113,15 +128,41 @@ public class Dialogue : MonoBehaviour {
 
     private void PlaySound(string sound)
     {
-        switch (sound) {
-        case "6":
-            //SoundManager.Voice_Boss_6();
-            break;
-        case "11":
-            //SoundManager.Voice_Boss_11();
-            break;
-        default:
-        break;
+        Debug.Log("PlaySound");
+        switch(sound)
+        {
+            case "1":
+                SoundManager.Voice_Boss_Random_FireYou();
+                break;
+            case "2":
+                SoundManager.Voice_Boss_Random_GiveUp();
+                break;
+            case "3":
+                SoundManager.Voice_Boss_Random_Idiot();
+                break;
+            case "4":
+                SoundManager.Voice_Boss_Angry_Idiot_3();
+                break;
+            case "5":
+                SoundManager.Voice_Boss_Angry_Idiot_4();
+                break;
+            case "6":
+                SoundManager.Voice_Boss_Random_Bravo();
+                break;
+            case "7":
+                SoundManager.Voice_Boss_Random_KeepGoing();
+                break;
+            case "8":
+                SoundManager.Voice_Boss_Random_Know();
+                break;
+            case "9":
+                SoundManager.Voice_Boss_Happy_NoRaise_1();
+                break;
+            case "10":
+                SoundManager.Voice_Boss_Random_NotBad();
+                break;
+            default:
+                break;
         }
     }
 
@@ -132,7 +173,9 @@ public class Dialogue : MonoBehaviour {
             yield return new WaitForSeconds(1f);
         }
         if(OnDialogueEnd != null)
+        {
             OnDialogueEnd();
+        }
     }
 
 }

@@ -23,6 +23,8 @@ public class GUIMainMenuCamera : MonoBehaviour
     private GameObject _englishCheck;
     [SerializeField]
     private GameObject _soundCheck;
+    [SerializeField]
+    private GameObject _subtitleCheck;
     #endregion
 
     #region Private Variables
@@ -153,6 +155,7 @@ public class GUIMainMenuCamera : MonoBehaviour
         _danishCheck.renderer.enabled = false;
         _englishCheck.renderer.enabled = false;
         _soundCheck.renderer.enabled = false;
+        _subtitleCheck.renderer.enabled = false;
 
 		if(PlayerPrefs.HasKey("selectedLanguage"))
 		{
@@ -175,15 +178,26 @@ public class GUIMainMenuCamera : MonoBehaviour
             if(PlayerPrefs.GetString("Sound") == "On")
             {
                 _soundCheck.renderer.enabled = true;
-//                Camera.main.audio.mute = false;
             }
-//            else
-//                 Camera.main.audio.mute = true;
         }
         else
         {
             PlayerPrefs.SetString("Sound", "On");
             _soundCheck.renderer.enabled = true;
+        }
+
+        //HandleSubtitleButtons
+        if(PlayerPrefs.HasKey("Subtitle"))
+        {
+            if(PlayerPrefs.GetString("Subtitle") == "On")
+            {
+                _subtitleCheck.renderer.enabled = true;
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetString("Subtitle", "On");
+            _subtitleCheck.renderer.enabled = true;
         }
 
         //GUI Camera and rescale of GUI elements.
@@ -319,16 +333,31 @@ public class GUIMainMenuCamera : MonoBehaviour
                             SoundManager.CheckAudioToogle();
                         }
                     }
-                    else if(_hit.collider.gameObject.name == "MusicButton")
+                    else if(_hit.collider.gameObject.name == "SubtitleButton")
+                    {
+                        if(_subtitleCheck.renderer.enabled == true)
+                        {
+                            _subtitleCheck.renderer.enabled = false;
+                            PlayerPrefs.SetString("Subtitle", "Off");
+                            //Turn Subtitles OFF
+                        }
+                        else
+                        {
+                            _subtitleCheck.renderer.enabled = true;
+                            PlayerPrefs.SetString("Subtitle", "On");
+                            //Turn Subtitles ON
+                        }
+                    }
+
+                    else if(_hit.collider.gameObject.name == "ResetButton")
                     {
                         SaveGame.ResetPlayerData();
                     }
+
                     else if(_hit.collider.gameObject.name == "OptionsButton")
                     {
                         if(OnOptionsScreen != null)
                         {
-							//_optionsButton.renderer.material.mainTexture = _menuTextures.OptionsButtonPressed;
-							
                             OnOptionsScreen();
                             DisableGUIElementAll();
                         }

@@ -9,11 +9,11 @@ public class VoiceSounds : MonoBehaviour
 
     void Awake()
     {
-        _voiceBoss = transform.FindChild("Boss_EndScene").
+        _voiceBoss = transform.FindChild("Boss_Oneliners").
             GetComponent<GenericSoundScript>();
         _voiceBossEnd = transform.FindChild("Boss_EndScene").
             GetComponent<GenericSoundScript>();
-        _voiceBossMumbling = transform.FindChild("Boss_EndScene").
+        _voiceBossMumbling = transform.FindChild("Boss_Mumbling").
             GetComponent<GenericSoundScript>();
     }
 
@@ -259,6 +259,41 @@ public class VoiceSounds : MonoBehaviour
     public void Voice_Boss_Random_LoseEnd()
     {
         _voiceBossEnd.PlayClip(Random.Range(0, 3));
+    }
+
+    public void Voice_Boss_Random_FireYou()
+    {
+        _voiceBoss.PlayClip(Random.Range(0, 1));
+    }
+
+    public void Voice_Boss_Random_GiveUp()
+    {
+        _voiceBoss.PlayClip(Random.Range(2, 4));
+    }
+
+    public void Voice_Boss_Random_Idiot()
+    {
+        _voiceBoss.PlayClip(Random.Range(5, 6));
+    }
+
+    public void Voice_Boss_Random_Bravo()
+    {
+        _voiceBoss.PlayClip(Random.Range(9, 11));
+    }
+
+    public void Voice_Boss_Random_KeepGoing()
+    {
+        _voiceBoss.PlayClip(Random.Range(12, 14));
+    }
+
+    public void Voice_Boss_Random_Know()
+    {
+        _voiceBoss.PlayClip(Random.Range(15, 16));
+    }
+
+    public void Voice_Boss_Random_NotBad()
+    {
+        _voiceBoss.PlayClip(Random.Range(18, 19));
     }
 
     public GenericSoundScript GetEffectScript()

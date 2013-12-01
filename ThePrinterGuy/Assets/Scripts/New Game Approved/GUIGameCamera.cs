@@ -58,6 +58,7 @@ public class GUIGameCamera : MonoBehaviour
 	//Highscore Variables.
 	private int _score = 0;
 	private string _strScore = "0";
+	private HighscoreScreenLoader _highscoreLoader;
 	private GameObject _scoreValueObject;
 	private GameObject _star1Object;
 	private GameObject _star2Object;
@@ -215,6 +216,7 @@ public class GUIGameCamera : MonoBehaviour
         //--------------------------------------------------//
 		_pauseCurrScore = GameObject.Find("CurrentScoreValue").gameObject;
 		_pauseHighScore = GameObject.Find("HighscoreValue").gameObject;
+		_highscoreLoader = GameObject.Find("GUI List").GetComponent<HighscoreScreenLoader>();
 		
         foreach(GameObject _guiObject in _guiList)
         {
@@ -364,7 +366,7 @@ public class GUIGameCamera : MonoBehaviour
 	
 	private void ShowStars()
 	{
-		if(_score >= 10000 && _score < 25000)
+		if(_score >= _highscoreLoader.GetStarOneScore() && _score < _highscoreLoader.GetStarTwoScore())
 		{
 			_star1Object.SetActive(true);
 			_star2Object.SetActive(false);
@@ -377,7 +379,7 @@ public class GUIGameCamera : MonoBehaviour
 			}
 			
 		}
-		else if(_score >= 25000 && _score < 40000)
+		else if(_score >= _highscoreLoader.GetStarTwoScore() && _score < _highscoreLoader.GetStarThreeScore())
 		{
 			_star1Object.SetActive(true);
 			_star2Object.SetActive(true);
@@ -390,7 +392,7 @@ public class GUIGameCamera : MonoBehaviour
 			}
 			
 		}
-		else if(_score >= 40000)
+		else if(_score >= _highscoreLoader.GetStarThreeScore())
 		{
 			_star1Object.SetActive(true);
 			_star2Object.SetActive(true);
@@ -588,15 +590,15 @@ public class GUIGameCamera : MonoBehaviour
 		EnableGUIElement("StatsOverview");
 		EnableGUIElement("BGIngameMenu");
 		
+		_pauseCurrScore.GetComponent<TextMesh>().text = GetScore().ToString();
+		int[] highScores = SaveGame.GetPlayerHighscores();
 		try
 		{
-			_pauseCurrScore.GetComponent<TextMesh>().text = GetScore().ToString();
-			int[] highScores = SaveGame.GetPlayerHighscores();
-			_pauseHighScore.GetComponent<TextMesh>().text = highScores[Application.loadedLevel].ToString();
+			_pauseHighScore.GetComponent<TextMesh>().text = highScores[Application.loadedLevel - 2].ToString();
 		}
 		catch(Exception e)
 		{
-			Debug.LogError("HighScore error! " + e.Message);
+			_pauseHighScore.GetComponent<TextMesh>().text = "0";
 		}
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
@@ -738,7 +740,6 @@ public class GUIGameCamera : MonoBehaviour
         {
             _queuedObject = _sequencerObjectQueue.Peek();
 
-            Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
 			BpmSequencerItem _bpmSequencerItem = _queuedObject.GetComponent<BpmSequencerItem>();
             //ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
             _zone = _bpmSequencerItem.GetZoneStatus();

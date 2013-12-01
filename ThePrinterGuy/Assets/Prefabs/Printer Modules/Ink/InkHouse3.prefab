@@ -47,7 +47,7 @@ GameObject:
   - 135: {fileID: 13500002}
   - 114: {fileID: 11400000}
   m_Layer: 0
-  m_Name: InsertableInk2
+  m_Name: InsertableInk0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -66,7 +66,7 @@ GameObject:
   - 135: {fileID: 13500004}
   - 114: {fileID: 11400006}
   m_Layer: 0
-  m_Name: InsertableInk0
+  m_Name: InsertableInk2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +83,7 @@ GameObject:
   - 33: {fileID: 3300006}
   - 23: {fileID: 2300006}
   m_Layer: 0
-  m_Name: Ink0
+  m_Name: Ink2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -100,7 +100,7 @@ GameObject:
   - 33: {fileID: 3300008}
   - 23: {fileID: 2300008}
   m_Layer: 0
-  m_Name: Ink2
+  m_Name: Ink0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -582,7 +582,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: de9e5cb6400eb2346a3ae1c20b3bbcad, type: 2}
+  - {fileID: 2100000, guid: e49050cf19012a34c98fbd3028a2cb87, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -600,7 +600,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: de9e5cb6400eb2346a3ae1c20b3bbcad, type: 2}
+  - {fileID: 2100000, guid: 187b451e59b0f0845bc8bed2267f2d41, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -618,7 +618,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: de9e5cb6400eb2346a3ae1c20b3bbcad, type: 2}
+  - {fileID: 2100000, guid: cddc4cab3afc67d4f8ef0d4d06127ed4, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -636,7 +636,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: de9e5cb6400eb2346a3ae1c20b3bbcad, type: 2}
+  - {fileID: 2100000, guid: cddc4cab3afc67d4f8ef0d4d06127ed4, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -654,7 +654,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: de9e5cb6400eb2346a3ae1c20b3bbcad, type: 2}
+  - {fileID: 2100000, guid: 187b451e59b0f0845bc8bed2267f2d41, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -672,7 +672,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: de9e5cb6400eb2346a3ae1c20b3bbcad, type: 2}
+  - {fileID: 2100000, guid: e49050cf19012a34c98fbd3028a2cb87, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -896,13 +896,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _machineInks:
-  - cartridge: {fileID: 400008}
-    insertableCartridge: {fileID: 400006}
-    full: {fileID: 0}
-    empty: {fileID: 0}
-    lid: {fileID: 100024}
+  - cartridge: {fileID: 400010}
+    insertableCartridge: {fileID: 400004}
+    full: {fileID: 2800000, guid: c861ce8db026cde4c8300abea4f9ef26, type: 3}
+    empty: {fileID: 2800000, guid: 015657cdb7d17fd4095f786bf9c31971, type: 3}
+    lid: {fileID: 100016}
     startWait: 1
-    lidDirection: 1
+    lidDirection: 3
     pathSucc: []
     pathFail: []
     insertableStartPos: {x: 0, y: 0, z: 0}
@@ -910,8 +910,8 @@ MonoBehaviour:
     cartridgeEmpty: 0
   - cartridge: {fileID: 400012}
     insertableCartridge: {fileID: 400002}
-    full: {fileID: 0}
-    empty: {fileID: 0}
+    full: {fileID: 2800000, guid: 13424238457a8c540a5902befa6abd0c, type: 3}
+    empty: {fileID: 2800000, guid: ef5dfb85aad8ee64d985e0f6ae4f6dc4, type: 3}
     lid: {fileID: 100020}
     startWait: 2
     lidDirection: 2
@@ -920,13 +920,13 @@ MonoBehaviour:
     insertableStartPos: {x: 0, y: 0, z: 0}
     lidIsOpen: 0
     cartridgeEmpty: 0
-  - cartridge: {fileID: 400010}
-    insertableCartridge: {fileID: 400004}
-    full: {fileID: 0}
-    empty: {fileID: 0}
-    lid: {fileID: 100016}
+  - cartridge: {fileID: 400008}
+    insertableCartridge: {fileID: 400006}
+    full: {fileID: 2800000, guid: 35007210d4152b04eb70fbf3427e59f2, type: 3}
+    empty: {fileID: 2800000, guid: 9c24e3eed954a8444bc881c955dfcb69, type: 3}
+    lid: {fileID: 100024}
     startWait: 3
-    lidDirection: 0
+    lidDirection: 1
     pathSucc: []
     pathFail: []
     insertableStartPos: {x: 0, y: 0, z: 0}
