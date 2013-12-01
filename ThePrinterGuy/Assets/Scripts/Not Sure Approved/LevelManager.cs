@@ -16,6 +16,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private iTween.EaseType _easyTypeOfLevelParentObjectIn = iTween.EaseType.easeOutBack;
     [SerializeField] private iTween.EaseType _easyTypeOfLevelParentObjectOut = iTween.EaseType.easeInBack;
     [SerializeField] private Texture2D _levelUnlockedTexture;
+    [SerializeField] private Texture2D _levelUnlockedTutorialTexture;
 
     private GameObject _selectedStageChar;
     private GameObject _lookTarget;
@@ -284,7 +285,10 @@ public class LevelManager : MonoBehaviour
         {
             if(_gameLevelsUnlocked[i])
             {
-                _gameLevels[i].renderer.material.mainTexture = _levelUnlockedTexture;
+                if(go.name == "stage1Char")
+                    _gameLevels[i].renderer.material.mainTexture = _levelUnlockedTutorialTexture;
+                else
+                    _gameLevels[i].renderer.material.mainTexture = _levelUnlockedTexture;
 
                 if(highScores[i] > 0)
                 {
