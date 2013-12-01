@@ -11,7 +11,8 @@ public class PaperInsertion : MonoBehaviour
 	[SerializeField] private GameObject _target;
     [SerializeField] private List<PaperLightSet> _paperlightset;
 	//Particles - New
-	[SerializeField] private particles _particles;
+	[SerializeField] private Particles _particles;
+//    [SerializeField] private GameObject _paperParticles;
     #endregion
 
     #region Privates
@@ -67,6 +68,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		GestureManager.OnTap -= TriggerSlide;
 		BpmSequencerItem.OnFailed -= Reset;
+		UnsubscribePaperPunch();
 	}
 
     #region Monobehaviour Functions
@@ -179,22 +181,52 @@ public class PaperInsertion : MonoBehaviour
                 identifier = 0;
         }*/
     }
-
+	
     private void TurnOnLight(int i)
     {
         if(_paperlightset[i].isOn == false)
         {
+			SubscribePaperPunch(i);
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].on;
             _paperlightset[i].isOn = true;
+//            _paperParticles.transform.position = _paperlightset[i].paperToSlide.transform.position;
+//            _paperParticles.SetActive(true);
         }
     }
-
+	
+	private int _tempPunch = 0;
+	private float _punchTime = 0.45f;
+	private void SubscribePaperPunch(int itemNumber)
+	{
+		_tempPunch = itemNumber;
+		
+		BeatController.OnBeat4th1 += PunchPaper;
+		BeatController.OnBeat4th2 += PunchPaper;
+		BeatController.OnBeat4th3 += PunchPaper;
+		BeatController.OnBeat4th4 += PunchPaper;
+	}
+	private void UnsubscribePaperPunch()
+	{		
+		BeatController.OnBeat4th1 -= PunchPaper;
+		BeatController.OnBeat4th2 -= PunchPaper;
+		BeatController.OnBeat4th3 -= PunchPaper;
+		BeatController.OnBeat4th4 -= PunchPaper;
+	}
+		
+	private void PunchPaper()
+	{
+		if(_tempPunch != null)
+			iTween.PunchScale(_paperlightset[_tempPunch].paper, new Vector3(0.1f, 0.1f, 0.1f), _punchTime);
+	}
+	
     private void TurnOffLight(int i)
     {
         if(_paperlightset[i].isOn == true)
         {
+			UnsubscribePaperPunch();
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].off;
             _paperlightset[i].isOn = false;
+//            _paperParticles.SetActive(false);
         }
     }
 
@@ -417,7 +449,6 @@ public class PaperInsertion : MonoBehaviour
 					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
 					//Child to DynamicObjects
 					tempParticles.transform.parent = _dynamicObjects.transform;
-					Debug.Log(gameObject.name+" instantiating particles");
 					return;
 				}
 			}
@@ -425,7 +456,6 @@ public class PaperInsertion : MonoBehaviour
 			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
 			//Child to DynamicObjects
 			tempParticles1.transform.parent = _dynamicObjects.transform;
-			Debug.Log(gameObject.name+" instantiating particles");
 		}
 	}
 
@@ -441,7 +471,6 @@ public class PaperInsertion : MonoBehaviour
                  GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
                  //Child to DynamicObjects
                  tempParticles.transform.parent = _dynamicObjects.transform;
-                 Debug.Log(gameObject.name+" instantiating particles");
                  return;
              }
          }
@@ -449,7 +478,6 @@ public class PaperInsertion : MonoBehaviour
          GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
          //Child to DynamicObjects
          tempParticles1.transform.parent = _dynamicObjects.transform;
-         Debug.Log(gameObject.name+" instantiating particles");
      }
  }
 	#endregion
@@ -467,7 +495,7 @@ public class PaperInsertion : MonoBehaviour
     };
 	
     [System.Serializable]
-    public class particles
+    public class Particles
     {
 		public GameObject complete;
 		public GameObject failed;

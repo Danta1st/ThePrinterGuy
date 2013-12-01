@@ -3,49 +3,54 @@ using System.Collections;
 
 public class GreenZone : MonoBehaviour {
 	
-	[SerializeField] private Texture2D _greenOn;
-	[SerializeField] private Texture2D _greenOff;
-    [SerializeField] private GameObject _greenInnerGlow;
+	[SerializeField] private Texture2D _green;
+	[SerializeField] private Texture2D _yellow;
+	[SerializeField] private Texture2D _red;
+//	[SerializeField] private Texture2D _greenOff;
+//    [SerializeField] private GameObject _greenInnerGlow;
 //    [SerializeField] private GameObject _yellowInnerGlow;
     [SerializeField] private GameObject _ring;
     [SerializeField] private Texture2D _ringLit;
     [SerializeField] private Texture2D _ringUnlit;
 	
-	// Use this for initialization
+	
 	void Start () {
-	    _greenInnerGlow.renderer.enabled = false;
+//	    _greenInnerGlow.renderer.enabled = false;
 //		_yellowInnerGlow.renderer.enabled = false;
+	}	
+	void Update () {
+//		_greenInnerGlow.transform.Rotate(0, 0, Time.deltaTime * 40.0f);
+//		_yellowInnerGlow.transform.Rotate(0, 0, Time.deltaTime * 30.0f);
 	}
 	
-	// Update is called once per frame
-	void Update () {
-         _greenInnerGlow.transform.Rotate(0, 0, Time.deltaTime*40);
-	}
-
+	
 	public void GreenOn()
 	{
-        _greenInnerGlow.renderer.enabled = true;
-		renderer.material.mainTexture = _greenOn;
+		YellowOff();
+		renderer.material.mainTexture = _green;
         _ring.renderer.material.mainTexture = _ringLit;
-	}
-	
+//        _greenInnerGlow.renderer.enabled = true;
+	}	
 	public void GreenOff()
 	{
-		renderer.material.mainTexture = _greenOff;
+		YellowOff();
+		renderer.material.mainTexture = _red;
         _ring.renderer.material.mainTexture = _ringUnlit;
-        _greenInnerGlow.renderer.enabled = false;
+//        _greenInnerGlow.renderer.enabled = false;
 	}
 	
-//	public void YellowOn()
-//	{
+	
+	public void YellowOn()
+	{
+		renderer.material.mainTexture = _yellow;
+        _ring.renderer.material.mainTexture = _ringLit;
 //        _yellowInnerGlow.renderer.enabled = true;
-//		renderer.material.mainTexture = _greenOn;
-//        _ring.renderer.material.mainTexture = _ringLit;
-//	}
-//	public void YellowOff()
-//	{
-//		renderer.material.mainTexture = _greenOff;
-//        _ring.renderer.material.mainTexture = _ringUnlit;
-//        _greenInnerGlow.renderer.enabled = false;
-//	}
+	}
+	public void YellowOff()
+	{
+		renderer.material.mainTexture = _red;
+        _ring.renderer.material.mainTexture = _ringUnlit;
+//        _yellowInnerGlow.renderer.enabled = true;
+	}
+	
 }

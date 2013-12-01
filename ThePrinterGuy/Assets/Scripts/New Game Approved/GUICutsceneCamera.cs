@@ -29,6 +29,7 @@ public class GUICutsceneCamera : MonoBehaviour
     private int _textIndex = 0;
     private bool _isReady = true;
     private bool _isLast = false;
+    private bool _subtitleOn = true;
     #endregion
 	
     #region Enable and Disable
@@ -94,66 +95,89 @@ public class GUICutsceneCamera : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-        //GUI Camera and rescale of GUI elements.
-        //--------------------------------------------------//
-        _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
-        transform.position = _guiCamera.transform.position;
-
-        _scaleMultiplierX = Screen.width / 1920f;
-        _scaleMultiplierY = Screen.height / 1200f;
-        AdjustCameraSize();
-        //--------------------------------------------------//
-
-        //Find specific gui objects in the gui list.
-        //--------------------------------------------------//
-        foreach(GameObject _guiObject in _guiList)
+        if(PlayerPrefs.HasKey("Subtitle"))
         {
-            if(_guiObject.name == "BGSubtitle")
+            if(PlayerPrefs.GetString("Subtitle") == "On")
             {
-            	_bgText = _guiObject;
-            	_bgTextStartSize = _bgText.transform.localScale;
-                _guiObject.SetActive(false);
+                _subtitleOn = true;
+            }
+            else
+            {
+                _subtitleOn = false;
             }
         }
-        //--------------------------------------------------//
+        else
+        {
+            PlayerPrefs.SetString("Subtitle", "On");
+            _subtitleOn = true;
+        }
 
-		UpdateText();
+        if(_subtitleOn)
+        {
+            //GUI Camera and rescale of GUI elements.
+            //--------------------------------------------------//
+            _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
+            transform.position = _guiCamera.transform.position;
+        
+            _scaleMultiplierX = Screen.width / 1920f;
+            _scaleMultiplierY = Screen.height / 1200f;
+            AdjustCameraSize();
+            //--------------------------------------------------//
+        
+            //Find specific gui objects in the gui list.
+            //--------------------------------------------------//
+            foreach(GameObject _guiObject in _guiList)
+            {
+                if(_guiObject.name == "BGSubtitle")
+                {
+                	_bgText = _guiObject;
+                	_bgTextStartSize = _bgText.transform.localScale;
+                    _guiObject.SetActive(false);
+                }
+            }
+            //--------------------------------------------------//
 
-		foreach(GameObject _text in _textList)
-		{
-			_text.SetActive(false);
-		}
-		
-		_timer = gameObject.AddComponent<TimerUtilities>();
-		UpdateSubtitle();
-        EnableGUICamera();
+        	UpdateText();
+        
+        	foreach(GameObject _text in _textList)
+        	{
+        		_text.SetActive(false);
+        	}
+
+        	_timer = gameObject.AddComponent<TimerUtilities>();
+        	UpdateSubtitle();
+            EnableGUICamera();
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		_currentTimeStamp = Time.timeSinceLevelLoad;
-		if(_currentTimeStamp > _timeStampText && _isReady == true && _isLast == false)
-		{
-			ActivateSubtitle();
-			StartSubtitleTimer();
-			_isReady = false;
-		}
-		
-    	if(_timer.GetTimeLeft() == 0 && _isReady == false)
-    	{
-    		DeactivateSubtitle();
-    		if(_textIndex < _textList.Length)
-    		{
-    			UpdateSubtitle();
-    		}
-    		else
-    		{
-    			_isLast = true;
-    		}
-    		
-    		_isReady = true;
-    	}
+        if(_subtitleOn)
+        {
+        	_currentTimeStamp = Time.timeSinceLevelLoad;
+        	if(_currentTimeStamp > _timeStampText && _isReady == true && _isLast == false)
+        	{
+        		ActivateSubtitle();
+        		StartSubtitleTimer();
+        		_isReady = false;
+        	}
+        	
+        	if(_timer.GetTimeLeft() == 0 && _isReady == false)
+        	{
+        		DeactivateSubtitle();
+        		if(_textIndex < _textList.Length)
+        		{
+        			UpdateSubtitle();
+        		}
+        		else
+        		{
+        			_isLast = true;
+        		}
+        		
+        		_isReady = true;
+        	}
+        }
 	}
 	
 	#region Class Methods
@@ -213,7 +237,14 @@ public class GUICutsceneCamera : MonoBehaviour
 		_durationText = _subtitleTimerList[_textIndex].duration;
 		
 		float _textLength = _textInFocus.GetComponent<TextMesh>().text.Length;
-		_bgTextMultiplier = _textLength / 50f;
+		if(_textLength < 40)
+		{
+			_bgTextMultiplier = _textLength / 40f;	
+		}
+		else{
+			_bgTextMultiplier = _textLength / 55f;	
+		}
+		
 		Vector3 _size = new Vector3(_bgTextStartSize.x*_bgTextMultiplier, _bgTextStartSize.y, _bgTextStartSize.z);
 		_bgText.transform.localScale = _size;
 		

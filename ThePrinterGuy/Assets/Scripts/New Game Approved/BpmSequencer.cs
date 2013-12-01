@@ -89,6 +89,7 @@ public class BpmSequencer : MonoBehaviour {
 	void Awake()
 	{
 		_gGameCam = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
+		_gGameCam.GetComponent<HighscoreScreenLoader>().SetTotalNodes(_TaskSequences.Length);
 	}
 		
 	void Update()
