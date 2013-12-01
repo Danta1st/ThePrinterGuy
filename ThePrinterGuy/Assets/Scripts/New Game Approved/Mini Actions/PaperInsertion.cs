@@ -30,12 +30,7 @@ public class PaperInsertion : MonoBehaviour
 	//Whatever
 	private GameObject _dynamicObjects;
     private GameObject _conveyorBelt;
-    private GameObject _roller1;
-    private GameObject _roller2;
-    private GameObject _roller3;
-    private GameObject _roller4;
-    private List<GameObject> _rollers = new List<GameObject>();
-	
+
 	//Gate positions
 	private Vector3 _beginPosition;
 	private Vector3 _openPosition;
@@ -105,16 +100,7 @@ public class PaperInsertion : MonoBehaviour
 		InitializeLights();
 		DisablePaper();
 
-        _conveyorBelt = transform.FindChild("convoyeBelt").gameObject;
-        _roller1 = transform.FindChild("roller1").gameObject;
-        _roller2 = transform.FindChild("roller2").gameObject;
-        _roller3 = transform.FindChild("roller3").gameObject;
-        _roller4 = transform.FindChild("roller4").gameObject;
-
-        _rollers.Add(_roller1);
-        _rollers.Add(_roller2);
-        _rollers.Add(_roller3);
-        _rollers.Add(_roller4);
+        _conveyorBelt = transform.FindChild("BB-9000_Paper").FindChild("convoyeBelt").gameObject;
 	}
     #endregion
 
@@ -507,7 +493,7 @@ public class PaperInsertion : MonoBehaviour
     public void RollConvoreBelt()
     {
         Vector2 thisOffset = _conveyorBelt.renderer.material.mainTextureOffset;
-        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, -0.001f));
+        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, -0.01f));
     }
 	#endregion
 
