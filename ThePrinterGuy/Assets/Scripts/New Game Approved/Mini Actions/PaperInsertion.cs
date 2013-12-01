@@ -25,7 +25,7 @@ public class PaperInsertion : MonoBehaviour
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private bool _IsSlideLocked		= false;
 	private float _slideTime		= 0.4f;
-	private float _slideWait		= 0.2f;
+	private float _slideWait		= 0.1f;
 	
 	//Whatever
 	private GameObject _dynamicObjects;
