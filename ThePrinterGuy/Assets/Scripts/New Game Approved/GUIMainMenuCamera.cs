@@ -6,25 +6,16 @@ public class GUIMainMenuCamera : MonoBehaviour
 {
 
     #region Editor Publics
-    [SerializeField]
-    private LayerMask _layerMaskGUI;
+    [SerializeField] private LayerMask _layerMaskGUI;
     //List of all gui elements.
-    [SerializeField]
-    private GameObject[] _guiList;
-    [SerializeField]
-    private GameObject[] _textList;
-    [SerializeField]
-    private iTween.EaseType _easeTypeCamera;
-	[SerializeField]
-	private ButtonTextures _menuTextures;
-    [SerializeField]
-    private GameObject _danishCheck;
-    [SerializeField]
-    private GameObject _englishCheck;
-    [SerializeField]
-    private GameObject _soundCheck;
-    [SerializeField]
-    private GameObject _subtitleCheck;
+    [SerializeField] private GameObject[] _guiList;
+    [SerializeField] private GameObject[] _textList;
+    [SerializeField] private iTween.EaseType _easeTypeCamera;
+	[SerializeField] private ButtonTextures _menuTextures;
+    [SerializeField] private GameObject _danishCheck;
+    [SerializeField] private GameObject _englishCheck;
+    [SerializeField] private GameObject _soundCheck;
+    [SerializeField] private GameObject _subtitleCheck;
     #endregion
 
     #region Private Variables
@@ -135,6 +126,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 				continue;
             _gui.SetActive(false);
         }
+		ResetGuiTextures();
     }
     #endregion
 
@@ -317,6 +309,8 @@ public class GUIMainMenuCamera : MonoBehaviour
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
                 {
+					var hitObject = _hit.collider.gameObject;
+					
                     if(_hit.collider.gameObject.name == "SoundButton")
                     {
                         if(_soundCheck.renderer.enabled == true)
@@ -359,7 +353,12 @@ public class GUIMainMenuCamera : MonoBehaviour
                         if(OnOptionsScreen != null)
                         {
                             OnOptionsScreen();
-                            DisableGUIElementAll();
+							
+							//Do fancy 'User Pressed a button' Animation
+							SetTexture(hitObject, _menuTextures.optionsPressed);
+							PunchButton(hitObject);
+							//Reset
+                            Invoke("DisableGUIElementAll", _punchTime);
                         }
                     }
                     else if(_hit.collider.gameObject.name == "CreditsButton")
@@ -367,18 +366,28 @@ public class GUIMainMenuCamera : MonoBehaviour
                         if(OnCreditScreen != null)
                         {
                             OnCreditScreen();
+							
+							
+							//Do fancy 'User Pressed a button' Animation
+							SetTexture(hitObject, _menuTextures.creditsPressed);
+							PunchButton(hitObject);
+							//Reset
+                            Invoke("DisableGUIElementAll", _punchTime);
+							
 							credits.SetCreditsRunning(true);
-                            DisableGUIElementAll();
                         }
                     }
                     else if(_hit.collider.gameObject.name == "MenuButtonLeft")
                     {
                         if(OnMainScreen != null)
                         {
-							_optionsButton.renderer.material.mainTexture = _menuTextures.OptionsButton;
                             OnMainScreen();
-
-                            DisableGUIElementAll();
+							
+							//Do fancy 'User Pressed a button' Animation
+							SetTexture(hitObject, _menuTextures.leftPressed);
+							PunchButton(hitObject);
+							//Reset
+                            Invoke("DisableGUIElementAll", _punchTime);
                         }
                     }
                     else if(_hit.collider.gameObject.name == "MenuButtonRight")
@@ -506,16 +515,55 @@ public class GUIMainMenuCamera : MonoBehaviour
 				Debug.LogWarning(gameObject.name+" found no text in _textList");
         }		
     }
+	
+	private void ResetGuiTextures()
+	{        
+		foreach(GameObject _guiObject in _guiList)
+        {
+			if(_guiObject == null)
+				continue;
+			
+            if(_guiObject.name == "MenuButtonLeft")
+            {
+				SetTexture(_guiObject, _menuTextures.left);
+            }			
+            if(_guiObject.name == "OptionsButton")
+            {
+				SetTexture(_guiObject, _menuTextures.options);
+            }
+            if(_guiObject.name == "CreditsButton")
+            {
+				SetTexture(_guiObject, _menuTextures.credits);
+            }
+        }
+		
+	}
+	
+	private float _punchTime = 0.4f;
+	private void PunchButton(GameObject button)
+	{		
+		iTween.PunchScale(button, new Vector3(35f, 35f, 35f), _punchTime);
+	}
+	private void PunchButtonPrecise(GameObject button, Vector3 scale)
+	{		
+		iTween.PunchScale(button, scale, _punchTime);
+	}
+	
+	private void SetTexture(GameObject go, Texture2D texture)
+	{
+		go.renderer.material.mainTexture = texture;
+	}
     #endregion
+	
+	[System.Serializable]
+	public class ButtonTextures
+	{
+		public Texture2D options;
+		public Texture2D optionsPressed;
+		public Texture2D credits;
+		public Texture2D creditsPressed;
+		public Texture2D left;
+		public Texture2D leftPressed;
+	}
 }
 
-[System.Serializable]
-public class ButtonTextures
-{
-	public Texture OptionsButton;
-	public Texture OptionsButtonPressed;
-	public Texture CreditsButton;
-	public Texture CreditsButtonPressed;
-	public Texture BackToLevelSelecButton;
-	public Texture BackToLevelSelecButtonPressed;
-}
