@@ -32,12 +32,10 @@ public class HighscoreSceneScript : MonoBehaviour
 	private GameObject nextLevelButton;
 	private bool _isWin = false;
 	private int _levelScore = 0;
-	private int _currentLevel = 0;
 	private int _levelHighscore = 0;
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
-	private int _levelOffset = 0;
 	
 	private static int _levelCompleted;
 	private static int _lastScore;
@@ -51,10 +49,10 @@ public class HighscoreSceneScript : MonoBehaviour
 	[SerializeField]
 	private float _fadeOutTime = 0.2f;
 		
-	public delegate void FailedLevelAction(int score);
+	public delegate void FailedLevelAction(float score);
     public static event FailedLevelAction OnFailedLevel;
 	
-	public delegate void CompletedLevelAction(int score);
+	public delegate void CompletedLevelAction(float score);
     public static event CompletedLevelAction OnCompletedLevel;
 	
 	// Use this for initialization
@@ -248,7 +246,36 @@ public class HighscoreSceneScript : MonoBehaviour
                     else
                     {
                         GestureManager.OnTap -= CheckCollision;
-                        LoadingScreen.Load(_levelCompleted+1);
+
+                        string correspondingLevelName = null;
+                        int indexOfNextLevel = _levelCompleted + 3;
+                        switch (indexOfNextLevel) {
+                            case 2:
+                                correspondingLevelName = "Stage1Cinematics";
+                                break;
+                            case 3:
+                                correspondingLevelName = "Tutorial2";
+                                break;
+                            case 4:
+                                correspondingLevelName = "Tutorial3";
+                                break;
+                            case 5:
+                                correspondingLevelName = "Tutorial4";
+                                break;
+                            case 6:
+                                correspondingLevelName = "Tutorial5";
+                                break;
+                            default:
+                                break;
+                        }
+                        if(correspondingLevelName == null)
+                        {
+                            LoadingScreen.Load(indexOfNextLevel, true);
+                        }
+                        else
+                        {
+                            LoadingScreen.Load(correspondingLevelName, true);
+                        }
                     }
 				}
             }
@@ -309,6 +336,8 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_levelScore > _levelHighscore && _isWin)
 		{
 			highScores[_levelCompleted] = _levelScore;
+            //Unlocking next level!
+            highScores[_levelCompleted + 1] = 0;
 			_levelHighscore = _levelScore;
 			SaveGame.SavePlayerData(currency, premiumCurrency, highScores);
 		}

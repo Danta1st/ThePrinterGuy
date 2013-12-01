@@ -311,9 +311,17 @@ public class LevelManager : MonoBehaviour
 
                 if(highScores[i] > 0)
                 {
-                    GameObject box = LevelParentObject.transform.FindChild("Box" + i+1).gameObject;
-                    GameObject completed = LevelParentObject.transform.FindChild("Completed").gameObject;
-                    completed.renderer.enabled = true;
+                    int boxNumber = i + 1;
+                    GameObject box = LevelParentObject.transform.FindChild("Box" + boxNumber).gameObject;
+                    box.transform.FindChild("Completed").gameObject.renderer.enabled = true;
+                    int numberOfStars = 3; //Starculator.GetStars(highScores);
+
+                    if( 1 <= numberOfStars)
+                        box.transform.FindChild("Star1").gameObject.renderer.enabled = true;
+                    if( 2 <= numberOfStars)
+                        box.transform.FindChild("Star2").gameObject.renderer.enabled = true;
+                    if( 3 == numberOfStars)
+                        box.transform.FindChild("Star3").gameObject.renderer.enabled = true;
                 }
 
             }
@@ -339,7 +347,7 @@ public class LevelManager : MonoBehaviour
 
     void LevelBoxesDisappear(GameObject go)
     {
-        LevelParentObject = go.transform.FindChild("stageLevelSelection").gameObject;
+        LevelParentObject = go.transform.FindChild("LevelBoxes").gameObject;
         iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(0,0,0),"time", 1f, "easeType", _easyTypeOfLevelParentObjectOut));
         indexChar = _stageCharacters.IndexOf(go);
         minIndex = indexChar * _levelBoxCount;
