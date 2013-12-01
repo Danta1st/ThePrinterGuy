@@ -200,6 +200,8 @@ public class GUIGameCamera : MonoBehaviour
 
     void Start()
     {
+        SoundManager.UnFadeAllMusic();
+
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
