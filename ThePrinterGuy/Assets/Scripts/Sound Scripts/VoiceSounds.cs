@@ -261,6 +261,41 @@ public class VoiceSounds : MonoBehaviour
         _voiceBossEnd.PlayClip(Random.Range(0, 3));
     }
 
+    public void Voice_Boss_Random_FireYou()
+    {
+        _voiceBoss.PlayClip(Random.Range(0, 1));
+    }
+
+    public void Voice_Boss_Random_GiveUp()
+    {
+        _voiceBoss.PlayClip(Random.Range(2, 4));
+    }
+
+    public void Voice_Boss_Random_Idiot()
+    {
+        _voiceBoss.PlayClip(Random.Range(5, 6));
+    }
+
+    public void Voice_Boss_Random_Bravo()
+    {
+        _voiceBoss.PlayClip(Random.Range(9, 11));
+    }
+
+    public void Voice_Boss_Random_KeepGoing()
+    {
+        _voiceBoss.PlayClip(Random.Range(12, 14));
+    }
+
+    public void Voice_Boss_Random_Know()
+    {
+        _voiceBoss.PlayClip(Random.Range(15, 16));
+    }
+
+    public void Voice_Boss_Random_NotBad()
+    {
+        _voiceBoss.PlayClip(Random.Range(18, 19));
+    }
+
     public GenericSoundScript GetEffectScript()
     {
         return _voiceBoss;
