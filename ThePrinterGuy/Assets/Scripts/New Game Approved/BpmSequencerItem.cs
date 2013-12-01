@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class BpmSequencerItem : MonoBehaviour {
@@ -7,6 +7,7 @@ public class BpmSequencerItem : MonoBehaviour {
     [SerializeField] private string _moduleName;
     [SerializeField] private iTween.EaseType _easeTypeMove = iTween.EaseType.easeInSine;
 	[SerializeField] Particles _particles;
+	[SerializeField] Textures _textures;	
     #endregion
 	
 	//-----------------------------
@@ -203,7 +204,7 @@ public class BpmSequencerItem : MonoBehaviour {
         iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", _ms));
     }
 		
-	//MoveMethods - could this be generalised?
+	//MoveMethods - crap method - TODO: could this be generalised?
 	public void StartMovePaper()
 	{
 		//Calibrate ze movetime
@@ -265,7 +266,9 @@ public class BpmSequencerItem : MonoBehaviour {
 		{
 		case "Paper":			
 			if(_steps.stepsMoved == red)
+			{
 				_statusZone = "Red";
+			}
 			else if(_steps.stepsMoved == yellow)
 			{
 				_statusZone = "Yellow";
@@ -292,7 +295,9 @@ public class BpmSequencerItem : MonoBehaviour {
 				}
 				//TODO: Insert end dissapear method
                 KillTaskFailed();
-			}		
+			}
+			
+			ChangeTexture();
 			break;
 		case "Ink":
 			red = _steps.maxFourths-2;
@@ -301,9 +306,13 @@ public class BpmSequencerItem : MonoBehaviour {
 			dead = _steps.maxFourths+1;
 			
 			if(_steps.stepsMoved == red)
+			{
 				_statusZone = "Red";
+			}
 			else if(_steps.stepsMoved == yellow)
+			{
 				_statusZone = "Yellow";
+			}
 			else if(_steps.stepsMoved == green)
 			{
 				_statusZone = "Green";
@@ -325,7 +334,8 @@ public class BpmSequencerItem : MonoBehaviour {
 				}
 				//TODO: Insert end dissapear method
                 KillTaskFailed();
-			}	
+			}
+			ChangeTexture();
 			break;
 		case "UraniumRod":
 			red = _steps.maxEights-2;
@@ -358,7 +368,8 @@ public class BpmSequencerItem : MonoBehaviour {
 				}
 				//TODO: Insert end dissapear method
                 KillTaskFailed();
-			}	
+			}
+			ChangeTexture();
 			break;
 		case "Barometer":
 			break;
@@ -368,6 +379,26 @@ public class BpmSequencerItem : MonoBehaviour {
 		}
 	}
 	
+	//Method for changing the texture of the item
+	private void ChangeTexture()
+	{
+        if(_statusZone == "Red")
+        {
+			renderer.material.mainTexture = _textures.red;
+        }
+        else if(_statusZone == "Yellow")
+        {
+			renderer.material.mainTexture = _textures.yellow;
+        }
+        else if(_statusZone == "Green")
+        {
+			renderer.material.mainTexture = _textures.green;
+        }
+		else			
+			renderer.material.mainTexture = _textures.red;
+	}
+	
+	//Method for identifying which zone the task is currently in
     public int GetZoneStatus()
     {
         if(_statusZone == "Red")
@@ -385,7 +416,8 @@ public class BpmSequencerItem : MonoBehaviour {
 
         return _zone;
     }
-
+	
+	//Methods for killing the task
     private void KillTaskFailed()
     {
         iTween.MoveTo(gameObject, iTween.Hash("position", _failedPos, "time", _TaskKillTime, "easetype", iTween.EaseType.linear,
@@ -496,4 +528,12 @@ public class BpmSequencerItem : MonoBehaviour {
 		public GameObject completed;
         public GameObject failed;
     };
+	
+    [System.Serializable]
+    public class Textures
+    {
+		public Texture2D red;
+		public Texture2D yellow;
+		public Texture2D green;
+	}
 }
