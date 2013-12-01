@@ -89,6 +89,7 @@ public class BpmSequencer : MonoBehaviour {
 	void Awake()
 	{
 		_gGameCam = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
+		_gGameCam.GetComponent<HighscoreScreenLoader>().SetTotalNodes(_TaskSequences.Length);
 	}
 		
 	void Update()
@@ -122,6 +123,7 @@ public class BpmSequencer : MonoBehaviour {
 				var temp = _TaskSequences[_sequenceIndex].beats[i].ToString();
 				
 				SubscribeToBeat(temp);
+				//Debug.Log(gameObject.name+" subscribing to "+temp);
 			}
 		}
 		else
@@ -365,21 +367,21 @@ public class BpmSequencer : MonoBehaviour {
 		if(_beatCounter == 0)
 		{
 			SpawnTask();
-			_beatCounter++;
+//			_beatCounter++;
 			
 			if(_taskCounter < _TaskSequences[_sequenceIndex].amounts.Length)
 				_taskCounter++;
 		}
-		//Reset beat counter
-		else if(_beatCounter >= _TaskSequences[_sequenceIndex].SpawnInterval)
-		{
-			_beatCounter = 0;
-		}
-		//Skip spawning this beat
-		else if(_beatCounter < _TaskSequences[_sequenceIndex].SpawnInterval)
-		{
-			_beatCounter++;
-		}		
+//		//Reset beat counter
+//		else if(_beatCounter >= _TaskSequences[_sequenceIndex].SpawnInterval)
+//		{
+//			_beatCounter = 0;
+//		}
+//		//Skip spawning this beat
+//		else if(_beatCounter < _TaskSequences[_sequenceIndex].SpawnInterval)
+//		{
+//			_beatCounter++;
+//		}		
 	} 
 	
 	private void CheckBeat()
@@ -388,7 +390,8 @@ public class BpmSequencer : MonoBehaviour {
 		if(_sequenceIndex < _TaskSequences.Length)
 		{
 			CheckSpawnInterval();
-							
+			//SpawnTask();
+			
 			//Check if last task
 			if(_taskCounter >= _TaskSequences[_sequenceIndex].amounts.Length)
 			{
@@ -536,7 +539,7 @@ public class BpmSequencer : MonoBehaviour {
 		public Tasks task;
 		public Beats[] beats;
         public int[] amounts;
-		public int SpawnInterval;
+		[HideInInspector] public int SpawnInterval;
 		public int beatsUntillNextSequence;
     };
     #endregion

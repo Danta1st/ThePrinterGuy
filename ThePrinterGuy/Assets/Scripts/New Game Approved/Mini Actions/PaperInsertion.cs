@@ -11,8 +11,8 @@ public class PaperInsertion : MonoBehaviour
 	[SerializeField] private GameObject _target;
     [SerializeField] private List<PaperLightSet> _paperlightset;
 	//Particles - New
-	[SerializeField] private particles _particles;
-    [SerializeField] private GameObject _paperParticles;
+	[SerializeField] private Particles _particles;
+//    [SerializeField] private GameObject _paperParticles;
     #endregion
 
     #region Privates
@@ -25,11 +25,12 @@ public class PaperInsertion : MonoBehaviour
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private bool _IsSlideLocked		= false;
 	private float _slideTime		= 0.4f;
-	private float _slideWait		= 0.2f;
+	private float _slideWait		= 0.1f;
 	
 	//Whatever
 	private GameObject _dynamicObjects;
-	
+    private GameObject _conveyorBelt;
+
 	//Gate positions
 	private Vector3 _beginPosition;
 	private Vector3 _openPosition;
@@ -68,6 +69,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		GestureManager.OnTap -= TriggerSlide;
 		BpmSequencerItem.OnFailed -= Reset;
+		UnsubscribePaperPunch();
 	}
 
     #region Monobehaviour Functions
@@ -97,8 +99,15 @@ public class PaperInsertion : MonoBehaviour
 
 		InitializeLights();
 		DisablePaper();
+
+        _conveyorBelt = transform.FindChild("BB-9000_Paper").FindChild("convoyeBelt").gameObject;
 	}
     #endregion
+
+    void Update()
+    {
+        RollConvoreBelt();
+    }
 
     #region Class Methods
     //Gate Methods
@@ -123,7 +132,7 @@ public class PaperInsertion : MonoBehaviour
         if(!_isGateOpen)
         {
 			iTween.MoveTo(_gate, iTween.Hash("position", _openPosition, "time", _openTime, "easetype", _easeTypeOpen));
-			
+
             _isGateOpen = true;
         }
     }
@@ -180,26 +189,52 @@ public class PaperInsertion : MonoBehaviour
                 identifier = 0;
         }*/
     }
-
+	
     private void TurnOnLight(int i)
     {
         if(_paperlightset[i].isOn == false)
         {
-
+			SubscribePaperPunch(i);
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].on;
             _paperlightset[i].isOn = true;
-            _paperParticles.transform.position = _paperlightset[i].paperToSlide.transform.position;
-            _paperParticles.SetActive(true);
+//            _paperParticles.transform.position = _paperlightset[i].paperToSlide.transform.position;
+//            _paperParticles.SetActive(true);
         }
     }
-
+	
+	private int _tempPunch = 0;
+	private float _punchTime = 0.45f;
+	private void SubscribePaperPunch(int itemNumber)
+	{
+		_tempPunch = itemNumber;
+		
+		BeatController.OnBeat4th1 += PunchPaper;
+		BeatController.OnBeat4th2 += PunchPaper;
+		BeatController.OnBeat4th3 += PunchPaper;
+		BeatController.OnBeat4th4 += PunchPaper;
+	}
+	private void UnsubscribePaperPunch()
+	{		
+		BeatController.OnBeat4th1 -= PunchPaper;
+		BeatController.OnBeat4th2 -= PunchPaper;
+		BeatController.OnBeat4th3 -= PunchPaper;
+		BeatController.OnBeat4th4 -= PunchPaper;
+	}
+		
+	private void PunchPaper()
+	{
+		if(_tempPunch != null)
+			iTween.PunchScale(_paperlightset[_tempPunch].paper, new Vector3(0.1f, 0.1f, 0.1f), _punchTime);
+	}
+	
     private void TurnOffLight(int i)
     {
         if(_paperlightset[i].isOn == true)
         {
+			UnsubscribePaperPunch();
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].off;
             _paperlightset[i].isOn = false;
-            _paperParticles.SetActive(false);
+//            _paperParticles.SetActive(false);
         }
     }
 
@@ -422,7 +457,6 @@ public class PaperInsertion : MonoBehaviour
 					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
 					//Child to DynamicObjects
 					tempParticles.transform.parent = _dynamicObjects.transform;
-					Debug.Log(gameObject.name+" instantiating particles");
 					return;
 				}
 			}
@@ -430,33 +464,37 @@ public class PaperInsertion : MonoBehaviour
 			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
 			//Child to DynamicObjects
 			tempParticles1.transform.parent = _dynamicObjects.transform;
-			Debug.Log(gameObject.name+" instantiating particles");
 		}
 	}
 
     private void InstantiateParticlesAtPaper(GameObject particles, GameObject posRotGO)
- {
-     if(particles != null)
-     {
-         foreach(Transform child in posRotGO.transform)
-         {
-             if(child.name.Equals("ParticlePaperPos") && particles != null)
-             {
-                 //Instantiate Particle prefab. Rotation solution is a HACK
-                 GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
-                 //Child to DynamicObjects
-                 tempParticles.transform.parent = _dynamicObjects.transform;
-                 Debug.Log(gameObject.name+" instantiating particles");
-                 return;
-             }
-         }
-         //Instantiate Particle prefab. Rotation solution is a HACK
-         GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
-         //Child to DynamicObjects
-         tempParticles1.transform.parent = _dynamicObjects.transform;
-         Debug.Log(gameObject.name+" instantiating particles");
-     }
- }
+    {
+        if(particles != null)
+        {
+            foreach(Transform child in posRotGO.transform)
+            {
+                if(child.name.Equals("ParticlePaperPos") && particles != null)
+                {
+                    //Instantiate Particle prefab. Rotation solution is a HACK
+                    GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+                    //Child to DynamicObjects
+                    tempParticles.transform.parent = _dynamicObjects.transform;
+                    return;
+                }
+            }
+
+            //Instantiate Particle prefab. Rotation solution is a HACK
+            GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+            //Child to DynamicObjects
+            tempParticles1.transform.parent = _dynamicObjects.transform;
+        }
+    }
+
+    public void RollConvoreBelt()
+    {
+        Vector2 thisOffset = _conveyorBelt.renderer.material.mainTextureOffset;
+        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, -0.01f));
+    }
 	#endregion
 
     #region SubClasses
@@ -467,12 +505,12 @@ public class PaperInsertion : MonoBehaviour
         public Texture on;
         public Texture off;
         public GameObject paper;
-        public bool isOn = false;
+        [HideInInspector] public bool isOn = false;
 		public GameObject paperToSlide;
     };
 	
     [System.Serializable]
-    public class particles
+    public class Particles
     {
 		public GameObject complete;
 		public GameObject failed;

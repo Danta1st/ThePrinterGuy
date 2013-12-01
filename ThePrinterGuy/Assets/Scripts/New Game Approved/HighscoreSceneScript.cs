@@ -16,6 +16,13 @@ public class HighscoreSceneScript : MonoBehaviour
 		public static int starScoreOne;
 		public static int starScoreTwo;
 		public static int starScoreThree;
+		public static int perfectInk;
+		public static int perfectPaper;
+		public static int perfectUran;
+		public static int failedInk;
+		public static int failedPaper;
+		public static int failedUran;
+		public static int _totalNodes;
 	}
 	
 	private Camera _guiCamera;
@@ -36,7 +43,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	private static bool _isPrepared = false;
 	private Material _material = null;
 	private float alphaFloat;
-
+	
 	[SerializeField]
 	private float _fadeInTime = 0.2f;
 	[SerializeField]
@@ -61,13 +68,9 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	void Start () 
 	{
-        //CRAZY HACK!!!
-		if(!_isPrepared)
-			return; //HACKY HACKY HACK
-		//GoToHighScoreScreen(2, 1000, true, 200, 300, 1000); // TESTCODE - REMOVE LOAD FROM THE METHOD FIRST
 		if(!_isPrepared || _guiList == null)
 			return;
-
+		
 		_guiCamera = GameObject.Find ("GUI Camera").camera;
 		
 		_scaleMultiplierX = Screen.width / 1920f;
@@ -107,31 +110,31 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_win)
 		{
 			if(OnCompletedLevel != null)
-				OnCompletedLevel((float)_lastScore);
+				OnCompletedLevel(_lastScore);
 			_isWin = true;
 			LaunchEndScreen();
 		}
 		else
 		{
 			if(OnFailedLevel != null)
-				OnFailedLevel((float)_lastScore);
+				OnFailedLevel(_lastScore);
 			_isWin = false;
 			nextLevelButton.SetActive(false);
 			LaunchEndScreen();
 		}
 	}
 	
-	public void GoToHighScoreScreen(int level, int score, bool win, int starScoreOneInput, int starScoreTwoInput, int starScoreThreeInput)
+	public void GoToHighScoreScreen(int level, int score, bool win)
 	{
-		_targetScore.starScoreOne = starScoreOneInput;
-		_targetScore.starScoreTwo = starScoreTwoInput;
-		_targetScore.starScoreThree = starScoreThreeInput;
 		_isPrepared = true;
 		_levelCompleted = level;
 		_lastScore = score;
 		_win = win;
 		
-		StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
+		if(_win)
+			StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
+		else
+			StartFadeHS(_fadeOutTime, _fadeInTime, Color.red);
 	}
 	
 	private void DrawQuad(Color aColor,float aAlpha)
@@ -243,7 +246,36 @@ public class HighscoreSceneScript : MonoBehaviour
                     else
                     {
                         GestureManager.OnTap -= CheckCollision;
-                        LoadingScreen.Load(_levelCompleted+1);
+
+                        string correspondingLevelName = null;
+                        int indexOfNextLevel = _levelCompleted + 3;
+                        switch (indexOfNextLevel) {
+                            case 2:
+                                correspondingLevelName = "Stage1Cinematics";
+                                break;
+                            case 3:
+                                correspondingLevelName = "Tutorial2";
+                                break;
+                            case 4:
+                                correspondingLevelName = "Tutorial3";
+                                break;
+                            case 5:
+                                correspondingLevelName = "Tutorial4";
+                                break;
+                            case 6:
+                                correspondingLevelName = "Tutorial5";
+                                break;
+                            default:
+                                break;
+                        }
+                        if(correspondingLevelName == null)
+                        {
+                            LoadingScreen.Load(indexOfNextLevel, true);
+                        }
+                        else
+                        {
+                            LoadingScreen.Load(correspondingLevelName, true);
+                        }
                     }
 				}
             }
@@ -304,6 +336,8 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_levelScore > _levelHighscore && _isWin)
 		{
 			highScores[_levelCompleted] = _levelScore;
+            //Unlocking next level!
+            highScores[_levelCompleted + 1] = 0;
 			_levelHighscore = _levelScore;
 			SaveGame.SavePlayerData(currency, premiumCurrency, highScores);
 		}
@@ -317,11 +351,11 @@ public class HighscoreSceneScript : MonoBehaviour
 		Vector3 scoreBarPos = _progressBar.transform.localPosition;
 		Vector3 scoreBarScale = _progressBar.transform.localScale;
 		
-		float startPos = scoreBarPos.x;
+		float startPos = scoreBarPos.y;
 		float deltaScale = 0f;
 		
-		scoreBarPos.x = -0.5f;
-		scoreBarScale.x = 0f;
+		scoreBarPos.y = -0.5f;
+		scoreBarScale.y = 0f;
 		
 		_progressBar.transform.localScale = scoreBarScale;
 		_progressBar.transform.localPosition = scoreBarPos;
@@ -351,10 +385,10 @@ public class HighscoreSceneScript : MonoBehaviour
 			if(isScaling) {
 				if(i >= _targetScore.starScoreThree)
 					isScaling = false;
-				scoreBarScale.x = (float)i / (float)_targetScore.starScoreThree;
-				deltaScale = scoreBarScale.x - _progressBar.transform.localScale.x;
+				scoreBarScale.y = (float)i / (float)_targetScore.starScoreThree;
+				deltaScale = scoreBarScale.y - _progressBar.transform.localScale.y;
 				_progressBar.transform.localScale = scoreBarScale;
-				scoreBarPos.x = scoreBarPos.x + deltaScale / 2f;
+				scoreBarPos.y = scoreBarPos.y + deltaScale / 2f;
 				_progressBar.transform.localPosition = scoreBarPos;
 			}
 			
@@ -375,7 +409,7 @@ public class HighscoreSceneScript : MonoBehaviour
 				i++;
 			}
 	
-			yield return new WaitForSeconds(0.01f);
+			yield return new WaitForSeconds(0.1f);
 		}
 		if(_isWin)
 			InsertSpeechText(LocalizationText.GetText("WinText1"));
