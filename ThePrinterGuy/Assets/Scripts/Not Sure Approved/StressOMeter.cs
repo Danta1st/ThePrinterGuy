@@ -328,7 +328,7 @@ public class StressOMeter : MonoBehaviour
 
         iTween.Stop(gameObject);
 
-        iTween.RotateTo(gameObject, iTween.Hash("rotation", _thisRotation, "time", _rotationTime, "easetype", iTween.EaseType.linear, "islocal", true,
+        iTween.RotateTo(gameObject, iTween.Hash("rotation", _thisRotation, "time", _rotationTime, "easetype", iTween.EaseType.easeOutBack, "islocal", true,
             "oncomplete", "SlightMovement", "oncompletetarget", gameObject));
     }
 
