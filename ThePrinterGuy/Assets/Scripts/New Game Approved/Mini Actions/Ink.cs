@@ -324,7 +324,7 @@ public class Ink : MonoBehaviour
 		//Instantiate fail particles
 		InstantiateParticlesToWordPos(_particles.failed, icc.cartridge.gameObject);
 		//Play sound
-        SoundManager.Effect_Ink_WrongSlot();	
+        SoundManager.Effect_InGame_Task_Unmatched();
 		
 //		icc.insertableCartridge.transform.position = icc.insertableStartPos;
 //		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
