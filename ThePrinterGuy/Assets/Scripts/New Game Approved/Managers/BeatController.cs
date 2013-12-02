@@ -35,6 +35,11 @@ public class BeatController : MonoBehaviour {
 	public static event OnBeatAction OnBeat8th6;
 	public static event OnBeatAction OnBeat8th7;
 	public static event OnBeatAction OnBeat8th8;
+	
+	public static event OnBeatAction OnAll3Beats;
+	public static event OnBeatAction OnAll4Beats;
+	public static event OnBeatAction OnAll6Beats;
+	public static event OnBeatAction OnAll8Beats;
 	#endregion
 	
 	void OnEnable()
@@ -75,16 +80,22 @@ public class BeatController : MonoBehaviour {
 			//0ms & 2000ms?
 			if(OnBeat3rd1 != null)
 				OnBeat3rd1();
+			if(OnAll3Beats != null)
+				OnAll3Beats();
 			break;
 		case 2:
 			//667ms
 			if(OnBeat3rd2 != null)
 				OnBeat3rd2();
+			if(OnAll3Beats != null)
+				OnAll3Beats();
 			break;
 		case 4:
 			//1333ms
 			if(OnBeat3rd3 != null)
 				OnBeat3rd3();
+			if(OnAll3Beats != null)
+				OnAll3Beats();
 			break;
 		default:
 			break;
@@ -100,21 +111,29 @@ public class BeatController : MonoBehaviour {
 			//0ms & 2000ms?
 			if(OnBeat4th1 != null)
 				OnBeat4th1();
+			if(OnAll4Beats != null)
+				OnAll4Beats();
 			break;
 		case 2:
 			//500ms
 			if(OnBeat4th2 != null)
 				OnBeat4th2();
+			if(OnAll4Beats != null)
+				OnAll4Beats();
 			break;
 		case 4:
 			//1000ms
 			if(OnBeat4th3 != null)
 				OnBeat4th3();
+			if(OnAll4Beats != null)
+				OnAll4Beats();
 			break;
 		case 6:
 			//1500ms
 			if(OnBeat4th4 != null)
 				OnBeat4th4();
+			if(OnAll4Beats != null)
+				OnAll4Beats();
 			break;
 		default:
 			break;
@@ -130,31 +149,43 @@ public class BeatController : MonoBehaviour {
 			//0ms & 2000ms?
 			if(OnBeat6th1 != null)
 				OnBeat6th1();
+			if(OnAll6Beats != null)
+				OnAll6Beats();
 			break;
 		case 1:
 			//333ms
 			if(OnBeat6th2 != null)
 				OnBeat6th2();
+			if(OnAll6Beats != null)
+				OnAll6Beats();
 			break;
 		case 2:
 			//667ms
 			if(OnBeat6th3 != null)
 				OnBeat6th3();
+			if(OnAll6Beats != null)
+				OnAll6Beats();
 			break;
 		case 3:
 			//1000ms
 			if(OnBeat6th4 != null)
 				OnBeat6th4();
+			if(OnAll6Beats != null)
+				OnAll6Beats();
 			break;
 		case 4:
 			//1333ms
 			if(OnBeat6th5 != null)
 				OnBeat6th5();
+			if(OnAll6Beats != null)
+				OnAll6Beats();
 			break;
 		case 5:
 			//1667ms
 			if(OnBeat6th6 != null)
 				OnBeat6th6();
+			if(OnAll6Beats != null)
+				OnAll6Beats();
 			break;
 		default:
 			break;
@@ -170,41 +201,57 @@ public class BeatController : MonoBehaviour {
 			//0ms & 2000ms?
 			if(OnBeat8th1 != null)
 				OnBeat8th1();
+			if(OnAll8Beats != null)
+				OnAll8Beats();
 			break;
 		case 1:
 			//250ms
 			if(OnBeat8th2 != null)
 				OnBeat8th2();
+			if(OnAll8Beats != null)
+				OnAll8Beats();
 			break;
 		case 2:
 			//500ms
 			if(OnBeat8th3 != null)
 				OnBeat8th3();
+			if(OnAll8Beats != null)
+				OnAll8Beats();
 			break;
 		case 3:
 			//750ms
 			if(OnBeat8th4 != null)
 				OnBeat8th4();
+			if(OnAll8Beats != null)
+				OnAll8Beats();
 			break;
 		case 4:
 			//1000ms
 			if(OnBeat8th5 != null)
 				OnBeat8th5();
+			if(OnAll8Beats != null)
+				OnAll8Beats();
 			break;
 		case 5:
 			//1250ms
 			if(OnBeat8th6 != null)
 				OnBeat8th6();
+			if(OnAll8Beats != null)
+				OnAll8Beats();
 			break;
 		case 6:
 			//1500ms
 			if(OnBeat8th7 != null)
 				OnBeat8th7();
+			if(OnAll8Beats != null)
+				OnAll8Beats();
 			break;
 		case 7:
 			//1750ms
 			if(OnBeat8th8 != null)
 				OnBeat8th8();
+			if(OnAll8Beats != null)
+				OnAll8Beats();
 			break;
 		default:
 			break;
