@@ -12,6 +12,9 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private List<PaperLightSet> _paperlightset;
 	//Particles - New
 	[SerializeField] private Particles _particles;
+	[SerializeField] private GameObject[] _pathSuccess;
+	[SerializeField] private GameObject[] _pathFail;
+	[SerializeField] private Vector3 _circleAmount;
 //    [SerializeField] private GameObject _paperParticles;
     #endregion
 
@@ -24,8 +27,12 @@ public class PaperInsertion : MonoBehaviour
 	//Paper Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private bool _IsSlideLocked		= false;
-	private float _slideTime		= 0.4f;
+	private float _slideTime		= 0.5f;
 	private float _slideWait		= 0.05f;
+	private Vector3[] _paperPathSuccess = new Vector3[4];
+	private Vector3[] _paperPathFail = new Vector3[4];
+	private Vector3 _startMovePositionSuccess;
+	private Vector3 _startMovePositionFail;
 	
 	//Whatever
 	private GameObject _dynamicObjects;
@@ -103,6 +110,19 @@ public class PaperInsertion : MonoBehaviour
 		DisablePaper();
 
         _conveyorBelt = transform.FindChild("BB-9000_Paper").FindChild("convoyeBelt").gameObject;
+        
+        _paperPathSuccess[0] = _pathSuccess[0].transform.position;
+        _paperPathSuccess[1] = _pathSuccess[1].transform.position;
+        _paperPathSuccess[2] = _pathSuccess[2].transform.position;
+        _paperPathSuccess[3] = _pathSuccess[3].transform.position;
+        
+        _paperPathFail[0] = _pathFail[0].transform.position;
+        _paperPathFail[1] = _pathFail[1].transform.position;
+        _paperPathFail[2] = _pathFail[2].transform.position;
+        _paperPathFail[3] = _pathFail[3].transform.position;
+        
+        _startMovePositionSuccess = _pathSuccess[1].transform.position;
+        _startMovePositionFail = _pathFail[1].transform.position;
 	}
     #endregion
 
@@ -345,12 +365,19 @@ public class PaperInsertion : MonoBehaviour
 				if(paper.GetComponentInChildren<TrailRenderer>() != null)
 					paper.GetComponentInChildren<TrailRenderer>().enabled = true;
 				else
-					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");				
+					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+				
+				_paperPathSuccess[0] = _paperlightset[i].paperToSlide.transform.position;
+				
+				Vector3 _offSet = new Vector3(Random.Range(-_circleAmount.x, _circleAmount.x), 
+												Random.Range(-_circleAmount.y, _circleAmount.y),
+												Random.Range(-_circleAmount.z, _circleAmount.z));
+				_paperPathSuccess[1] = _startMovePositionSuccess + _offSet;
 				
 				//Correct color inserted
 				if(colorMatch) 
 				{
-					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+					iTween.MoveTo(paper, iTween.Hash("path", _paperPathSuccess, "time", _slideTime, "easetype", iTween.EaseType.linear, 
 													"oncomplete", "TriggerDestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 					
 					if(OnCorrectPaperInserted != null)
@@ -359,7 +386,7 @@ public class PaperInsertion : MonoBehaviour
 				//Wrong color inserted
 				else
 				{
-					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+					iTween.MoveTo(paper, iTween.Hash("path", _paperPathSuccess, "time", _slideTime, "easetype", iTween.EaseType.linear, 
 													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 				}				
 			}
@@ -370,7 +397,20 @@ public class PaperInsertion : MonoBehaviour
 				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
 				
-				iTween.MoveTo(paper, iTween.Hash("position", _gate.gameObject.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+				//Enable Paper Trail or throw warning
+				if(paper.GetComponentInChildren<TrailRenderer>() != null)
+					paper.GetComponentInChildren<TrailRenderer>().enabled = true;
+				else
+					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+				
+				_paperPathFail[0] = _paperlightset[i].paperToSlide.transform.position;
+				
+				Vector3 _offSet = new Vector3(Random.Range(-_circleAmount.x, _circleAmount.x), 
+												Random.Range(-_circleAmount.y, _circleAmount.y),
+												Random.Range(-_circleAmount.z, _circleAmount.z));
+				_paperPathFail[1] = _startMovePositionFail + _offSet;
+				
+				iTween.MoveTo(paper, iTween.Hash("path", _paperPathFail, "time", _slideTime, "easetype", iTween.EaseType.linear, 
 													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));			
 			}
 
@@ -497,7 +537,7 @@ public class PaperInsertion : MonoBehaviour
     public void RollConvoreBelt()
     {
         Vector2 thisOffset = _conveyorBelt.renderer.material.mainTextureOffset;
-        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, 0.01f));
+        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, 0.001f));
     }
 	#endregion
 
