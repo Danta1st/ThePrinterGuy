@@ -98,20 +98,17 @@ public class HighscoreScreenLoader : MonoBehaviour
     public int GetPerfectScore()
     {
         float result = 0;
-        //If the sequence is of mixed tasks with different values this perfect score is broken and the sequence is needed!
         float happyZone = _stressOMeter.GetHappyZone();
         float zonePoints = _stressOMeter.GetZonePoints();
         float perfectTasksBeforeBestMultiplier = zonePoints - ((-1 * happyZone) % zonePoints);
         float rodPointBase = _scoreManger.GetRodPointsBase();
         float remainingNodes = _totalNodes - perfectTasksBeforeBestMultiplier;
+
         if(remainingNodes < 0)
         {
             perfectTasksBeforeBestMultiplier += remainingNodes;
             remainingNodes = 0;
         }
-        //float inkPointBase = _scoreManger.GetInkPointsBase();
-        //float paperPointBase = _scoreManger.GetPaperPointsBase();
-        //float barometerPointBase = _scoreManger.GetBarometerPointsBase();
 
         for (int i = 0; i < perfectTasksBeforeBestMultiplier; i++)
         {
@@ -122,6 +119,7 @@ public class HighscoreScreenLoader : MonoBehaviour
         {
             result += rodPointBase * _scoreManger.GetGreenZoneModifier() * _scoreManger.GetScoreMultipliers().happyZoneMultiplier;
         }
+
         return System.Convert.ToInt32(result);
     }
 
