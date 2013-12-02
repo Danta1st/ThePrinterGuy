@@ -78,37 +78,39 @@ public class GAPlayerAnalytics : MonoBehaviour {
 
     private int FindLevel(string level)
     {
+        int lvl;
         switch (level) {
             case "level1":
-                return 1;
+                lvl = 1;
                 break;
             case "level2":
-                return 2;
+                lvl = 2;
                 break;
             case "level3":
-                return 3;
+                lvl = 3;
                 break;
             case "level4":
-                return 4;
+                lvl = 4;
                 break;
             case "level5":
-                return 5;
+                lvl = 5;
                 break;
             case "level6":
-                return 6;
+                lvl = 6;
                 break;
             case "level7":
-                return 7;
+                lvl = 7;
                 break;
             case "level8":
-                return 8;
+                lvl = 8;
                 break;
             case "level9":
-                return 9;
+                lvl = 9;
                 break;
             default:
-                return 0;
+                lvl = 0;
                 break;
         }
+        return lvl;
     }
 }

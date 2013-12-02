@@ -24,10 +24,7 @@ public class GUIGameCamera : MonoBehaviour
 	[SerializeField] private iTween.EaseType _easeTypeTextPunch;
 	[SerializeField] private TextPositionalOffset _offsetValues;
     //Pressed and Non-pressed icon textures
-    [SerializeField] private Texture2D LevelPlayTexture;
-    [SerializeField] private Texture2D LevelPlayPressedTexture;
-    [SerializeField] private Texture2D LevelReplayPressedTexture;
-    [SerializeField] private Texture2D LevelQuitPressedTexture;
+    [SerializeField] private ButtonTextures _buttonTextures;
     #endregion
 
     #region Private Variables
@@ -165,7 +162,7 @@ public class GUIGameCamera : MonoBehaviour
         {
             if(_gui.name == _name)
             {
-                _gui.SetActive(false);
+                _gui.SetActive(false);				
             }
         }
     }
@@ -532,6 +529,7 @@ public class GUIGameCamera : MonoBehaviour
 
             if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
             {
+				var hitObject = _hit.collider.gameObject;
                 //General GUI layer mask.
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
@@ -545,33 +543,41 @@ public class GUIGameCamera : MonoBehaviour
                     if(_hit.collider.gameObject.name == "PauseButton")
                     {
                         if(OnPause != null)
-                            OnPause();
-                        OpenIngameMenu();
+                            OnPause();										
+						
+						SetTexture(hitObject, _buttonTextures.pausePressed);
+						//Punch & open the menu
+						PunchButtonOnComplete(hitObject, "OpenIngameMenu");
                     }
                     else if(_hit.collider.gameObject.name == "ResumeButton")
                     {
-                        _hit.collider.gameObject.renderer.material.mainTexture = LevelPlayPressedTexture;
-                        CloseIngameMenu();
+						SetTexture(hitObject, _buttonTextures.resumePressed);
+						//punch and close menu
+						PunchButtonOnComplete(hitObject, "CloseIngameMenu");
                     }
                     else if(_hit.collider.gameObject.name == "RestartButton")
                     {
-                        _hit.collider.gameObject.renderer.material.mainTexture = LevelReplayPressedTexture;
                         if(OnRestart != null)
                             OnRestart();
-                        RestartLevel();
+						
+						SetTexture(hitObject, _buttonTextures.restartPressed);						
+						//Punch & restart level
+						PunchButtonOnComplete(hitObject, "RestartLevel");
                     }
                     else if(_hit.collider.gameObject.name == "QuitButton")
                     {
-                        _hit.collider.gameObject.renderer.material.mainTexture = LevelQuitPressedTexture;
                         if(OnToMainMenuFromLevel != null)
                             OnToMainMenuFromLevel();
-                        QuitLevel();
+						
+						SetTexture(hitObject, _buttonTextures.homePressed);	
+						//Punch and quit level
+						PunchButtonOnComplete(hitObject, "QuitLevel");
                     }
                     else if(_hit.collider.gameObject.name == "SettingsButton")
                     {
 						Settings();
                     }
-
+					
                     SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
@@ -588,6 +594,7 @@ public class GUIGameCamera : MonoBehaviour
     {
         SaveGUIState();
         DisableGUIElement("Pause");
+		ResetGuiTextures();
         EnableGUIElement("IngameMenu");
 		EnableGUIElement("StatsOverview");
 		EnableGUIElement("BGIngameMenu");
@@ -604,7 +611,8 @@ public class GUIGameCamera : MonoBehaviour
 		}
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
-						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
+						"time", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
+		
         Time.timeScale = 0.0f;
         AudioListener.pause = true;
         SoundManager.StoreVolumes();
@@ -646,7 +654,8 @@ public class GUIGameCamera : MonoBehaviour
         AudioListener.pause = false;
         SoundManager.FadeAllSourcesUp();
         //Resets the play icon back to the non-pressed.
-        _hit.collider.gameObject.renderer.material.mainTexture = LevelPlayTexture;
+        //FIXME
+		//_hit.collider.gameObject.renderer.material.mainTexture = LevelPlayTexture;
 
         LoadGUIState();
 
@@ -851,6 +860,54 @@ public class GUIGameCamera : MonoBehaviour
         }
 	}
 	
+	//Gui Helper Methods	
+	private void ResetGuiTextures()
+	{        
+		foreach(GameObject _guiObject in _guiList)
+        {
+			if(_guiObject == null)
+				continue;
+			
+			switch(_guiObject.name)
+			{
+			case "PauseButton":
+				SetTexture(_guiObject, _buttonTextures.pause);
+				break;
+			case "ResumeButton":
+				SetTexture(_guiObject, _buttonTextures.resume);
+				break;
+			case "QuitButton":
+				SetTexture(_guiObject, _buttonTextures.home);
+				break;
+			case "RestartButton":
+				SetTexture(_guiObject, _buttonTextures.restart);
+				break;
+			}
+        }		
+	}
+	
+	private float _punchTime = 0.4f;
+	private void PunchButton(GameObject button)
+	{		
+		var scale = new Vector3(35f, 35f, 35f);
+		iTween.PunchScale(button, iTween.Hash("amount", scale, "ignoretimescale", true, "time", _punchTime));
+	}
+	private void PunchButtonOnComplete(GameObject button, string onCompleteMethod)
+	{		
+		var scale = new Vector3(35f, 35f, 35f);
+		iTween.PunchScale(button, iTween.Hash("amount", scale, "time", _punchTime, "ignoretimescale", true,
+												"oncomplete", onCompleteMethod, "oncompletetarget", this.gameObject));
+	}
+	private void PunchButtonPrecise(GameObject button, Vector3 scale)
+	{		
+		iTween.PunchScale(button, scale, _punchTime);
+	}
+	
+	private void SetTexture(GameObject go, Texture2D texture)
+	{
+		go.renderer.material.mainTexture = texture;
+	}
+	
     #endregion
 
     #region GA
@@ -871,13 +928,27 @@ public class GUIGameCamera : MonoBehaviour
         _currentTaskType = "Barometers";
     }
     #endregion
+	
+	[System.Serializable]
+	public class TextPositionalOffset
+	{
+		public float startX = 0.35f;
+		public float endX = 0.65f;
+		public float startY = 0.35f;
+		public float endY = 0.45f;
+	}
+	
+	[System.Serializable]
+	public class ButtonTextures
+	{
+		public Texture2D pause;
+		public Texture2D pausePressed;
+		public Texture2D resume;
+		public Texture2D resumePressed;
+		public Texture2D restart;
+		public Texture2D restartPressed;
+		public Texture2D home;
+		public Texture2D homePressed;
+	}
 }
 
-[System.Serializable]
-public class TextPositionalOffset
-{
-	public float startX = 0.35f;
-	public float endX = 0.65f;
-	public float startY = 0.35f;
-	public float endY = 0.45f;
-}

@@ -3,32 +3,22 @@ using System.Collections;
 
 public class HighscoreScreenLoader : MonoBehaviour 
 {
-	[SerializeField] private int _starOneScore = 10;
-	[SerializeField] private int _starTwoScore = 20;
-	[SerializeField] private int _starThreeScore = 30;
-	
-	public class HighScoreClass 
-	{
-		public static int starScoreOne;
-		public static int starScoreTwo;
-		public static int starScoreThree;
-		public static int perfectInk;
-		public static int perfectPaper;
-		public static int perfectUran;
-		public static int failedInk;
-		public static int failedPaper;
-		public static int failedUran;
-		public static int totalNodes;
-	}
-	
 	private int perfectInk = 0;
 	private int perfectPaper = 0;
 	private int perfectUran = 0;
 	private int failedInk = 0;
 	private int failedPaper = 0;
 	private int failedUran = 0;
-	private int _totalNodes = 0;
-	
+    private int _totalNodes = 0;
+    private int _totalInkNodes = 0;
+    private int _totalRodNodes = 0;
+    private int _totalPaperNodes = 0;
+    private int _totalBarometerNodes = 0;
+    private int _maxHighscore;
+
+    private ScoreManager _scoreManger;
+    private StressOMeter _stressOMeter;
+
 	private HighscoreSceneScript hss;
 	
 	void OnEnable()
@@ -49,6 +39,10 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	void Start()
 	{
+        _scoreManger = gameObject.GetComponent<ScoreManager>();
+        _stressOMeter = gameObject.GetComponentInChildren<StressOMeter>();
+        updateMaxHighscoreForCurrentLevel();
+        _maxHighscore = SaveGame.GetMaxHighscores()[Application.loadedLevel - 2];
 		hss = gameObject.AddComponent<HighscoreSceneScript>();
 		HighscoreSceneScript._targetScore.failedInk = 0;
 		HighscoreSceneScript._targetScore.failedPaper = 0;
@@ -56,16 +50,37 @@ public class HighscoreScreenLoader : MonoBehaviour
 		HighscoreSceneScript._targetScore.perfectInk = 0;
 		HighscoreSceneScript._targetScore.perfectPaper = 0;
 		HighscoreSceneScript._targetScore.perfectUran = 0;
-		HighscoreSceneScript._targetScore.starScoreOne = _starOneScore;
-		HighscoreSceneScript._targetScore.starScoreTwo = _starTwoScore;
-		HighscoreSceneScript._targetScore.starScoreThree = _starThreeScore;
+		HighscoreSceneScript._targetScore.starScoreOne = GetStarOneScore();
+		HighscoreSceneScript._targetScore.starScoreTwo = GetStarTwoScore();
+		HighscoreSceneScript._targetScore.starScoreThree = GetStarThreeScore();
 	}
 	
-	public void SetTotalNodes(int _amountOfNodes)
-	{
-		HighscoreSceneScript._targetScore._totalNodes = _amountOfNodes;
-	}
-	
+    public void SetTotalNodes(int _amountOfNodes)
+    {
+        HighscoreSceneScript._targetScore._totalNodes = _amountOfNodes;
+        _totalNodes = _amountOfNodes;
+    }
+
+    public void SetRodTotalNodes(int _amountOfNodes)
+    {
+        _totalRodNodes = _amountOfNodes;
+    }
+
+    public void SetInkTotalNodes(int _amountOfNodes)
+    {
+        _totalInkNodes = _amountOfNodes;
+    }
+
+    public void SetPaperTotalNodes(int _amountOfNodes)
+    {
+        _totalPaperNodes = _amountOfNodes;
+    }
+
+    public void SetBarometerTotalNodes(int _amountOfNodes)
+    {
+        _totalBarometerNodes = _amountOfNodes;
+    }
+
 	public void DisplayEndScreenWin(int _score)
 	{
 		SoundManager.StopAllSoundEffects();
@@ -79,6 +94,43 @@ public class HighscoreScreenLoader : MonoBehaviour
         SoundManager.FadeAllMusic();
 		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, false);
 	}
+
+    public int GetPerfectScore()
+    {
+        float result = 0;
+        //If the sequence is of mixed tasks with different values this perfect score is broken and the sequence is needed!
+        float happyZone = _stressOMeter.GetHappyZone();
+        float zonePoints = _stressOMeter.GetZonePoints();
+        float perfectTasksBeforeBestMultiplier = zonePoints - ((-1 * happyZone) % zonePoints);
+        float rodPointBase = _scoreManger.GetRodPointsBase();
+        float remainingNodes = _totalNodes - perfectTasksBeforeBestMultiplier;
+        if(remainingNodes < 0)
+        {
+            perfectTasksBeforeBestMultiplier += remainingNodes;
+            remainingNodes = 0;
+        }
+        //float inkPointBase = _scoreManger.GetInkPointsBase();
+        //float paperPointBase = _scoreManger.GetPaperPointsBase();
+        //float barometerPointBase = _scoreManger.GetBarometerPointsBase();
+
+        for (int i = 0; i < perfectTasksBeforeBestMultiplier; i++)
+        {
+            result += rodPointBase * _scoreManger.GetGreenZoneModifier() * _scoreManger.GetScoreMultipliers().slightlyHappyZoneMultiplier;
+        }
+
+        for (int i = 0; i < remainingNodes; i++)
+        {
+            result += rodPointBase * _scoreManger.GetGreenZoneModifier() * _scoreManger.GetScoreMultipliers().happyZoneMultiplier;
+        }
+        return System.Convert.ToInt32(result);
+    }
+
+    public void updateMaxHighscoreForCurrentLevel()
+    {
+        int[] maxHighscores = SaveGame.GetMaxHighscores();
+        maxHighscores[Application.loadedLevel - 2] = GetPerfectScore();
+        SaveGame.SetMaxHighscores(maxHighscores);
+    }
 	
 	private void TaskEndUpdate(string type, int zone)
 	{
@@ -117,14 +169,14 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	public int GetStarOneScore()
 	{
-		return _starOneScore;
+		return System.Convert.ToInt32(_maxHighscore * 0.25);
 	}
 	public int GetStarTwoScore()
 	{
-		return _starTwoScore;
+		return System.Convert.ToInt32(_maxHighscore * 0.50);
 	}
 	public int GetStarThreeScore()
 	{
-		return _starThreeScore;
+		return  System.Convert.ToInt32(_maxHighscore * 0.75);
 	}
 }
