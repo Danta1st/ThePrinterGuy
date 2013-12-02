@@ -13,7 +13,7 @@ public static class ConstantValues
 	}
 	public static int GetLastLevel
 	{
-		get { return 6; }
+		get { return 11; }
 	}
 	public static int GetHighScoreScreenLevel
 	{
@@ -21,6 +21,6 @@ public static class ConstantValues
 	}
 	public static int GetLoadingLevel
 	{
-		get { return 7; }
+		get { return 12; }
 	}
 }
