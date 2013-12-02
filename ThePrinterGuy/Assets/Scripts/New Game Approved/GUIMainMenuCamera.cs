@@ -144,6 +144,9 @@ public class GUIMainMenuCamera : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        SoundManager.UnFadeAllMusic();
+        SoundManager.TurnOnMenuSounds();
+
         _danishCheck.renderer.enabled = false;
         _englishCheck.renderer.enabled = false;
         _soundCheck.renderer.enabled = false;

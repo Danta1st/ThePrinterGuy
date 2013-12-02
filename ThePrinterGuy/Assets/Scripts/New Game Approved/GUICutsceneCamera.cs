@@ -6,6 +6,8 @@ public class GUICutsceneCamera : MonoBehaviour
     #region Editor Publics
     //List of all gui elements.
     [SerializeField]
+    private float _bgOffsetSize;
+    [SerializeField]
     private GameObject[] _guiList;
     [SerializeField]
     private GameObject[] _textList;
@@ -159,6 +161,7 @@ public class GUICutsceneCamera : MonoBehaviour
         	if(_currentTimeStamp > _timeStampText && _isReady == true && _isLast == false)
         	{
         		ActivateSubtitle();
+        		UpdateBG();
         		StartSubtitleTimer();
         		_isReady = false;
         	}
@@ -236,19 +239,18 @@ public class GUICutsceneCamera : MonoBehaviour
 		_timeStampText = _subtitleTimerList[_textIndex].timeStamp;
 		_durationText = _subtitleTimerList[_textIndex].duration;
 		
-		float _textLength = _textInFocus.GetComponent<TextMesh>().text.Length;
-		if(_textLength < 40)
-		{
-			_bgTextMultiplier = _textLength / 40f;	
-		}
-		else{
-			_bgTextMultiplier = _textLength / 55f;	
-		}
-		
-		Vector3 _size = new Vector3(_bgTextStartSize.x*_bgTextMultiplier, _bgTextStartSize.y, _bgTextStartSize.z);
-		_bgText.transform.localScale = _size;
-		
 		_textIndex++;
+    }
+    
+    private void UpdateBG()
+    {
+    	Bounds _bounds = _textInFocus.GetComponent<TextMesh>().renderer.bounds;
+    	float _max = _bounds.max.x;
+    	float _min = _bounds.min.x;
+    	float _distance = Mathf.Abs(_min - _max);
+    	Vector3 _bgScale = new Vector3(_distance + (_bgOffsetSize*_scaleMultiplierX),
+    									_bgText.transform.localScale.y, _bgText.transform.localScale.z);
+    	_bgText.transform.localScale = _bgScale;
     }
     
     private void UpdateText()

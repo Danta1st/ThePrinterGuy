@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour
 {
     #region Editor Publics
     [SerializeField] private static float _fadeTime = 1.0f;
+    [SerializeField] private static float _startMusicVolume = 1.0f;
     [SerializeField] private static float _endMusicVolume = 0.2f;
     #endregion
 
@@ -679,6 +680,14 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public static void UnFadeAllMusic()
+    {
+        foreach(GenericSoundScript gss in _musicScripts)
+        {
+            gss.FadeVolume(_startMusicVolume, _fadeTime);
+        }
+    }
+
     public static void ToogleAudio()
     {
         if(_allSoundOn)
@@ -725,6 +734,16 @@ public class SoundManager : MonoBehaviour
                 ToogleAudio();
             }
         }
+    }
+
+    public static void TurnOnMenuSounds()
+    {
+        _mainMenuSounds.GetEffectScript().SetVolume(1.0f);
+    }
+
+    public static void TurnOnVoice()
+    {
+        _voiceSounds.GetEffectScript().SetVolume(1.0f);
     }
     #endregion
 

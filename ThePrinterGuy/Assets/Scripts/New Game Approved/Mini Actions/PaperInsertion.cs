@@ -158,7 +158,16 @@ public class PaperInsertion : MonoBehaviour
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].off;
         }
     }
-
+	
+	public void ReTriggerLight()
+	{
+		if(_paperlightset[_currentPaper].isOn == false)
+        {
+            TurnOnLight(_currentPaper);
+        }		
+	}
+	
+	private int _currentPaper = 0;
     private void TriggerLight(int itemNumber)
     {
 //		if(_paperlightset.Count < itemNumber)
@@ -168,28 +177,12 @@ public class PaperInsertion : MonoBehaviour
 //			Debug.Log("ERROR PAPER: Number out of index!");
 //			return;
 //		}
+		_currentPaper = itemNumber;
 		
 		if(_paperlightset[itemNumber].isOn == false)
         {
             TurnOnLight(itemNumber);
         }
-        
-		//Method for randomisation		
-		/*var identifier = Random.Range(0,_paperlightset.Length);
-
-        for(int i = 0; i < _paperlightset.Length; i++)
-        {
-            if(_paperlightset[identifier].isOn == false)
-            {
-                GSS.PlayClip(Random.Range(3, 4));
-                TurnOnLight(identifier);
-                break;
-            }
-            identifier++;
-
-            if(identifier == _paperlightset.Length)
-                identifier = 0;
-        }*/
     }
 	
     private void TurnOnLight(int i)
