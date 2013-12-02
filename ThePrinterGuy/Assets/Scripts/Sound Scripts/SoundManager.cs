@@ -6,8 +6,10 @@ public class SoundManager : MonoBehaviour
 {
     #region Editor Publics
     [SerializeField] private static float _fadeTime = 1.0f;
-    [SerializeField] private static float _startMusicVolume = 1.0f;
+//    [SerializeField] private static float _startMusicVolume = 1.0f;
     [SerializeField] private static float _endMusicVolume = 0.2f;
+    [SerializeField] private static float _menuEffectsVolume = 0.8f;
+    [SerializeField] private static float _voiceVolume = 1.0f;
     #endregion
 
     #region Privates
@@ -28,6 +30,7 @@ public class SoundManager : MonoBehaviour
     private static List<GenericSoundScript> _audioScriptList = new List<GenericSoundScript>();
 
     private static List<float> _audioVolume = new List<float>();
+    private static List<float> _musicVolume = new List<float>();
 
     private static List<GenericSoundScript> _soundFxScripts = new List<GenericSoundScript>();
     private static List<GenericSoundScript> _musicScripts = new List<GenericSoundScript>();
@@ -96,6 +99,11 @@ public class SoundManager : MonoBehaviour
         _mainMenuSounds.GetMusicScript().audio.ignoreListenerPause = true;
         _mainMenuSounds.GetEffectScript().audio.ignoreListenerPause = true;
         _inGameSounds.GetMusicScript().audio.ignoreListenerPause = true;
+
+        for(int i = 0; i < _musicScripts.Count; i++)
+        {
+            _musicVolume.Add(_audioScripts[i].GetVolume());
+        }
 
         ToogleAudio();
     }
@@ -682,9 +690,14 @@ public class SoundManager : MonoBehaviour
 
     public static void UnFadeAllMusic()
     {
-        foreach(GenericSoundScript gss in _musicScripts)
+//        foreach(GenericSoundScript gss in _musicScripts)
+//        {
+//            gss.FadeVolume(_startMusicVolume, _fadeTime);
+//        }
+
+        for(int i = 0; i < _musicScripts.Count; i++)
         {
-            gss.FadeVolume(_startMusicVolume, _fadeTime);
+            _musicScripts[i].SetVolume(_musicVolume[i]);
         }
     }
 
@@ -738,12 +751,12 @@ public class SoundManager : MonoBehaviour
 
     public static void TurnOnMenuSounds()
     {
-        _mainMenuSounds.GetEffectScript().SetVolume(1.0f);
+        _mainMenuSounds.GetEffectScript().SetVolume(_menuEffectsVolume);
     }
 
     public static void TurnOnVoice()
     {
-        _voiceSounds.GetEffectScript().SetVolume(1.0f);
+        _voiceSounds.GetEffectScript().SetVolume(_voiceVolume);
     }
     #endregion
 
