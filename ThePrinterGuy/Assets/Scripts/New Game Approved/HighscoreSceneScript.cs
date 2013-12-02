@@ -7,6 +7,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	[SerializeField] private GameObject[] _guiList;
 	[SerializeField] private GameObject[] _stars;
 	[SerializeField] private GameObject _progressBar;
+	[SerializeField] private GameObject _firedTextGameObject;
 	
 	[SerializeField] private ParticleSystem _particle;
 	[SerializeField] private GameObject[] _textList;
@@ -22,6 +23,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		public static int failedInk;
 		public static int failedPaper;
 		public static int failedUran;
+		public static int _totalNodesHit;
 		public static int _totalNodes;
 	}
 	
@@ -33,6 +35,8 @@ public class HighscoreSceneScript : MonoBehaviour
 	private bool _isWin = false;
 	private int _levelScore = 0;
 	private int _levelHighscore = 0;
+	private int _countingScore = 0;
+	
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
@@ -41,6 +45,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	private static int _lastScore;
 	private static bool _win;
 	private static bool _isPrepared = false;
+	private static float _levelMaxscore = 0;
 	private Material _material = null;
 	private float alphaFloat;
 	
@@ -124,12 +129,13 @@ public class HighscoreSceneScript : MonoBehaviour
 		}
 	}
 	
-	public void GoToHighScoreScreen(int level, int score, bool win)
+	public void GoToHighScoreScreen(int level, int score, bool win, int maxScore)
 	{
 		_isPrepared = true;
 		_levelCompleted = level;
 		_lastScore = score;
 		_win = win;
+		_levelMaxscore = maxScore;
 		
 		if(_win)
 			StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
@@ -166,6 +172,8 @@ public class HighscoreSceneScript : MonoBehaviour
         }
 		
 		Application.LoadLevel(ConstantValues.GetHighScoreScreenLevel);
+		
+		
 		
         while (alphaFloat>0.0f)
         {
@@ -305,7 +313,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			s.SetActive(false);
 		}
 		
-		Vector3 pos = _stars[0].transform.localPosition;
+		/*Vector3 pos = _stars[0].transform.localPosition;
 		float startX = -0.5f;
 		float posOffset = 1;
 		
@@ -314,7 +322,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		pos.x = startX + (float)_targetScore.starScoreTwo / (float)_targetScore.starScoreThree;
 		_stars[1].transform.localPosition = pos;
 		pos.x = startX + (float)_targetScore.starScoreThree / (float)_targetScore.starScoreThree;
-		_stars[2].transform.localPosition = pos;
+		_stars[2].transform.localPosition = pos;*/
 	}
 	
 	private void ShowScore(int score)
@@ -351,78 +359,114 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	IEnumerator MoveEstimateBar()
 	{
-		bool isScaling = true;
-		Vector3 scoreBarPos = _progressBar.transform.localPosition;
-		Vector3 scoreBarScale = _progressBar.transform.localScale;
+		float _percent;
+		if(!_isWin)
+			_firedTextGameObject.renderer.enabled = true;
 		
-		float startPos = scoreBarPos.y;
-		float deltaScale = 10f;
+		Transform go = GameObject.Find("PerfectFailedTexts").transform;
+		int temp = 0;
+		temp = (_targetScore._totalNodesHit +_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes;
 		
-		scoreBarPos.y = -0.5f;
-		scoreBarScale.y = 0f;
+		GameObject.Find("TotalPrints").renderer.material.SetFloat("_Progress", temp);
 		
-		_progressBar.transform.localScale = scoreBarScale;
-		_progressBar.transform.localPosition = scoreBarPos;
+		foreach(Transform child in go)
+		{
+		    switch(child.name)
+			{
+			case "FailedInkText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedInk + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedPaperText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedPaper + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedRodsText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedUran + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedText":
+				temp = _targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran;
+				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedFailedText":
+				temp = System.Convert.ToInt32((_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes) * 100;
+				child.GetComponent<TextMesh>().text = temp + "%";
+				break;
+			case "PerfectsInkText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectInk + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsPaperText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectPaper + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsRodsText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectUran + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsText":
+				temp = _targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran;
+				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsPercentsText":
+				temp = System.Convert.ToInt32((_targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran) / _targetScore._totalNodes) * 100;
+				child.GetComponent<TextMesh>().text = temp + "%";
+				break;
+			}
+		}
+		
+		iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", _levelScore, "time", 2, "easetype", iTween.EaseType.easeInCubic, "onupdate", "updateCountingScoreValue"));
+		GameObject scoreTopPoint = GameObject.Find ("ScoreTopPoint");
+		GameObject scoreBotPoint = GameObject.Find ("ScoreBotPoint");
+		GameObject scoreText = GameObject.Find ("ScoreText");
+		
+		
+		float difference;
+		Vector3 newPos;
 		
 		for(int i = 0; i <= _levelScore;)
 		{
-			ShowScore(i);
-			if(i >= _targetScore.starScoreThree && !_stars[2].activeSelf)
+			ShowScore(_countingScore);
+			if(_countingScore >= _targetScore.starScoreThree && !_stars[2].activeSelf)
 			{
 				_particle.transform.position = _stars[2].transform.position;
 				_particle.Play();
 				_stars[2].SetActive(true);
 			}
-			if(i >= _targetScore.starScoreTwo && !_stars[1].activeSelf)
+			if(_countingScore >= _targetScore.starScoreTwo && !_stars[1].activeSelf)
 			{
 				_particle.transform.position = _stars[1].transform.position;
 				_particle.Play();
 				_stars[1].SetActive(true);
 			}
-			if(i >= _targetScore.starScoreOne && !_stars[0].activeSelf)
+			if(_countingScore >= _targetScore.starScoreOne && !_stars[0].activeSelf)
 			{
 				_particle.transform.position = _stars[0].transform.position;
 				_particle.Play();
 				_stars[0].SetActive(true);
 			}
 			
-			if(isScaling) {
-				if(i >= _targetScore.starScoreThree)
-					isScaling = false;
-				scoreBarScale.y = (float)i / (float)_targetScore.starScoreThree;
-				deltaScale = scoreBarScale.y - _progressBar.transform.localScale.y;
-				_progressBar.transform.localScale = scoreBarScale;
-				scoreBarPos.y = scoreBarPos.y + deltaScale / 2f;
-				_progressBar.transform.localPosition = scoreBarPos;
-			}
+			_percent = (_countingScore / _levelMaxscore);
+			difference = scoreTopPoint.transform.position.y - scoreBotPoint.transform.position.y;
+			difference = difference * _percent;
+			newPos = scoreBotPoint.transform.position;
+			newPos.y += difference;
+			scoreText.transform.position = newPos;
+			_progressBar.renderer.material.SetFloat("_Progress", _percent);
 			
-			if(((_levelScore - i) / 1000) > 1)
-			{
-				i += 100;
-			}
-			else if(((_levelScore - i) / 100) > 1)
-			{
-				i += 10;
-			}
-			else if(((_levelScore - i) / 10) > 1)
-			{
-				i += 5;
-			}
-			else
-			{
-				i++;
-			}
-	
-			yield return new WaitForSeconds(0.1f);
+			i = _countingScore + 1;
+			yield return new WaitForSeconds(0.01f);
 		}
+		
 		if(_isWin)
 			InsertSpeechText(LocalizationText.GetText("WinText1"));
 		else
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
 	}
 	
+	private void updateCountingScoreValue(int score)
+	{
+		_countingScore = score;
+	}
+	
 	private void InsertSpeechText(string text)
 	{
+		
         _speechText.transform.parent.transform.gameObject.SetActive(true);
 		_speechText.text = text;
 	}
