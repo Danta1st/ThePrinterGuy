@@ -215,6 +215,9 @@ public class GUIGameCamera : MonoBehaviour
 
     void Start()
     {
+        SoundManager.UnFadeAllMusic();
+        SoundManager.TurnOnVoice();
+
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
@@ -592,8 +595,6 @@ public class GUIGameCamera : MonoBehaviour
                     {
 						Settings();
                     }
-					
-                    SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }
@@ -667,6 +668,8 @@ public class GUIGameCamera : MonoBehaviour
     {
         Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.TurnOnMenuSounds();
+        SoundManager.Effect_Menu_Click();
         SoundManager.FadeAllSourcesUp();
         //Resets the play icon back to the non-pressed.
         //FIXME
@@ -701,6 +704,8 @@ public class GUIGameCamera : MonoBehaviour
 		//TODO: Need confirmation before restart.
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.TurnOnMenuSounds();
+        SoundManager.Effect_Menu_Click();
         SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(Application.loadedLevel, true);
     }
@@ -710,6 +715,8 @@ public class GUIGameCamera : MonoBehaviour
     {
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.TurnOnMenuSounds();
+        SoundManager.Effect_Menu_Click();
         SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(ConstantValues.GetStartScene);
     }
