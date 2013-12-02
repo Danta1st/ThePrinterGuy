@@ -198,7 +198,7 @@ public class LevelManager : MonoBehaviour
                     string correspondingLevelName = null;
                     switch (index) {
                         case 0:
-                            correspondingLevelName = "Stage1Cinematics";
+                            correspondingLevelName = "Tutorial1";
                             break;
                         case 1:
                             correspondingLevelName = "Tutorial2";
@@ -211,6 +211,9 @@ public class LevelManager : MonoBehaviour
                             break;
                         case 4:
                             correspondingLevelName = "Tutorial5";
+                            break;
+                        case 5:
+                            correspondingLevelName = "Stage1Cinematics";
                             break;
                         default:
                             break;
