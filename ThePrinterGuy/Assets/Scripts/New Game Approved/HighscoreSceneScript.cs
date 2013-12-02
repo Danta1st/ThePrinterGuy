@@ -7,6 +7,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	[SerializeField] private GameObject[] _guiList;
 	[SerializeField] private GameObject[] _stars;
 	[SerializeField] private GameObject _progressBar;
+	[SerializeField] private GameObject _firedTextGameObject;
 	
 	[SerializeField] private ParticleSystem _particle;
 	[SerializeField] private GameObject[] _textList;
@@ -33,6 +34,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	private bool _isWin = false;
 	private int _levelScore = 0;
 	private int _levelHighscore = 0;
+	private int _countingScore = 0;
 	
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
@@ -169,6 +171,8 @@ public class HighscoreSceneScript : MonoBehaviour
         }
 		
 		Application.LoadLevel(ConstantValues.GetHighScoreScreenLevel);
+		
+		
 		
         while (alphaFloat>0.0f)
         {
@@ -355,59 +359,54 @@ public class HighscoreSceneScript : MonoBehaviour
 	IEnumerator MoveEstimateBar()
 	{
 		float _percent;
+		if(!_isWin)
+			_firedTextGameObject.renderer.enabled = true;
 		
+		iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", _levelScore, "time", 2, "easetype", iTween.EaseType.easeInCubic, "onupdate", "updateCountingScoreValue"));
 		for(int i = 0; i <= _levelScore;)
 		{
-			ShowScore(i);
-			if(i >= _targetScore.starScoreThree && !_stars[2].activeSelf)
+			ShowScore(_countingScore);
+			if(_countingScore >= _targetScore.starScoreThree && !_stars[2].activeSelf)
 			{
 				_particle.transform.position = _stars[2].transform.position;
 				_particle.Play();
 				_stars[2].SetActive(true);
 			}
-			if(i >= _targetScore.starScoreTwo && !_stars[1].activeSelf)
+			if(_countingScore >= _targetScore.starScoreTwo && !_stars[1].activeSelf)
 			{
 				_particle.transform.position = _stars[1].transform.position;
 				_particle.Play();
 				_stars[1].SetActive(true);
 			}
-			if(i >= _targetScore.starScoreOne && !_stars[0].activeSelf)
+			if(_countingScore >= _targetScore.starScoreOne && !_stars[0].activeSelf)
 			{
 				_particle.transform.position = _stars[0].transform.position;
 				_particle.Play();
 				_stars[0].SetActive(true);
 			}
 			
-			_percent = (i / _levelMaxscore);
+			_percent = (_countingScore / _levelMaxscore);
 			_progressBar.renderer.material.SetFloat("_Progress", _percent);
 			
-			if(((_levelScore - i) / 1000) > 1)
-			{
-				i += 100;
-			}
-			else if(((_levelScore - i) / 100) > 1)
-			{
-				i += 10;
-			}
-			else if(((_levelScore - i) / 10) > 1)
-			{
-				i += 5;
-			}
-			else
-			{
-				i++;
-			}
-	
+			i = _countingScore + 1;
+			Debug.Log(_countingScore + " - " + _levelScore);
 			yield return new WaitForSeconds(0.01f);
 		}
+		
 		if(_isWin)
 			InsertSpeechText(LocalizationText.GetText("WinText1"));
 		else
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
 	}
 	
+	private void updateCountingScoreValue(int score)
+	{
+		_countingScore = score;
+	}
+	
 	private void InsertSpeechText(string text)
 	{
+		
         _speechText.transform.parent.transform.gameObject.SetActive(true);
 		_speechText.text = text;
 	}
