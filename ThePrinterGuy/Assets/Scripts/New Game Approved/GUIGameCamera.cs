@@ -75,6 +75,11 @@ public class GUIGameCamera : MonoBehaviour
 	//Dialogue variables - Speech bubble
 	private GameObject _speechTextObject;
 	private GUISpeechText _guiSpeechTextScript;
+	
+	//Module script references
+	private UraniumRods _uraniumReference;
+	private PaperInsertion _paperReference;
+	private Ink _inkReference;
     #endregion
 	
 	#region Delegates & Events
@@ -183,7 +188,17 @@ public class GUIGameCamera : MonoBehaviour
         }
     }
     #endregion
-
+	
+	private void GetModuleReferences()
+	{
+		if(GameObject.FindGameObjectWithTag("PopoutTask") != null)
+			_uraniumReference = GameObject.FindGameObjectWithTag("PopoutTask").GetComponent<UraniumRods>();
+		if(GameObject.FindGameObjectWithTag("TrayTask") != null)
+			_paperReference = GameObject.FindGameObjectWithTag("TrayTask").GetComponent<PaperInsertion>();
+		if(GameObject.FindGameObjectWithTag("InkTask") != null)
+			_inkReference = GameObject.FindGameObjectWithTag("InkTask").GetComponent<Ink>();
+	}
+	
     #region Start and Update
     // Use this for initialization
     void Awake()
@@ -194,6 +209,8 @@ public class GUIGameCamera : MonoBehaviour
         {
             Instantiate(Resources.Load("Prefabs/SoundRelay"));
         }
+		
+		GetModuleReferences();
     }
 
     void Start()
@@ -418,7 +435,7 @@ public class GUIGameCamera : MonoBehaviour
 			
 		}
 	}
-	
+			
 	public void PopupTextSmall(string _str)
 	{
 		PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
@@ -760,13 +777,41 @@ public class GUIGameCamera : MonoBehaviour
             //ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
             _zone = _bpmSequencerItem.GetZoneStatus();
 			
-            if(OnTaskEnd != null)
-                OnTaskEnd(_currentTaskType, _zone);
-			
-            EndZone(_queuedObject, true);
+			//Check if player is in completion zone
+			if(_zone == 2 || _zone == 3)
+			{
+	            if(OnTaskEnd != null)
+	                OnTaskEnd(_currentTaskType, _zone);
+				
+	            EndZone(_queuedObject, true);
+			}
+			else
+				ReTriggerTask(_bpmSequencerItem.GetTaskName());
         }
     }
-
+	
+	private void ReTriggerTask(string taskName)
+	{
+		switch(taskName)
+		{
+		case "Paper":
+			_paperReference.ReTriggerLight();
+			break;
+		case "Ink":
+			_inkReference.ReTriggerInkTask();
+			break;
+		case "UraniumRod":
+			_uraniumReference.ReTriggerSpring();
+			break;
+		case "Barometer":
+			break;
+		default:
+			Debug.LogWarning (gameObject.name+" could not reTrigger a task. Is a reference missing?");
+			break;
+		}
+		
+	}
+	
     public void EndZone(GameObject _go, bool shouldDestroy)
     {
 		_greenZoneScript.GreenOff();
