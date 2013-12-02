@@ -101,7 +101,7 @@ public class Tutorial : MonoBehaviour {
 					var hitObject = _hit.collider.gameObject;
                     if(_hit.collider.gameObject.name == "NextButton")
                     {
-						
+						SoundManager.CutScene_Random_Coffee();
 						NextPage();
                         if(_index < _tutorialList.Count)
                             UpdatePage();

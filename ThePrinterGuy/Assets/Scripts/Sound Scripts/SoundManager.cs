@@ -800,4 +800,21 @@ public class SoundManager : MonoBehaviour
         _voiceSounds.Voice_Boss_Random_NotBad();
     }
     #endregion
+
+    #region Cutscene Sounds
+    public static void CutScene_Effect_Coffee_01()
+    {
+        _cutSceneSounds.CutScene_Effect_Coffee_01();
+    }
+
+    public static void CutScene_Effect_Coffee_02()
+    {
+        _cutSceneSounds.CutScene_Effect_Coffee_02();
+    }
+
+    public static void CutScene_Random_Coffee()
+    {
+        _cutSceneSounds.CutScene_Random_Coffee();
+    }
+    #endregion
 }
