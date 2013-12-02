@@ -16,25 +16,32 @@ public class CutsceneSounds : MonoBehaviour
         _soundFx = transform.FindChild("SoundFx_Cutscene").
             GetComponent<GenericSoundScript>();
     }
+    #endregion
 
+    #region CutScene Sounds
     public void CutScene_Main_Music()
     {
         _music.PlayClip(0);
     }
 
-    public void CutScene_Effect_Coffee_01()
+    public void CutScene_Effect_Point()
     {
         _soundFx.PlayClip(0);
     }
 
-    public void CutScene_Effect_Coffee_02()
+    public void CutScene_Effect_Coffee_01()
     {
         _soundFx.PlayClip(1);
     }
 
+    public void CutScene_Effect_Coffee_02()
+    {
+        _soundFx.PlayClip(2);
+    }
+
     public void CutScene_Random_Coffee()
     {
-        _soundFx.PlayClip(Random.Range(0, 1));
+        _soundFx.PlayClip(Random.Range(1, 2));
     }
 
     public GenericSoundScript GetMusicScript()
@@ -47,4 +54,5 @@ public class CutsceneSounds : MonoBehaviour
         return _soundFx;
     }
     #endregion
+
 }
