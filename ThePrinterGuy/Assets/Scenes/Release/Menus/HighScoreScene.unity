@@ -8833,7 +8833,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 1185045789}
   - 33: {fileID: 1185045792}
-  - 65: {fileID: 1185045791}
   - 23: {fileID: 1185045790}
   m_Layer: 9
   m_Name: ScoreBar
@@ -8877,19 +8876,6 @@ Renderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
---- !u!65 &1185045791
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 6500000, guid: 3a0069514c93b1143a40457189741441,
-    type: 2}
-  m_PrefabInternal: {fileID: 2112666455}
-  m_GameObject: {fileID: 1185045788}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &1185045792
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -15783,7 +15769,8 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6500000, guid: 3a0069514c93b1143a40457189741441, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 3a0069514c93b1143a40457189741441, type: 2}
   m_RootGameObject: {fileID: 1169483465}
   m_IsPrefabParent: 0
