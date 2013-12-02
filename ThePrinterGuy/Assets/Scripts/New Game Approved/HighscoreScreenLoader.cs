@@ -136,7 +136,6 @@ public class HighscoreScreenLoader : MonoBehaviour
 	private void TaskEndUpdate(string type, int zone)
 	{
 		HighscoreSceneScript._targetScore._totalNodesHit++;
-		Debug.Log (HighscoreSceneScript._targetScore._totalNodesHit);
 		if(zone == 3)
 		{
 			switch(type)
