@@ -312,7 +312,7 @@ public class PaperInsertion : MonoBehaviour
 				//Unsuccesfull Slide
 				else if(!_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform)
 				{
-                    SoundManager.Effect_PaperTray_WrongSwipe();
+                    SoundManager.Effect_InGame_Task_Unmatched();
 					SlidePaper(i, false);
 					break;
 				}
