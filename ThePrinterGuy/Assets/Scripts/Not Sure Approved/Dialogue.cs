@@ -128,7 +128,6 @@ public class Dialogue : MonoBehaviour
 
     private void PlaySound(string sound)
     {
-        Debug.Log("PlaySound");
         switch(sound)
         {
             case "1":
