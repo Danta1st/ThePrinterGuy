@@ -295,13 +295,13 @@ public class LevelManager : MonoBehaviour
                     int boxNumber = i + 1;
                     GameObject box = LevelParentObject.transform.FindChild("Box" + boxNumber).gameObject;
                     box.transform.FindChild("Completed").gameObject.renderer.enabled = true;
-                    int numberOfStars = 3; //Starculator.GetStars(highScores);
+                    int maxHighscore = SaveGame.GetMaxHighscores()[i];
 
-                    if( 1 <= numberOfStars)
+                    if(highScores[i] >= System.Convert.ToInt32(maxHighscore * 0.25))
                         box.transform.FindChild("Star1").gameObject.renderer.enabled = true;
-                    if( 2 <= numberOfStars)
+                    if(highScores[i] >= System.Convert.ToInt32(maxHighscore * 0.50))
                         box.transform.FindChild("Star2").gameObject.renderer.enabled = true;
-                    if( 3 == numberOfStars)
+                    if(highScores[i] >= System.Convert.ToInt32(maxHighscore * 0.75))
                         box.transform.FindChild("Star3").gameObject.renderer.enabled = true;
                 }
 

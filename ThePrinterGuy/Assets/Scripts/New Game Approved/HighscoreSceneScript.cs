@@ -229,7 +229,7 @@ public class HighscoreSceneScript : MonoBehaviour
                 if(_hit.collider.gameObject.name == "RestartButton")
                 {
                     GestureManager.OnTap -= CheckCollision;
-					LoadingScreen.Load(_levelCompleted, true);
+					LoadingScreen.Load(_levelCompleted + 2, true);
                 }
                 else if(_hit.collider.gameObject.name == "QuitButton")
                 {

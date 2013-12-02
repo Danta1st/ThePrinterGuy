@@ -315,6 +315,18 @@ public class StressOMeter : MonoBehaviour
     }
     #endregion
 
+    #region Public get methods for perfect score
+    public float GetHappyZone()
+    {
+        return _happyZone;
+    }
+
+    public float GetZonePoints()
+    {
+        return _inZonePoints;
+    }
+    #endregion
+
     #region Needlemovement functions
     void UpdateRotation()
     {
