@@ -735,6 +735,16 @@ public class SoundManager : MonoBehaviour
             }
         }
     }
+
+    public static void TurnOnMenuSounds()
+    {
+        _mainMenuSounds.GetEffectScript().SetVolume(1.0f);
+    }
+
+    public static void TurnOnVoice()
+    {
+        _voiceSounds.GetEffectScript().SetVolume(1.0f);
+    }
     #endregion
 
     #region Dialogue Methods
