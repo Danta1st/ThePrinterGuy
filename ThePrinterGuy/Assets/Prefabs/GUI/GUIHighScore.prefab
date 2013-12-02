@@ -231,7 +231,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 400026}
   - 33: {fileID: 3300016}
-  - 64: {fileID: 6400000}
   - 23: {fileID: 2300020}
   m_Layer: 0
   m_Name: FiredText
@@ -656,6 +655,36 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &100078
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400078}
+  m_Layer: 0
+  m_Name: ClueNoteStartPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100080
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400080}
+  m_Layer: 0
+  m_Name: ClueNoteMoveTo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -723,7 +752,9 @@ Transform:
   m_LocalPosition: {x: 0, y: -.0768227875, z: -11.0797024}
   m_LocalScale: {x: .00153846154, y: .00111111114, z: 1}
   m_Children:
+  - {fileID: 400078}
   - {fileID: 400026}
+  - {fileID: 400080}
   - {fileID: 400030}
   - {fileID: 400076}
   - {fileID: 400066}
@@ -823,8 +854,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100026}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 85.0086517, y: -39.4285545, z: -31.0924053}
+  m_LocalRotation: {x: 0, y: 0, z: -.0348591506, w: .999392271}
+  m_LocalPosition: {x: 85.1936264, y: -196.404861, z: -41.7536545}
   m_LocalScale: {x: 400, y: 400, z: .675857246}
   m_Children: []
   m_Father: {fileID: 400010}
@@ -1028,7 +1059,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100060}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -67.5215149, y: -192.514557, z: 2.00001526}
+  m_LocalPosition: {x: -33.2422295, y: -142.378891, z: 2.00001526}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400010}
@@ -1118,6 +1149,28 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100076}
+  m_LocalRotation: {x: 0, y: 0, z: .0422735661, w: .999106109}
+  m_LocalPosition: {x: -559.369324, y: -246.218765, z: -20.186121}
+  m_LocalScale: {x: 200, y: 150, z: .675857246}
+  m_Children: []
+  m_Father: {fileID: 400010}
+--- !u!4 &400078
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100078}
+  m_LocalRotation: {x: 0, y: 0, z: .0422735661, w: .999106109}
+  m_LocalPosition: {x: -559.369324, y: -246.218765, z: -20.186121}
+  m_LocalScale: {x: 200, y: 150, z: .675857246}
+  m_Children: []
+  m_Father: {fileID: 400010}
+--- !u!4 &400080
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100080}
   m_LocalRotation: {x: 0, y: 0, z: .0422735661, w: .999106109}
   m_LocalPosition: {x: -138.541779, y: -246.218765, z: -20.186121}
   m_LocalScale: {x: 200, y: 150, z: .675857246}
@@ -1785,19 +1838,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100070}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!64 &6400000
-MeshCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100026}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_SmoothSphereCollisions: 0
-  m_Convex: 0
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!65 &6500000
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -2162,6 +2202,7 @@ MonoBehaviour:
   - {fileID: 100016}
   _progressBar: {fileID: 100028}
   _firedTextGameObject: {fileID: 100026}
+  _ClueNoteGameObject: {fileID: 100076}
   _particle: {fileID: 19800000}
   _textList:
   - {fileID: 100060}

@@ -124,6 +124,11 @@ public class PaperInsertion : MonoBehaviour
         _startMovePositionSuccess = _pathSuccess[1].transform.position;
         _startMovePositionFail = _pathFail[1].transform.position;
 	}
+
+    void Start()
+    {
+        SoundManager.Effect_PaperTray_ConveyorBelt();
+    }
     #endregion
 
     void Update()
@@ -537,6 +542,7 @@ public class PaperInsertion : MonoBehaviour
 
     public void RollConvoreBelt()
     {
+
         Vector2 thisOffset = _conveyorBelt.renderer.material.mainTextureOffset;
         _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, 0.001f));
     }

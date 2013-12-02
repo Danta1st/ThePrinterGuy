@@ -8,23 +8,24 @@ public class HighscoreSceneScript : MonoBehaviour
 	[SerializeField] private GameObject[] _stars;
 	[SerializeField] private GameObject _progressBar;
 	[SerializeField] private GameObject _firedTextGameObject;
+	[SerializeField] private GameObject _ClueNoteGameObject;
 	
 	[SerializeField] private ParticleSystem _particle;
 	[SerializeField] private GameObject[] _textList;
 	
 	public static class _targetScore 
 	{
-		public static int starScoreOne;
-		public static int starScoreTwo;
-		public static int starScoreThree;
-		public static int perfectInk;
-		public static int perfectPaper;
-		public static int perfectUran;
-		public static int failedInk;
-		public static int failedPaper;
-		public static int failedUran;
-		public static int _totalNodesHit;
-		public static int _totalNodes;
+		public static float starScoreOne;
+		public static float starScoreTwo;
+		public static float starScoreThree;
+		public static float perfectInk;
+		public static float perfectPaper;
+		public static float perfectUran;
+		public static float failedInk;
+		public static float failedPaper;
+		public static float failedUran;
+		public static float _totalNodesHit;
+		public static float _totalNodes;
 	}
 	
 	private Camera _guiCamera;
@@ -90,7 +91,6 @@ public class HighscoreSceneScript : MonoBehaviour
                 {
                     nextLevelButton.SetActive(false);
                 }
-				
             }
         }
 		foreach(GameObject _textObject in _textList)
@@ -359,12 +359,15 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	IEnumerator MoveEstimateBar()
 	{
+		if(_isWin)
+			_firedTextGameObject.SetActive(false);
+			
 		float _percent;
-		if(!_isWin)
-			_firedTextGameObject.renderer.enabled = true;
 		
 		Transform go = GameObject.Find("PerfectFailedTexts").transform;
-		int temp = 0;
+		GameObject clueNoteStartPos = GameObject.Find ("ClueNoteStartPos");
+		_ClueNoteGameObject.transform.position = clueNoteStartPos.transform.position;
+		float temp = 0;
 		temp = (_targetScore._totalNodesHit +_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes;
 		
 		GameObject.Find("TotalPrints").renderer.material.SetFloat("_Progress", temp);
@@ -386,8 +389,8 @@ public class HighscoreSceneScript : MonoBehaviour
 				temp = _targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran;
 				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
 				break;
-			case "FailedFailedText":
-				temp = System.Convert.ToInt32((_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes) * 100;
+			case "FailedPercentsText":
+				temp = System.Convert.ToInt32(((_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes) * 100);
 				child.GetComponent<TextMesh>().text = temp + "%";
 				break;
 			case "PerfectsInkText":
@@ -403,8 +406,8 @@ public class HighscoreSceneScript : MonoBehaviour
 				temp = _targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran;
 				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
 				break;
-			case "PerfectsPercentsText":
-				temp = System.Convert.ToInt32((_targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran) / _targetScore._totalNodes) * 100;
+			case "PerfectsPercentText":
+				temp = System.Convert.ToInt32(((_targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran) / _targetScore._totalNodes) * 100);
 				child.GetComponent<TextMesh>().text = temp + "%";
 				break;
 			}
@@ -414,6 +417,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		GameObject scoreTopPoint = GameObject.Find ("ScoreTopPoint");
 		GameObject scoreBotPoint = GameObject.Find ("ScoreBotPoint");
 		GameObject scoreText = GameObject.Find ("ScoreText");
+		GameObject clueNoteMoveTo = GameObject.Find ("ClueNoteMoveTo");
 		
 		
 		float difference;
@@ -457,6 +461,15 @@ public class HighscoreSceneScript : MonoBehaviour
 			InsertSpeechText(LocalizationText.GetText("WinText1"));
 		else
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
+		
+		yield return new WaitForSeconds(0.75f);
+		
+		if(!_isWin)
+			_firedTextGameObject.SetActive(true);
+		else
+		{
+			iTween.MoveTo(_ClueNoteGameObject, iTween.Hash("position", clueNoteMoveTo.transform.position, "easetype", iTween.EaseType.linear, "time", 1));
+		}
 	}
 	
 	private void updateCountingScoreValue(int score)
