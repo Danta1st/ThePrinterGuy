@@ -134,7 +134,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_win)
 			StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
 		else
-			StartFadeHS(_fadeOutTime, _fadeInTime, Color.red);
+			StartFadeHS(_fadeOutTime, _fadeInTime, new Color(220, 20, 60));
 	}
 	
 	private void DrawQuad(Color aColor,float aAlpha)
