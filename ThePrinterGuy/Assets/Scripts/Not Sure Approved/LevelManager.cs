@@ -192,6 +192,8 @@ public class LevelManager : MonoBehaviour
 			else if(go != null && _gameLevels.Contains(go))
 			{
 	            int index = _gameLevels.IndexOf(go);
+
+                SoundManager.Effect_Menu_Click();
 	
                 if(_gameLevelsUnlocked[index])
                 {
