@@ -153,6 +153,7 @@ public class UraniumRods : MonoBehaviour
 		{
 			if(_rods[i].rod == go)
 			{
+				_rodsAndStates[go] = false;
 				//Instantiate Particles
 				InstantiateParticles(_particles._hammerBegan, go);
 				//Play sound based on itemNumber
@@ -174,7 +175,6 @@ public class UraniumRods : MonoBehaviour
 			//TODO: Disable Smoke effect
 		}
 		failed = false;
-		_rodsAndStates[go] = false;
 	}
 	
     //Reset all the rods and disables GestureManager (Called on Failed == true)

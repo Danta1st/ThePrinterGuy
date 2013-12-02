@@ -76,14 +76,9 @@ public class DialogueText : MonoBehaviour {
     	float _min = _bounds.min.x;
     	float _distance = Mathf.Abs(_min - _max);
 		
-		Debug.Log(_max);
-		Debug.Log(_min);
-		Debug.Log(_distance);
-		
     	Vector3 _bgScale = new Vector3(_distance + (_bgOffsetSize*_bgTextMultiplier),
     									_bgText.transform.localScale.y, _bgText.transform.localScale.z);
     									
-    	Debug.Log(_bgScale);
     	_bgText.transform.localScale = _bgScale;
     }
 	
