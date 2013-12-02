@@ -57,7 +57,8 @@ public class PaperSounds : MonoBehaviour
 
     public void Effect_PaperTray_ConveyorBelt()
     {
-        _soundFx.PlayClip(2);
+//        _soundFx.PlayClip(2);
+        _soundFx.LoopClipStart(2);
     }
 
     public void Effect_PaperTray_ColorChange1()
