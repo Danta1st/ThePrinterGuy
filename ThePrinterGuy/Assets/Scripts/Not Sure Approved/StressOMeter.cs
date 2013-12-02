@@ -128,8 +128,9 @@ public class StressOMeter : MonoBehaviour
     #endregion
 
     #region Reduct Point
-    void ReductPointsFailed()
+    public void ReductPointsFailed()
     {
+        SoundManager.Effect_InGame_Task_Unmatched();
         if(OnStressDecrease != null)
             OnStressDecrease();
          _paperAudioStreak = 0.0f;

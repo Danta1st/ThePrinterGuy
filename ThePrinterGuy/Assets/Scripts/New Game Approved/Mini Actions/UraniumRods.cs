@@ -69,9 +69,25 @@ public class UraniumRods : MonoBehaviour
         }
     }
 	
+	//ReTrigger - Called from GUIGameCamera when player hits a uranium rod to early.
+	public void ReTriggerSpring()
+	{
+		GestureManager.OnTap += TriggerHammer;
+		
+		var go = _rods[_currentSprung].rod;
+		
+        StartCoroutine(Spring(go, _currentSprung));
+
+        _rodsAndStates[go] = true;
+	
+		InstantiateParticles(_particles._spring, go);			
+	}
+	
 	//Triger the a specific rod based on itemNumber
+	private int _currentSprung = 0;
     private void TriggerSpring(int itemNumber)
     {
+		_currentSprung = itemNumber;
 		//TODO: Please mark what this code does it you implement it again!
 //		if(_rods.Length < itemNumber + 1)
 //		{
@@ -86,44 +102,12 @@ public class UraniumRods : MonoBehaviour
 		GestureManager.OnTap += TriggerHammer;
         
 		var go = _rods[itemNumber].rod;
-		//if(_rodsAndStates[go] == false) //QUICKFIX: Enables ability to choose same rod several times in a row
-        //{
 		
-            StartCoroutine(Spring(go, itemNumber));
+        StartCoroutine(Spring(go, itemNumber));
 
-            _rodsAndStates[go] = true;
-		
-			InstantiateParticles(_particles._spring, go);
-		
-    	//Trigger a random rod, which is currently not up
-		/*var identifier = Random.Range(0, _rods.Length);
-
-        for(int i = 0; i < _rods.Length; i++)
-        {
-            var go = _rods[identifier].rod;
-			
-            if(_rodsAndStates[go] == false)
-            {
-                GSS.PlayClip(i);
-                Spring(go, identifier);
-
-                _rodsAndStates[go] = true;
-				foreach(Transform child in go.transform)
-				{
-					if(child.name.Equals("ParticlePos") && _particleSmoke != null)
-					{
-						_particleSmoke.transform.position = child.position;
-						_particleSmoke.transform.rotation = child.rotation;
-						_particleSmoke.Play();
-					}
-				}
-                break;
-            }
-            identifier++;
-
-            if(identifier == _rods.Length)
-                identifier = 0;
-        }*/
+        _rodsAndStates[go] = true;
+	
+		InstantiateParticles(_particles._spring, go);		
     }
 
     private IEnumerator Spring(GameObject go, int identifier)

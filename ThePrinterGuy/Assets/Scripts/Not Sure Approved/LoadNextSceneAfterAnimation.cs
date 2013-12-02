@@ -32,12 +32,12 @@ public class LoadNextSceneAfterAnimation : MonoBehaviour
     {
         if(!gameObject.animation.isPlaying)
         {
-            LoadingScreen.Load("Tutorial1");
+            LoadingScreen.Load("Level6");
         }
     }
 
     public void LoadNextScene(GameObject go, Vector2 screenPosition)
     {
-        LoadingScreen.Load("Tutorial1");
+        LoadingScreen.Load("Level6");
     }
 }

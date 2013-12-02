@@ -5,6 +5,7 @@ public class BpmSequencerItem : MonoBehaviour {
 		
     #region SerializeField
     [SerializeField] private string _moduleName;
+    [SerializeField] private Vector3 _scaleAmount;
     [SerializeField] private iTween.EaseType _easeTypeMove = iTween.EaseType.easeInSine;
 	[SerializeField] Particles _particles;
 	[SerializeField] Textures _textures;	
@@ -42,6 +43,11 @@ public class BpmSequencerItem : MonoBehaviour {
     private Vector3 _partialPosition;
     private Transform[] _path = new Transform[2];
     #endregion
+	
+	public string GetTaskName()
+	{
+		return _moduleName;
+	}
 
     #region Delegates and Events
     public delegate void FailedAction();
@@ -179,19 +185,19 @@ public class BpmSequencerItem : MonoBehaviour {
     public void StartScalePaper()
     {
     	float scaleTime = _stepLenghts.fourths * 5.0f;
-        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", scaleTime));
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
     }
     
     public void StartScaleInk()
     {
     	float scaleTime = _stepLenghts.fourths * 5.0f;
-        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", scaleTime));
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
     }
     
     public void StartScaleUranium()
     {
     	float scaleTime = _stepLenghts.eights * 5.0f;
-        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", scaleTime));
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
     }
 		
 	//MoveMethods - crap method - TODO: could this be generalised?

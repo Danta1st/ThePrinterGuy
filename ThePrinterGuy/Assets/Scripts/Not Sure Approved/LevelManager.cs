@@ -192,13 +192,15 @@ public class LevelManager : MonoBehaviour
 			else if(go != null && _gameLevels.Contains(go))
 			{
 	            int index = _gameLevels.IndexOf(go);
+
+                SoundManager.Effect_Menu_Click();
 	
                 if(_gameLevelsUnlocked[index])
                 {
                     string correspondingLevelName = null;
                     switch (index) {
                         case 0:
-                            correspondingLevelName = "Stage1Cinematics";
+                            correspondingLevelName = "Tutorial1";
                             break;
                         case 1:
                             correspondingLevelName = "Tutorial2";
@@ -212,12 +214,15 @@ public class LevelManager : MonoBehaviour
                         case 4:
                             correspondingLevelName = "Tutorial5";
                             break;
+                        case 5:
+                            correspondingLevelName = "Stage1Cinematics";
+                            break;
                         default:
                             break;
                     }
                     if(correspondingLevelName == null)
                     {
-                        LoadingScreen.Load(index + 3, true);
+                        LoadingScreen.Load(index + 2, true);
                     }
                     else
                     {
@@ -292,7 +297,7 @@ public class LevelManager : MonoBehaviour
 
                 if(highScores[i] > 0)
                 {
-                    int boxNumber = (i + 1) % 6;
+                    int boxNumber = (i % 5) + 1;
                     GameObject box = LevelParentObject.transform.FindChild("Box" + boxNumber).gameObject;
                     box.transform.FindChild("Completed").gameObject.renderer.enabled = true;
                     int maxHighscore = SaveGame.GetMaxHighscores()[i];
