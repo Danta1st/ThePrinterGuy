@@ -23,8 +23,8 @@ public class HighscoreSceneScript : MonoBehaviour
 		public static int failedInk;
 		public static int failedPaper;
 		public static int failedUran;
-		public static int _totalNodesHit;
-		public static int _totalNodes;
+		public static float _totalNodesHit;
+		public static float _totalNodes;
 	}
 	
 	private Camera _guiCamera;
@@ -90,7 +90,6 @@ public class HighscoreSceneScript : MonoBehaviour
                 {
                     nextLevelButton.SetActive(false);
                 }
-				
             }
         }
 		foreach(GameObject _textObject in _textList)
@@ -361,10 +360,12 @@ public class HighscoreSceneScript : MonoBehaviour
 	{
 		float _percent;
 		if(!_isWin)
-			_firedTextGameObject.renderer.enabled = true;
+			_firedTextGameObject.SetActive(true);
+		else
+			_firedTextGameObject.SetActive(false);
 		
 		Transform go = GameObject.Find("PerfectFailedTexts").transform;
-		int temp = 0;
+		float temp = 0;
 		temp = (_targetScore._totalNodesHit +_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes;
 		
 		GameObject.Find("TotalPrints").renderer.material.SetFloat("_Progress", temp);
@@ -386,7 +387,7 @@ public class HighscoreSceneScript : MonoBehaviour
 				temp = _targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran;
 				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
 				break;
-			case "FailedFailedText":
+			case "FailedPercentsText":
 				temp = System.Convert.ToInt32((_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes) * 100;
 				child.GetComponent<TextMesh>().text = temp + "%";
 				break;
@@ -403,7 +404,7 @@ public class HighscoreSceneScript : MonoBehaviour
 				temp = _targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran;
 				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
 				break;
-			case "PerfectsPercentsText":
+			case "PerfectsPercentText":
 				temp = System.Convert.ToInt32((_targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran) / _targetScore._totalNodes) * 100;
 				child.GetComponent<TextMesh>().text = temp + "%";
 				break;
