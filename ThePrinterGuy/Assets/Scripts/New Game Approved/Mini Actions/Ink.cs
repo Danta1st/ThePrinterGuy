@@ -315,8 +315,17 @@ public class Ink : MonoBehaviour
 		}
 	}
 	
+	//public function to retrigger ink task. Used in GUIGameCamera
+	public void ReTriggerInkTask()
+	{
+		StartInkTask(_currentInk);
+	}
+	
+	private int _currentInk = 0;
 	private void StartInkTask(int itemNumber)
 	{		
+		_currentInk = itemNumber;
+		
 		//Subscribe to gesture
 		GestureManager.OnSwipeRight += InsertCartridge;
 		

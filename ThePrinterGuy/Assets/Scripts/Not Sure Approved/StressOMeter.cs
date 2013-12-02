@@ -128,7 +128,7 @@ public class StressOMeter : MonoBehaviour
     #endregion
 
     #region Reduct Point
-    void ReductPointsFailed()
+    public void ReductPointsFailed()
     {
         if(OnStressDecrease != null)
             OnStressDecrease();

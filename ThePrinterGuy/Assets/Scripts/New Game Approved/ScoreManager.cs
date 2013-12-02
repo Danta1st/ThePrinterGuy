@@ -19,8 +19,10 @@ public class ScoreManager : MonoBehaviour
 	#endregion
 	
 	#region Privates
-	private GUIGameCamera guiGameCameraScript;
 	private float _multiplier;
+	//Script references
+	private GUIGameCamera guiGameCameraScript;
+	private StressOMeter _stressOmeterReference;
 	#endregion
 	
 	#region Delegates and Events
@@ -29,6 +31,12 @@ public class ScoreManager : MonoBehaviour
 	#endregion
 	
 	#region Unity Methods
+	void Awake()
+	{
+		if(GameObject.FindGameObjectWithTag("StressOmeter") != null)
+			_stressOmeterReference = GameObject.FindGameObjectWithTag("StressOmeter").GetComponent<StressOMeter>();
+	}
+	
 	void Start () 
 	{
 		guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
@@ -114,23 +122,24 @@ public class ScoreManager : MonoBehaviour
 
 	public void InkSuccess()
 	{
-		StartCoroutine_Auto(GOCRAZY(InkPointsBase));
+		StartCoroutine_Auto(AwardPoints(InkPointsBase));
 	}
 	public void PaperSuccess()
 	{
-		StartCoroutine_Auto(GOCRAZY(PaperPointsBase));
+		StartCoroutine_Auto(AwardPoints(PaperPointsBase));
 	}
 	public void BarometerSuccess()
 	{
-		StartCoroutine_Auto(GOCRAZY(BarometerPointsBase));
+		StartCoroutine_Auto(AwardPoints(BarometerPointsBase));
 	}
 	public void RodSuccess()
 	{
-		StartCoroutine_Auto(GOCRAZY(RodPointsBase));
+		StartCoroutine_Auto(AwardPoints(RodPointsBase));
 	}
 	
-	IEnumerator GOCRAZY(float amount)
+	IEnumerator AwardPoints(float taskValue)
 	{
+		float calculatedValue = 0;
 		int colorHit = 0;
 		bool pointsGranted = false;
 		int popupSize = 1;
@@ -146,8 +155,9 @@ public class ScoreManager : MonoBehaviour
 		{
 			case 0:
                 Feedback.Clear();
-                Feedback.Add("NOT BAD!");
+                Feedback.Add("TO EARLY!");
 				popupSize = 3;
+				_stressOmeterReference.ReductPointsFailed();
 				break;
             case 1:
                 Feedback.Clear();
@@ -158,13 +168,13 @@ public class ScoreManager : MonoBehaviour
                 Feedback.Clear();
                 Feedback.Add("GREAT!");
 				popupSize = 2;
-				amount = amount * YellowZoneModifier * _multiplier;
+				calculatedValue = taskValue * YellowZoneModifier * _multiplier;
 				break;
 			case 3:
                 Feedback.Clear();
                 Feedback.Add("PERFECT!");
 				popupSize = 1;
-				amount = amount * GreenZoneModifier * _multiplier;
+				calculatedValue = taskValue * GreenZoneModifier * _multiplier;
 				break;
 			default:
 				break;
@@ -180,10 +190,10 @@ public class ScoreManager : MonoBehaviour
 			{
 				if(pointsGranted)
 				{
-					amount = 0;	
+					taskValue = 0;	
 				}
 				
-				guiGameCameraScript.IncreaseScore(amount);
+				guiGameCameraScript.IncreaseScore(calculatedValue);
 				
 				if(popupSize == 1)
 				{

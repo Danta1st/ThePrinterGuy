@@ -42,6 +42,11 @@ public class BpmSequencerItem : MonoBehaviour {
     private Vector3 _partialPosition;
     private Transform[] _path = new Transform[2];
     #endregion
+	
+	public string GetTaskName()
+	{
+		return _moduleName;
+	}
 
     #region Delegates and Events
     public delegate void FailedAction();
