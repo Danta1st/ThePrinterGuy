@@ -362,7 +362,52 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(!_isWin)
 			_firedTextGameObject.renderer.enabled = true;
 		
+		Transform go = GameObject.Find("PerfectFailedTexts").transform;
+		int temp = 0;
+		foreach(Transform child in go)
+		{
+		    switch(child.name)
+			{
+			case "FailedInkText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedInk + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedPaperText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedPaper + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedRodsText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedUran + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedText":
+				temp = _targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran;
+				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedFailedText":
+				temp = System.Convert.ToInt32((_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes) * 100;
+				child.GetComponent<TextMesh>().text = temp + "%";
+				break;
+			case "PerfectsInkText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectInk + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsPaperText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectPaper + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsRodsText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectUran + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsText":
+				temp = _targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran;
+				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsPercentsText":
+				temp = System.Convert.ToInt32((_targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran) / _targetScore._totalNodes) * 100;
+				child.GetComponent<TextMesh>().text = temp + "%";
+				break;
+			}
+		}
+		
 		iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", _levelScore, "time", 2, "easetype", iTween.EaseType.easeInCubic, "onupdate", "updateCountingScoreValue"));
+		
+		
 		for(int i = 0; i <= _levelScore;)
 		{
 			ShowScore(_countingScore);
@@ -389,7 +434,6 @@ public class HighscoreSceneScript : MonoBehaviour
 			_progressBar.renderer.material.SetFloat("_Progress", _percent);
 			
 			i = _countingScore + 1;
-			Debug.Log(_countingScore + " - " + _levelScore);
 			yield return new WaitForSeconds(0.01f);
 		}
 		

@@ -34,11 +34,13 @@ public class HighscoreScreenLoader : MonoBehaviour
 	{
 		GUIGameCamera.OnGameEnded -= DisplayEndScreenWin;
 		GUIGameCamera.OnTaskEnd -= TaskEndUpdate;
+		BpmSequencerItem.OnFailedWithItem -= TaskFailed;
         StressOMeter.OnGameFailed -= DisplayEndScreenLoose;
 	}
 	
 	void Start()
 	{
+		Debug.Log ("WAT");
         _scoreManger = gameObject.GetComponent<ScoreManager>();
         _stressOMeter = gameObject.GetComponentInChildren<StressOMeter>();
         updateMaxHighscoreForCurrentLevel(); // Something is wrong here
@@ -155,10 +157,11 @@ public class HighscoreScreenLoader : MonoBehaviour
 	{
 		switch(type)
 			{
+			
 				case "Ink":
 					HighscoreSceneScript._targetScore.failedInk++;
 					break;
-				case "Rods":
+				case "UraniumRod":
 					HighscoreSceneScript._targetScore.failedUran++;
 					break;
 				case "Paper":
