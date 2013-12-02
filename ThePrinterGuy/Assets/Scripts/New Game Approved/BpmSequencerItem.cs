@@ -5,6 +5,7 @@ public class BpmSequencerItem : MonoBehaviour {
 		
     #region SerializeField
     [SerializeField] private string _moduleName;
+    [SerializeField] private Vector3 _scaleAmount;
     [SerializeField] private iTween.EaseType _easeTypeMove = iTween.EaseType.easeInSine;
 	[SerializeField] Particles _particles;
 	[SerializeField] Textures _textures;	
@@ -129,37 +130,24 @@ public class BpmSequencerItem : MonoBehaviour {
 		{
 		case "Paper":
 			//Vertical rhythm
-			TempoManager.OnPaperTempo += StartScale;
+			BeatController.OnAll4Beats += StartScalePaper;
 			//Horizontal movement
-			BeatController.OnBeat4th1 += StartMovePaper;
-			BeatController.OnBeat4th2 += StartMovePaper;
-			BeatController.OnBeat4th3 += StartMovePaper;
-			BeatController.OnBeat4th4 += StartMovePaper;
+			BeatController.OnAll4Beats += StartMovePaper;
 			break;
 		case "Ink":
 			//Vertical rhythm
-			TempoManager.OnInkTempo += StartScale;
+			BeatController.OnAll4Beats += StartScaleInk;
 			//Horizontal movement
-			BeatController.OnBeat4th1 += StartMoveInk;
-			BeatController.OnBeat4th2 += StartMoveInk;
-			BeatController.OnBeat4th3 += StartMoveInk;
-			BeatController.OnBeat4th4 += StartMoveInk;
+			BeatController.OnAll4Beats += StartMoveInk;
 			break;
 		case "UraniumRod":
 			//Vertical rhythm
-			TempoManager.OnUraniumRodTempo += StartScale;
+			BeatController.OnAll8Beats += StartScaleUranium;
 			//Horizontal movement
-			BeatController.OnBeat8th1 += StartMoveUranium;
-			BeatController.OnBeat8th2 += StartMoveUranium;
-			BeatController.OnBeat8th3 += StartMoveUranium;
-			BeatController.OnBeat8th4 += StartMoveUranium;
-			BeatController.OnBeat8th5 += StartMoveUranium;
-			BeatController.OnBeat8th6 += StartMoveUranium;
-			BeatController.OnBeat8th7 += StartMoveUranium;
-			BeatController.OnBeat8th8 += StartMoveUranium;
+			BeatController.OnAll8Beats += StartMoveUranium;
 			break;
 		case "Barometer":
-			TempoManager.OnBarometerTempo += StartScale;
+
 			break;
 		default:
 			Debug.LogWarning (gameObject.name+" received wrong moduleName. Subscribing nothing. Check _moduleName on prefab");
@@ -173,43 +161,43 @@ public class BpmSequencerItem : MonoBehaviour {
 		{
 		case "Paper":			
 			//Vertical rhythm
-			TempoManager.OnPaperTempo -= StartScale;
+			BeatController.OnAll4Beats -= StartScalePaper;
 			//Horizontal movement
-			BeatController.OnBeat4th1 -= StartMovePaper;
-			BeatController.OnBeat4th2 -= StartMovePaper;
-			BeatController.OnBeat4th3 -= StartMovePaper;
-			BeatController.OnBeat4th4 -= StartMovePaper;
+			BeatController.OnAll4Beats -= StartMovePaper;
 			break;
 		case "Ink":
-			TempoManager.OnInkTempo -= StartScale;
+			BeatController.OnAll4Beats -= StartScaleInk;
 			//Horizontal movement
-			BeatController.OnBeat4th1 -= StartMoveInk;
-			BeatController.OnBeat4th2 -= StartMoveInk;
-			BeatController.OnBeat4th3 -= StartMoveInk;
-			BeatController.OnBeat4th4 -= StartMoveInk;
+			BeatController.OnAll4Beats -= StartMoveInk;
 			break;
 		case "UraniumRod":
-			TempoManager.OnUraniumRodTempo -= StartScale;
+			BeatController.OnAll8Beats -= StartScaleUranium;
 			//Horizontal movement
-			BeatController.OnBeat8th1 -= StartMoveUranium;
-			BeatController.OnBeat8th2 -= StartMoveUranium;
-			BeatController.OnBeat8th3 -= StartMoveUranium;
-			BeatController.OnBeat8th4 -= StartMoveUranium;
-			BeatController.OnBeat8th5 -= StartMoveUranium;
-			BeatController.OnBeat8th6 -= StartMoveUranium;
-			BeatController.OnBeat8th7 -= StartMoveUranium;
-			BeatController.OnBeat8th8 -= StartMoveUranium;
+			BeatController.OnAll8Beats -= StartMoveUranium;
 			break;
 		case "Barometer":
-			TempoManager.OnBarometerTempo -= StartScale;
+			
 			break;
 		}
 	}
 	
 	//Punch and wobble!
-    public void StartScale()
+    public void StartScalePaper()
     {
-        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", _ms));
+    	float scaleTime = _stepLenghts.fourths * 5.0f;
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
+    }
+    
+    public void StartScaleInk()
+    {
+    	float scaleTime = _stepLenghts.fourths * 5.0f;
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
+    }
+    
+    public void StartScaleUranium()
+    {
+    	float scaleTime = _stepLenghts.eights * 5.0f;
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
     }
 		
 	//MoveMethods - crap method - TODO: could this be generalised?

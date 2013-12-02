@@ -2,15 +2,20 @@
 using System.Collections;
 
 public class DialogueText : MonoBehaviour {
-
+	
+	[SerializeField]
+	private float _bgOffsetSize;
+	
     private GameObject _bgText;
     private GameObject _text;
-    private float _bgTextMultiplyer;
-    private Vector3 _bgTextStartSize;
+    private Vector3 _bgPosition;
+    private float _bgTextMultiplier;
     private bool _subtitleOn;
-
+	
     void Start()
     {
+    	_bgTextMultiplier = Screen.width / 1920f;
+    	
         if(PlayerPrefs.HasKey("Subtitle"))
         {
             if(PlayerPrefs.GetString("Subtitle") == "On")
@@ -30,11 +35,10 @@ public class DialogueText : MonoBehaviour {
 
         if(_subtitleOn)
         {
-            _bgText = gameObject.transform.FindChild("TextBG").gameObject;
-            _bgText.SetActive(true);
+            _bgText = GameObject.Find("TextBG").gameObject;
             _text = gameObject.transform.FindChild("Text").gameObject;
-            _text.SetActive(true);
-            _bgTextStartSize = _bgText.transform.localScale;
+            _bgPosition = _text.transform.position;
+            _bgText.transform.position = _bgPosition;
             _bgText.renderer.enabled = false;
             _text.renderer.enabled = false;
         }
@@ -59,15 +63,30 @@ public class DialogueText : MonoBehaviour {
         if(_subtitleOn)
         {
             _text.GetComponent<TextMesh>().text = LocalizationText.GetText(localizationKey);
-            float _textLength = _text.GetComponent<TextMesh>().text.Length;
-            _bgTextMultiplyer = _textLength / 20f;
-            Vector3 _size = new Vector3(_bgTextStartSize.x*_bgTextMultiplyer, _bgTextStartSize.y, _bgTextStartSize.z);
-            _bgText.transform.localScale = _size;
             _bgText.renderer.enabled = true;
             _text.renderer.enabled = true;
+            UpdateBG();
         }
     }
-
+	
+    private void UpdateBG()
+    {
+    	Bounds _bounds = _text.GetComponent<TextMesh>().renderer.bounds;
+    	float _max = _bounds.max.x;
+    	float _min = _bounds.min.x;
+    	float _distance = Mathf.Abs(_min - _max);
+		
+		Debug.Log(_max);
+		Debug.Log(_min);
+		Debug.Log(_distance);
+		
+    	Vector3 _bgScale = new Vector3(_distance + (_bgOffsetSize*_bgTextMultiplier),
+    									_bgText.transform.localScale.y, _bgText.transform.localScale.z);
+    									
+    	Debug.Log(_bgScale);
+    	_bgText.transform.localScale = _bgScale;
+    }
+	
     private void HideSubtitle()
     {
         if(_subtitleOn)
