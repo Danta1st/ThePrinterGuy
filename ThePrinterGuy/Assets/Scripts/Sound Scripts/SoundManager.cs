@@ -807,6 +807,11 @@ public class SoundManager : MonoBehaviour
         _cutSceneSounds.CutScene_Effect_Coffee_01();
     }
 
+    public static void CutScene_Effect_Point()
+    {
+        _cutSceneSounds.CutScene_Effect_Point();
+    }
+
     public static void CutScene_Effect_Coffee_02()
     {
         _cutSceneSounds.CutScene_Effect_Coffee_02();
