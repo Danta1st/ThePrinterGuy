@@ -355,8 +355,12 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				
 				//Enable Paper Trail or throw warning
-				if(paper.GetComponentInChildren<TrailRenderer>() != null)
-					paper.GetComponentInChildren<TrailRenderer>().enabled = true;
+				TrailRenderer[] _trails = paper.GetComponentsInChildren<TrailRenderer>();
+				if(_trails != null)
+					foreach(TrailRenderer _trail in _trails)
+					{
+						_trail.enabled = true;
+					}
 				else
 					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
 				
@@ -391,8 +395,12 @@ public class PaperInsertion : MonoBehaviour
 				paper.transform.parent = _dynamicObjects.transform;
 				
 				//Enable Paper Trail or throw warning
-				if(paper.GetComponentInChildren<TrailRenderer>() != null)
-					paper.GetComponentInChildren<TrailRenderer>().enabled = true;
+				TrailRenderer[] _trails = paper.GetComponentsInChildren<TrailRenderer>();
+				if(_trails != null)
+					foreach(TrailRenderer _trail in _trails)
+					{
+						_trail.enabled = true;
+					}
 				else
 					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
 				
