@@ -16,8 +16,14 @@ public class StageCharacter : MonoBehaviour
     private Texture2D blackTexture;
     #endregion
 
+    private int[] highscores;
+
     void Awake()
     {
+        highscores = SaveGame.GetPlayerHighscores();
+        if(highscores[4] >= 0)
+            _isUnlocked = true;
+
         if(_isUnlocked)
         {
             int i = 0;

@@ -81,7 +81,7 @@ public class HighscoreSceneScript : MonoBehaviour
             if(_guiObject.name == "IngameMenu")
             {
                 nextLevelButton = _guiObject.transform.FindChild("NextButton").gameObject;
-                if(_levelCompleted == ConstantValues.GetLastLevel || !_isPrepared)
+                if((_levelCompleted + 1) % 5 == 0 || _levelCompleted == ConstantValues.GetLastLevel || !_isPrepared)
                 {
                     nextLevelButton.SetActive(false);
                 }

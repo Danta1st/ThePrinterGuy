@@ -279,9 +279,9 @@ public class LevelManager : MonoBehaviour
         iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(1,1,1),"time", 1f, "easeType", _easyTypeOfLevelParentObjectIn, "Delay", 0.5f));
 
         indexChar = _stageCharacters.IndexOf(go);
-        minIndex = indexChar * _levelBoxCount;
+        minIndex = indexChar * 5;
 
-        for(int i = minIndex; i < (minIndex + _levelBoxCount); i++)
+        for(int i = minIndex; i < (minIndex + 5); i++)
         {
             if(_gameLevelsUnlocked[i])
             {
