@@ -228,7 +228,7 @@ public class Ink : MonoBehaviour
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
 			_canSlide = false;			
-			
+						
 			//Move the ink
 			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathSucc, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
@@ -264,11 +264,11 @@ public class Ink : MonoBehaviour
 
         InkReset();
 		
-			//Broadcast task done
-	        if(OnCorrectInkInserted != null)
-	        {
-	            OnCorrectInkInserted();
-	        }
+		//Broadcast task done
+        if(OnCorrectInkInserted != null)
+        {
+            OnCorrectInkInserted();
+        }
 
         icc.insertableCartridge.transform.position = icc.insertableStartPos;
 		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
@@ -300,10 +300,10 @@ public class Ink : MonoBehaviour
 		if(_particleSmoke != null)
 			_particleSmoke.particleSystem.Stop();
 		
-		int j = 0;
+//		int j = 0;
 		for(int i = 0; i < _machineInks.Count; i++)
 		{
-			icc = _machineInks[j];
+			icc = _machineInks[i];
 			icc.cartridge.gameObject.SetActive(true);
 			
 			//Instantiate particles
@@ -311,7 +311,7 @@ public class Ink : MonoBehaviour
 			
 			icc.cartridgeEmpty = false;
 			icc.insertableCartridge.gameObject.SetActive(false);
-			j++;
+//			j++;
 		}
 	}
 	

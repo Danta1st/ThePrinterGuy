@@ -81,7 +81,7 @@ public class HighscoreSceneScript : MonoBehaviour
             if(_guiObject.name == "IngameMenu")
             {
                 nextLevelButton = _guiObject.transform.FindChild("NextButton").gameObject;
-                if(_levelCompleted == ConstantValues.GetLastLevel || !_isPrepared)
+                if((_levelCompleted + 1) % 5 == 0 || _levelCompleted == ConstantValues.GetLastLevel || !_isPrepared)
                 {
                     nextLevelButton.SetActive(false);
                 }
@@ -134,7 +134,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_win)
 			StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
 		else
-			StartFadeHS(_fadeOutTime, _fadeInTime, Color.red);
+			StartFadeHS(_fadeOutTime, _fadeInTime, new Color(220, 20, 60));
 	}
 	
 	private void DrawQuad(Color aColor,float aAlpha)
@@ -229,7 +229,7 @@ public class HighscoreSceneScript : MonoBehaviour
                 if(_hit.collider.gameObject.name == "RestartButton")
                 {
                     GestureManager.OnTap -= CheckCollision;
-					LoadingScreen.Load(_levelCompleted, true);
+					LoadingScreen.Load(_levelCompleted + 2, true);
                 }
                 else if(_hit.collider.gameObject.name == "QuitButton")
                 {
@@ -294,6 +294,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			SoundManager.Effect_InGame_Lose();
 		}
 		_levelScore = _lastScore;
+        FindHighscore();
 		StartCoroutine("MoveEstimateBar");
 	}
 	
@@ -336,8 +337,11 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_levelScore > _levelHighscore && _isWin)
 		{
 			highScores[_levelCompleted] = _levelScore;
+
             //Unlocking next level!
-            highScores[_levelCompleted + 1] = 0;
+            if(highScores[_levelCompleted + 1] == -1)
+                 highScores[_levelCompleted + 1] = 0;
+
 			_levelHighscore = _levelScore;
 			SaveGame.SavePlayerData(currency, premiumCurrency, highScores);
 		}
@@ -352,7 +356,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		Vector3 scoreBarScale = _progressBar.transform.localScale;
 		
 		float startPos = scoreBarPos.y;
-		float deltaScale = 0f;
+		float deltaScale = 10f;
 		
 		scoreBarPos.y = -0.5f;
 		scoreBarScale.y = 0f;
@@ -415,8 +419,6 @@ public class HighscoreSceneScript : MonoBehaviour
 			InsertSpeechText(LocalizationText.GetText("WinText1"));
 		else
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
-		
-		FindHighscore();
 	}
 	
 	private void InsertSpeechText(string text)
