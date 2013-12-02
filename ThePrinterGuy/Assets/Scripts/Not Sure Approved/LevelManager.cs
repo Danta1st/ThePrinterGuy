@@ -217,7 +217,7 @@ public class LevelManager : MonoBehaviour
                     }
                     if(correspondingLevelName == null)
                     {
-                        LoadingScreen.Load(index+1, true);
+                        LoadingScreen.Load(index + 3, true);
                     }
                     else
                     {
@@ -292,7 +292,7 @@ public class LevelManager : MonoBehaviour
 
                 if(highScores[i] > 0)
                 {
-                    int boxNumber = i + 1;
+                    int boxNumber = (i + 1) % 6;
                     GameObject box = LevelParentObject.transform.FindChild("Box" + boxNumber).gameObject;
                     box.transform.FindChild("Completed").gameObject.renderer.enabled = true;
                     int maxHighscore = SaveGame.GetMaxHighscores()[i];

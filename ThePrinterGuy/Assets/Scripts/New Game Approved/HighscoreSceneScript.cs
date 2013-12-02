@@ -294,6 +294,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			SoundManager.Effect_InGame_Lose();
 		}
 		_levelScore = _lastScore;
+        FindHighscore();
 		StartCoroutine("MoveEstimateBar");
 	}
 	
@@ -355,7 +356,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		Vector3 scoreBarScale = _progressBar.transform.localScale;
 		
 		float startPos = scoreBarPos.y;
-		float deltaScale = 0f;
+		float deltaScale = 10f;
 		
 		scoreBarPos.y = -0.5f;
 		scoreBarScale.y = 0f;
@@ -418,8 +419,6 @@ public class HighscoreSceneScript : MonoBehaviour
 			InsertSpeechText(LocalizationText.GetText("WinText1"));
 		else
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
-		
-		FindHighscore();
 	}
 	
 	private void InsertSpeechText(string text)
