@@ -38,12 +38,12 @@ public class GAPlayerAnalytics : MonoBehaviour {
 
     private void PlayerFailedLevel(float score)
     {
-        GA.API.Design.NewEvent("FailedLevel", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName), score);
+        GA.API.Design.NewEvent("FailedLevel" + FindLevel(Application.loadedLevelName), Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName), score);
     }
 
     private void PlayerCompletedLevel(float score)
     {
-        GA.API.Design.NewEvent("CompletedLevel", Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName), score);
+        GA.API.Design.NewEvent("CompletedLevel" + FindLevel(Application.loadedLevelName), Time.timeSinceLevelLoad, beatsSinceLevelLoad, FindLevel(Application.loadedLevelName), score);
     }
 
     private void PlayerToMainMenuFromLevel()
@@ -106,6 +106,9 @@ public class GAPlayerAnalytics : MonoBehaviour {
                 break;
             case "level9":
                 lvl = 9;
+                break;
+            case "level10":
+                lvl = 10;
                 break;
             default:
                 lvl = 0;
