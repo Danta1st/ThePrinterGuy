@@ -6,10 +6,11 @@ public class SoundManager : MonoBehaviour
 {
     #region Editor Publics
     [SerializeField] private static float _fadeTime = 1.0f;
-//    [SerializeField] private static float _startMusicVolume = 1.0f;
     [SerializeField] private static float _endMusicVolume = 0.2f;
     [SerializeField] private static float _menuEffectsVolume = 0.8f;
     [SerializeField] private static float _voiceVolume = 1.0f;
+    [SerializeField] private static float _gameMusic = 0.7f;
+    [SerializeField] private static float _menuMusic = 0.5f;
     #endregion
 
     #region Privates
@@ -695,10 +696,13 @@ public class SoundManager : MonoBehaviour
 //            gss.FadeVolume(_startMusicVolume, _fadeTime);
 //        }
 
-        for(int i = 0; i < _musicScripts.Count; i++)
-        {
-            _musicScripts[i].SetVolume(_musicVolume[i]);
-        }
+//        for(int i = 0; i < _musicScripts.Count; i++)
+//        {
+//            _musicScripts[i].FadeVolume(_musicVolume[i], _fadeTime);
+//        }
+
+        _inGameSounds.GetMusicScript().FadeVolume(_gameMusic, _fadeTime);
+        _mainMenuSounds.GetMusicScript().FadeVolume(_menuMusic, _fadeTime);
     }
 
     public static void ToogleAudio()
