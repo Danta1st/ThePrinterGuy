@@ -33,6 +33,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	private bool _isWin = false;
 	private int _levelScore = 0;
 	private int _levelHighscore = 0;
+	
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
@@ -41,6 +42,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	private static int _lastScore;
 	private static bool _win;
 	private static bool _isPrepared = false;
+	private static float _levelMaxscore = 0;
 	private Material _material = null;
 	private float alphaFloat;
 	
@@ -124,12 +126,13 @@ public class HighscoreSceneScript : MonoBehaviour
 		}
 	}
 	
-	public void GoToHighScoreScreen(int level, int score, bool win)
+	public void GoToHighScoreScreen(int level, int score, bool win, int maxScore)
 	{
 		_isPrepared = true;
 		_levelCompleted = level;
 		_lastScore = score;
 		_win = win;
+		_levelMaxscore = maxScore;
 		
 		if(_win)
 			StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
@@ -305,7 +308,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			s.SetActive(false);
 		}
 		
-		Vector3 pos = _stars[0].transform.localPosition;
+		/*Vector3 pos = _stars[0].transform.localPosition;
 		float startX = -0.5f;
 		float posOffset = 1;
 		
@@ -314,7 +317,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		pos.x = startX + (float)_targetScore.starScoreTwo / (float)_targetScore.starScoreThree;
 		_stars[1].transform.localPosition = pos;
 		pos.x = startX + (float)_targetScore.starScoreThree / (float)_targetScore.starScoreThree;
-		_stars[2].transform.localPosition = pos;
+		_stars[2].transform.localPosition = pos;*/
 	}
 	
 	private void ShowScore(int score)
@@ -351,18 +354,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	IEnumerator MoveEstimateBar()
 	{
-		bool isScaling = true;
-		Vector3 scoreBarPos = _progressBar.transform.localPosition;
-		Vector3 scoreBarScale = _progressBar.transform.localScale;
-		
-		float startPos = scoreBarPos.y;
-		float deltaScale = 10f;
-		
-		scoreBarPos.y = -0.5f;
-		scoreBarScale.y = 0f;
-		
-		_progressBar.transform.localScale = scoreBarScale;
-		_progressBar.transform.localPosition = scoreBarPos;
+		float _percent;
 		
 		for(int i = 0; i <= _levelScore;)
 		{
@@ -386,15 +378,8 @@ public class HighscoreSceneScript : MonoBehaviour
 				_stars[0].SetActive(true);
 			}
 			
-			if(isScaling) {
-				if(i >= _targetScore.starScoreThree)
-					isScaling = false;
-				scoreBarScale.y = (float)i / (float)_targetScore.starScoreThree;
-				deltaScale = scoreBarScale.y - _progressBar.transform.localScale.y;
-				_progressBar.transform.localScale = scoreBarScale;
-				scoreBarPos.y = scoreBarPos.y + deltaScale / 2f;
-				_progressBar.transform.localPosition = scoreBarPos;
-			}
+			_percent = (i / _levelMaxscore);
+			_progressBar.renderer.material.SetFloat("_Progress", _percent);
 			
 			if(((_levelScore - i) / 1000) > 1)
 			{
@@ -413,7 +398,7 @@ public class HighscoreSceneScript : MonoBehaviour
 				i++;
 			}
 	
-			yield return new WaitForSeconds(0.1f);
+			yield return new WaitForSeconds(0.01f);
 		}
 		if(_isWin)
 			InsertSpeechText(LocalizationText.GetText("WinText1"));

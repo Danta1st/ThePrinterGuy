@@ -41,8 +41,8 @@ public class HighscoreScreenLoader : MonoBehaviour
 	{
         _scoreManger = gameObject.GetComponent<ScoreManager>();
         _stressOMeter = gameObject.GetComponentInChildren<StressOMeter>();
-        updateMaxHighscoreForCurrentLevel();
-        _maxHighscore = SaveGame.GetMaxHighscores()[Application.loadedLevel - 2];
+        updateMaxHighscoreForCurrentLevel(); // Something is wrong here
+        _maxHighscore = GetPerfectScore();//SaveGame.GetMaxHighscores()[Application.loadedLevel - 2];
 		hss = gameObject.AddComponent<HighscoreSceneScript>();
 		HighscoreSceneScript._targetScore.failedInk = 0;
 		HighscoreSceneScript._targetScore.failedPaper = 0;
@@ -85,14 +85,14 @@ public class HighscoreScreenLoader : MonoBehaviour
 	{
 		SoundManager.StopAllSoundEffects();
         SoundManager.FadeAllMusic();
-		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, true);
+		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, true, GetPerfectScore());
 	}
 	
 	public void DisplayEndScreenLoose(int _score)
 	{
 		SoundManager.StopAllSoundEffects();
         SoundManager.FadeAllMusic();
-		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, false);
+		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, false, GetPerfectScore());
 	}
 
     public int GetPerfectScore()
@@ -169,14 +169,14 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	public int GetStarOneScore()
 	{
-		return System.Convert.ToInt32(_maxHighscore * 0.25);
+		return System.Convert.ToInt32(_maxHighscore * 0.25f);
 	}
 	public int GetStarTwoScore()
 	{
-		return System.Convert.ToInt32(_maxHighscore * 0.50);
+		return System.Convert.ToInt32(_maxHighscore * 0.50f);
 	}
 	public int GetStarThreeScore()
 	{
-		return  System.Convert.ToInt32(_maxHighscore * 0.75);
+		return System.Convert.ToInt32(_maxHighscore * 0.75f);
 	}
 }
