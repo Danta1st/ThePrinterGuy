@@ -1,4 +1,5 @@
-﻿Shader "Custom/ProgressBar" {
+// Upgrade NOTE: replaced 'glstate.matrix.projection' with 'UNITY_MATRIX_P'
+Shader "Custom/ProgressBar" {
 
 Properties {
 	_Color ("Color", Color) = (1,1,1,1)
@@ -9,12 +10,11 @@ Properties {
 }
 
 SubShader {
-		//Tags { "Queue"="Transparent" }
-		Tags { "Queue"="Overlay+1" }
+		Tags { "Queue"="Transparent" }
+		//Tags { "Queue"="Overlay+1" }
 		ZTest Always
 		Blend SrcAlpha OneMinusSrcAlpha
         Pass {
- 
 CGPROGRAM
 // Upgrade NOTE: excluded shader from OpenGL ES 2.0 because it does not contain both vertex and fragment programs.
 #pragma exclude_renderers gles
@@ -43,7 +43,7 @@ v2f vert (appdata_base v)
 	//o.pos.xy = v.vertex.xy * _PositionAndScale.zw + _PositionAndScale.xy;
 	//o.pos.z = -0.5;
 	//o.pos.w = 1;
-	//o.pos = mul (glstate.matrix.projection, o.pos);
+	//o.pos = mul (UNITY_MATRIX_P, o.pos);
 	// endif
     
     o.uv = TRANSFORM_UV(0);
@@ -58,7 +58,7 @@ half4 frag( v2f i ) : COLOR
 	half4 f = tex2D( _ForegroundTex, i.uv);
 	
 	half4 color = b;
-	if( i.uv.x < _Progress ){
+	if( i.uv.y < _Progress ){
 		color = (1.0 - f.a)*color + f.a*f;
 	}
 	
