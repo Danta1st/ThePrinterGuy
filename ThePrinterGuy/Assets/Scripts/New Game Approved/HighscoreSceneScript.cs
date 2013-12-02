@@ -336,8 +336,11 @@ public class HighscoreSceneScript : MonoBehaviour
 		if(_levelScore > _levelHighscore && _isWin)
 		{
 			highScores[_levelCompleted] = _levelScore;
+
             //Unlocking next level!
-            highScores[_levelCompleted + 1] = 0;
+            if(highScores[_levelCompleted + 1] == -1)
+                 highScores[_levelCompleted + 1] = 0;
+
 			_levelHighscore = _levelScore;
 			SaveGame.SavePlayerData(currency, premiumCurrency, highScores);
 		}
