@@ -23,6 +23,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		public static int failedInk;
 		public static int failedPaper;
 		public static int failedUran;
+		public static int _totalNodesHit;
 		public static int _totalNodes;
 	}
 	
@@ -364,6 +365,10 @@ public class HighscoreSceneScript : MonoBehaviour
 		
 		Transform go = GameObject.Find("PerfectFailedTexts").transform;
 		int temp = 0;
+		temp = (_targetScore._totalNodesHit +_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes;
+		
+		GameObject.Find("TotalPrints").renderer.material.SetFloat("_Progress", temp);
+		
 		foreach(Transform child in go)
 		{
 		    switch(child.name)
@@ -406,7 +411,13 @@ public class HighscoreSceneScript : MonoBehaviour
 		}
 		
 		iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", _levelScore, "time", 2, "easetype", iTween.EaseType.easeInCubic, "onupdate", "updateCountingScoreValue"));
+		GameObject scoreTopPoint = GameObject.Find ("ScoreTopPoint");
+		GameObject scoreBotPoint = GameObject.Find ("ScoreBotPoint");
+		GameObject scoreText = GameObject.Find ("ScoreText");
 		
+		
+		float difference;
+		Vector3 newPos;
 		
 		for(int i = 0; i <= _levelScore;)
 		{
@@ -431,6 +442,11 @@ public class HighscoreSceneScript : MonoBehaviour
 			}
 			
 			_percent = (_countingScore / _levelMaxscore);
+			difference = scoreTopPoint.transform.position.y - scoreBotPoint.transform.position.y;
+			difference = difference * _percent;
+			newPos = scoreBotPoint.transform.position;
+			newPos.y += difference;
+			scoreText.transform.position = newPos;
 			_progressBar.renderer.material.SetFloat("_Progress", _percent);
 			
 			i = _countingScore + 1;

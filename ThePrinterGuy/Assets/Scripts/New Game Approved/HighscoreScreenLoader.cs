@@ -52,6 +52,7 @@ public class HighscoreScreenLoader : MonoBehaviour
 		HighscoreSceneScript._targetScore.perfectInk = 0;
 		HighscoreSceneScript._targetScore.perfectPaper = 0;
 		HighscoreSceneScript._targetScore.perfectUran = 0;
+		HighscoreSceneScript._targetScore._totalNodesHit = 0;
 		HighscoreSceneScript._targetScore.starScoreOne = GetStarOneScore();
 		HighscoreSceneScript._targetScore.starScoreTwo = GetStarTwoScore();
 		HighscoreSceneScript._targetScore.starScoreThree = GetStarThreeScore();
@@ -134,6 +135,8 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	private void TaskEndUpdate(string type, int zone)
 	{
+		HighscoreSceneScript._targetScore._totalNodesHit++;
+		Debug.Log (HighscoreSceneScript._targetScore._totalNodesHit);
 		if(zone == 3)
 		{
 			switch(type)
