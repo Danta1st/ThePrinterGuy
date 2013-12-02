@@ -6,7 +6,7 @@ public class SoundManager : MonoBehaviour
 {
     #region Editor Publics
     [SerializeField] private static float _fadeTime = 1.0f;
-    [SerializeField] private static float _startMusicVolume = 1.0f;
+    [SerializeField] private static float _startMusicVolume = 0.7f;
     [SerializeField] private static float _endMusicVolume = 0.2f;
     #endregion
 
