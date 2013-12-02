@@ -374,15 +374,13 @@ public class GestureManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.RightArrow))
         {
-			 //var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-    
-                if (Physics.Raycast(ray, out hit))
-                {
-                    _touchBeganObject = hit.collider.gameObject;
-                }
+            if (Physics.Raycast(ray, out hit))
+            {
+                _touchBeganObject = hit.collider.gameObject;
+            }
             //SwipeRight Event
             if(OnSwipeRight != null)
                 OnSwipeRight(_touchBeganObject);
@@ -397,6 +395,13 @@ public class GestureManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.UpArrow))
         {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                _touchBeganObject = hit.collider.gameObject;
+            }
             //SwipeUp Event
             if(OnSwipeUp != null)
                 OnSwipeUp(_touchBeganObject);

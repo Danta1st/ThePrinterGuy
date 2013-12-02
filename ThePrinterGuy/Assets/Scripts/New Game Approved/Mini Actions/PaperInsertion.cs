@@ -25,7 +25,7 @@ public class PaperInsertion : MonoBehaviour
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private bool _IsSlideLocked		= false;
 	private float _slideTime		= 0.4f;
-	private float _slideWait		= 0.1f;
+	private float _slideWait		= 0.05f;
 	
 	//Whatever
 	private GameObject _dynamicObjects;
@@ -59,7 +59,8 @@ public class PaperInsertion : MonoBehaviour
 		StopGate();		
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
-        GestureManager.OnTap -= TriggerSlide;
+        //GestureManager.OnTap -= TriggerSlide;
+		GestureManager.OnSwipeUp -= TriggerSlide;
 		BpmSequencerItem.OnFailed -= Reset;
     }	
 	void OnDestroy()
@@ -67,7 +68,8 @@ public class PaperInsertion : MonoBehaviour
 		StopGate();
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
-		GestureManager.OnTap -= TriggerSlide;
+		//GestureManager.OnTap -= TriggerSlide;
+		GestureManager.OnSwipeUp -= TriggerSlide;
 		BpmSequencerItem.OnFailed -= Reset;
 		UnsubscribePaperPunch();
 	}
@@ -224,7 +226,7 @@ public class PaperInsertion : MonoBehaviour
 	private void PunchPaper()
 	{
 		if(_tempPunch != null)
-			iTween.PunchScale(_paperlightset[_tempPunch].paper, new Vector3(0.1f, 0.1f, 0.1f), _punchTime);
+			iTween.PunchScale(_paperlightset[_tempPunch].paper, new Vector3(0.2f, 0.2f, 0.2f), _punchTime);
 	}
 	
     private void TurnOffLight(int i)
@@ -252,7 +254,8 @@ public class PaperInsertion : MonoBehaviour
     {
 		if(_isPaperEnabled)
 		{
-			GestureManager.OnTap -= TriggerSlide;
+			//GestureManager.OnTap -= TriggerSlide;
+			GestureManager.OnSwipeUp -= TriggerSlide;
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 				//Spawn particles
@@ -269,7 +272,8 @@ public class PaperInsertion : MonoBehaviour
     {
 		if(!_isPaperEnabled)
 		{
-			GestureManager.OnTap += TriggerSlide;
+			//GestureManager.OnTap += TriggerSlide;
+			GestureManager.OnSwipeUp += TriggerSlide;
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 				//Spawn particles
@@ -282,7 +286,7 @@ public class PaperInsertion : MonoBehaviour
 		}
     }
 	
-	private void TriggerSlide(GameObject go, Vector2 screenPosition)
+	private void TriggerSlide(GameObject go)//(GameObject go, Vector2 screenPosition)
 	{
 		
 		if(go != null)
@@ -493,7 +497,7 @@ public class PaperInsertion : MonoBehaviour
     public void RollConvoreBelt()
     {
         Vector2 thisOffset = _conveyorBelt.renderer.material.mainTextureOffset;
-        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, -0.01f));
+        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, 0.01f));
     }
 	#endregion
 
