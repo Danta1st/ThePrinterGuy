@@ -3066,10 +3066,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100170}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 435, y: -958.545898, z: -32.500061}
-  m_LocalScale: {x: 1000, y: 100, z: 1}
+  m_LocalPosition: {x: -.574645996, y: -516.332764, z: 10}
+  m_LocalScale: {x: 1350, y: 100, z: 1}
   m_Children: []
-  m_Father: {fileID: 400202}
+  m_Father: {fileID: 400254}
 --- !u!4 &400172
 Transform:
   m_ObjectHideFlags: 1
@@ -3137,7 +3137,6 @@ Transform:
   m_Children:
   - {fileID: 400636}
   - {fileID: 400028}
-  - {fileID: 400170}
   m_Father: {fileID: 400254}
 --- !u!4 &400204
 Transform:
@@ -3204,6 +3203,7 @@ Transform:
   - {fileID: 400126}
   - {fileID: 400068}
   - {fileID: 400202}
+  - {fileID: 400170}
   m_Father: {fileID: 400172}
 --- !u!4 &400260
 Transform:
@@ -5059,7 +5059,7 @@ Renderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: 1cbb5412eada62345af315fbe55a2748, type: 3}
+  - {fileID: 2100000, guid: e2378ce6024c4244692b3b8fc821561b, type: 3}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -5936,7 +5936,7 @@ TextMesh:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100028}
-  m_Text: 12345678912345679812345679
+  m_Text: 12345678901234567890123456789012345678901234567890
   m_OffsetZ: 0
   m_CharacterSize: 1
   m_LineSpacing: 1
@@ -5946,7 +5946,7 @@ TextMesh:
   m_FontSize: 110
   m_FontStyle: 0
   m_RichText: 1
-  m_Font: {fileID: 12800000, guid: 1cbb5412eada62345af315fbe55a2748, type: 3}
+  m_Font: {fileID: 12800000, guid: e2378ce6024c4244692b3b8fc821561b, type: 3}
   m_Color:
     serializedVersion: 2
     rgba: 4291355105
@@ -6200,9 +6200,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25647d5352035f04e95e248263f89dc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _starOneScore: 10
-  _starTwoScore: 20
-  _starThreeScore: 30
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6226,6 +6223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d99cd316444174d925fa0c1a0efd99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bgOffsetSize: 0
 --- !u!114 &11400012
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -6298,6 +6296,7 @@ MonoBehaviour:
   - {fileID: 100202}
   - {fileID: 100168}
   - {fileID: 100358}
+  - {fileID: 100170}
   _textList:
   - {fileID: 100034}
   - {fileID: 100144}
