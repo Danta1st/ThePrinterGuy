@@ -223,7 +223,7 @@ public class UraniumRods : MonoBehaviour
 		{
 			foreach(Transform child in posRotGO.transform)
 			{
-				if(child.name.Equals("ParticlePos") && particles != null)
+				if(child.name.Equals("ParticlePos"))
 				{
 					//Instantiate Particle prefab. Rotation solution is a HACK
 					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.FromToRotation(particles.transform.up, -child.up));
