@@ -455,36 +455,37 @@ public class GUIGameCamera : MonoBehaviour
 	public void PopupTextSmall(string _str)
 	{
 		//PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
-		PopupText(_str, 0f, 0f, new Color(0.82f,0.55f,0.3f, 0f), new Color(0.82f,0.55f,0.3f, 0f));
+		PopupText(_str);
 	}
 	
 	public void PopupTextMedium(string _str)
 	{
 		//PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
-		PopupText(_str, 0f, 0f, new Color(0.7f,0.8f,0.84f, 0f), new Color(0.7f,0.8f,0.84f, 0f));
+		PopupText(_str);
 	}
 	
 	public void PopupTextBig(string _str)
 	{
 		//PopupText(_str, 10f, 100f, new Color(1f ,0.7f ,0f, 1f), new Color(1f ,0.7f ,0f, 0.7f));
-		PopupText(_str, 0f, 0f, new Color(1f ,0.7f ,0f, 0f), new Color(1f ,0.7f ,0f, 0f));
+		PopupText(_str);
 	}
 	
-	public void PopupText(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
+	public void PopupText(string _str)
 	{
-		StartCoroutine(InstantiatePopup(_str, _circles, _starTrail, _trailColor, _circleColor));
+		StartCoroutine(InstantiatePopup(_str));
 	}
 	
-	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
+	private IEnumerator InstantiatePopup(string _str)
 	{	
 		
-		float _xPopupPos = UnityEngine.Random.Range(_offsetValues.startX,_offsetValues.endX);
-		float _yPopupPos = UnityEngine.Random.Range(_offsetValues.startY,_offsetValues.endY);
+		//float _xPopupPos = UnityEngine.Random.Range(_offsetValues.startX,_offsetValues.endX);
+		float _xPopupPos = 0.125f;
+		float _yPopupPos = 0.75f;
 		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
-		float _fadeOutDuration = 1.2f;
+		float _fadeOutDuration = 0.5f;
 		float _punchAmmount = -10f;
-		float _moveLength = 600f * _scaleMultiplierY;
+		float _moveLength = 0f * _scaleMultiplierY;
 		
 		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
@@ -494,13 +495,6 @@ public class GUIGameCamera : MonoBehaviour
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
-		
-		_particleSystems = _popupObject.GetComponentsInChildren<ParticleSystem>();
-		
-		_particleSystems[0].particleSystem.emissionRate = _starTrail;
-		_particleSystems[1].particleSystem.emissionRate = _circles;
-		_particleSystems[0].particleSystem.startColor = _trailColor;
-		_particleSystems[1].particleSystem.startColor = _circleColor;
 		
 		iTween.MoveTo(_popupTextObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
 			"time", (_fadeInDuration + _fadeOutDuration), "easetype", _easeTypeTextMove));
@@ -1001,10 +995,10 @@ public class GUIGameCamera : MonoBehaviour
 	[System.Serializable]
 	public class TextPositionalOffset
 	{
-		public float startX = 0.35f;
-		public float endX = 0.65f;
-		public float startY = 0.35f;
-		public float endY = 0.45f;
+		public float startX = 0.125;
+		public float endX = 0.125f;
+		public float startY = 0.75f;
+		public float endY = 0.75f;
 	}
 	
 	[System.Serializable]
