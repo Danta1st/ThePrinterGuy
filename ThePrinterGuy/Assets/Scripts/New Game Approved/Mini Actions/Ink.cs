@@ -25,7 +25,6 @@ public class Ink : MonoBehaviour
 	private bool _canSlide = true;
 	private List<string> pathNameSucc = new List<string>();
 	private List<string> pathNameFail = new List<string>();
-	private List<GameObject> _inkClones = new List<GameObject>();
 	private bool isOnInk = false;
 	
 	//References
@@ -76,11 +75,10 @@ public class Ink : MonoBehaviour
 		{
 			//Remember beginPositions - Why?
 			icc.insertableStartPos = icc.insertableCartridge.position;
-			GameObject tmp = (GameObject)Instantiate(icc.insertableCartridge.gameObject, icc.insertableStartPos,
+			icc.insertableCartridgeClone = (GameObject)Instantiate(icc.insertableCartridge.gameObject, icc.insertableStartPos,
 				icc.insertableCartridge.transform.rotation);
-			tmp.collider.enabled = false;
-			tmp.GetComponent<ItemIdleState>().enabled = false;
-			_inkClones.Add(tmp);
+			icc.insertableCartridgeClone.collider.enabled = false;
+			icc.insertableCartridgeClone.GetComponent<ItemIdleState>().enabled = false;
 			
 			//Succes path
 			icc.pathSucc = new Vector3[3];
@@ -211,9 +209,7 @@ public class Ink : MonoBehaviour
 	{
 		if(go == null || !_canSlide)
 			return;
-		
-		int inkIndex = 0;
-		
+				
 		//TODO: Needs comments. What is happening? try to clean this method to work on the InkCartridgeClass instead of list?
 		InkCartridgeClass currIcc = null;
 		InkCartridgeClass icc;
@@ -226,7 +222,6 @@ public class Ink : MonoBehaviour
 			if(icc.insertableCartridge.gameObject == go)
 			{
 				currIcc = icc;
-				inkIndex = i;
 				break;
 			}
 			j++;
@@ -252,17 +247,13 @@ public class Ink : MonoBehaviour
 	        }
 						
 //			currIcc.insertableCartridge.gameObject.SetActive(false);
-			
-			Hashtable ht = new Hashtable();
-			ht.Add("icc", currIcc);
-			ht.Add("clone", _inkClones[inkIndex]);
 
-			_inkClones[inkIndex].SetActive(true);
+			currIcc.insertableCartridgeClone.SetActive(true);
 
 			//Move the ink
-			iTween.MoveTo(_inkClones[inkIndex], iTween.Hash("path", currIcc.pathSucc, 
+			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathSucc, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
-							"oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", ht));
+							"oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 		}
 		//Failed swipe
 		else
@@ -270,24 +261,16 @@ public class Ink : MonoBehaviour
 			
 //			currIcc.insertableCartridge.gameObject.SetActive(false);
 			
-			Hashtable ht = new Hashtable();
-			ht.Add("icc", currIcc);
-			ht.Add("clone", _inkClones[inkIndex]);
+			currIcc.insertableCartridgeClone.SetActive(true);
 			
-			_inkClones[inkIndex].SetActive(true);
-			
-			iTween.MoveTo(_inkClones[inkIndex], iTween.Hash("path", currIcc.pathFail, 
+			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathFail, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
-							"oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", ht));	
+							"oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
 		}
 	}
 	
-	private void InkSuccess(object parameters)
+	private void InkSuccess(InkCartridgeClass icc)
 	{
-		Hashtable ht = (Hashtable) parameters;
-		InkCartridgeClass icc = (InkCartridgeClass) ht["icc"];
-		GameObject clone = (GameObject) ht["clone"];
-		
 		//Unsubsribe gesture
 		if(!isOnInk)
 			GestureManager.OnSwipeRight -= InsertCartridge;
@@ -307,20 +290,16 @@ public class Ink : MonoBehaviour
         	InkReset();
 		
 //		icc.insertableCartridge.gameObject.SetActive(true);
-		clone.transform.position = icc.insertableStartPos;
-		clone.SetActive(false);
+		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
+		icc.insertableCartridgeClone.SetActive(false);
 //        icc.insertableCartridge.transform.position = icc.insertableStartPos;
 //		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 		
         _canSlide = true;
 	}	
 	
-	private void InkFailed(object parameters)
+	private void InkFailed(InkCartridgeClass icc)
 	{
-		Hashtable ht = (Hashtable) parameters;
-		InkCartridgeClass icc = (InkCartridgeClass) ht["icc"];
-		GameObject clone = (GameObject) ht["clone"];
-		
 		//Instantiate fail particles
 		InstantiateParticlesToWordPos(_particles.failed, icc.cartridge.gameObject);
 		//Play sound
@@ -329,8 +308,8 @@ public class Ink : MonoBehaviour
 //		icc.insertableCartridge.transform.position = icc.insertableStartPos;
 //		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 //		icc.insertableCartridge.gameObject.SetActive(true);
-		clone.transform.position = icc.insertableStartPos;
-		clone.SetActive(false);
+		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
+		icc.insertableCartridgeClone.SetActive(false);
 		
 		_canSlide = true;
 	}
@@ -500,6 +479,7 @@ public class Ink : MonoBehaviour
 		[HideInInspector] public Vector3 insertableStartPos;
 		[HideInInspector] public bool lidIsOpen = false;
 		[HideInInspector] public bool cartridgeEmpty = false;
+		[HideInInspector] public GameObject insertableCartridgeClone;
     };
 	
 	//Particles class
