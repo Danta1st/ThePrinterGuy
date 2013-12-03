@@ -153,6 +153,7 @@ public class UraniumRods : MonoBehaviour
 		{
 			if(_rods[i].rod == go)
 			{
+				_rodsAndStates[go] = false;
 				//Instantiate Particles
 				InstantiateParticles(_particles._hammerBegan, go);
 				//Play sound based on itemNumber
@@ -174,7 +175,6 @@ public class UraniumRods : MonoBehaviour
 			//TODO: Disable Smoke effect
 		}
 		failed = false;
-		_rodsAndStates[go] = false;
 	}
 	
     //Reset all the rods and disables GestureManager (Called on Failed == true)
@@ -223,13 +223,12 @@ public class UraniumRods : MonoBehaviour
 		{
 			foreach(Transform child in posRotGO.transform)
 			{
-				if(child.name.Equals("ParticlePos") && particles != null)
+				if(child.name.Equals("ParticlePos"))
 				{
 					//Instantiate Particle prefab. Rotation solution is a HACK
 					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.FromToRotation(particles.transform.up, -child.up));
 					//Child to DynamicObjects
 					tempParticles.transform.parent = _dynamicObjects.transform;
-					Debug.Log(gameObject.name+" instantiating particles");
 				}
 			}	
 		}

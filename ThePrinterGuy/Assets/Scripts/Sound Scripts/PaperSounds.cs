@@ -13,12 +13,15 @@ public class PaperSounds : MonoBehaviour
     #region Privates
     private GameObject _effectObject;
     private GenericSoundScript _soundFx;
+    private GenericSoundScript _gestures;
     #endregion
 
     #region MonoBehavior
     void Awake()
     {
         _soundFx = transform.FindChild("SoundFx_Papertray").
+            GetComponent<GenericSoundScript>();
+        _gestures = transform.FindChild("Gestures_Papertray").
             GetComponent<GenericSoundScript>();
         _effectObject = transform.FindChild("SoundFx_Papertray").gameObject;
     }
@@ -54,7 +57,8 @@ public class PaperSounds : MonoBehaviour
 
     public void Effect_PaperTray_ConveyorBelt()
     {
-        _soundFx.PlayClip(2);
+//        _soundFx.PlayClip(2);
+        _soundFx.LoopClipStart(2);
     }
 
     public void Effect_PaperTray_ColorChange1()
@@ -69,27 +73,32 @@ public class PaperSounds : MonoBehaviour
 
     public void Effect_PaperTray_Swipe1()
     {
-        _soundFx.PlayClip(5);
+//        _soundFx.PlayClip(5);
+        _gestures.PlayClip(0);
     }
 
     public void Effect_PaperTray_Swipe2()
     {
-        _soundFx.PlayClip(6);
+//        _soundFx.PlayClip(6);
+        _gestures.PlayClip(1);
     }
 
     public void Effect_PaperTray_Swipe3()
     {
-        _soundFx.PlayClip(7);
+//        _soundFx.PlayClip(7);
+        _gestures.PlayClip(2);
     }
 
     public void Effect_PaperTray_Swipe4()
     {
-        _soundFx.PlayClip(8);
+//        _soundFx.PlayClip(8);
+        _gestures.PlayClip(3);
     }
 
     public void Effect_PaperTray_WrongSwipe()
     {
-        _soundFx.PlayClip(9);
+//        _soundFx.PlayClip(9);
+        _gestures.PlayClip(4);
     }
     #endregion
 

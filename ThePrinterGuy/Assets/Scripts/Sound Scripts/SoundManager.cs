@@ -6,8 +6,11 @@ public class SoundManager : MonoBehaviour
 {
     #region Editor Publics
     [SerializeField] private static float _fadeTime = 1.0f;
-    [SerializeField] private static float _startMusicVolume = 1.0f;
     [SerializeField] private static float _endMusicVolume = 0.2f;
+    [SerializeField] private static float _menuEffectsVolume = 0.8f;
+    [SerializeField] private static float _voiceVolume = 1.0f;
+    [SerializeField] private static float _gameMusic = 0.7f;
+    [SerializeField] private static float _menuMusic = 0.5f;
     #endregion
 
     #region Privates
@@ -28,6 +31,7 @@ public class SoundManager : MonoBehaviour
     private static List<GenericSoundScript> _audioScriptList = new List<GenericSoundScript>();
 
     private static List<float> _audioVolume = new List<float>();
+    private static List<float> _musicVolume = new List<float>();
 
     private static List<GenericSoundScript> _soundFxScripts = new List<GenericSoundScript>();
     private static List<GenericSoundScript> _musicScripts = new List<GenericSoundScript>();
@@ -96,6 +100,11 @@ public class SoundManager : MonoBehaviour
         _mainMenuSounds.GetMusicScript().audio.ignoreListenerPause = true;
         _mainMenuSounds.GetEffectScript().audio.ignoreListenerPause = true;
         _inGameSounds.GetMusicScript().audio.ignoreListenerPause = true;
+
+        for(int i = 0; i < _musicScripts.Count; i++)
+        {
+            _musicVolume.Add(_audioScripts[i].GetVolume());
+        }
 
         ToogleAudio();
     }
@@ -225,9 +234,24 @@ public class SoundManager : MonoBehaviour
         _inkSounds.Effect_Ink_SlotOpen4();
     }
 
-    public static void Effect_Ink_RightSlot()
+    public static void Effect_Ink_RightSlot1()
     {
-        _inkSounds.Effect_Ink_RightSlot();
+        _inkSounds.Effect_Ink_RightSlot1();
+    }
+
+    public static void Effect_Ink_RightSlot2()
+    {
+        _inkSounds.Effect_Ink_RightSlot2();
+    }
+
+    public static void Effect_Ink_RightSlot3()
+    {
+        _inkSounds.Effect_Ink_RightSlot3();
+    }
+
+    public static void Effect_Ink_RightSlot4()
+    {
+        _inkSounds.Effect_Ink_RightSlot4();
     }
 
     public static void Effect_Ink_WrongSlot()
@@ -682,10 +706,18 @@ public class SoundManager : MonoBehaviour
 
     public static void UnFadeAllMusic()
     {
-        foreach(GenericSoundScript gss in _musicScripts)
-        {
-            gss.FadeVolume(_startMusicVolume, _fadeTime);
-        }
+//        foreach(GenericSoundScript gss in _musicScripts)
+//        {
+//            gss.FadeVolume(_startMusicVolume, _fadeTime);
+//        }
+
+//        for(int i = 0; i < _musicScripts.Count; i++)
+//        {
+//            _musicScripts[i].FadeVolume(_musicVolume[i], _fadeTime);
+//        }
+
+        _inGameSounds.GetMusicScript().FadeVolume(_gameMusic, _fadeTime);
+        _mainMenuSounds.GetMusicScript().FadeVolume(_menuMusic, _fadeTime);
     }
 
     public static void ToogleAudio()
@@ -736,14 +768,19 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public static void StopPointSound()
+    {
+        _cutSceneSounds.GetEffectsScript().LoopClipStop();
+    }
+
     public static void TurnOnMenuSounds()
     {
-        _mainMenuSounds.GetEffectScript().SetVolume(1.0f);
+        _mainMenuSounds.GetEffectScript().SetVolume(_menuEffectsVolume);
     }
 
     public static void TurnOnVoice()
     {
-        _voiceSounds.GetEffectScript().SetVolume(1.0f);
+        _voiceSounds.GetEffectScript().SetVolume(_voiceVolume);
     }
     #endregion
 
@@ -781,6 +818,28 @@ public class SoundManager : MonoBehaviour
     public static void Voice_Boss_Random_NotBad()
     {
         _voiceSounds.Voice_Boss_Random_NotBad();
+    }
+    #endregion
+
+    #region Cutscene Sounds
+    public static void CutScene_Effect_Coffee_01()
+    {
+        _cutSceneSounds.CutScene_Effect_Coffee_01();
+    }
+
+    public static void CutScene_Effect_Point()
+    {
+        _cutSceneSounds.CutScene_Effect_Point();
+    }
+
+    public static void CutScene_Effect_Coffee_02()
+    {
+        _cutSceneSounds.CutScene_Effect_Coffee_02();
+    }
+
+    public static void CutScene_Random_Coffee()
+    {
+        _cutSceneSounds.CutScene_Random_Coffee();
     }
     #endregion
 }

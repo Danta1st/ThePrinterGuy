@@ -34,6 +34,7 @@ public class HighscoreScreenLoader : MonoBehaviour
 	{
 		GUIGameCamera.OnGameEnded -= DisplayEndScreenWin;
 		GUIGameCamera.OnTaskEnd -= TaskEndUpdate;
+		BpmSequencerItem.OnFailedWithItem -= TaskFailed;
         StressOMeter.OnGameFailed -= DisplayEndScreenLoose;
 	}
 	
@@ -41,8 +42,8 @@ public class HighscoreScreenLoader : MonoBehaviour
 	{
         _scoreManger = gameObject.GetComponent<ScoreManager>();
         _stressOMeter = gameObject.GetComponentInChildren<StressOMeter>();
-        updateMaxHighscoreForCurrentLevel();
-        _maxHighscore = SaveGame.GetMaxHighscores()[Application.loadedLevel - 2];
+        updateMaxHighscoreForCurrentLevel(); // Something is wrong here
+        _maxHighscore = GetPerfectScore();//SaveGame.GetMaxHighscores()[Application.loadedLevel - 2];
 		hss = gameObject.AddComponent<HighscoreSceneScript>();
 		HighscoreSceneScript._targetScore.failedInk = 0;
 		HighscoreSceneScript._targetScore.failedPaper = 0;
@@ -50,6 +51,7 @@ public class HighscoreScreenLoader : MonoBehaviour
 		HighscoreSceneScript._targetScore.perfectInk = 0;
 		HighscoreSceneScript._targetScore.perfectPaper = 0;
 		HighscoreSceneScript._targetScore.perfectUran = 0;
+		HighscoreSceneScript._targetScore._totalNodesHit = 0;
 		HighscoreSceneScript._targetScore.starScoreOne = GetStarOneScore();
 		HighscoreSceneScript._targetScore.starScoreTwo = GetStarTwoScore();
 		HighscoreSceneScript._targetScore.starScoreThree = GetStarThreeScore();
@@ -85,33 +87,30 @@ public class HighscoreScreenLoader : MonoBehaviour
 	{
 		SoundManager.StopAllSoundEffects();
         SoundManager.FadeAllMusic();
-		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, true);
+		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, true, GetPerfectScore());
 	}
 	
 	public void DisplayEndScreenLoose(int _score)
 	{
 		SoundManager.StopAllSoundEffects();
         SoundManager.FadeAllMusic();
-		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, false);
+		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, false, GetPerfectScore());
 	}
 
     public int GetPerfectScore()
     {
         float result = 0;
-        //If the sequence is of mixed tasks with different values this perfect score is broken and the sequence is needed!
         float happyZone = _stressOMeter.GetHappyZone();
         float zonePoints = _stressOMeter.GetZonePoints();
         float perfectTasksBeforeBestMultiplier = zonePoints - ((-1 * happyZone) % zonePoints);
         float rodPointBase = _scoreManger.GetRodPointsBase();
         float remainingNodes = _totalNodes - perfectTasksBeforeBestMultiplier;
+
         if(remainingNodes < 0)
         {
             perfectTasksBeforeBestMultiplier += remainingNodes;
             remainingNodes = 0;
         }
-        //float inkPointBase = _scoreManger.GetInkPointsBase();
-        //float paperPointBase = _scoreManger.GetPaperPointsBase();
-        //float barometerPointBase = _scoreManger.GetBarometerPointsBase();
 
         for (int i = 0; i < perfectTasksBeforeBestMultiplier; i++)
         {
@@ -122,6 +121,7 @@ public class HighscoreScreenLoader : MonoBehaviour
         {
             result += rodPointBase * _scoreManger.GetGreenZoneModifier() * _scoreManger.GetScoreMultipliers().happyZoneMultiplier;
         }
+
         return System.Convert.ToInt32(result);
     }
 
@@ -134,6 +134,7 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	private void TaskEndUpdate(string type, int zone)
 	{
+		HighscoreSceneScript._targetScore._totalNodesHit++;
 		if(zone == 3)
 		{
 			switch(type)
@@ -155,10 +156,11 @@ public class HighscoreScreenLoader : MonoBehaviour
 	{
 		switch(type)
 			{
+			
 				case "Ink":
 					HighscoreSceneScript._targetScore.failedInk++;
 					break;
-				case "Rods":
+				case "UraniumRod":
 					HighscoreSceneScript._targetScore.failedUran++;
 					break;
 				case "Paper":
@@ -169,14 +171,14 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	public int GetStarOneScore()
 	{
-		return System.Convert.ToInt32(_maxHighscore * 0.25);
+		return System.Convert.ToInt32(_maxHighscore * 0.25f);
 	}
 	public int GetStarTwoScore()
 	{
-		return System.Convert.ToInt32(_maxHighscore * 0.50);
+		return System.Convert.ToInt32(_maxHighscore * 0.50f);
 	}
 	public int GetStarThreeScore()
 	{
-		return  System.Convert.ToInt32(_maxHighscore * 0.75);
+		return System.Convert.ToInt32(_maxHighscore * 0.75f);
 	}
 }

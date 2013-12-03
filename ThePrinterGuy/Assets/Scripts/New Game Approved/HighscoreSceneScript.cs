@@ -7,22 +7,25 @@ public class HighscoreSceneScript : MonoBehaviour
 	[SerializeField] private GameObject[] _guiList;
 	[SerializeField] private GameObject[] _stars;
 	[SerializeField] private GameObject _progressBar;
+	[SerializeField] private GameObject _firedTextGameObject;
+	[SerializeField] private GameObject _ClueNoteGameObject;
 	
 	[SerializeField] private ParticleSystem _particle;
 	[SerializeField] private GameObject[] _textList;
 	
 	public static class _targetScore 
 	{
-		public static int starScoreOne;
-		public static int starScoreTwo;
-		public static int starScoreThree;
-		public static int perfectInk;
-		public static int perfectPaper;
-		public static int perfectUran;
-		public static int failedInk;
-		public static int failedPaper;
-		public static int failedUran;
-		public static int _totalNodes;
+		public static float starScoreOne;
+		public static float starScoreTwo;
+		public static float starScoreThree;
+		public static float perfectInk;
+		public static float perfectPaper;
+		public static float perfectUran;
+		public static float failedInk;
+		public static float failedPaper;
+		public static float failedUran;
+		public static float _totalNodesHit;
+		public static float _totalNodes;
 	}
 	
 	private Camera _guiCamera;
@@ -33,6 +36,8 @@ public class HighscoreSceneScript : MonoBehaviour
 	private bool _isWin = false;
 	private int _levelScore = 0;
 	private int _levelHighscore = 0;
+	private int _countingScore = 0;
+	
 	private TextMesh _scoreText;
 	private TextMesh _highScoreText;
 	private TextMesh _speechText;
@@ -41,6 +46,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	private static int _lastScore;
 	private static bool _win;
 	private static bool _isPrepared = false;
+	private static float _levelMaxscore = 0;
 	private Material _material = null;
 	private float alphaFloat;
 	
@@ -59,6 +65,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	void Awake()
 	{
 		_material = new Material("Shader \"Plane/No zTest\" { SubShader { Pass { Blend SrcAlpha OneMinusSrcAlpha ZWrite Off Cull Off Fog { Mode Off } BindChannels { Bind \"Color\",color } } } }");
+		
 	}
 	
 	void OnDisable()
@@ -85,7 +92,6 @@ public class HighscoreSceneScript : MonoBehaviour
                 {
                     nextLevelButton.SetActive(false);
                 }
-				
             }
         }
 		foreach(GameObject _textObject in _textList)
@@ -124,12 +130,13 @@ public class HighscoreSceneScript : MonoBehaviour
 		}
 	}
 	
-	public void GoToHighScoreScreen(int level, int score, bool win)
+	public void GoToHighScoreScreen(int level, int score, bool win, int maxScore)
 	{
 		_isPrepared = true;
 		_levelCompleted = level;
 		_lastScore = score;
 		_win = win;
+		_levelMaxscore = maxScore;
 		
 		if(_win)
 			StartFadeHS(_fadeOutTime, _fadeInTime, Color.black);
@@ -166,6 +173,8 @@ public class HighscoreSceneScript : MonoBehaviour
         }
 		
 		Application.LoadLevel(ConstantValues.GetHighScoreScreenLevel);
+		
+		
 		
         while (alphaFloat>0.0f)
         {
@@ -305,7 +314,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			s.SetActive(false);
 		}
 		
-		Vector3 pos = _stars[0].transform.localPosition;
+		/*Vector3 pos = _stars[0].transform.localPosition;
 		float startX = -0.5f;
 		float posOffset = 1;
 		
@@ -314,7 +323,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		pos.x = startX + (float)_targetScore.starScoreTwo / (float)_targetScore.starScoreThree;
 		_stars[1].transform.localPosition = pos;
 		pos.x = startX + (float)_targetScore.starScoreThree / (float)_targetScore.starScoreThree;
-		_stars[2].transform.localPosition = pos;
+		_stars[2].transform.localPosition = pos;*/
 	}
 	
 	private void ShowScore(int score)
@@ -351,78 +360,134 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	IEnumerator MoveEstimateBar()
 	{
-		bool isScaling = true;
-		Vector3 scoreBarPos = _progressBar.transform.localPosition;
-		Vector3 scoreBarScale = _progressBar.transform.localScale;
+		if(_isWin)
+			_firedTextGameObject.SetActive(false);
+			
+		float _percent;
 		
-		float startPos = scoreBarPos.y;
-		float deltaScale = 10f;
+		Transform go = GameObject.Find("PerfectFailedTexts").transform;
+		GameObject clueNoteStartPos = GameObject.Find ("ClueNoteStartPos");
+		_ClueNoteGameObject.transform.position = clueNoteStartPos.transform.position;
+		float temp = 0;
+		temp = (_targetScore._totalNodesHit +_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes;
 		
-		scoreBarPos.y = -0.5f;
-		scoreBarScale.y = 0f;
+		GameObject.Find("TotalPrints").renderer.material.SetFloat("_Progress", temp);
 		
-		_progressBar.transform.localScale = scoreBarScale;
-		_progressBar.transform.localPosition = scoreBarPos;
+		foreach(Transform child in go)
+		{
+		    switch(child.name)
+			{
+			case "FailedInkText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedInk + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedPaperText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedPaper + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedRodsText":
+				child.GetComponent<TextMesh>().text = _targetScore.failedUran + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedText":
+				temp = _targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran;
+				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
+				break;
+			case "FailedPercentsText":
+				temp = System.Convert.ToInt32(((_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes) * 100);
+				child.GetComponent<TextMesh>().text = temp + "%";
+				break;
+			case "PerfectsInkText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectInk + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsPaperText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectPaper + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsRodsText":
+				child.GetComponent<TextMesh>().text = _targetScore.perfectUran + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsText":
+				temp = _targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran;
+				child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
+				break;
+			case "PerfectsPercentText":
+				temp = System.Convert.ToInt32(((_targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran) / _targetScore._totalNodes) * 100);
+				child.GetComponent<TextMesh>().text = temp + "%";
+				break;
+			}
+		}
+
+		SoundManager.CutScene_Effect_Point();
+		iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", _levelScore, "time", 2, "easetype", iTween.EaseType.easeInCubic, "onupdate", "updateCountingScoreValue",
+            "oncomplete", "StopLoopingPointSound", "oncompletetarget", gameObject));
+		GameObject scoreTopPoint = GameObject.Find ("ScoreTopPoint");
+		GameObject scoreBotPoint = GameObject.Find ("ScoreBotPoint");
+		GameObject scoreText = GameObject.Find ("ScoreText");
+		GameObject clueNoteMoveTo = GameObject.Find ("ClueNoteMoveTo");
+		
+		
+		float difference;
+		Vector3 newPos;
 		
 		for(int i = 0; i <= _levelScore;)
 		{
-			ShowScore(i);
-			if(i >= _targetScore.starScoreThree && !_stars[2].activeSelf)
+			ShowScore(_countingScore);
+			if(_countingScore >= _targetScore.starScoreThree && !_stars[2].activeSelf)
 			{
 				_particle.transform.position = _stars[2].transform.position;
 				_particle.Play();
 				_stars[2].SetActive(true);
 			}
-			if(i >= _targetScore.starScoreTwo && !_stars[1].activeSelf)
+			if(_countingScore >= _targetScore.starScoreTwo && !_stars[1].activeSelf)
 			{
 				_particle.transform.position = _stars[1].transform.position;
 				_particle.Play();
 				_stars[1].SetActive(true);
 			}
-			if(i >= _targetScore.starScoreOne && !_stars[0].activeSelf)
+			if(_countingScore >= _targetScore.starScoreOne && !_stars[0].activeSelf)
 			{
 				_particle.transform.position = _stars[0].transform.position;
 				_particle.Play();
 				_stars[0].SetActive(true);
 			}
 			
-			if(isScaling) {
-				if(i >= _targetScore.starScoreThree)
-					isScaling = false;
-				scoreBarScale.y = (float)i / (float)_targetScore.starScoreThree;
-				deltaScale = scoreBarScale.y - _progressBar.transform.localScale.y;
-				_progressBar.transform.localScale = scoreBarScale;
-				scoreBarPos.y = scoreBarPos.y + deltaScale / 2f;
-				_progressBar.transform.localPosition = scoreBarPos;
-			}
+			_percent = (_countingScore / _levelMaxscore);
+			difference = scoreTopPoint.transform.position.y - scoreBotPoint.transform.position.y;
+			difference = difference * _percent;
+			newPos = scoreBotPoint.transform.position;
+			newPos.y += difference;
+			scoreText.transform.position = newPos;
+			_progressBar.renderer.material.SetFloat("_Progress", _percent);
 			
-			if(((_levelScore - i) / 1000) > 1)
-			{
-				i += 100;
-			}
-			else if(((_levelScore - i) / 100) > 1)
-			{
-				i += 10;
-			}
-			else if(((_levelScore - i) / 10) > 1)
-			{
-				i += 5;
-			}
-			else
-			{
-				i++;
-			}
-	
-			yield return new WaitForSeconds(0.1f);
+			i = _countingScore + 1;
+			yield return new WaitForSeconds(0.01f);
 		}
+		
 		if(_isWin)
 			InsertSpeechText(LocalizationText.GetText("WinText1"));
 		else
 			InsertSpeechText(LocalizationText.GetText("LossText1"));
+		
+		yield return new WaitForSeconds(0.75f);
+		
+		if(!_isWin)
+			_firedTextGameObject.SetActive(true);
+		else
+		{
+			iTween.MoveTo(_ClueNoteGameObject, iTween.Hash("position", clueNoteMoveTo.transform.position, "easetype", iTween.EaseType.linear, "time", 1));
+		}
 	}
+	
+	private void updateCountingScoreValue(int score)
+	{
+		_countingScore = score;
+	}
+
+    private void StopLoopingPointSound()
+    {
+        SoundManager.StopPointSound();
+    }
 	
 	private void InsertSpeechText(string text)
 	{
+		
         _speechText.transform.parent.transform.gameObject.SetActive(true);
 		_speechText.text = text;
 	}

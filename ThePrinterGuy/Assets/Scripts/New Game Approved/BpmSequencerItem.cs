@@ -463,7 +463,6 @@ public class BpmSequencerItem : MonoBehaviour {
 					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
 					//Child to DynamicObjects
 					tempParticles.transform.parent = _dynamicObjects.transform;
-					Debug.Log(gameObject.name+" instantiating particles");
 					return;
 				}				
 			}
@@ -471,7 +470,6 @@ public class BpmSequencerItem : MonoBehaviour {
 			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
 			//Child to DynamicObjects
 			tempParticles1.transform.parent = _dynamicObjects.transform;
-			Debug.Log(gameObject.name+" instantiating particles");
 		}
 	}
 	

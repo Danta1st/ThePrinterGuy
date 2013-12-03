@@ -25,6 +25,7 @@ public class Ink : MonoBehaviour
 	private bool _canSlide = true;
 	private List<string> pathNameSucc = new List<string>();
 	private List<string> pathNameFail = new List<string>();
+	private bool isOnInk = false;
 	
 	//References
 	private GameObject _particleSmoke;	
@@ -69,10 +70,16 @@ public class Ink : MonoBehaviour
 			_particleSmoke.transform.parent = _dynamicObjects.transform;
 		}
 		
+		
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			//Remember beginPositions - Why?
 			icc.insertableStartPos = icc.insertableCartridge.position;
+			icc.insertableCartridgeClone = (GameObject)Instantiate(icc.insertableCartridge.gameObject, icc.insertableStartPos,
+				icc.insertableCartridge.transform.rotation);
+			icc.insertableCartridgeClone.collider.enabled = false;
+			icc.insertableCartridgeClone.GetComponent<ItemIdleState>().enabled = false;
+			
 			//Succes path
 			icc.pathSucc = new Vector3[3];
 			icc.pathSucc[0] = icc.insertableCartridge.position;
@@ -202,18 +209,21 @@ public class Ink : MonoBehaviour
 	{
 		if(go == null || !_canSlide)
 			return;
-		
+				
 		//TODO: Needs comments. What is happening? try to clean this method to work on the InkCartridgeClass instead of list?
 		InkCartridgeClass currIcc = null;
 		InkCartridgeClass icc;
 		int j = 0;
 		int count = _machineInks.Count;
+        int index = 0;
+
 		for(int i = 0; i < count; i++)
 		{
 			icc = _machineInks[i];
 			
 			if(icc.insertableCartridge.gameObject == go)
 			{
+                index = i;
 				currIcc = icc;
 				break;
 			}
@@ -223,21 +233,42 @@ public class Ink : MonoBehaviour
 		
 		if(currIcc == null)
 			return;
-		
+
+        PlaySwipeSound(index);
+
 		//Succesfull swipe
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
-			_canSlide = false;			
+			_canSlide = false;	
+			isOnInk = false;
+			
+			currIcc.cartridgeEmpty = false;
+			currIcc.cartridge.renderer.material.mainTexture = currIcc.full;
+			
+			//Broadcast task done
+	        if(OnCorrectInkInserted != null)
+	        {
+	            OnCorrectInkInserted();
+	        }
 						
+//			currIcc.insertableCartridge.gameObject.SetActive(false);
+
+			currIcc.insertableCartridgeClone.SetActive(true);
+
 			//Move the ink
-			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathSucc, 
+			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathSucc, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
 							"oncomplete", "InkSuccess", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));
 		}
 		//Failed swipe
 		else
-		{
-			iTween.MoveTo(currIcc.insertableCartridge.gameObject, iTween.Hash("path", currIcc.pathFail, 
+		{	
+			
+//			currIcc.insertableCartridge.gameObject.SetActive(false);
+			
+			currIcc.insertableCartridgeClone.SetActive(true);
+			
+			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathFail, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
 							"oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
 		}
@@ -246,32 +277,25 @@ public class Ink : MonoBehaviour
 	private void InkSuccess(InkCartridgeClass icc)
 	{
 		//Unsubsribe gesture
-		GestureManager.OnSwipeRight -= InsertCartridge;
-		
-		icc.cartridgeEmpty = false;
-		icc.cartridge.renderer.material.mainTexture = icc.full;
+		if(!isOnInk)
+			GestureManager.OnSwipeRight -= InsertCartridge;
 		
 		//Instantiate particles
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
         InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);
-		
-		//Play sound
-		SoundManager.Effect_Ink_RightSlot();
-		
+
 		//Stop Smoke
 		if(_particleSmoke != null)
 			_particleSmoke.particleSystem.Stop();		
-
-        InkReset();
 		
-		//Broadcast task done
-        if(OnCorrectInkInserted != null)
-        {
-            OnCorrectInkInserted();
-        }
-
-        icc.insertableCartridge.transform.position = icc.insertableStartPos;
-		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
+		if(!isOnInk)
+        	InkReset();
+		
+//		icc.insertableCartridge.gameObject.SetActive(true);
+		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
+		icc.insertableCartridgeClone.SetActive(false);
+//        icc.insertableCartridge.transform.position = icc.insertableStartPos;
+//		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 		
         _canSlide = true;
 	}	
@@ -281,13 +305,37 @@ public class Ink : MonoBehaviour
 		//Instantiate fail particles
 		InstantiateParticlesToWordPos(_particles.failed, icc.cartridge.gameObject);
 		//Play sound
-        SoundManager.Effect_Ink_WrongSlot();	
+        SoundManager.Effect_InGame_Task_Unmatched();
 		
-		icc.insertableCartridge.transform.position = icc.insertableStartPos;
-		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
+//		icc.insertableCartridge.transform.position = icc.insertableStartPos;
+//		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
+//		icc.insertableCartridge.gameObject.SetActive(true);
+		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
+		icc.insertableCartridgeClone.SetActive(false);
 		
 		_canSlide = true;
 	}
+
+    private void PlaySwipeSound(int index)
+    {
+        switch(index)
+        {
+            case 0:
+                SoundManager.Effect_Ink_RightSlot1();
+                break;
+            case 1:
+                SoundManager.Effect_Ink_RightSlot2();
+                break;
+            case 2:
+                SoundManager.Effect_Ink_RightSlot3();
+                break;
+            case 3:
+                SoundManager.Effect_Ink_RightSlot4();
+                break;
+            default:
+                break;
+        }
+    }
 	
 	private void InkReset()
 	{
@@ -325,7 +373,7 @@ public class Ink : MonoBehaviour
 	private void StartInkTask(int itemNumber)
 	{		
 		_currentInk = itemNumber;
-		
+		isOnInk = true;
 		//Subscribe to gesture
 		GestureManager.OnSwipeRight += InsertCartridge;
 		
@@ -454,6 +502,7 @@ public class Ink : MonoBehaviour
 		[HideInInspector] public Vector3 insertableStartPos;
 		[HideInInspector] public bool lidIsOpen = false;
 		[HideInInspector] public bool cartridgeEmpty = false;
+		[HideInInspector] public GameObject insertableCartridgeClone;
     };
 	
 	//Particles class

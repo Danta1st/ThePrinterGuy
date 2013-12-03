@@ -33,7 +33,8 @@ public class StageCharacter : MonoBehaviour
                 i++;
             }
             gameObject.transform.FindChild("Lock").renderer.enabled = false;
-            gameObject.transform.FindChild("lobbyArrow").renderer.enabled = true;
+            if((gameObject.name == "stage2Char" && highscores[4] >= 0) || (gameObject.name == "stage1Char" && highscores[4] <= 0))
+                gameObject.transform.FindChild("lobbyArrow").renderer.enabled = true;
         }
         else
         {
