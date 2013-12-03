@@ -995,7 +995,7 @@ public class GUIGameCamera : MonoBehaviour
 	[System.Serializable]
 	public class TextPositionalOffset
 	{
-		public float startX = 0.125;
+		public float startX = 0.125f;
 		public float endX = 0.125f;
 		public float startY = 0.75f;
 		public float endY = 0.75f;
