@@ -222,7 +222,6 @@ public class Ink : MonoBehaviour
 			if(icc.insertableCartridge.gameObject == go)
 			{
 				currIcc = icc;
-				inkIndex = i;
 				break;
 			}
 			j++;
