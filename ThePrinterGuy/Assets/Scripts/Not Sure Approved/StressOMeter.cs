@@ -120,6 +120,7 @@ public class StressOMeter : MonoBehaviour
     #region Give Points
     void GivePoints()
     {
+        SoundManager.Effect_Task_Perfected();
         if(OnStressIncrease != null)
             OnStressIncrease();
         _rotationScale -= _inZonePoints;

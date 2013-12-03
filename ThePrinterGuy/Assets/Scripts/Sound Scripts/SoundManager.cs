@@ -655,6 +655,11 @@ public class SoundManager : MonoBehaviour
         _mainMenuSounds.Effect_Menu_Credits();
     }
 
+    public static void Effect_Task_Perfected()
+    {
+        _mainMenuSounds.Effect_Task_Perfected();
+    }
+
     public static void Effect_Task_Unmatched()
     {
         _mainMenuSounds.Effect_Task_Unmatched();
