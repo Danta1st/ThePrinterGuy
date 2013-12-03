@@ -138,6 +138,17 @@ public class GUIGameCamera : MonoBehaviour
 		
         ScoreManager.OnTaskCompleted -= CheckZone;
     }
+	
+	void OnApplicationPause(bool status)
+	{
+		if(status == true)
+		{
+	        if(OnPause != null)
+	            OnPause();										
+			
+			OpenIngameMenu();
+		}
+	}
 
     public void EnableGUICamera()
     {
