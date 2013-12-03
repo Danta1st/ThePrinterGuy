@@ -44,6 +44,7 @@ public class GUIGameCamera : MonoBehaviour
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
     //Ingame menu variables.
+    private List<GameObject> _statsOverviewList = new List<GameObject>();
     private GameObject _statsOverviewObject;
     private Vector3 _statsOverviewMoveAmount;
     private float _statsOverviewDuration = 1.0f;
@@ -237,7 +238,22 @@ public class GUIGameCamera : MonoBehaviour
 		
         foreach(GameObject _guiObject in _guiList)
         {
-			if(_guiObject.name == "IngameMenu" || _guiObject.name == "BGIngameMenu")
+			if(_guiObject.name == "IngameMenu")
+			{
+				Transform[] _tempList = _guiObject.GetComponentsInChildren<Transform>();
+				foreach(Transform _go in _tempList)
+				{
+					_statsOverviewList.Add(_go.gameObject);
+				}
+				_guiObject.SetActive(false);
+			}
+			
+			if(_guiObject.name == "PauseButton")
+			{
+				_statsOverviewList.Add(_guiObject.gameObject);
+			}
+			
+			if(_guiObject.name == "BGIngameMenu")
 			{
 				_guiObject.SetActive(false);
 			}
@@ -913,7 +929,7 @@ public class GUIGameCamera : MonoBehaviour
 	//Gui Helper Methods	
 	private void ResetGuiTextures()
 	{        
-		foreach(GameObject _guiObject in _guiList)
+		foreach(GameObject _guiObject in _statsOverviewList)
         {
 			if(_guiObject == null)
 				continue;
