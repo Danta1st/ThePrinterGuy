@@ -115,6 +115,7 @@ public class PaperInsertion : MonoBehaviour
         _paperPathSuccess[1] = _pathSuccess[1].transform.position;
         _paperPathSuccess[2] = _pathSuccess[2].transform.position;
         _paperPathSuccess[3] = _pathSuccess[3].transform.position;
+        _pathSuccess[3].renderer.enabled = false;
         
         _paperPathFail[0] = _pathFail[0].transform.position;
         _paperPathFail[1] = _pathFail[1].transform.position;
@@ -379,6 +380,7 @@ public class PaperInsertion : MonoBehaviour
 				//Correct color inserted
 				if(colorMatch) 
 				{
+					EnableShadowPaper();
 					iTween.MoveTo(paper, iTween.Hash("path", _paperPathSuccess, "time", _slideTime, "easetype", iTween.EaseType.linear, 
 													"oncomplete", "TriggerDestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 					
@@ -388,6 +390,7 @@ public class PaperInsertion : MonoBehaviour
 				//Wrong color inserted
 				else
 				{
+					EnableShadowPaper();
 					iTween.MoveTo(paper, iTween.Hash("path", _paperPathSuccess, "time", _slideTime, "easetype", iTween.EaseType.linear, 
 													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 				}				
@@ -423,6 +426,19 @@ public class PaperInsertion : MonoBehaviour
             InstantiateParticlesAtPaper(_particles.swipe, gameObject);
 		}
     }
+	
+	private void EnableShadowPaper()
+	{
+		GameObject _go = _pathSuccess[3];
+		_go.renderer.enabled = true;
+		iTween.ScaleFrom(_go, iTween.Hash("scale", new Vector3(0.01f, 0.01f, 0.01f), "time", 0.5f, "easeType", iTween.EaseType.easeInOutCirc,
+																	"onComplete", "DisableShadowPaper", "onCompleteTarget", gameObject));
+	}
+	
+	private void DisableShadowPaper()
+	{
+		_pathSuccess[3].renderer.enabled = false;
+	}
 	
 	private void TriggerDestroyPaper(GameObject go)
 	{
