@@ -491,12 +491,12 @@ public class GUIGameCamera : MonoBehaviour
 		
 		//float _xPopupPos = UnityEngine.Random.Range(_offsetValues.startX,_offsetValues.endX);
 		float _xPopupPos = 0.125f;
-		float _yPopupPos = 0.75f;
+		float _yPopupPos = 0.55f;
 		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
 		float _fadeOutDuration = 0.5f;
 		float _punchAmmount = -10f;
-		float _moveLength = 0f * _scaleMultiplierY;
+		float _moveLength = -20.0f * _scaleMultiplierY;
 		
 		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
@@ -783,6 +783,7 @@ public class GUIGameCamera : MonoBehaviour
 		//TODO: Set _nodeItem parent to DynamicObjects
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);
+		
 		if(_sequencerObjectQueue.Count == 1)
 		{
 			if(OnUpdateAction != null)
