@@ -15,6 +15,8 @@ public class PaperInsertion : MonoBehaviour
 	[SerializeField] private GameObject[] _pathSuccess;
 	[SerializeField] private GameObject[] _pathFail;
 	[SerializeField] private Vector3 _circleAmount;
+	[SerializeField] private float _failPercentage;
+	[SerializeField] private GameObject _failTextPrefab;
 //    [SerializeField] private GameObject _paperParticles;
     #endregion
 
@@ -33,6 +35,7 @@ public class PaperInsertion : MonoBehaviour
 	private Vector3[] _paperPathFail = new Vector3[4];
 	private Vector3 _startMovePositionSuccess;
 	private Vector3 _startMovePositionFail;
+	private Vector3 _failPercentagePosition;
 	
 	//Whatever
 	private GameObject _dynamicObjects;
@@ -129,6 +132,7 @@ public class PaperInsertion : MonoBehaviour
     void Start()
     {
         SoundManager.Effect_PaperTray_ConveyorBelt();
+        _failPercentagePosition = iTween.PointOnPath(_paperPathFail, _failPercentage);
     }
     #endregion
 
@@ -420,12 +424,21 @@ public class PaperInsertion : MonoBehaviour
 				_paperPathFail[1] = _startMovePositionFail + _offSet;
 				
 				iTween.MoveTo(paper, iTween.Hash("path", _paperPathFail, "time", _slideTime, "easetype", iTween.EaseType.linear, 
-													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));			
+													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+				
+				StartCoroutine("InstantiatePopupFail");
 			}
 
             InstantiateParticlesAtPaper(_particles.swipe, gameObject);
 		}
     }
+	
+	private IEnumerator InstantiatePopupFail()
+	{
+		GameObject _popup = (GameObject)Instantiate(_failTextPrefab, _failPercentagePosition, Quaternion.identity);
+		yield return new WaitForSeconds(2f);
+		Destroy(_popup);
+	}
 	
 	private void EnableShadowPaper()
 	{
