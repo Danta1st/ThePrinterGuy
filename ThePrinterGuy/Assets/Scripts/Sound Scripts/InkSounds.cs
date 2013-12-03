@@ -65,16 +65,29 @@ public class InkSounds : MonoBehaviour
         _soundFx.PlayClip(3);
     }
 
-    public void Effect_Ink_RightSlot()
+    public void Effect_Ink_RightSlot1()
     {
-//        _soundFx.PlayClip(4);
         _gestures.PlayClip(0);
+    }
+
+    public void Effect_Ink_RightSlot2()
+    {
+        _gestures.PlayClip(1);
+    }
+
+    public void Effect_Ink_RightSlot3()
+    {
+        _gestures.PlayClip(2);
+    }
+
+    public void Effect_Ink_RightSlot4()
+    {
+        _gestures.PlayClip(3);
     }
 
     public void Effect_Ink_WrongSlot()
     {
-//        _soundFx.PlayClip(5);
-        _gestures.PlayClip(1);
+        _gestures.PlayClip(4);
     }
 
     public void Effect_Ink_SlotClose1()
