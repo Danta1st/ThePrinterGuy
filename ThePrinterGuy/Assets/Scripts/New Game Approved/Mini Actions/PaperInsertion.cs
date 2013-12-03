@@ -67,7 +67,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
         //GestureManager.OnTap -= TriggerSlide;
-		GestureManager.OnSwipeUp -= TriggerSlide;
+		//GestureManager.OnSwipeUp -= TriggerSlide;
 		BpmSequencerItem.OnFailed -= Reset;
     }	
 	void OnDestroy()
@@ -76,7 +76,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		//GestureManager.OnTap -= TriggerSlide;
-		GestureManager.OnSwipeUp -= TriggerSlide;
+		//GestureManager.OnSwipeUp -= TriggerSlide;
 		BpmSequencerItem.OnFailed -= Reset;
 		UnsubscribePaperPunch();
 	}
@@ -355,7 +355,7 @@ public class PaperInsertion : MonoBehaviour
 				TurnOffLight(i);
 				
 				//Block the player from sliding
-				_IsSlideLocked = true;
+				//_IsSlideLocked = true;
 				
 				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
@@ -397,7 +397,7 @@ public class PaperInsertion : MonoBehaviour
 			}
 			else
 			{
-				_IsSlideLocked = true;
+				//_IsSlideLocked = true;
 				
 				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
