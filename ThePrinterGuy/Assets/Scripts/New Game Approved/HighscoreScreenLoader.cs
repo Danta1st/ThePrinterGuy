@@ -40,7 +40,6 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	void Start()
 	{
-		Debug.Log ("WAT");
         _scoreManger = gameObject.GetComponent<ScoreManager>();
         _stressOMeter = gameObject.GetComponentInChildren<StressOMeter>();
         updateMaxHighscoreForCurrentLevel(); // Something is wrong here
