@@ -350,6 +350,10 @@ public class Ink : MonoBehaviour
 			
 			icc.cartridgeEmpty = false;
 			icc.insertableCartridge.gameObject.SetActive(false);
+			icc.cartridge.renderer.material.mainTexture = icc.full;
+
+			icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
+			icc.insertableCartridgeClone.SetActive(false);
 //			j++;
 		}
 	}
