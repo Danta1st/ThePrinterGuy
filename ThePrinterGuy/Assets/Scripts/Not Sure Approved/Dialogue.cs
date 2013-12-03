@@ -31,19 +31,24 @@ public class Dialogue : MonoBehaviour
         happyCollection = new List<string[]>();
         happyCollection.Add(new string[] {"Good 02","6","InGameBravo"});
         happyCollection.Add(new string[] {"Good 02","7","InGameKeepItGoing"});
-        happyCollection.Add(new string[] {"Good 02","8","InGameHaveKnown"});
-        happyCollection.Add(new string[] {"Good 02","9","InGameNoRaise"});
+        happyCollection.Add(new string[] {"Good 01","8","InGameHaveKnown"});
+        happyCollection.Add(new string[] {"No Raise","9","InGameNoRaise"});
         happyCollection.Add(new string[] {"Good 02","10","InGameNotBad"});
+        happyCollection.Add(new string[] {"Good 02","16","InGameVeryWell"});
+        happyCollection.Add(new string[] {"Good 01","17","InGameFinally"});
 
         angryCollection = new List<string[]>();
         angryCollection.Add(new string[] {"Angry 02","1","InGameGrandmother"});
         angryCollection.Add(new string[] {"Angry 06","2","InGameGiveUp"});
         angryCollection.Add(new string[] {"Angry 03","3","InGameIdiot"});
-        angryCollection.Add(new string[] {"Very Angry 02","4","InGameCompleteIdiot"});
-        angryCollection.Add(new string[] {"Angry 01","5","InGameAreAnIdiot"});
+        angryCollection.Add(new string[] {"Angry 05","4","InGameCompleteIdiot"});
+        angryCollection.Add(new string[] {"Angry 05","5","InGameAreAnIdiot"});
+        angryCollection.Add(new string[] {"Very Angry 01","13","InGamePrinterGuy"});
+        angryCollection.Add(new string[] {"Angry 04","14","InGameMatterWithYou"});
+        angryCollection.Add(new string[] {"Angry 04","15","InGameWhatTheHell"});
 
         endCollection = new List<string[]>();
-        endCollection.Add(new string[] {"Good 02","11","EndScreenNotFired"});
+        endCollection.Add(new string[] {"Not Fired","11","EndScreenNotFired"});
         endCollection.Add(new string[] {"You're Fired","12","EndScreenFired"});
 
         _characterAnimation = _character.GetComponent<Animation>();
@@ -175,6 +180,21 @@ public class Dialogue : MonoBehaviour
                 break;
             case "12":
                 SoundManager.Voice_Boss_Random_LoseEnd();
+                break;
+            case "13":
+                SoundManager.Voice_Boss_Random_PrinterGuy();
+                break;
+            case "14":
+                SoundManager.Voice_Boss_Random_WhatIsTheMatter();
+                break;
+            case "15":
+                SoundManager.Voice_Boss_Random_WhatTheHell();
+                break;
+            case "16":
+                SoundManager.Voice_Boss_Random_WellWell();
+                break;
+            case "17":
+                SoundManager.Voice_Boss_Random_YouGetIt();
                 break;
             default:
                 break;
