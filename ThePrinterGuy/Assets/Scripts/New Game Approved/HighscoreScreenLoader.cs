@@ -86,6 +86,7 @@ public class HighscoreScreenLoader : MonoBehaviour
 	public void DisplayEndScreenWin(int _score)
 	{
 		SoundManager.StopAllSoundEffects();
+        SoundManager.Effect_PaperTray_StopConveyorBelt();
         SoundManager.FadeAllMusic();
 		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, true, GetPerfectScore());
 	}
@@ -93,6 +94,7 @@ public class HighscoreScreenLoader : MonoBehaviour
 	public void DisplayEndScreenLoose(int _score)
 	{
 		SoundManager.StopAllSoundEffects();
+        SoundManager.Effect_PaperTray_StopConveyorBelt();
         SoundManager.FadeAllMusic();
 		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, false, GetPerfectScore());
 	}

@@ -67,7 +67,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
         //GestureManager.OnTap -= TriggerSlide;
-		//GestureManager.OnSwipeUp -= TriggerSlide;
+		GestureManager.OnSwipeUp -= TriggerSlide;
 		BpmSequencerItem.OnFailed -= Reset;
     }	
 	void OnDestroy()
@@ -76,7 +76,7 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		//GestureManager.OnTap -= TriggerSlide;
-		//GestureManager.OnSwipeUp -= TriggerSlide;
+		GestureManager.OnSwipeUp -= TriggerSlide;
 		BpmSequencerItem.OnFailed -= Reset;
 		UnsubscribePaperPunch();
 	}
