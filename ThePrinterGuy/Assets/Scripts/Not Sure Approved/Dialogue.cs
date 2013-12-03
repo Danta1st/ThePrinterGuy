@@ -91,6 +91,7 @@ public class Dialogue : MonoBehaviour
             OnDialogueStart(happyTuple[2]);
         }
         _characterAnimation.CrossFadeQueued("Idle");
+        StartCoroutine(CheckIfAnimationStopped(happyTuple[0]));
     }
 
     private void AngryCharacter()
@@ -117,7 +118,7 @@ public class Dialogue : MonoBehaviour
             iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f, 0.5f, 0.5f), "time", 0.2f));
         }
      
-        _characterAnimation.CrossFadeQueued("Idle");
+        _characterAnimation.CrossFadeQueued("Idle Feedback");
         StartCoroutine(CheckIfAnimationStopped(angryTuple[0]));
     }
 
@@ -183,7 +184,7 @@ public class Dialogue : MonoBehaviour
 
     IEnumerator CheckIfAnimationStopped(string animation)
     {
-        while(_characterAnimation.IsPlaying(angryTuple[0]))
+        while(_characterAnimation.IsPlaying(animation))
         {
             yield return new WaitForSeconds(1f);
         }
@@ -215,6 +216,7 @@ public class Dialogue : MonoBehaviour
             OnDialogueStart(endTuple[2]);
         }
         _characterAnimation.CrossFadeQueued("Idle");
+        StartCoroutine(CheckIfAnimationStopped(endTuple[0]));
     }
 
 }
