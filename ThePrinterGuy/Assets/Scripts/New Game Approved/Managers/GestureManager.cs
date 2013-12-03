@@ -6,7 +6,7 @@ public class GestureManager : MonoBehaviour
 {
 
     #region Editor Publics
-    [SerializeField] private float _tapThreshold = 0.3f;
+    [SerializeField] private float _tapThreshold = 0.5f;
     [SerializeField] private float _pressThreshold = 1.0f;
 //    [SerializeField] private float _swipeThreshold = 5.0f;
     [SerializeField] private float _swipeOffset = 50f;
@@ -171,7 +171,7 @@ public class GestureManager : MonoBehaviour
                         OnTap(_touchBeganObject, primaryFinger.position);
                 }
             }
-
+/*
             //Double Tap
             else if(primaryFinger.phase == TouchPhase.Ended && primaryFinger.tapCount == 2)
             {
@@ -195,7 +195,7 @@ public class GestureManager : MonoBehaviour
                 else if(Time.time - _touchBeginTimes[primaryFinger.fingerId] <= _pressThreshold)
                     _isPressing = false;
             }
-
+*/
             //Swipes
             else if((primaryFinger.phase == TouchPhase.Moved || primaryFinger.phase == TouchPhase.Ended) && 
 				(Vector2.Distance(_touchBeginPositions[primaryFinger.fingerId], primaryFinger.position) >= _minFingerMovementForSwipeInPx))
