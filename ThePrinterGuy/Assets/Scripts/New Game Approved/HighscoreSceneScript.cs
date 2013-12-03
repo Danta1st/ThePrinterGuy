@@ -413,8 +413,10 @@ public class HighscoreSceneScript : MonoBehaviour
 				break;
 			}
 		}
-		
-		iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", _levelScore, "time", 2, "easetype", iTween.EaseType.easeInCubic, "onupdate", "updateCountingScoreValue"));
+
+		SoundManager.CutScene_Effect_Point();
+		iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", _levelScore, "time", 2, "easetype", iTween.EaseType.easeInCubic, "onupdate", "updateCountingScoreValue",
+            "oncomplete", "StopLoopingPointSound", "oncompletetarget", gameObject));
 		GameObject scoreTopPoint = GameObject.Find ("ScoreTopPoint");
 		GameObject scoreBotPoint = GameObject.Find ("ScoreBotPoint");
 		GameObject scoreText = GameObject.Find ("ScoreText");
@@ -477,6 +479,11 @@ public class HighscoreSceneScript : MonoBehaviour
 	{
 		_countingScore = score;
 	}
+
+    private void StopLoopingPointSound()
+    {
+        SoundManager.StopPointSound();
+    }
 	
 	private void InsertSpeechText(string text)
 	{

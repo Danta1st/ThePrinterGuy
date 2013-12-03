@@ -215,12 +215,15 @@ public class Ink : MonoBehaviour
 		InkCartridgeClass icc;
 		int j = 0;
 		int count = _machineInks.Count;
+        int index = 0;
+
 		for(int i = 0; i < count; i++)
 		{
 			icc = _machineInks[i];
 			
 			if(icc.insertableCartridge.gameObject == go)
 			{
+                index = i;
 				currIcc = icc;
 				break;
 			}
@@ -230,7 +233,9 @@ public class Ink : MonoBehaviour
 		
 		if(currIcc == null)
 			return;
-		
+
+        PlaySwipeSound(index);
+
 		//Succesfull swipe
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
@@ -278,10 +283,7 @@ public class Ink : MonoBehaviour
 		//Instantiate particles
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
         InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);
-		
-		//Play sound
-		SoundManager.Effect_Ink_RightSlot();
-		
+
 		//Stop Smoke
 		if(_particleSmoke != null)
 			_particleSmoke.particleSystem.Stop();		
@@ -313,6 +315,27 @@ public class Ink : MonoBehaviour
 		
 		_canSlide = true;
 	}
+
+    private void PlaySwipeSound(int index)
+    {
+        switch(index)
+        {
+            case 0:
+                SoundManager.Effect_Ink_RightSlot1();
+                break;
+            case 1:
+                SoundManager.Effect_Ink_RightSlot2();
+                break;
+            case 2:
+                SoundManager.Effect_Ink_RightSlot3();
+                break;
+            case 3:
+                SoundManager.Effect_Ink_RightSlot4();
+                break;
+            default:
+                break;
+        }
+    }
 	
 	private void InkReset()
 	{
