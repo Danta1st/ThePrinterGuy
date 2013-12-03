@@ -23,8 +23,6 @@ public class Ink : MonoBehaviour
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private float _inkMoveSpeed		= 0.4f;
 	private bool _canSlide = true;
-	private List<string> pathNameSucc = new List<string>();
-	private List<string> pathNameFail = new List<string>();
 	private bool isOnInk = false;
 	
 	//References
@@ -40,14 +38,6 @@ public class Ink : MonoBehaviour
 	void Awake () 
 	{
 		//Paths for ink sliding
-		pathNameSucc.Add("Ink0");
-		pathNameSucc.Add("Ink1");
-		pathNameSucc.Add("Ink2");
-		pathNameSucc.Add("Ink3");
-		pathNameFail.Add("Ink0Collision");
-		pathNameFail.Add("Ink1Collision");
-		pathNameFail.Add("Ink2Collision");
-		pathNameFail.Add("Ink3Collision");
 		//Get dynamic object reference
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
 		
@@ -105,19 +95,19 @@ public class Ink : MonoBehaviour
 	void OnDisable()
 	{
 		StopGates();
-
+		
+		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
 		BpmSequencerItem.OnFailed -= InkReset;
-		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
 	void OnDestroy()
 	{
 		StopGates();
-
+		
+		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
 		BpmSequencerItem.OnFailed -= InkReset;
-		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
 	#region Class Methods	
@@ -135,7 +125,7 @@ public class Ink : MonoBehaviour
     {
 		BeatController.OnBeat8th7 -= CloseGates;
 		BeatController.OnBeat8th3 -= OpenGates;
-		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen4;
+		BeatController.OnBeat8th3 -= SoundManager.Effect_Ink_SlotOpen4;
     }
 	
 	private void OpenGates()
@@ -221,7 +211,7 @@ public class Ink : MonoBehaviour
 		for(int i = 0; i < count; i++)
 		{
 			icc = _machineInks[i];
-			
+						
 			if(icc.insertableCartridge.gameObject == go)
 			{
                 index = i;
@@ -242,6 +232,9 @@ public class Ink : MonoBehaviour
 		{
 			_canSlide = false;	
 			isOnInk = false;
+			
+			//Unsubsribe gesture
+			GestureManager.OnSwipeRight -= InsertCartridge;
 			
 			currIcc.cartridgeEmpty = false;
 			currIcc.cartridge.renderer.material.mainTexture = currIcc.full;
@@ -277,9 +270,6 @@ public class Ink : MonoBehaviour
 	
 	private void InkSuccess(InkCartridgeClass icc)
 	{
-		//Unsubsribe gesture
-		if(!isOnInk)
-			GestureManager.OnSwipeRight -= InsertCartridge;
 		
 		//Instantiate particles
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
