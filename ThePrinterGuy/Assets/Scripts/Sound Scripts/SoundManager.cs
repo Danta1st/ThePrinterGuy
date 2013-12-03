@@ -478,6 +478,41 @@ public class SoundManager : MonoBehaviour
         _voiceSounds.Voice_Boss_Angry_Idiot_4();
     }
 
+    public static void Voice_Boss_Angry_PrinterGuy_1()
+    {
+        _voiceSounds.Voice_Boss_Angry_PrinterGuy_1();
+    }
+
+    public static void Voice_Boss_Angry_PrinterGuy_2()
+    {
+        _voiceSounds.Voice_Boss_Angry_PrinterGuy_2();
+    }
+
+    public static void Voice_Boss_Angry_PrinterGuy_3()
+    {
+        _voiceSounds.Voice_Boss_Angry_PrinterGuy_3();
+    }
+
+    public static void Voice_Boss_Angry_WhatIsTheMatter_1()
+    {
+        _voiceSounds.Voice_Boss_Angry_WhatIsTheMatter_1();
+    }
+
+    public static void Voice_Boss_Angry_WhatIsTheMatter_2()
+    {
+        _voiceSounds.Voice_Boss_Angry_WhatIsTheMatter_2();
+    }
+
+    public static void Voice_Boss_Angry_WhatTheHell_1()
+    {
+        _voiceSounds.Voice_Boss_Angry_WhatTheHell_1();
+    }
+
+    public static void Voice_Boss_Angry_WhatTheHell_2()
+    {
+        _voiceSounds.Voice_Boss_Angry_WhatTheHell_2();
+    }
+
     public static void Voice_Boss_Happy_Bravo_1()
     {
         _voiceSounds.Voice_Boss_Happy_Bravo_1();
@@ -533,6 +568,26 @@ public class SoundManager : MonoBehaviour
         _voiceSounds.Voice_Boss_Happy_NotBad_2();
     }
 
+    public static void Voice_Boss_Happy_WellWell_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_WellWell_1();
+    }
+
+    public static void Voice_Boss_Happy_WellWell_2()
+    {
+        _voiceSounds.Voice_Boss_Happy_WellWell_2();
+    }
+
+    public static void Voice_Boss_Happy_YouGetIt_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_YouGetIt_1();
+    }
+
+    public static void Voice_Boss_Happy_YouGetIt_2()
+    {
+        _voiceSounds.Voice_Boss_Happy_YouGetIt_2();
+    }
+
     public static void Voice_Boss_Random_Happy()
     {
         _voiceSounds.Voice_Boss_Random_Happy();
@@ -556,6 +611,31 @@ public class SoundManager : MonoBehaviour
     public static void Voice_Boss_Random_LoseEnd()
     {
         _voiceSounds.Voice_Boss_Random_LoseEnd();
+    }
+
+    public static void Voice_Boss_Random_PrinterGuy()
+    {
+        _voiceSounds.Voice_Boss_Random_PrinterGuy();
+    }
+
+    public static void Voice_Boss_Random_WhatIsTheMatter()
+    {
+        _voiceSounds.Voice_Boss_Random_WhatIsTheMatter();
+    }
+
+    public static void Voice_Boss_Random_WhatTheHell()
+    {
+        _voiceSounds.Voice_Boss_Random_WhatTheHell();
+    }
+
+    public static void Voice_Boss_Random_WellWell()
+    {
+        _voiceSounds.Voice_Boss_Random_WellWell();
+    }
+
+    public static void Voice_Boss_Random_YouGetIt()
+    {
+        _voiceSounds.Voice_Boss_Random_YouGetIt();
     }
 
     #endregion
