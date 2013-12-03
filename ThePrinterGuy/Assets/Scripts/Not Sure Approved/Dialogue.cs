@@ -91,6 +91,7 @@ public class Dialogue : MonoBehaviour
             OnDialogueStart(happyTuple[2]);
         }
         _characterAnimation.CrossFadeQueued("Idle");
+        StartCoroutine(CheckIfAnimationStopped(happyTuple[0]));
     }
 
     private void AngryCharacter()
@@ -183,7 +184,7 @@ public class Dialogue : MonoBehaviour
 
     IEnumerator CheckIfAnimationStopped(string animation)
     {
-        while(_characterAnimation.IsPlaying(angryTuple[0]))
+        while(_characterAnimation.IsPlaying(animation))
         {
             yield return new WaitForSeconds(1f);
         }
@@ -215,6 +216,7 @@ public class Dialogue : MonoBehaviour
             OnDialogueStart(endTuple[2]);
         }
         _characterAnimation.CrossFadeQueued("Idle");
+        StartCoroutine(CheckIfAnimationStopped(endTuple[0]));
     }
 
 }
