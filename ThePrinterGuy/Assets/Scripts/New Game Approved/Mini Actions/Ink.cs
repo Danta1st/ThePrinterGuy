@@ -105,9 +105,10 @@ public class Ink : MonoBehaviour
 	void OnDisable()
 	{
 		StopGates();
-		
+
 		BpmSequencer.OnInkNode -= StartInkTask;
 		BpmSequencerItem.OnFailed -= InkReset;
+		GestureManager.OnSwipeRight -= InsertCartridge;
 	}
 	
 	void OnDestroy()
@@ -134,7 +135,7 @@ public class Ink : MonoBehaviour
     {
 		BeatController.OnBeat8th7 -= CloseGates;
 		BeatController.OnBeat8th3 -= OpenGates;
-		//TODO: unsubscribe sound? 
+		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen4;
     }
 	
 	private void OpenGates()
