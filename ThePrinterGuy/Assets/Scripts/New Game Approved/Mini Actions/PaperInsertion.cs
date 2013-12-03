@@ -435,6 +435,7 @@ public class PaperInsertion : MonoBehaviour
 	
 	private IEnumerator InstantiatePopupFail()
 	{
+		yield return new WaitForSeconds(0.2f);
 		GameObject _popup = (GameObject)Instantiate(_failTextPrefab, _failPercentagePosition, Quaternion.identity);
 		yield return new WaitForSeconds(2f);
 		Destroy(_popup);
