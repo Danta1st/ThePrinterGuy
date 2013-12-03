@@ -715,6 +715,7 @@ public class GUIGameCamera : MonoBehaviour
     private void RestartLevel()
     {
 		//TODO: Need confirmation before restart.
+		LoadGUIState();
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
         SoundManager.TurnOnMenuSounds();
