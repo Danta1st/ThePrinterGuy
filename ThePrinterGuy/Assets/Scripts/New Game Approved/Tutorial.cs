@@ -110,7 +110,9 @@ public class Tutorial : MonoBehaviour {
                     {
 						if(backButton == null)
 							backButton = _hit.collider.gameObject;
-						
+
+                        SoundManager.TurnOnMenuSounds();
+                        SoundManager.Effect_Menu_Click();
 						//Do fancy 'User Pressed a button' Animation
 						SetTexture(backButton, _buttonTextures.leftPressed);
 						PunchButton(backButton);

@@ -21,7 +21,7 @@ public class Ink : MonoBehaviour
 	
 	//Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
-	private float _inkMoveSpeed		= 0.4f;
+	private float _inkMoveSpeed		= 0.5f;
 	private bool _canSlide = true;
 	private bool isOnInk = false;
 	
