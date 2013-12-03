@@ -433,10 +433,12 @@ public class GUIMainMenuCamera : MonoBehaviour
 					_hit.collider.gameObject.SetActive(false);
 					_isOnStartScreen = false;
 					DisableGUIElement("MainMenu");
+                    GameObject goLPRP = GameObject.Find ("levelPointerRotationPoint");
 					GameObject goLM = GameObject.Find ("elevatorDoor_L_MoveTo");
 					GameObject goRM = GameObject.Find ("elevatorDoor_R_MoveTo");
 					GameObject goL = GameObject.Find ("elevatorDoor_L");
 					GameObject goR = GameObject.Find ("elevatorDoor_R");
+                    iTween.RotateTo(goLPRP, iTween.Hash("z", 90f, "time", 2, "easetype", iTween.EaseType.easeOutElastic));
 					iTween.MoveTo(goL, iTween.Hash("position", goLM.transform.position,
                                                     "time", 2,
                                                     "easetype", iTween.EaseType.easeOutSine));
