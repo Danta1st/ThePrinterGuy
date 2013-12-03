@@ -167,6 +167,11 @@ public class SoundManager : MonoBehaviour
         _paperSounds.Effect_PaperTray_ConveyorBelt();
     }
 
+    public static void Effect_PaperTray_StopConveyorBelt()
+    {
+        _paperSounds.Effect_PaperTray_StopConveyorBelt();
+    }
+
     public static void Effect_PaperTray_ColorChange1()
     {
         _paperSounds.Effect_PaperTray_ColorChange1();
@@ -648,6 +653,11 @@ public class SoundManager : MonoBehaviour
     public static void Effect_Menu_Credits()
     {
         _mainMenuSounds.Effect_Menu_Credits();
+    }
+
+    public static void Effect_Task_Perfected()
+    {
+        _mainMenuSounds.Effect_Task_Perfected();
     }
 
     public static void Effect_Task_Unmatched()
