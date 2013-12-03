@@ -176,6 +176,41 @@ public class VoiceSounds : MonoBehaviour
     {
         _voiceBoss.PlayClip(8);
     }
+
+    public void Voice_Boss_Angry_PrinterGuy_1()
+    {
+        _voiceBoss.PlayClip(20);
+    }
+
+    public void Voice_Boss_Angry_PrinterGuy_2()
+    {
+        _voiceBoss.PlayClip(21);
+    }
+
+    public void Voice_Boss_Angry_PrinterGuy_3()
+    {
+        _voiceBoss.PlayClip(22);
+    }
+
+    public void Voice_Boss_Angry_WhatIsTheMatter_1()
+    {
+        _voiceBoss.PlayClip(23);
+    }
+
+    public void Voice_Boss_Angry_WhatIsTheMatter_2()
+    {
+        _voiceBoss.PlayClip(24);
+    }
+
+    public void Voice_Boss_Angry_WhatTheHell_1()
+    {
+        _voiceBoss.PlayClip(25);
+    }
+
+    public void Voice_Boss_Angry_WhatTheHell_2()
+    {
+        _voiceBoss.PlayClip(26);
+    }
     #endregion
 
     #region Happy Oneliners
@@ -230,6 +265,26 @@ public class VoiceSounds : MonoBehaviour
     }
 
     public void Voice_Boss_Happy_NotBad_2()
+    {
+        _voiceBoss.PlayClip(19);
+    }
+
+    public void Voice_Boss_Happy_WellWell_1()
+    {
+        _voiceBoss.PlayClip(18);
+    }
+
+    public void Voice_Boss_Happy_WellWell_2()
+    {
+        _voiceBoss.PlayClip(19);
+    }
+
+    public void Voice_Boss_Happy_YouGetIt_1()
+    {
+        _voiceBoss.PlayClip(18);
+    }
+
+    public void Voice_Boss_Happy_YouGetIt_2()
     {
         _voiceBoss.PlayClip(19);
     }
@@ -294,6 +349,31 @@ public class VoiceSounds : MonoBehaviour
     public void Voice_Boss_Random_NotBad()
     {
         _voiceBoss.PlayClip(Random.Range(18, 19));
+    }
+
+    public void Voice_Boss_Random_PrinterGuy()
+    {
+        _voiceBoss.PlayClip(Random.Range(20, 22));
+    }
+
+    public void Voice_Boss_Random_WhatIsTheMatter()
+    {
+        _voiceBoss.PlayClip(Random.Range(23, 24));
+    }
+
+    public void Voice_Boss_Random_WhatTheHell()
+    {
+        _voiceBoss.PlayClip(Random.Range(25, 26));
+    }
+
+    public void Voice_Boss_Random_WellWell()
+    {
+        _voiceBoss.PlayClip(Random.Range(27, 28));
+    }
+
+    public void Voice_Boss_Random_YouGetIt()
+    {
+        _voiceBoss.PlayClip(Random.Range(29, 30));
     }
 
     public GenericSoundScript GetEffectScript()
