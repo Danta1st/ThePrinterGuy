@@ -3,6 +3,10 @@ using System.Collections;
 
 public class CutsceneSounds : MonoBehaviour
 {
+    [SerializeField] private float _beginPitch = 1.0f;
+    [SerializeField] private float _endPitch = 1.5f;
+    [SerializeField] private float _pitchTime = 2.0f;
+
     #region Privates
     private GenericSoundScript _music;
     private GenericSoundScript _soundFx;
@@ -26,7 +30,8 @@ public class CutsceneSounds : MonoBehaviour
 
     public void CutScene_Effect_Point()
     {
-        _soundFx.PlayClip(0);
+        _soundFx.LoopClipStart(0);
+        _soundFx.SetPitch(_beginPitch, _endPitch, _pitchTime);
     }
 
     public void CutScene_Effect_Coffee_01()
