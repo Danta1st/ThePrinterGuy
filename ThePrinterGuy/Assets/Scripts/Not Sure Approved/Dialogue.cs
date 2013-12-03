@@ -18,10 +18,12 @@ public class Dialogue : MonoBehaviour
     private string _localizationKey;
     private string[] happyTuple;
     private string[] angryTuple;
+    private string[] endTuple;
     private Animation _characterAnimation;
     //animation, sound, localzation key
     private List<string[]> happyCollection;
     private List<string[]> angryCollection;
+    private List<string[]> endCollection;
     //1 AARGH, 2 næve, 3 smoke
 
     void Awake()
@@ -39,6 +41,11 @@ public class Dialogue : MonoBehaviour
         angryCollection.Add(new string[] {"Angry 03","3","InGameIdiot"});
         angryCollection.Add(new string[] {"Very Angry 02","4","InGameCompleteIdiot"});
         angryCollection.Add(new string[] {"Angry 01","5","InGameAreAnIdiot"});
+
+        endCollection = new List<string[]>();
+        endCollection.Add(new string[] {"Good 02","11","EndScreenNotFired"});
+        endCollection.Add(new string[] {"You're Fired","12","EndScreenFired"});
+
         _characterAnimation = _character.GetComponent<Animation>();
     }
 
@@ -59,7 +66,8 @@ public class Dialogue : MonoBehaviour
         StressOMeter.OnAngryZoneEntered += AngryCharacter;
         PathManager.OnCamPosChangeBegan += CameraStartedMoving;
         PathManager.OnCamPosChangeEnded += CameraStoppedMoving;
-
+        HighscoreSceneScript.OnCompletedLevel += WinCharacter;
+        HighscoreSceneScript.OnFailedLevel += LoseCharacter;
     }
 
     void OnDisable()
@@ -68,6 +76,8 @@ public class Dialogue : MonoBehaviour
         StressOMeter.OnAngryZoneEntered -= AngryCharacter;
         PathManager.OnCamPosChangeBegan -= CameraStartedMoving;
         PathManager.OnCamPosChangeEnded -= CameraStoppedMoving;
+        HighscoreSceneScript.OnCompletedLevel -= WinCharacter;
+        HighscoreSceneScript.OnFailedLevel -= LoseCharacter;
     }
     #endregion
 
@@ -160,6 +170,12 @@ public class Dialogue : MonoBehaviour
             case "10":
                 SoundManager.Voice_Boss_Random_NotBad();
                 break;
+            case "11":
+                SoundManager.Voice_Boss_Random_WinEnd();
+                break;
+            case "12":
+                SoundManager.Voice_Boss_Random_LoseEnd();
+                break;
             default:
                 break;
         }
@@ -175,6 +191,30 @@ public class Dialogue : MonoBehaviour
         {
             OnDialogueEnd();
         }
+    }
+
+    private void WinCharacter(float score)
+    {
+        endTuple = endCollection[0];
+        _characterAnimation.CrossFade(endTuple[0]);
+        PlaySound(endTuple[1]);
+        if(OnDialogueStart != null)
+        {
+            OnDialogueStart(endTuple[2]);
+        }
+        _characterAnimation.CrossFadeQueued("Idle");
+    }
+
+    private void LoseCharacter(float score)
+    {
+        endTuple = endCollection[1];
+        _characterAnimation.CrossFade(endTuple[0]);
+        PlaySound(endTuple[1]);
+        if(OnDialogueStart != null)
+        {
+            OnDialogueStart(endTuple[2]);
+        }
+        _characterAnimation.CrossFadeQueued("Idle");
     }
 
 }
