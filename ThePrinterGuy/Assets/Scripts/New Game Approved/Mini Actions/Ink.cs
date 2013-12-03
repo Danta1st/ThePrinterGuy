@@ -215,12 +215,15 @@ public class Ink : MonoBehaviour
 		InkCartridgeClass icc;
 		int j = 0;
 		int count = _machineInks.Count;
+        int index = 0;
+
 		for(int i = 0; i < count; i++)
 		{
 			icc = _machineInks[i];
 			
 			if(icc.insertableCartridge.gameObject == go)
 			{
+                index = i;
 				currIcc = icc;
 				break;
 			}
@@ -231,7 +234,7 @@ public class Ink : MonoBehaviour
 		if(currIcc == null)
 			return;
 
-        PlaySwipeSound(inkIndex);
+        PlaySwipeSound(index);
 
 		//Succesfull swipe
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
