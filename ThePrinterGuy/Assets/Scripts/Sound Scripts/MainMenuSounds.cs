@@ -6,6 +6,7 @@ public class MainMenuSounds : MonoBehaviour
     #region Privates
     private GenericSoundScript _soundFx;
     private GenericSoundScript _music;
+    private GenericSoundScript _tasks;
     #endregion
 
     #region MonoBehavior
@@ -14,6 +15,8 @@ public class MainMenuSounds : MonoBehaviour
         _soundFx = transform.FindChild("SoundFx_Menu").
             GetComponent<GenericSoundScript>();
         _music = transform.FindChild("Music_Menu").
+            GetComponent<GenericSoundScript>();
+        _tasks = transform.FindChild("Tasks_Menu").
             GetComponent<GenericSoundScript>();
     }
 
@@ -67,9 +70,14 @@ public class MainMenuSounds : MonoBehaviour
         _soundFx.PlayClip(6);
     }
 
+    public void Effect_Task_Perfected()
+    {
+        _tasks.PlayClip(0);
+    }
+
     public void Effect_Task_Unmatched()
     {
-        _soundFx.PlayClip(7);
+        _tasks.PlayClip(1);
     }
     #endregion
 
