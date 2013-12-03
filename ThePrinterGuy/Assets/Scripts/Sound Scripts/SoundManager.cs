@@ -234,9 +234,24 @@ public class SoundManager : MonoBehaviour
         _inkSounds.Effect_Ink_SlotOpen4();
     }
 
-    public static void Effect_Ink_RightSlot()
+    public static void Effect_Ink_RightSlot1()
     {
-        _inkSounds.Effect_Ink_RightSlot();
+        _inkSounds.Effect_Ink_RightSlot1();
+    }
+
+    public static void Effect_Ink_RightSlot2()
+    {
+        _inkSounds.Effect_Ink_RightSlot2();
+    }
+
+    public static void Effect_Ink_RightSlot3()
+    {
+        _inkSounds.Effect_Ink_RightSlot3();
+    }
+
+    public static void Effect_Ink_RightSlot4()
+    {
+        _inkSounds.Effect_Ink_RightSlot4();
     }
 
     public static void Effect_Ink_WrongSlot()
@@ -751,6 +766,11 @@ public class SoundManager : MonoBehaviour
                 ToogleAudio();
             }
         }
+    }
+
+    public static void StopPointSound()
+    {
+        _cutSceneSounds.GetEffectsScript().LoopClipStop();
     }
 
     public static void TurnOnMenuSounds()
