@@ -117,7 +117,7 @@ public class Dialogue : MonoBehaviour
             iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f, 0.5f, 0.5f), "time", 0.2f));
         }
      
-        _characterAnimation.CrossFadeQueued("Idle");
+        _characterAnimation.CrossFadeQueued("Idle Feedback");
         StartCoroutine(CheckIfAnimationStopped(angryTuple[0]));
     }
 
