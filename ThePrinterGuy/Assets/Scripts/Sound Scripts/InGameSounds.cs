@@ -3,6 +3,10 @@ using System.Collections;
 
 public class InGameSounds : MonoBehaviour
 {
+    [SerializeField] private float _musicVolume = 0.5f;
+    [SerializeField] private float _endVolume = 0.1f;
+
+
     #region Privates
     private GenericSoundScript _soundFx;
     private GenericSoundScript _music;
@@ -40,6 +44,16 @@ public class InGameSounds : MonoBehaviour
     public void Effect_InGame_Lose()
     {
         _soundFx.PlayClip(1);
+    }
+
+    public void FadeMusic(float fadeTime)
+    {
+        _music.FadeVolume(_musicVolume, fadeTime);
+    }
+
+    public void FadeMusicEnd(float fadeTime)
+    {
+        _music.FadeVolume(_endVolume, fadeTime);
     }
 
     public GenericSoundScript GetEffectScript()
