@@ -52,6 +52,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	private static float _levelMaxscore = 0;
 	private Material _material = null;
 	private float alphaFloat;
+    private bool _waitTime = false;
 	
 	[SerializeField]
 	private float _fadeInTime = 0.2f;
@@ -240,8 +241,7 @@ public class HighscoreSceneScript : MonoBehaviour
             {
                 if(_hit.collider.gameObject.name == "RestartButton")
                 {
-                    GestureManager.OnTap -= CheckCollision;
-					LoadingScreen.Load(_levelCompleted + 2, true);
+                    StartCoroutine(PlayNotFired());
                 }
                 else if(_hit.collider.gameObject.name == "QuitButton")
                 {
@@ -292,6 +292,18 @@ public class HighscoreSceneScript : MonoBehaviour
 				}
             }
         }
+    }
+
+    IEnumerator PlayNotFired()
+    {
+        SoundManager.Voice_Boss_EndScene_NotFired1();
+
+        yield return new WaitForSeconds(3.5f);
+
+        _waitTime = true;
+
+        GestureManager.OnTap -= CheckCollision;
+        LoadingScreen.Load(_levelCompleted + 2, true);
     }
 	
 	private void LaunchEndScreen()
