@@ -573,6 +573,10 @@ public class SoundManager : MonoBehaviour
         _voiceSounds.Voice_Boss_Random_YouGetIt();
     }
 
+    public static GenericSoundScript Voice_Boss_GetEndScript()
+    {
+        return _voiceSounds.GetEffectScriptEnd();
+    }
     #endregion
 
     #region In Game Sounds
