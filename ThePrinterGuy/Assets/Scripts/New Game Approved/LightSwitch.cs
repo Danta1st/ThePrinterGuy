@@ -53,7 +53,6 @@ public class LightSwitch : MonoBehaviour {
 		{
 			BeatController.OnAll8Beats += UpdateTexture;
 		}
-		iTween.FadeTo(gameObject, 0f, 0.5f);
 	}
 	
 	private void OnDisableBeatType()
