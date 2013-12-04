@@ -463,11 +463,6 @@ public class HighscoreSceneScript : MonoBehaviour
 			yield return new WaitForSeconds(0.01f);
 		}
 		
-		if(_isWin)
-			InsertSpeechText(LocalizationText.GetText("WinText1"));
-		else
-			InsertSpeechText(LocalizationText.GetText("LossText1"));
-		
 		yield return new WaitForSeconds(0.75f);
 		
 		if(!_isWin)
@@ -487,12 +482,4 @@ public class HighscoreSceneScript : MonoBehaviour
     {
         SoundManager.StopPointSound();
     }
-	
-	private void InsertSpeechText(string text)
-	{
-		
-        _speechText.transform.parent.transform.gameObject.SetActive(true);
-		_speechText.text = text;
-	}
-	
 }

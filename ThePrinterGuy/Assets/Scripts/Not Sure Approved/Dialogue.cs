@@ -224,6 +224,7 @@ public class Dialogue : MonoBehaviour
             OnDialogueStart(endTuple[2]);
         }
         _characterAnimation.CrossFadeQueued("Idle");
+        StartCoroutine(CheckIfAnimationStopped(endTuple[0]));
     }
 
     private void LoseCharacter(float score)

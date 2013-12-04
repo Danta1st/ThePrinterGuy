@@ -143,7 +143,6 @@ public class ScoreManager : MonoBehaviour
 		int colorHit = 0;
 		bool pointsGranted = false;
 		int popupSize = 1;
-        int maxAmount = 0;
         ScoreMultipliers sm = new ScoreMultipliers();
 		
 		if(OnTaskCompleted != null)

@@ -281,8 +281,6 @@ public class Ink : MonoBehaviour
 	        {
 	            OnCorrectInkInserted();
 	        }
-						
-//			currIcc.insertableCartridge.gameObject.SetActive(false);
 
 			currIcc.insertableCartridgeClone.SetActive(true);
 
@@ -294,9 +292,6 @@ public class Ink : MonoBehaviour
 		//Failed swipe
 		else
 		{	
-			
-//			currIcc.insertableCartridge.gameObject.SetActive(false);
-			
 			currIcc.insertableCartridgeClone.SetActive(true);
 			
 			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathFail, 
@@ -311,13 +306,13 @@ public class Ink : MonoBehaviour
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
         InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);		
 		
-//		icc.insertableCartridge.gameObject.SetActive(true);
+
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
-//        icc.insertableCartridge.transform.position = icc.insertableStartPos;
-//		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
+
 		
         _canSlide = true;
+		UnsubscribeInkPunch();
 	}	
 	
 	private void InkFailed(InkCartridgeClass icc)
@@ -327,9 +322,6 @@ public class Ink : MonoBehaviour
 		//Play sound
         SoundManager.Effect_InGame_Task_Unmatched();
 		
-//		icc.insertableCartridge.transform.position = icc.insertableStartPos;
-//		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
-//		icc.insertableCartridge.gameObject.SetActive(true);
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
 		
@@ -387,10 +379,14 @@ public class Ink : MonoBehaviour
 		}
 		BpmSequencer.OnPaperNode -= InkReset;
 		BpmSequencer.OnUraniumRodNode -= InkReset;
+		UnsubscribeInkPunch();
 	}
 	
 	private void InkNotCompleted()
 	{
+		//Unsubscribe from gesture
+		GestureManager.OnSwipeRight -= InsertCartridge;
+		
 		InkCartridgeClass icc;
 		//FIXME: Particles
 		if(_particleSmoke != null)
@@ -436,38 +432,9 @@ public class Ink : MonoBehaviour
 			//Activate cartridge
 			icc.insertableCartridge.gameObject.SetActive(true);
 		}
-		
-		//TODO: Comment on why this is necessary if put in again!
-//		if(_machineInks.Count < itemNumber + 1)
-//		{
-//			if(OnCorrectInkInserted != null)
-//            {
-//                OnCorrectInkInserted();
-//            }
-//
-//			Debug.Log("ERROR INK: Number out of index!");
-//			return;
-//		}
-		
-		
+
         EmptyCartridge(itemNumber);
       
-		
-		//Randomisation method for ink calls
-		/*var identifier = Random.Range(0,_machineInks.Count);
-		
-        for(int i = 0; i < _machineInks.Count; i++)
-        {
-            if(_machineInks[identifier].cartridgeEmpty == false)
-            {
-                EmptyCartridge(identifier);
-                break;
-            }
-            identifier++;
-
-            if(identifier == _machineInks.Count)
-                identifier = 0;
-        }*/
 		SubscribeInkPunch(itemNumber);		
 	}
 	

@@ -293,6 +293,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                _guiGameCameraScript.SetPauseElement(gameObject);
                 KillTaskFailed();
 			}
 			
@@ -335,6 +336,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                _guiGameCameraScript.SetPauseElement(gameObject);
                 KillTaskFailed();
 			}
 			ChangeTexture();
@@ -372,6 +374,7 @@ public class BpmSequencerItem : MonoBehaviour {
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+				_guiGameCameraScript.SetPauseElement(gameObject);
                 KillTaskFailed();
 			}
 			ChangeTexture();
@@ -440,7 +443,8 @@ public class BpmSequencerItem : MonoBehaviour {
 	private void KillFailed()
 	{
         InstantiateParticles(_particles.failed, gameObject);
-        Destroy(gameObject);
+		Destroy(gameObject);
+		_guiGameCameraScript.SetPauseElement(null);
 	}
 
     private void KillComplete()
