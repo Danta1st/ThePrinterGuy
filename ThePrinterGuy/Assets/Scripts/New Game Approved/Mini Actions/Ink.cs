@@ -11,6 +11,7 @@ public class Ink : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeInExpo;
 	//Particles
 	[SerializeField] private Particles _particles;
+	[SerializeField] private Vector3 _idlePunchScaleAmount = new Vector3(0.5f, 0.5f, 0.5f);
 
     #endregion
 	
@@ -225,7 +226,7 @@ public class Ink : MonoBehaviour
 	private void PunchInk()
 	{
 		if(_tempPunch != null)
-			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, new Vector3(0.2f, 0.2f, 0.2f), _punchTime);
+			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, _idlePunchScaleAmount, _punchTime);
 	}
 	
 	#endregion
