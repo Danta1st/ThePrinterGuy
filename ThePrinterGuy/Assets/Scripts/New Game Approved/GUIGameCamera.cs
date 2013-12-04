@@ -58,12 +58,6 @@ public class GUIGameCamera : MonoBehaviour
 	private string _strScore = "0";
 	private HighscoreScreenLoader _highscoreLoader;
 	private GameObject _scoreValueObject;
-	private GameObject _star1Object;
-	private GameObject _star2Object;
-	private GameObject _star3Object;
-	private bool _isStar1Spawned;
-	private bool _isStar2Spawned;
-	private bool _isStar3Spawned;
 
     //Action Sequencer
     private Vector3 _spawnPoint;
@@ -284,9 +278,6 @@ public class GUIGameCamera : MonoBehaviour
 			if(_guiObject.name == "Highscore")
             {
                 _scoreValueObject = _guiObject.transform.FindChild("ScoreValue").gameObject;
-				_star1Object = _guiObject.transform.FindChild("Star1").gameObject;
-				_star2Object = _guiObject.transform.FindChild("Star2").gameObject;
-				_star3Object = _guiObject.transform.FindChild("Star3").gameObject;
             }
 
             if(_guiObject.name == "ActionSequencer")
@@ -306,10 +297,6 @@ public class GUIGameCamera : MonoBehaviour
 		UpdateText();
 		
         EnableGUICamera();
-		
-		_star1Object.SetActive(false);
-		_star2Object.SetActive(false);
-		_star3Object.SetActive(false);
 		
 		_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
     }
@@ -377,7 +364,6 @@ public class GUIGameCamera : MonoBehaviour
 		_score += (int)_amount;
 		_strScore = _score.ToString();
 		ShowScore();
-		ShowStars();
 	}
 	
 	public void IncreaseScorePopup(float _amount)
@@ -399,68 +385,12 @@ public class GUIGameCamera : MonoBehaviour
 		}
 		
 		ShowScore();
-		ShowStars();
 	}
 	
 	private void ShowScore()
 	{
 		 _scoreValueObject.GetComponent<TextMesh>().text = _strScore;
 		iTween.PunchScale(_scoreValueObject, new Vector3(3f,3f,0f),0.4f);	
-	}
-	
-	private void ShowStars()
-	{
-		if(_score >= _highscoreLoader.GetStarOneScore() && _score < _highscoreLoader.GetStarTwoScore())
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(false);
-			_star3Object.SetActive(false);
-			
-			if(!_isStar1Spawned)
-			{
-				iTween.PunchScale(_star1Object, new Vector3(20f,20f,0f),1f);
-				_isStar1Spawned = true;
-			}
-			
-		}
-		else if(_score >= _highscoreLoader.GetStarTwoScore() && _score < _highscoreLoader.GetStarThreeScore())
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(true);
-			_star3Object.SetActive(false);
-			
-			if(!_isStar2Spawned)
-			{
-				iTween.PunchScale(_star2Object, new Vector3(20f,20f,0f),1f);
-				_isStar2Spawned = true;
-			}
-			
-		}
-		else if(_score >= _highscoreLoader.GetStarThreeScore())
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(true);
-			_star3Object.SetActive(true);
-			
-			
-			if(!_isStar3Spawned)
-			{
-				iTween.PunchScale(_star3Object, new Vector3(20f,20f,0f),1f);
-				_isStar3Spawned = true;
-			}
-		}
-		else
-		{
-			_star1Object.SetActive(false);
-			_star2Object.SetActive(false);
-			_star3Object.SetActive(false);
-			
-			_isStar1Spawned = false;
-			_isStar2Spawned = false;
-			_isStar3Spawned = false;
-			
-			
-		}
 	}
 			
 	public void PopupTextSmall(string _str)
