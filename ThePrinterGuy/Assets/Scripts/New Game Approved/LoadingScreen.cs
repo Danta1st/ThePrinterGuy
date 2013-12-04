@@ -210,7 +210,11 @@ public class LoadingScreen : MonoBehaviour
 	            alphaFloat = Mathf.Clamp01(alphaFloat + Time.deltaTime / aFadeOutTime);
 	            DrawQuad(aColor, alphaFloat);
 	        }
-			TapToCont.gameObject.GetComponent<TextMesh>().text = "";
+			
+			TapToCont.setText("");
+			
+			//TapToCont.gameObject.GetComponent<TextMesh>().text = "";
+			
 			Async.allowSceneActivation = true;
 			
 	        while (alphaFloat>0.0f)
