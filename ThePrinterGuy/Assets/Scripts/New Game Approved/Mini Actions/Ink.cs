@@ -11,6 +11,7 @@ public class Ink : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeInExpo;
 	//Particles
 	[SerializeField] private Particles _particles;
+	[SerializeField] private Vector3 _idlePunchScaleAmount = new Vector3(0.5f, 0.5f, 0.5f);
 
     #endregion
 	
@@ -33,6 +34,9 @@ public class Ink : MonoBehaviour
 	#region Delegates & Events
 	public delegate void OnInkInsertedAction();
     public static event OnInkInsertedAction OnCorrectInkInserted;
+	
+	public delegate void InkErrorAction();
+	public static event InkErrorAction OnInkError;
 	#endregion
 
 	void Awake () 
@@ -222,7 +226,7 @@ public class Ink : MonoBehaviour
 	private void PunchInk()
 	{
 		if(_tempPunch != null)
-			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, new Vector3(0.2f, 0.2f, 0.2f), _punchTime);
+			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, _idlePunchScaleAmount, _punchTime);
 	}
 	
 	#endregion
@@ -292,6 +296,9 @@ public class Ink : MonoBehaviour
 		//Failed swipe
 		else
 		{	
+			if(OnInkError != null)
+				OnInkError();
+			
 			currIcc.insertableCartridgeClone.SetActive(true);
 			
 			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathFail, 
@@ -306,10 +313,8 @@ public class Ink : MonoBehaviour
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
         InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);		
 		
-
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
-
 		
         _canSlide = true;
 		UnsubscribeInkPunch();
