@@ -3,9 +3,13 @@ using System.Collections;
 
 public class MainMenuSounds : MonoBehaviour
 {
+    [SerializeField] private float _musicVolume = 0.5f;
+    [SerializeField] private float _endVolume = 0.1f;
+
     #region Privates
     private GenericSoundScript _soundFx;
     private GenericSoundScript _music;
+    private GenericSoundScript _tasks;
     #endregion
 
     #region MonoBehavior
@@ -14,6 +18,8 @@ public class MainMenuSounds : MonoBehaviour
         _soundFx = transform.FindChild("SoundFx_Menu").
             GetComponent<GenericSoundScript>();
         _music = transform.FindChild("Music_Menu").
+            GetComponent<GenericSoundScript>();
+        _tasks = transform.FindChild("Tasks_Menu").
             GetComponent<GenericSoundScript>();
     }
 
@@ -42,34 +48,19 @@ public class MainMenuSounds : MonoBehaviour
         _soundFx.PlayClip(1);
     }
 
-    public void Effect_Menu_Stinger()
+    public void Effect_Task_Unmatched()
     {
-        _soundFx.PlayClip(2);
+        _tasks.PlayClip(0);
     }
 
-    public void Effect_Menu_Appear()
+    public void FadeMusic(float fadeTime)
     {
-        _soundFx.PlayClip(3);
+        _music.FadeVolume(_musicVolume, fadeTime);
     }
 
-    public void Effect_Menu_Disappear()
+    public void FadeMusicEnd(float fadeTime)
     {
-        _soundFx.PlayClip(4);
-    }
-
-    public void Effect_Menu_Footsteps()
-    {
-        _soundFx.PlayClip(5);
-    }
-
-    public void Effect_Menu_Credits()
-    {
-        _soundFx.PlayClip(6);
-    }
-
-    public void Effect_Menu_Options()
-    {
-        _soundFx.PlayClip(7);
+        _music.FadeVolume(_endVolume, fadeTime);
     }
     #endregion
 

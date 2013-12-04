@@ -1,12 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class BpmSequencerItem : MonoBehaviour {
 		
     #region SerializeField
     [SerializeField] private string _moduleName;
+    [SerializeField] private Vector3 _scaleAmount;
     [SerializeField] private iTween.EaseType _easeTypeMove = iTween.EaseType.easeInSine;
 	[SerializeField] Particles _particles;
+	[SerializeField] Textures _textures;	
     #endregion
 	
 	//-----------------------------
@@ -14,6 +16,8 @@ public class BpmSequencerItem : MonoBehaviour {
     //Prepare for hack!
     private Transform _spawnZonePosition;
     private Transform _deadZonePosition;
+    private Transform _failedPos;
+    private Transform _perfectPos;
     //---------------------//
     
 	//Adjusts the lenght and thereby distance of icons on the sequencer bar
@@ -30,6 +34,7 @@ public class BpmSequencerItem : MonoBehaviour {
 	
 	//Tempo wobbler variables
 	private float _ms;
+    private float _TaskKillTime = 0.4f;
 	
 	//Movement Variables
 	private StepLenghts _stepLenghts = new StepLenghts();
@@ -38,10 +43,18 @@ public class BpmSequencerItem : MonoBehaviour {
     private Vector3 _partialPosition;
     private Transform[] _path = new Transform[2];
     #endregion
+	
+	public string GetTaskName()
+	{
+		return _moduleName;
+	}
 
     #region Delegates and Events
     public delegate void FailedAction();
     public static event FailedAction OnFailed;
+	
+	public delegate void FailedActionWithItem(string type);
+    public static event FailedActionWithItem OnFailedWithItem;
     #endregion
 	
 	void OnEnable()
@@ -58,7 +71,10 @@ public class BpmSequencerItem : MonoBehaviour {
 	}
 	void OnDestroy()
 	{
-		UnsubscribeBeatAndScale(_moduleName);		
+		UnsubscribeBeatAndScale(_moduleName);
+		
+		if(_statusZone == "Green")
+			KillComplete();
 	}
 	
     // Use this for initialization
@@ -67,7 +83,10 @@ public class BpmSequencerItem : MonoBehaviour {
 		_dynamicObjects = GameObject.Find("Dynamic Objects");
     	_spawnZonePosition 	= GameObject.Find("SpawnZone").transform; //GameObject.Find("SpawnZone").transform;
     	_deadZonePosition 	= GameObject.Find("DeadZone").transform;
-    	
+
+        _perfectPos = GameObject.Find("PerfectPos").transform;
+        _failedPos = GameObject.Find("FailedPos").transform;
+
     	_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
     
         _guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
@@ -111,37 +130,24 @@ public class BpmSequencerItem : MonoBehaviour {
 		{
 		case "Paper":
 			//Vertical rhythm
-			TempoManager.OnPaperTempo += StartScale;
+			BeatController.OnAll4Beats += StartScalePaper;
 			//Horizontal movement
-			BeatController.OnBeat4th1 += StartMovePaper;
-			BeatController.OnBeat4th2 += StartMovePaper;
-			BeatController.OnBeat4th3 += StartMovePaper;
-			BeatController.OnBeat4th4 += StartMovePaper;
+			BeatController.OnAll4Beats += StartMovePaper;
 			break;
 		case "Ink":
 			//Vertical rhythm
-			TempoManager.OnInkTempo += StartScale;
+			BeatController.OnAll4Beats += StartScaleInk;
 			//Horizontal movement
-			BeatController.OnBeat4th1 += StartMoveInk;
-			BeatController.OnBeat4th2 += StartMoveInk;
-			BeatController.OnBeat4th3 += StartMoveInk;
-			BeatController.OnBeat4th4 += StartMoveInk;
+			BeatController.OnAll4Beats += StartMoveInk;
 			break;
 		case "UraniumRod":
 			//Vertical rhythm
-			TempoManager.OnUraniumRodTempo += StartScale;
+			BeatController.OnAll8Beats += StartScaleUranium;
 			//Horizontal movement
-			BeatController.OnBeat8th1 += StartMoveUranium;
-			BeatController.OnBeat8th2 += StartMoveUranium;
-			BeatController.OnBeat8th3 += StartMoveUranium;
-			BeatController.OnBeat8th4 += StartMoveUranium;
-			BeatController.OnBeat8th5 += StartMoveUranium;
-			BeatController.OnBeat8th6 += StartMoveUranium;
-			BeatController.OnBeat8th7 += StartMoveUranium;
-			BeatController.OnBeat8th8 += StartMoveUranium;
+			BeatController.OnAll8Beats += StartMoveUranium;
 			break;
 		case "Barometer":
-			TempoManager.OnBarometerTempo += StartScale;
+
 			break;
 		default:
 			Debug.LogWarning (gameObject.name+" received wrong moduleName. Subscribing nothing. Check _moduleName on prefab");
@@ -155,46 +161,46 @@ public class BpmSequencerItem : MonoBehaviour {
 		{
 		case "Paper":			
 			//Vertical rhythm
-			TempoManager.OnPaperTempo -= StartScale;
+			BeatController.OnAll4Beats -= StartScalePaper;
 			//Horizontal movement
-			BeatController.OnBeat4th1 -= StartMovePaper;
-			BeatController.OnBeat4th2 -= StartMovePaper;
-			BeatController.OnBeat4th3 -= StartMovePaper;
-			BeatController.OnBeat4th4 -= StartMovePaper;
+			BeatController.OnAll4Beats -= StartMovePaper;
 			break;
 		case "Ink":
-			TempoManager.OnInkTempo -= StartScale;
+			BeatController.OnAll4Beats -= StartScaleInk;
 			//Horizontal movement
-			BeatController.OnBeat4th1 -= StartMoveInk;
-			BeatController.OnBeat4th2 -= StartMoveInk;
-			BeatController.OnBeat4th3 -= StartMoveInk;
-			BeatController.OnBeat4th4 -= StartMoveInk;
+			BeatController.OnAll4Beats -= StartMoveInk;
 			break;
 		case "UraniumRod":
-			TempoManager.OnUraniumRodTempo -= StartScale;
+			BeatController.OnAll8Beats -= StartScaleUranium;
 			//Horizontal movement
-			BeatController.OnBeat8th1 -= StartMoveUranium;
-			BeatController.OnBeat8th2 -= StartMoveUranium;
-			BeatController.OnBeat8th3 -= StartMoveUranium;
-			BeatController.OnBeat8th4 -= StartMoveUranium;
-			BeatController.OnBeat8th5 -= StartMoveUranium;
-			BeatController.OnBeat8th6 -= StartMoveUranium;
-			BeatController.OnBeat8th7 -= StartMoveUranium;
-			BeatController.OnBeat8th8 -= StartMoveUranium;
+			BeatController.OnAll8Beats -= StartMoveUranium;
 			break;
 		case "Barometer":
-			TempoManager.OnBarometerTempo -= StartScale;
+			
 			break;
 		}
 	}
 	
 	//Punch and wobble!
-    public void StartScale()
+    public void StartScalePaper()
     {
-        iTween.PunchScale(gameObject, iTween.Hash("amount", new Vector3(0,20,0), "time", _ms));
+    	float scaleTime = _stepLenghts.fourths * 5.0f;
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
+    }
+    
+    public void StartScaleInk()
+    {
+    	float scaleTime = _stepLenghts.fourths * 5.0f;
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
+    }
+    
+    public void StartScaleUranium()
+    {
+    	float scaleTime = _stepLenghts.eights * 5.0f;
+        iTween.PunchScale(gameObject, iTween.Hash("amount", _scaleAmount, "time", scaleTime, "easeType", iTween.EaseType.linear));
     }
 		
-	//MoveMethods - could this be generalised?
+	//MoveMethods - crap method - TODO: could this be generalised?
 	public void StartMovePaper()
 	{
 		//Calibrate ze movetime
@@ -256,13 +262,19 @@ public class BpmSequencerItem : MonoBehaviour {
 		{
 		case "Paper":			
 			if(_steps.stepsMoved == red)
+			{
 				_statusZone = "Red";
+			}
 			else if(_steps.stepsMoved == yellow)
+			{
 				_statusZone = "Yellow";
+				_greenZoneScript.YellowOn();
+			}
 			else if(_steps.stepsMoved == green)
 			{
 				_statusZone = "Green";
 				_greenZoneScript.GreenOn();
+//                KillTaskPerfect();
 			}
 			else if(_steps.stepsMoved >= dead)
 			{
@@ -275,11 +287,17 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailed != null)				
 						OnFailed();
 					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
+					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
-                KillTask();
-			}		
+                _guiGameCameraScript.SetPauseElement(gameObject);
+                KillTaskFailed();
+			}
+			
+			ChangeTexture();
 			break;
 		case "Ink":
 			red = _steps.maxFourths-2;
@@ -288,13 +306,18 @@ public class BpmSequencerItem : MonoBehaviour {
 			dead = _steps.maxFourths+1;
 			
 			if(_steps.stepsMoved == red)
+			{
 				_statusZone = "Red";
+			}
 			else if(_steps.stepsMoved == yellow)
+			{
 				_statusZone = "Yellow";
+			}
 			else if(_steps.stepsMoved == green)
 			{
 				_statusZone = "Green";
 				_greenZoneScript.GreenOn();
+//                KillTaskPerfect();
 			}
 			else if(_steps.stepsMoved >= dead)
 			{
@@ -307,11 +330,16 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailed != null)				
 						OnFailed();
 					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
+					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
-                KillTask();
-			}	
+                _guiGameCameraScript.SetPauseElement(gameObject);
+                KillTaskFailed();
+			}
+			ChangeTexture();
 			break;
 		case "UraniumRod":
 			red = _steps.maxEights-2;
@@ -327,6 +355,7 @@ public class BpmSequencerItem : MonoBehaviour {
 			{
 				_statusZone = "Green";
 				_greenZoneScript.GreenOn();
+//                KillTaskPerfect();
 			}
 			else if(_steps.stepsMoved >= dead)
 			{
@@ -339,11 +368,16 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailed != null)				
 						OnFailed();
 					
+					if(OnFailedWithItem != null)
+						OnFailedWithItem(_moduleName);
+					
 					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
-                KillTask();
-			}	
+				_guiGameCameraScript.SetPauseElement(gameObject);
+                KillTaskFailed();
+			}
+			ChangeTexture();
 			break;
 		case "Barometer":
 			break;
@@ -353,6 +387,26 @@ public class BpmSequencerItem : MonoBehaviour {
 		}
 	}
 	
+	//Method for changing the texture of the item
+	private void ChangeTexture()
+	{
+        if(_statusZone == "Red")
+        {
+			renderer.material.mainTexture = _textures.red;
+        }
+        else if(_statusZone == "Yellow")
+        {
+			renderer.material.mainTexture = _textures.yellow;
+        }
+        else if(_statusZone == "Green")
+        {
+			renderer.material.mainTexture = _textures.green;
+        }
+		else			
+			renderer.material.mainTexture = _textures.red;
+	}
+	
+	//Method for identifying which zone the task is currently in
     public int GetZoneStatus()
     {
         if(_statusZone == "Red")
@@ -371,12 +425,35 @@ public class BpmSequencerItem : MonoBehaviour {
         return _zone;
     }
 	
-	private void KillTask()
+	//Methods for killing the task
+    private void KillTaskFailed()
+    {
+        iTween.MoveTo(gameObject, iTween.Hash("position", _failedPos, "time", _TaskKillTime, "easetype", iTween.EaseType.linear,
+            "oncomplete", "KillFailed", "oncompletetarget", gameObject));
+        iTween.ScaleTo(gameObject, iTween.Hash("scale", new Vector3(0.0f, 0.0f, 0.0f), "time", _TaskKillTime, "easetype", iTween.EaseType.linear));
+    }
+
+    private void KillTaskPerfect()
+    {
+        iTween.MoveTo(gameObject, iTween.Hash("position", _perfectPos, "time", _TaskKillTime, "easetype", iTween.EaseType.linear,
+            "oncomplete", "KillComplete", "oncompletetarget", gameObject));
+        iTween.ScaleTo(gameObject, iTween.Hash("scale", new Vector3(0.0f, 0.0f, 0.0f), "time", _TaskKillTime, "easetype", iTween.EaseType.linear));
+    }
+
+	private void KillFailed()
 	{
-		//TODO: implement kill particle task
-        Destroy(gameObject);
+        InstantiateParticles(_particles.failed, gameObject);
+		Destroy(gameObject);
+		_guiGameCameraScript.SetPauseElement(null);
 	}
-	
+
+    private void KillComplete()
+ {
+     //TODO: implement kill particle task
+        InstantiateParticles(_particles.completed, gameObject);
+        Destroy(gameObject);
+ }
+
 	//Method for instantiating particles
 	private void InstantiateParticles(GameObject particles, GameObject posRotGO)
 	{
@@ -390,7 +467,6 @@ public class BpmSequencerItem : MonoBehaviour {
 					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
 					//Child to DynamicObjects
 					tempParticles.transform.parent = _dynamicObjects.transform;
-					Debug.Log(gameObject.name+" instantiating particles");
 					return;
 				}				
 			}
@@ -398,7 +474,6 @@ public class BpmSequencerItem : MonoBehaviour {
 			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
 			//Child to DynamicObjects
 			tempParticles1.transform.parent = _dynamicObjects.transform;
-			Debug.Log(gameObject.name+" instantiating particles");
 		}
 	}
 	
@@ -460,4 +535,12 @@ public class BpmSequencerItem : MonoBehaviour {
 		public GameObject completed;
         public GameObject failed;
     };
+	
+    [System.Serializable]
+    public class Textures
+    {
+		public Texture2D red;
+		public Texture2D yellow;
+		public Texture2D green;
+	}
 }

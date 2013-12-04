@@ -31,6 +31,23 @@ public class SaveGame : MonoBehaviour
         return new int[1]{0};
     }
 
+    public static int[] GetMaxHighscores()
+    {
+        if(PlayerPrefs.HasKey("maxHighscoresAsString"))
+        {
+            return HighscoresStringToArray(PlayerPrefs.GetString("maxHighscoresAsString"));
+        }
+        return new int[1]{0};
+    }
+
+    public static void SetMaxHighscores(int[] maxHighscores)
+    {
+        if(PlayerPrefs.HasKey("maxHighscoresAsString"))
+        {
+            PlayerPrefs.SetString("maxHighscoresAsString", HighscoresArrayToString(maxHighscores));
+        }
+    }
+
     public static void SavePlayerData( int currency, int premiumCurrency, int[] highscores)
     {
         PlayerPrefs.SetInt("currency", currency);
@@ -42,7 +59,9 @@ public class SaveGame : MonoBehaviour
     {
         PlayerPrefs.SetInt("currency", 0);
         PlayerPrefs.SetInt("premiumCurrency", 0);
-        PlayerPrefs.SetString("highscoresAsString", "0;-1;-1;-1;-1;-1;");
+        PlayerPrefs.SetString("highscoresAsString", "0;-1;-1;-1;-1;-1;-1;-1;-1;-1");
+        PlayerPrefs.SetString("maxHighscoresAsString", "0;0;0;0;0;0;0;0;0;0");
+        PlayerPrefs.SetString("Tutorial","NotAnswered");
     }
 
     private static string HighscoresArrayToString(int[] highscores)

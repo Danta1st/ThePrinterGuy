@@ -6,23 +6,16 @@ public class GUIMainMenuCamera : MonoBehaviour
 {
 
     #region Editor Publics
-    [SerializeField]
-    private LayerMask _layerMaskGUI;
+    [SerializeField] private LayerMask _layerMaskGUI;
     //List of all gui elements.
-    [SerializeField]
-    private GameObject[] _guiList;
-    [SerializeField]
-    private GameObject[] _textList;
-    [SerializeField]
-    private iTween.EaseType _easeTypeCamera;
-	[SerializeField]
-	private ButtonTextures _menuTextures;
-    [SerializeField]
-    private GameObject _danishCheck;
-    [SerializeField]
-    private GameObject _englishCheck;
-    [SerializeField]
-    private GameObject _soundCheck;
+    [SerializeField] private GameObject[] _guiList;
+    [SerializeField] private GameObject[] _textList;
+    [SerializeField] private iTween.EaseType _easeTypeCamera;
+	[SerializeField] private ButtonTextures _menuTextures;
+    [SerializeField] private GameObject _danishCheck;
+    [SerializeField] private GameObject _englishCheck;
+    [SerializeField] private GameObject _soundCheck;
+    [SerializeField] private GameObject _subtitleCheck;
     #endregion
 
     #region Private Variables
@@ -39,6 +32,10 @@ public class GUIMainMenuCamera : MonoBehaviour
 	private GameObject _creditsButton;
 	private GameObject _menuButtonLeft;
 	private GameObject _menuButtonRight;
+    private LevelManager _levelManager;
+    GameObject _tutorialScaler;
+    private Vector3 _tutorialTransformScale;
+    private bool walkAnimationOver = false;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -133,6 +130,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 				continue;
             _gui.SetActive(false);
         }
+		ResetGuiTextures();
     }
     #endregion
 
@@ -150,9 +148,15 @@ public class GUIMainMenuCamera : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        SoundManager.UnFadeAllMusic();
+        SoundManager.TurnOnMenuSounds();
+        _levelManager = gameObject.GetComponent<LevelManager>();
+        _tutorialScaler = gameObject.transform.Find("TutorialScalar").gameObject;
+
         _danishCheck.renderer.enabled = false;
         _englishCheck.renderer.enabled = false;
         _soundCheck.renderer.enabled = false;
+        _subtitleCheck.renderer.enabled = false;
 
 		if(PlayerPrefs.HasKey("selectedLanguage"))
 		{
@@ -175,15 +179,26 @@ public class GUIMainMenuCamera : MonoBehaviour
             if(PlayerPrefs.GetString("Sound") == "On")
             {
                 _soundCheck.renderer.enabled = true;
-//                Camera.main.audio.mute = false;
             }
-//            else
-//                 Camera.main.audio.mute = true;
         }
         else
         {
             PlayerPrefs.SetString("Sound", "On");
             _soundCheck.renderer.enabled = true;
+        }
+
+        //HandleSubtitleButtons
+        if(PlayerPrefs.HasKey("Subtitle"))
+        {
+            if(PlayerPrefs.GetString("Subtitle") == "On")
+            {
+                _subtitleCheck.renderer.enabled = true;
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetString("Subtitle", "On");
+            _subtitleCheck.renderer.enabled = true;
         }
 
         //GUI Camera and rescale of GUI elements.
@@ -249,6 +264,9 @@ public class GUIMainMenuCamera : MonoBehaviour
         EnableGUICamera();
         SwitchToMainMenu();
 		UpdateText();
+        _tutorialTransformScale = _tutorialScaler.transform.localScale;
+        _tutorialScaler.transform.localScale = new Vector3(0,0,0);
+
 
         SoundManager.Music_Menu_Main();
     }
@@ -303,6 +321,8 @@ public class GUIMainMenuCamera : MonoBehaviour
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
                 {
+					var hitObject = _hit.collider.gameObject;
+					
                     if(_hit.collider.gameObject.name == "SoundButton")
                     {
                         if(_soundCheck.renderer.enabled == true)
@@ -319,18 +339,38 @@ public class GUIMainMenuCamera : MonoBehaviour
                             SoundManager.CheckAudioToogle();
                         }
                     }
-                    else if(_hit.collider.gameObject.name == "MusicButton")
+                    else if(_hit.collider.gameObject.name == "SubtitleButton")
+                    {
+                        if(_subtitleCheck.renderer.enabled == true)
+                        {
+                            _subtitleCheck.renderer.enabled = false;
+                            PlayerPrefs.SetString("Subtitle", "Off");
+                            //Turn Subtitles OFF
+                        }
+                        else
+                        {
+                            _subtitleCheck.renderer.enabled = true;
+                            PlayerPrefs.SetString("Subtitle", "On");
+                            //Turn Subtitles ON
+                        }
+                    }
+
+                    else if(_hit.collider.gameObject.name == "ResetButton")
                     {
                         SaveGame.ResetPlayerData();
                     }
+
                     else if(_hit.collider.gameObject.name == "OptionsButton")
                     {
                         if(OnOptionsScreen != null)
                         {
-							//_optionsButton.renderer.material.mainTexture = _menuTextures.OptionsButtonPressed;
-							
                             OnOptionsScreen();
-                            DisableGUIElementAll();
+							
+							//Do fancy 'User Pressed a button' Animation
+							SetTexture(hitObject, _menuTextures.optionsPressed);
+							PunchButton(hitObject);
+							//Reset
+                            Invoke("DisableGUIElementAll", _punchTime);
                         }
                     }
                     else if(_hit.collider.gameObject.name == "CreditsButton")
@@ -338,18 +378,28 @@ public class GUIMainMenuCamera : MonoBehaviour
                         if(OnCreditScreen != null)
                         {
                             OnCreditScreen();
+							
+							
+							//Do fancy 'User Pressed a button' Animation
+							SetTexture(hitObject, _menuTextures.creditsPressed);
+							PunchButton(hitObject);
+							//Reset
+                            Invoke("DisableGUIElementAll", _punchTime);
+							
 							credits.SetCreditsRunning(true);
-                            DisableGUIElementAll();
                         }
                     }
                     else if(_hit.collider.gameObject.name == "MenuButtonLeft")
                     {
                         if(OnMainScreen != null)
                         {
-							_optionsButton.renderer.material.mainTexture = _menuTextures.OptionsButton;
                             OnMainScreen();
-
-                            DisableGUIElementAll();
+							
+							//Do fancy 'User Pressed a button' Animation
+							SetTexture(hitObject, _menuTextures.leftPressed);
+							PunchButton(hitObject);
+							//Reset
+                            Invoke("DisableGUIElementAll", _punchTime);
                         }
                     }
                     else if(_hit.collider.gameObject.name == "MenuButtonRight")
@@ -377,12 +427,37 @@ public class GUIMainMenuCamera : MonoBehaviour
                         LocalizationText.SetLanguage("EN");
                         UpdateText();
                     }
+                    else if (_hit.collider.gameObject.name == "TakeTutorialNo")
+                    {
+                        GameObject checkMark = _hit.collider.gameObject;
+                        PlayerPrefs.SetString("Tutorial", "Answered");
+                        int[] highScore = SaveGame.GetPlayerHighscores();
+
+                        for (int i = 0; i < 6; i++) {
+                            highScore[i] = 0;
+                        }
+
+                        SaveGame.SavePlayerData(0,0,highScore);
+                        foreach(GameObject stageChar in _levelManager.GetStageCharacters())
+                        {
+                            StageCharacter stageCharScript = stageChar.GetComponent<StageCharacter>();
+                            stageCharScript.Unlock();
+                        }
+                        _levelManager.UnlockLevels();
+
+                        ScaleArrowUpAndThenTutorialQuestionDown(checkMark);
+                    }
+                    else if (_hit.collider.gameObject.name == "TakeTutorialYes")
+                    {   //GameObject checkMark = _hit.collider.gameObject.transform.Find("TakeTutorialYes").gameObject;
+                        ScaleArrowUpAndThenTutorialQuestionDown(_hit.collider.gameObject);
+                        Invoke("SwitchToJanitorFromMainMenu", 1f);
+                    }
 
                     SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }
-            else if(Physics.Raycast(_mainCamRay,out _hit))
+            else if(Physics.Raycast(_mainCamRay, out _hit))
 			{
 				if(_isOnStartScreen && _hit.collider.gameObject.name == "TapToPlay")
             	{
@@ -392,10 +467,12 @@ public class GUIMainMenuCamera : MonoBehaviour
 					_hit.collider.gameObject.SetActive(false);
 					_isOnStartScreen = false;
 					DisableGUIElement("MainMenu");
+                    GameObject goLPRP = GameObject.Find ("levelPointerRotationPoint");
 					GameObject goLM = GameObject.Find ("elevatorDoor_L_MoveTo");
 					GameObject goRM = GameObject.Find ("elevatorDoor_R_MoveTo");
 					GameObject goL = GameObject.Find ("elevatorDoor_L");
 					GameObject goR = GameObject.Find ("elevatorDoor_R");
+                    iTween.RotateTo(goLPRP, iTween.Hash("z", 90f, "time", 2, "easetype", iTween.EaseType.easeOutElastic));
 					iTween.MoveTo(goL, iTween.Hash("position", goLM.transform.position,
                                                     "time", 2,
                                                     "easetype", iTween.EaseType.easeOutSine));
@@ -407,14 +484,33 @@ public class GUIMainMenuCamera : MonoBehaviour
                                                     "easetype", iTween.EaseType.linear,
                                                     "looktarget", lvlManager.getLookTarget().transform,
                                                     "looktime", 3,
-                                                    "oncomplete", "SwitchToMainMenu",
+                                                    "oncomplete", "CheckForTutorial",
                                                     "oncompletetarget", gameObject));
-				} else {
+				}
+                else if(PlayerPrefs.GetString("Tutorial") == "Answered" && walkAnimationOver)
+                {
 					if(OnLevelManagerEvent != null)
 						OnLevelManagerEvent(_go, _screenPosition);
 				}
 				
             }
+        }
+    }
+
+    private void CheckForTutorial()
+    {
+        if(!PlayerPrefs.HasKey("Tutorial"))
+        {
+            PlayerPrefs.SetString("Tutorial", "NotAnswered");
+        }
+        else if(PlayerPrefs.GetString("Tutorial") == "NotAnswered")
+        {
+           iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", _tutorialTransformScale, "time", 0.5f, "easeType", iTween.EaseType.easeOutBack));
+        }
+        else
+        {
+            SwitchToMainMenu();
+            walkAnimationOver = true;
         }
     }
 
@@ -452,6 +548,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 			iTweenPath path = Camera.main.GetComponent<iTweenPath>();
 		
 	        Camera.main.transform.position = path.nodes[path.nodes.Count - 1];
+            walkAnimationOver = true;
 			_isOnStartScreen = false;
 			
         	EnableGUIElement("OptionsButton");
@@ -467,6 +564,21 @@ public class GUIMainMenuCamera : MonoBehaviour
 		}
     }
 
+    private void SwitchToJanitorFromMainMenu()
+    {
+        OnLevelManagerEvent(_levelManager.GetStageCharacters()[0], new Vector3(0,0,0));
+    }
+
+    private void ScaleArrowUpAndThenTutorialQuestionDown(GameObject checkMark)
+    {
+        checkMark.transform.localScale = new Vector3(0,0,1);
+        checkMark.renderer.enabled = true;
+        iTween.ScaleTo(checkMark, iTween.Hash("scale", new Vector3(175,175,1), "time", 0.5f, "easeType", iTween.EaseType.easeOutBack));
+        iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 0.5f, "easeType", iTween.EaseType.easeInBack, "delay", 0.5f));
+        SwitchToMainMenu();
+        PlayerPrefs.SetString("Tutorial", "Answered");
+    }
+
     private void UpdateText()
     {
         foreach(GameObject _text in _textList)
@@ -477,16 +589,55 @@ public class GUIMainMenuCamera : MonoBehaviour
 				Debug.LogWarning(gameObject.name+" found no text in _textList");
         }		
     }
+	
+	private void ResetGuiTextures()
+	{        
+		foreach(GameObject _guiObject in _guiList)
+        {
+			if(_guiObject == null)
+				continue;
+			
+            if(_guiObject.name == "MenuButtonLeft")
+            {
+				SetTexture(_guiObject, _menuTextures.left);
+            }			
+            if(_guiObject.name == "OptionsButton")
+            {
+				SetTexture(_guiObject, _menuTextures.options);
+            }
+            if(_guiObject.name == "CreditsButton")
+            {
+				SetTexture(_guiObject, _menuTextures.credits);
+            }
+        }
+		
+	}
+	
+	private float _punchTime = 0.4f;
+	private void PunchButton(GameObject button)
+	{		
+		iTween.PunchScale(button, new Vector3(35f, 35f, 35f), _punchTime);
+	}
+	private void PunchButtonPrecise(GameObject button, Vector3 scale)
+	{		
+		iTween.PunchScale(button, scale, _punchTime);
+	}
+	
+	private void SetTexture(GameObject go, Texture2D texture)
+	{
+		go.renderer.material.mainTexture = texture;
+	}
     #endregion
+	
+	[System.Serializable]
+	public class ButtonTextures
+	{
+		public Texture2D options;
+		public Texture2D optionsPressed;
+		public Texture2D credits;
+		public Texture2D creditsPressed;
+		public Texture2D left;
+		public Texture2D leftPressed;
+	}
 }
 
-[System.Serializable]
-public class ButtonTextures
-{
-	public Texture OptionsButton;
-	public Texture OptionsButtonPressed;
-	public Texture CreditsButton;
-	public Texture CreditsButtonPressed;
-	public Texture BackToLevelSelecButton;
-	public Texture BackToLevelSelecButtonPressed;
-}

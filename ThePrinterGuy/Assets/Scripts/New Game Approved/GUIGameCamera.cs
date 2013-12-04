@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,10 +24,7 @@ public class GUIGameCamera : MonoBehaviour
 	[SerializeField] private iTween.EaseType _easeTypeTextPunch;
 	[SerializeField] private TextPositionalOffset _offsetValues;
     //Pressed and Non-pressed icon textures
-    [SerializeField] private Texture2D LevelPlayTexture;
-    [SerializeField] private Texture2D LevelPlayPressedTexture;
-    [SerializeField] private Texture2D LevelReplayPressedTexture;
-    [SerializeField] private Texture2D LevelQuitPressedTexture;
+    [SerializeField] private ButtonTextures _buttonTextures;
     #endregion
 
     #region Private Variables
@@ -42,24 +40,24 @@ public class GUIGameCamera : MonoBehaviour
     private bool _waitForMe = false;
     private string _currentTaskType;
     private GameObject resumeButtom;
+	private bool _isPaused = false;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
     //Ingame menu variables.
+    private List<GameObject> _statsOverviewList = new List<GameObject>();
     private GameObject _statsOverviewObject;
     private Vector3 _statsOverviewMoveAmount;
     private float _statsOverviewDuration = 1.0f;
+	
+	//PauseScreen Objects
+	private GameObject _pauseCurrScore;
+	private GameObject _pauseHighScore;
 	
 	//Highscore Variables.
 	private int _score = 0;
 	private string _strScore = "0";
 	private GameObject _scoreValueObject;
-	private GameObject _star1Object;
-	private GameObject _star2Object;
-	private GameObject _star3Object;
-	private bool _isStar1Spawned;
-	private bool _isStar2Spawned;
-	private bool _isStar3Spawned;
 
     //Action Sequencer
     private Vector3 _spawnPoint;
@@ -68,10 +66,16 @@ public class GUIGameCamera : MonoBehaviour
     private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
     private int _zone = 0;
     private bool _isLastNode = false;
+	private GameObject _pausedGameObject = null;
 	
 	//Dialogue variables - Speech bubble
 	private GameObject _speechTextObject;
 	private GUISpeechText _guiSpeechTextScript;
+	
+	//Module script references
+	private UraniumRods _uraniumReference;
+	private PaperInsertion _paperReference;
+	private Ink _inkReference;
     #endregion
 	
 	#region Delegates & Events
@@ -129,6 +133,17 @@ public class GUIGameCamera : MonoBehaviour
 		
         ScoreManager.OnTaskCompleted -= CheckZone;
     }
+	
+	void OnApplicationPause(bool status)
+	{
+		if(status == true && !_isPaused)
+		{
+	        if(OnPause != null)
+	            OnPause();
+			
+			OpenIngameMenu();
+		}
+	}
 
     public void EnableGUICamera()
     {
@@ -159,7 +174,7 @@ public class GUIGameCamera : MonoBehaviour
         {
             if(_gui.name == _name)
             {
-                _gui.SetActive(false);
+                _gui.SetActive(false);				
             }
         }
     }
@@ -180,11 +195,36 @@ public class GUIGameCamera : MonoBehaviour
         }
     }
     #endregion
-
+	
+	private void GetModuleReferences()
+	{
+		if(GameObject.FindGameObjectWithTag("PopoutTask") != null)
+			_uraniumReference = GameObject.FindGameObjectWithTag("PopoutTask").GetComponent<UraniumRods>();
+		if(GameObject.FindGameObjectWithTag("TrayTask") != null)
+			_paperReference = GameObject.FindGameObjectWithTag("TrayTask").GetComponent<PaperInsertion>();
+		if(GameObject.FindGameObjectWithTag("InkTask") != null)
+			_inkReference = GameObject.FindGameObjectWithTag("InkTask").GetComponent<Ink>();
+	}
+	
     #region Start and Update
     // Use this for initialization
+    void Awake()
+    {
+        GameObject thisSoundRelay = GameObject.FindGameObjectWithTag("AudioRelay");
+
+        if(thisSoundRelay == null)
+        {
+            Instantiate(Resources.Load("Prefabs/SoundRelay"));
+        }
+		
+		GetModuleReferences();
+    }
+
     void Start()
     {
+        SoundManager.UnFadeAllMusic();
+        SoundManager.TurnOnVoice();
+
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
@@ -198,15 +238,34 @@ public class GUIGameCamera : MonoBehaviour
 
         //Find specific gui objects in the gui list.
         //--------------------------------------------------//
+		_pauseCurrScore = GameObject.Find("CurrentScoreValue").gameObject;
+		_pauseHighScore = GameObject.Find("HighscoreValue").gameObject;
+		
         foreach(GameObject _guiObject in _guiList)
         {
-			if(_guiObject.name == "IngameMenu" || _guiObject.name == "BGIngameMenu")
+			if(_guiObject.name == "IngameMenu")
+			{
+				Transform[] _tempList = _guiObject.GetComponentsInChildren<Transform>();
+				foreach(Transform _go in _tempList)
+				{
+					_statsOverviewList.Add(_go.gameObject);
+				}
+				_guiObject.SetActive(false);
+			}
+			
+			if(_guiObject.name == "PauseButton")
+			{
+				_statsOverviewList.Add(_guiObject.gameObject);
+			}
+			
+			if(_guiObject.name == "BGIngameMenu")
 			{
 				_guiObject.SetActive(false);
 			}
 			
             if(_guiObject.name == "StatsOverview")
             {
+				
                 _statsOverviewObject = _guiObject;
 
                 Vector3 _tempStatsOverviewPos = new Vector3(_statsOverviewObject.transform.position.x, _statsOverviewObject.transform.position.y, 1);
@@ -219,9 +278,6 @@ public class GUIGameCamera : MonoBehaviour
 			if(_guiObject.name == "Highscore")
             {
                 _scoreValueObject = _guiObject.transform.FindChild("ScoreValue").gameObject;
-				_star1Object = _guiObject.transform.FindChild("Star1").gameObject;
-				_star2Object = _guiObject.transform.FindChild("Star2").gameObject;
-				_star3Object = _guiObject.transform.FindChild("Star3").gameObject;
             }
 
             if(_guiObject.name == "ActionSequencer")
@@ -237,14 +293,10 @@ public class GUIGameCamera : MonoBehaviour
 			}
         }
         //--------------------------------------------------//
-
+		
 		UpdateText();
 		
         EnableGUICamera();
-		
-		_star1Object.SetActive(false);
-		_star2Object.SetActive(false);
-		_star3Object.SetActive(false);
 		
 		_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
     }
@@ -312,7 +364,6 @@ public class GUIGameCamera : MonoBehaviour
 		_score += (int)_amount;
 		_strScore = _score.ToString();
 		ShowScore();
-		ShowStars();
 	}
 	
 	public void IncreaseScorePopup(float _amount)
@@ -334,7 +385,6 @@ public class GUIGameCamera : MonoBehaviour
 		}
 		
 		ShowScore();
-		ShowStars();
 	}
 	
 	private void ShowScore()
@@ -342,92 +392,41 @@ public class GUIGameCamera : MonoBehaviour
 		 _scoreValueObject.GetComponent<TextMesh>().text = _strScore;
 		iTween.PunchScale(_scoreValueObject, new Vector3(3f,3f,0f),0.4f);	
 	}
-	
-	private void ShowStars()
-	{
-		if(_score >= 10000 && _score < 25000)
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(false);
-			_star3Object.SetActive(false);
 			
-			if(!_isStar1Spawned)
-			{
-				iTween.PunchScale(_star1Object, new Vector3(20f,20f,0f),1f);
-				_isStar1Spawned = true;
-			}
-			
-		}
-		else if(_score >= 25000 && _score < 40000)
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(true);
-			_star3Object.SetActive(false);
-			
-			if(!_isStar2Spawned)
-			{
-				iTween.PunchScale(_star2Object, new Vector3(20f,20f,0f),1f);
-				_isStar2Spawned = true;
-			}
-			
-		}
-		else if(_score >= 40000)
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(true);
-			_star3Object.SetActive(true);
-			
-			
-			if(!_isStar3Spawned)
-			{
-				iTween.PunchScale(_star3Object, new Vector3(20f,20f,0f),1f);
-				_isStar3Spawned = true;
-			}
-		}
-		else
-		{
-			_star1Object.SetActive(false);
-			_star2Object.SetActive(false);
-			_star3Object.SetActive(false);
-			
-			_isStar1Spawned = false;
-			_isStar2Spawned = false;
-			_isStar3Spawned = false;
-			
-			
-		}
-	}
-	
 	public void PopupTextSmall(string _str)
 	{
-		PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
+		//PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
+		PopupText(_str);
 	}
 	
 	public void PopupTextMedium(string _str)
 	{
-		PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
+		//PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
+		PopupText(_str);
 	}
 	
 	public void PopupTextBig(string _str)
 	{
-		PopupText(_str, 10f, 100f, new Color(1f ,0.7f ,0f, 1f), new Color(1f ,0.7f ,0f, 0.7f));
+		//PopupText(_str, 10f, 100f, new Color(1f ,0.7f ,0f, 1f), new Color(1f ,0.7f ,0f, 0.7f));
+		PopupText(_str);
 	}
 	
-	public void PopupText(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
+	public void PopupText(string _str)
 	{
-		StartCoroutine(InstantiatePopup(_str, _circles, _starTrail, _trailColor, _circleColor));
+		StartCoroutine(InstantiatePopup(_str));
 	}
 	
-	private IEnumerator InstantiatePopup(string _str, float _circles, float _starTrail, Color _trailColor, Color _circleColor)
+	private IEnumerator InstantiatePopup(string _str)
 	{	
 		
-		float _xPopupPos = Random.Range(_offsetValues.startX,_offsetValues.endX);
-		float _yPopupPos = Random.Range(_offsetValues.startY,_offsetValues.endY);
+		//float _xPopupPos = UnityEngine.Random.Range(_offsetValues.startX,_offsetValues.endX);
+		float _xPopupPos = 0.125f;
+		float _yPopupPos = 0.55f;
 		float _fontSize = 150f;
 		float _fadeInDuration = 0.5f;
-		float _fadeOutDuration = 1.2f;
+		float _fadeOutDuration = 0.5f;
 		float _punchAmmount = -10f;
-		float _moveLength = 600f * _scaleMultiplierY;
+		float _moveLength = -20.0f * _scaleMultiplierY;
 		
 		Vector3 _popupTextPos = _guiCamera.ViewportToWorldPoint(new Vector3(_xPopupPos,_yPopupPos, _guiCamera.nearClipPlane));
 		_popupTextPos.z = 1f;
@@ -437,13 +436,6 @@ public class GUIGameCamera : MonoBehaviour
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
-		
-		_particleSystems = _popupObject.GetComponentsInChildren<ParticleSystem>();
-		
-		_particleSystems[0].particleSystem.emissionRate = _starTrail;
-		_particleSystems[1].particleSystem.emissionRate = _circles;
-		_particleSystems[0].particleSystem.startColor = _trailColor;
-		_particleSystems[1].particleSystem.startColor = _circleColor;
 		
 		iTween.MoveTo(_popupTextObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
 			"time", (_fadeInDuration + _fadeOutDuration), "easetype", _easeTypeTextMove));
@@ -509,6 +501,7 @@ public class GUIGameCamera : MonoBehaviour
 
             if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
             {
+				var hitObject = _hit.collider.gameObject;
                 //General GUI layer mask.
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
@@ -522,34 +515,40 @@ public class GUIGameCamera : MonoBehaviour
                     if(_hit.collider.gameObject.name == "PauseButton")
                     {
                         if(OnPause != null)
-                            OnPause();
-                        OpenIngameMenu();
+                            OnPause();										
+						
+						SetTexture(hitObject, _buttonTextures.pausePressed);
+						//Punch & open the menu
+						PunchButtonOnComplete(hitObject, "OpenIngameMenu");
                     }
                     else if(_hit.collider.gameObject.name == "ResumeButton")
                     {
-                        _hit.collider.gameObject.renderer.material.mainTexture = LevelPlayPressedTexture;
-                        CloseIngameMenu();
+						SetTexture(hitObject, _buttonTextures.resumePressed);
+						//punch and close menu
+						PunchButtonOnComplete(hitObject, "CloseIngameMenu");
                     }
                     else if(_hit.collider.gameObject.name == "RestartButton")
                     {
-                        _hit.collider.gameObject.renderer.material.mainTexture = LevelReplayPressedTexture;
                         if(OnRestart != null)
                             OnRestart();
-                        RestartLevel();
+						
+						SetTexture(hitObject, _buttonTextures.restartPressed);						
+						//Punch & restart level
+						PunchButtonOnComplete(hitObject, "RestartLevel");
                     }
                     else if(_hit.collider.gameObject.name == "QuitButton")
                     {
-                        _hit.collider.gameObject.renderer.material.mainTexture = LevelQuitPressedTexture;
                         if(OnToMainMenuFromLevel != null)
                             OnToMainMenuFromLevel();
-                        QuitLevel();
+						
+						SetTexture(hitObject, _buttonTextures.homePressed);	
+						//Punch and quit level
+						PunchButtonOnComplete(hitObject, "QuitLevel");
                     }
                     else if(_hit.collider.gameObject.name == "SettingsButton")
                     {
 						Settings();
                     }
-
-                    SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }
@@ -563,14 +562,28 @@ public class GUIGameCamera : MonoBehaviour
     #region GUI Ingame Menu
     private void OpenIngameMenu()
     {
+		_isPaused = true;
         SaveGUIState();
         DisableGUIElement("Pause");
+		ResetGuiTextures();
         EnableGUIElement("IngameMenu");
 		EnableGUIElement("StatsOverview");
 		EnableGUIElement("BGIngameMenu");
 		
+		_pauseCurrScore.GetComponent<TextMesh>().text = GetScore().ToString();
+		int[] highScores = SaveGame.GetPlayerHighscores();
+		try
+		{
+			_pauseHighScore.GetComponent<TextMesh>().text = highScores[ConstantValues.GetLoadedLevelMinusStartLevels(Application.loadedLevel)].ToString();
+		}
+		catch(Exception)
+		{
+			_pauseHighScore.GetComponent<TextMesh>().text = "0";
+		}
+		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
-						"duration", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
+						"time", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
+		
         Time.timeScale = 0.0f;
         AudioListener.pause = true;
         SoundManager.StoreVolumes();
@@ -609,10 +622,14 @@ public class GUIGameCamera : MonoBehaviour
     private void UnPauseTimeScale()
     {
         Time.timeScale = 1.0f;
+		_isPaused = false;
         AudioListener.pause = false;
+        SoundManager.TurnOnMenuSounds();
+        SoundManager.Effect_Menu_Click();
         SoundManager.FadeAllSourcesUp();
         //Resets the play icon back to the non-pressed.
-        _hit.collider.gameObject.renderer.material.mainTexture = LevelPlayTexture;
+        //FIXME
+		//_hit.collider.gameObject.renderer.material.mainTexture = LevelPlayTexture;
 
         LoadGUIState();
 
@@ -641,8 +658,11 @@ public class GUIGameCamera : MonoBehaviour
     private void RestartLevel()
     {
 		//TODO: Need confirmation before restart.
+		LoadGUIState();
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.TurnOnMenuSounds();
+        SoundManager.Effect_Menu_Click();
         SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(Application.loadedLevel, true);
     }
@@ -652,6 +672,8 @@ public class GUIGameCamera : MonoBehaviour
     {
 		Time.timeScale = 1.0f;
         AudioListener.pause = false;
+        SoundManager.TurnOnMenuSounds();
+        SoundManager.Effect_Menu_Click();
         SoundManager.FadeAllSourcesUp();
         LoadingScreen.Load(ConstantValues.GetStartScene);
     }
@@ -693,6 +715,7 @@ public class GUIGameCamera : MonoBehaviour
 		//TODO: Set _nodeItem parent to DynamicObjects
         _nodeItem.transform.localScale *= _scaleMultiplierY;
         _sequencerObjectQueue.Enqueue(_nodeItem);
+		
 		if(_sequencerObjectQueue.Count == 1)
 		{
 			if(OnUpdateAction != null)
@@ -708,18 +731,53 @@ public class GUIGameCamera : MonoBehaviour
         {
             _queuedObject = _sequencerObjectQueue.Peek();
 
-            Debug.Log(gameObject.name+" Setting _queuedObject to: "+_queuedObject.name);
 			BpmSequencerItem _bpmSequencerItem = _queuedObject.GetComponent<BpmSequencerItem>();
             //ActionSequencerItem _actionSequencerItemScript = _queuedObject.GetComponent<ActionSequencerItem>();
             _zone = _bpmSequencerItem.GetZoneStatus();
 			
-            if(OnTaskEnd != null)
-                OnTaskEnd(_currentTaskType, _zone);
-			
-            EndZone(_queuedObject, true);
+			//Check if player is in completion zone
+			if(_zone == 2 || _zone == 3)
+			{
+	            if(OnTaskEnd != null)
+	                OnTaskEnd(_currentTaskType, _zone);
+				
+	            EndZone(_queuedObject, true);
+			}
+			else
+				ReTriggerTask(_bpmSequencerItem.GetTaskName());
         }
     }
-
+	
+	private void ReTriggerTask(string taskName)
+	{
+		switch(taskName)
+		{
+		case "Paper":
+			_paperReference.ReTriggerLight();
+			break;
+		case "Ink":
+			_inkReference.ReTriggerInkTask();
+			break;
+		case "UraniumRod":
+			_uraniumReference.ReTriggerSpring();
+			break;
+		case "Barometer":
+			break;
+		default:
+			Debug.LogWarning (gameObject.name+" could not reTrigger a task. Is a reference missing?");
+			break;
+		}
+		
+	}
+	
+	public void SetPauseElement(object obj)
+	{
+		if(obj != null)
+			_pausedGameObject = (GameObject)obj;
+		else
+			_pausedGameObject = null;
+	}
+	
     public void EndZone(GameObject _go, bool shouldDestroy)
     {
 		_greenZoneScript.GreenOff();
@@ -775,6 +833,9 @@ public class GUIGameCamera : MonoBehaviour
 				obj.SetActive(false);
 			}
 		}
+		
+		if(_pausedGameObject != null)
+			_pausedGameObject.SetActive(false);
 
         foreach(GameObject _gui in _guiList)
         {
@@ -798,6 +859,9 @@ public class GUIGameCamera : MonoBehaviour
 			}
 		}
 		
+		if(_pausedGameObject != null)
+			_pausedGameObject.SetActive(true);
+		
         foreach(GameObject _gui in _guiSaveList)
         {
             _gui.SetActive(true);
@@ -816,6 +880,54 @@ public class GUIGameCamera : MonoBehaviour
         {
             _text.GetComponent<LocalizationKeywordText>().LocalizeText();
         }
+	}
+	
+	//Gui Helper Methods	
+	private void ResetGuiTextures()
+	{        
+		foreach(GameObject _guiObject in _statsOverviewList)
+        {
+			if(_guiObject == null)
+				continue;
+			
+			switch(_guiObject.name)
+			{
+			case "PauseButton":
+				SetTexture(_guiObject, _buttonTextures.pause);
+				break;
+			case "ResumeButton":
+				SetTexture(_guiObject, _buttonTextures.resume);
+				break;
+			case "QuitButton":
+				SetTexture(_guiObject, _buttonTextures.home);
+				break;
+			case "RestartButton":
+				SetTexture(_guiObject, _buttonTextures.restart);
+				break;
+			}
+        }		
+	}
+	
+	private float _punchTime = 0.4f;
+	private void PunchButton(GameObject button)
+	{		
+		var scale = new Vector3(35f, 35f, 35f);
+		iTween.PunchScale(button, iTween.Hash("amount", scale, "ignoretimescale", true, "time", _punchTime));
+	}
+	private void PunchButtonOnComplete(GameObject button, string onCompleteMethod)
+	{		
+		var scale = new Vector3(35f, 35f, 35f);
+		iTween.PunchScale(button, iTween.Hash("amount", scale, "time", _punchTime, "ignoretimescale", true,
+												"oncomplete", onCompleteMethod, "oncompletetarget", this.gameObject));
+	}
+	private void PunchButtonPrecise(GameObject button, Vector3 scale)
+	{		
+		iTween.PunchScale(button, scale, _punchTime);
+	}
+	
+	private void SetTexture(GameObject go, Texture2D texture)
+	{
+		go.renderer.material.mainTexture = texture;
 	}
 	
     #endregion
@@ -838,13 +950,27 @@ public class GUIGameCamera : MonoBehaviour
         _currentTaskType = "Barometers";
     }
     #endregion
+	
+	[System.Serializable]
+	public class TextPositionalOffset
+	{
+		public float startX = 0.125f;
+		public float endX = 0.125f;
+		public float startY = 0.75f;
+		public float endY = 0.75f;
+	}
+	
+	[System.Serializable]
+	public class ButtonTextures
+	{
+		public Texture2D pause;
+		public Texture2D pausePressed;
+		public Texture2D resume;
+		public Texture2D resumePressed;
+		public Texture2D restart;
+		public Texture2D restartPressed;
+		public Texture2D home;
+		public Texture2D homePressed;
+	}
 }
 
-[System.Serializable]
-public class TextPositionalOffset
-{
-	public float startX = 0.35f;
-	public float endX = 0.65f;
-	public float startY = 0.35f;
-	public float endY = 0.45f;
-}

@@ -19,8 +19,10 @@ public class ScoreManager : MonoBehaviour
 	#endregion
 	
 	#region Privates
-	private GUIGameCamera guiGameCameraScript;
 	private float _multiplier;
+	//Script references
+	private GUIGameCamera guiGameCameraScript;
+	private StressOMeter _stressOmeterReference;
 	#endregion
 	
 	#region Delegates and Events
@@ -29,6 +31,12 @@ public class ScoreManager : MonoBehaviour
 	#endregion
 	
 	#region Unity Methods
+	void Awake()
+	{
+		if(GameObject.FindGameObjectWithTag("StressOmeter") != null)
+			_stressOmeterReference = GameObject.FindGameObjectWithTag("StressOmeter").GetComponent<StressOMeter>();
+	}
+	
 	void Start () 
 	{
 		guiGameCameraScript = GameObject.Find("GUI List").GetComponent<GUIGameCamera>();
@@ -49,6 +57,8 @@ public class ScoreManager : MonoBehaviour
 		PaperInsertion.OnCorrectPaperInserted += PaperSuccess;
 		Barometer.OnBarometerFixed += BarometerSuccess;
 		UraniumRods.OnRodHammered += RodSuccess;
+		Ink.OnInkError += InkError;
+		PaperInsertion.OnPaperError += PaperError;
 		
 		//StressOMeter Subscriptions
 		StressOMeter.OnHappyZone += EnableHappyMultiplier;
@@ -62,7 +72,9 @@ public class ScoreManager : MonoBehaviour
 		PaperInsertion.OnCorrectPaperInserted -= PaperSuccess;
 		Barometer.OnBarometerFixed -= BarometerSuccess;
 		UraniumRods.OnRodHammered -= RodSuccess;
-	
+		Ink.OnInkError -= InkError;
+		PaperInsertion.OnPaperError -= PaperError;
+		
 		//StressOMeter Subscriptions
 		StressOMeter.OnAngryZone -= EnableHappyMultiplier;
 		StressOMeter.OnZoneLeft -= DisableHappyMultiplier;
@@ -82,60 +94,114 @@ public class ScoreManager : MonoBehaviour
 	#endregion
 	
 	#region Public Methods
+    public ScoreMultipliers GetScoreMultipliers()
+    {
+        return _scoreMultiplier;
+    }
+
+    public float GetGreenZoneModifier()
+    {
+        return GreenZoneModifier;
+    }
+
+    public float GetPaperPointsBase()
+    {
+        return PaperPointsBase;
+    }
+
+    public float GetBarometerPointsBase()
+    {
+        return BarometerPointsBase;
+    }
+
+    public float GetInkPointsBase()
+    {
+        return InkPointsBase;
+    }
+
+    public float GetRodPointsBase()
+    {
+        return RodPointsBase;
+    }
+
 	public void InkSuccess()
 	{
-		StartCoroutine_Auto(GOCRAZY(InkPointsBase));
+		StartCoroutine_Auto(AwardPoints(InkPointsBase, true));
 	}
 	public void PaperSuccess()
 	{
-		StartCoroutine_Auto(GOCRAZY(PaperPointsBase));
+		StartCoroutine_Auto(AwardPoints(PaperPointsBase, true));
 	}
 	public void BarometerSuccess()
 	{
-		StartCoroutine_Auto(GOCRAZY(BarometerPointsBase));
+		StartCoroutine_Auto(AwardPoints(BarometerPointsBase, true));
 	}
 	public void RodSuccess()
 	{
-		StartCoroutine_Auto(GOCRAZY(RodPointsBase));
+		StartCoroutine_Auto(AwardPoints(RodPointsBase, true));
 	}
 	
-	IEnumerator GOCRAZY(float amount)
+	public void PaperError()
 	{
+		StartCoroutine_Auto(AwardPoints(0, false));
+	}
+	
+	public void InkError()
+	{
+		StartCoroutine_Auto(AwardPoints(0, false));
+	}
+	
+	IEnumerator AwardPoints(float taskValue, bool isCompleted)
+	{
+		float calculatedValue = 0;
 		int colorHit = 0;
 		bool pointsGranted = false;
 		int popupSize = 1;
+        ScoreMultipliers sm = new ScoreMultipliers();
 		
-		if(OnTaskCompleted != null)
-			OnTaskCompleted();
-
-		colorHit = guiGameCameraScript.GetZone();
-
-		switch (colorHit)
+		if(isCompleted)
 		{
-			case 0:
-                Feedback.Clear();
-                Feedback.Add("NOT BAD!");
-				popupSize = 3;
-				break;
-            case 1:
-                Feedback.Clear();
-                Feedback.Add("GOOD!");
-				popupSize = 3;
-                break;
-			case 2:
-                Feedback.Clear();
-                Feedback.Add("GREAT!");
-				popupSize = 2;
-				amount = amount * YellowZoneModifier * _multiplier;
-				break;
-			case 3:
-                Feedback.Clear();
-                Feedback.Add("PERFECT!");
-				popupSize = 1;
-				amount = amount * GreenZoneModifier * _multiplier;
-				break;
-			default:
-				break;
+			if(OnTaskCompleted != null)
+				OnTaskCompleted();
+	
+			colorHit = guiGameCameraScript.GetZone();
+	
+			switch (colorHit)
+			{
+				case 0:
+	                Feedback.Clear();
+	                Feedback.Add("TOO EARLY!");
+					popupSize = 3;
+					_stressOmeterReference.ReductPointsFailed();
+					break;
+	            case 1:
+	                Feedback.Clear();
+	                Feedback.Add("TOO EARLY!");
+					popupSize = 3;
+					_stressOmeterReference.ReductPointsFailed();
+	                break;
+				case 2:
+	                Feedback.Clear();
+	                Feedback.Add("Great!");
+					popupSize = 2;
+					calculatedValue = taskValue * YellowZoneModifier * _multiplier;
+					break;
+				case 3:
+	                Feedback.Clear();
+	                Feedback.Add("PERFECT!");
+					popupSize = 1;
+					calculatedValue = taskValue * GreenZoneModifier * _multiplier;
+					break;
+				default:
+					break;
+			}
+		}
+		else
+		{
+			Feedback.Clear();
+            Feedback.Add("YOU'RE BAD!");
+			popupSize = 3;
+			_stressOmeterReference.ReductPointsFailed();
 		}
 		
 		if(Feedback.Count == 0)
@@ -148,10 +214,10 @@ public class ScoreManager : MonoBehaviour
 			{
 				if(pointsGranted)
 				{
-					amount = 0;	
+					taskValue = 0;	
 				}
 				
-				guiGameCameraScript.IncreaseScore(amount);
+				guiGameCameraScript.IncreaseScore(calculatedValue);
 				
 				if(popupSize == 1)
 				{

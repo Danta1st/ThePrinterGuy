@@ -7,11 +7,14 @@ public class SoundManager : MonoBehaviour
     #region Editor Publics
     [SerializeField] private static float _fadeTime = 1.0f;
     [SerializeField] private static float _endMusicVolume = 0.2f;
+    [SerializeField] private static float _menuEffectsVolume = 0.8f;
+    [SerializeField] private static float _voiceVolume = 1.0f;
     #endregion
 
     #region Privates
     private static bool _isFaded = false;
-    private static bool _allSoundOn = true;
+    private static bool _allSoundOn = false;
+    private static bool _hasReset = false;
 
     private static InGameSounds _inGameSounds;
     private static MainMenuSounds _mainMenuSounds;
@@ -20,11 +23,13 @@ public class SoundManager : MonoBehaviour
     private static RodSounds _rodSounds;
     private static VoiceSounds _voiceSounds;
     private static MachineSounds _machineSounds;
+    private static CutsceneSounds _cutSceneSounds;
 
     private static GenericSoundScript[] _audioScripts = new GenericSoundScript[30];
     private static List<GenericSoundScript> _audioScriptList = new List<GenericSoundScript>();
 
     private static List<float> _audioVolume = new List<float>();
+    private static List<float> _musicVolume = new List<float>();
 
     private static List<GenericSoundScript> _soundFxScripts = new List<GenericSoundScript>();
     private static List<GenericSoundScript> _musicScripts = new List<GenericSoundScript>();
@@ -65,6 +70,7 @@ public class SoundManager : MonoBehaviour
         _rodSounds = transform.FindChild("Uranium Rods").GetComponent<RodSounds>();
         _voiceSounds = transform.FindChild("Voice").GetComponent<VoiceSounds>();
         _machineSounds = transform.FindChild("Machine").GetComponent<MachineSounds>();
+        _cutSceneSounds = transform.FindChild("CutScene").GetComponent<CutsceneSounds>();
     }
 
     void Start()
@@ -78,9 +84,6 @@ public class SoundManager : MonoBehaviour
         }
 
         _soundFxScripts.Add(_inkSounds.GetEffectScript());
-        _soundFxScripts.Add(_machineSounds.GetEffectScriptCogwheels());
-        _soundFxScripts.Add(_machineSounds.GetEffectScriptMachine());
-        _soundFxScripts.Add(_machineSounds.GetEffectScriptSmoke());
         _soundFxScripts.Add(_paperSounds.GetEffectScript());
         _soundFxScripts.Add(_rodSounds.GetEffectScript());
         _soundFxScripts.Add(_mainMenuSounds.GetEffectScript());
@@ -89,15 +92,29 @@ public class SoundManager : MonoBehaviour
         _musicScripts.Add(_inGameSounds.GetMusicScript());
         _musicScripts.Add(_mainMenuSounds.GetMusicScript());
 
+        _mainMenuSounds.GetMusicScript().audio.ignoreListenerPause = true;
+        _mainMenuSounds.GetEffectScript().audio.ignoreListenerPause = true;
+        _inGameSounds.GetMusicScript().audio.ignoreListenerPause = true;
+
+        for(int i = 0; i < _musicScripts.Count; i++)
+        {
+            _musicVolume.Add(_musicScripts[i].GetVolume());
+        }
+
         ToogleAudio();
     }
 
     void Update()
     {
-        if(Application.isLoadingLevel)
+        if(Application.isLoadingLevel && !_hasReset)
         {
+            _hasReset = true;
             StopAllSoundSources();
-            FadeAllSourcesUp();
+        }
+
+        if(!Application.isLoadingLevel)
+        {
+            _hasReset = false;
         }
     }
     #endregion
@@ -111,6 +128,11 @@ public class SoundManager : MonoBehaviour
     public static void Music_Menu_Main()
     {
         _mainMenuSounds.Music_Menu_Main();
+    }
+
+    public static void Music_CutScene_Main()
+    {
+        _cutSceneSounds.CutScene_Main_Music();
     }
     #endregion
 
@@ -140,14 +162,9 @@ public class SoundManager : MonoBehaviour
         _paperSounds.Effect_PaperTray_ConveyorBelt();
     }
 
-    public static void Effect_PaperTray_ColorChange1()
+    public static void Effect_PaperTray_StopConveyorBelt()
     {
-        _paperSounds.Effect_PaperTray_ColorChange1();
-    }
-
-    public static void Effect_PaperTray_ColorChange2()
-    {
-        _paperSounds.Effect_PaperTray_ColorChange2();
+        _paperSounds.Effect_PaperTray_StopConveyorBelt();
     }
 
     public static void Effect_PaperTray_Swipe1()
@@ -187,54 +204,34 @@ public class SoundManager : MonoBehaviour
         _inkSounds.LowerVolume();
     }
 
-    public static void Effect_Ink_SlotOpen1()
+    public static void Effect_Ink_SlotOpen()
     {
-        _inkSounds.Effect_Ink_SlotOpen1();
+        _inkSounds.Effect_Ink_SlotOpen();
     }
 
-    public static void Effect_Ink_SlotOpen2()
+    public static void Effect_Ink_RightSlot1()
     {
-        _inkSounds.Effect_Ink_SlotOpen2();
+        _inkSounds.Effect_Ink_RightSlot1();
     }
 
-    public static void Effect_Ink_SlotOpen3()
+    public static void Effect_Ink_RightSlot2()
     {
-        _inkSounds.Effect_Ink_SlotOpen3();
+        _inkSounds.Effect_Ink_RightSlot2();
     }
 
-    public static void Effect_Ink_SlotOpen4()
+    public static void Effect_Ink_RightSlot3()
     {
-        _inkSounds.Effect_Ink_SlotOpen4();
+        _inkSounds.Effect_Ink_RightSlot3();
     }
 
-    public static void Effect_Ink_RightSlot()
+    public static void Effect_Ink_RightSlot4()
     {
-        _inkSounds.Effect_Ink_RightSlot();
+        _inkSounds.Effect_Ink_RightSlot4();
     }
 
     public static void Effect_Ink_WrongSlot()
     {
         _inkSounds.Effect_Ink_WrongSlot();
-    }
-
-    public static void Effect_Ink_SlotClose1()
-    {
-        _inkSounds.Effect_Ink_SlotClose1();
-    }
-
-    public static void Effect_Ink_SlotClose2()
-    {
-        _inkSounds.Effect_Ink_SlotClose2();
-    }
-
-    public static void Effect_Ink_SlotClose3()
-    {
-        _inkSounds.Effect_Ink_SlotClose3();
-    }
-
-    public static void Effect_Ink_SlotClose4()
-    {
-        _inkSounds.Effect_Ink_SlotClose4();
     }
     #endregion
 
@@ -276,151 +273,309 @@ public class SoundManager : MonoBehaviour
     #endregion
 
     #region Voice Samples
-    public static void Voice_Boos_Random_Happy()
+    public static void Voice_Boss_EndScene_Fired1()
     {
-        _voiceSounds.Voice_Boss_Random_Happy();
+        _voiceSounds.Voice_Boss_EndScene_Fired1();
     }
 
-    public static void Voice_Boos_Random_Angry()
+    public static void Voice_Boss_EndScene_Fired2()
     {
-        _voiceSounds.Voice_Boss_Random_Angry();
+        _voiceSounds.Voice_Boss_EndScene_Fired2();
     }
 
-    public static void Voice_Boss_1()
+    public static void Voice_Boss_EndScene_Fired3()
     {
-        _voiceSounds.Voice_Boss_1();
+        _voiceSounds.Voice_Boss_EndScene_Fired3();
     }
 
-    public static void Voice_Boss_2()
+    public static void Voice_Boss_EndScene_Fired4()
     {
-        _voiceSounds.Voice_Boss_2();
+        _voiceSounds.Voice_Boss_EndScene_Fired4();
     }
 
-    public static void Voice_Boss_4()
+    public static void Voice_Boss_EndScene_NotFired1()
     {
-        _voiceSounds.Voice_Boss_4();
+        _voiceSounds.Voice_Boss_EndScene_NotFired1();
     }
 
-    public static void Voice_Boss_5()
+    public static void Voice_Boss_EndScene_NotFired2()
     {
-        _voiceSounds.Voice_Boss_5();
+        _voiceSounds.Voice_Boss_EndScene_NotFired2();
     }
 
-    public static void Voice_Boss_6()
+    public static void Voice_Boss_EndScene_NotFired3()
     {
-        _voiceSounds.Voice_Boss_6();
+        _voiceSounds.Voice_Boss_EndScene_NotFired3();
     }
 
-    public static void Voice_Boss_7()
+    public static void Voice_Boss_EndScene_NotFired4()
     {
-        _voiceSounds.Voice_Boss_7();
+        _voiceSounds.Voice_Boss_EndScene_NotFired4();
     }
 
-    public static void Voice_Boss_8()
+    public static void Voice_Boss_Mumbling_Arrww_1()
     {
-        _voiceSounds.Voice_Boss_8();
+        _voiceSounds.Voice_Boss_Mumbling_Arrww_1();
     }
 
-    public static void Voice_Boss_9()
+    public static void Voice_Boss_Mumbling_Arrww_2()
     {
-        _voiceSounds.Voice_Boss_9();
+        _voiceSounds.Voice_Boss_Mumbling_Arrww_2();
     }
 
-    public static void Voice_Boss_11()
+    public static void Voice_Boss_Mumbling_Arrww_3()
     {
-        _voiceSounds.Voice_Boss_11();
+        _voiceSounds.Voice_Boss_Mumbling_Arrww_3();
     }
 
-    public static void Voice_Boss_12()
+    public static void Voice_Boss_Mumbling_Hmm_1()
     {
-        _voiceSounds.Voice_Boss_12();
+        _voiceSounds.Voice_Boss_Mumbling_Hmm_1();
     }
 
-    public static void Voice_Boss_13()
+    public static void Voice_Boss_Mumbling_Hmm_2()
     {
-        _voiceSounds.Voice_Boss_13();
+        _voiceSounds.Voice_Boss_Mumbling_Hmm_2();
     }
 
-    public static void Voice_Boss_14()
+    public static void Voice_Boss_Mumbling_Hrn_1()
     {
-        _voiceSounds.Voice_Boss_14();
+        _voiceSounds.Voice_Boss_Mumbling_Hrn_1();
     }
 
-    public static void Voice_Boss_15()
+    public static void Voice_Boss_Mumbling_Hrn2()
     {
-        _voiceSounds.Voice_Boss_15();
+        _voiceSounds.Voice_Boss_Mumbling_Hrn2();
     }
 
-    public static void Voice_Boss_16()
+    public static void Voice_Boss_Mumbling_Hrn_3()
     {
-        _voiceSounds.Voice_Boss_16();
+        _voiceSounds.Voice_Boss_Mumbling_Hrn_3();
     }
 
-    public static void Voice_Boss_17()
+    public static void Voice_Boss_Mumbling_Mumble_1()
     {
-        _voiceSounds.Voice_Boss_17();
+        _voiceSounds.Voice_Boss_Mumbling_Mumble_1();
     }
 
-    public static void Voice_Boss_18()
+    public static void Voice_Boss_Mumbling_Mumble_2()
     {
-        _voiceSounds.Voice_Boss_18();
+        _voiceSounds.Voice_Boss_Mumbling_Mumble_2();
     }
 
-    public static void Voice_Boss_19()
+    public static void Voice_Boss_Mumbling_Mumble_3()
     {
-        _voiceSounds.Voice_Boss_19();
+        _voiceSounds.Voice_Boss_Mumbling_Mumble_3();
     }
 
-    public static void Voice_Boss_Idle()
+    public static void Voice_Boss_Mumbling_No_1()
     {
-        _voiceSounds.Voice_Boss_Idle();
+        _voiceSounds.Voice_Boss_Mumbling_No_1();
     }
 
-    public static void Voice_Boss_ForwardsMovement()
+    public static void Voice_Boss_Mumbling_Ohh_1()
     {
-        _voiceSounds.Voice_Boss_ForwardsMovement();
+        _voiceSounds.Voice_Boss_Mumbling_Ohh_1();
     }
 
-    public static void Voice_Boss_BackwardsMovement()
+    public static void Voice_Boss_Angry_FireYou_1()
     {
-        _voiceSounds.Voice_Boss_BackwardsMovement();
-    }
-   #endregion
-
-    #region Machine Sounds
-    public static void Effect_Machine_Cogwheels1()
-    {
-        _machineSounds.Effect_Machine_Cogwheels1();
+        _voiceSounds.Voice_Boss_Angry_FireYou_1();
     }
 
-    public static void Effect_Machine_Cogwheels2()
+    public static void Voice_Boss_Angry_FireYou_2()
     {
-        _machineSounds.Effect_Machine_Cogwheels2();
+        _voiceSounds.Voice_Boss_Angry_FireYou_2();
     }
 
-    public static void Effect_Machine_Cogwheels3()
+    public static void Voice_Boss_Angry_GiveUp_1()
     {
-        _machineSounds.Effect_Machine_Cogwheels3();
+        _voiceSounds.Voice_Boss_Angry_GiveUp_1();
     }
 
-    public static void Effect_Machine_Electricity()
+    public static void Voice_Boss_Angry_GiveUp_2()
     {
-        _machineSounds.Effect_Machine_Electricity();
+        _voiceSounds.Voice_Boss_Angry_GiveUp_2();
     }
 
-    public static void Effect_Machine_Smoke1()
+    public static void Voice_Boss_Angry_GiveUp_3()
     {
-        _machineSounds.Effect_Machine_Smoke1();
+        _voiceSounds.Voice_Boss_Angry_GiveUp_3();
     }
 
-    public static void Effect_Machine_Smoke2()
+    public static void Voice_Boss_Angry_Idiot_1()
     {
-        _machineSounds.Effect_Machine_Smoke2();
+        _voiceSounds.Voice_Boss_Angry_Idiot_1();
     }
 
-    public static void Effect_Machine_Smoke3()
+    public static void Voice_Boss_Angry_Idiot_2()
     {
-        _machineSounds.Effect_Machine_Smoke3();
+        _voiceSounds.Voice_Boss_Angry_Idiot_2();
+    }
+
+    public static void Voice_Boss_Angry_Idiot_3()
+    {
+        _voiceSounds.Voice_Boss_Angry_Idiot_3();
+    }
+
+    public static void Voice_Boss_Angry_Idiot_4()
+    {
+        _voiceSounds.Voice_Boss_Angry_Idiot_4();
+    }
+
+    public static void Voice_Boss_Angry_PrinterGuy_1()
+    {
+        _voiceSounds.Voice_Boss_Angry_PrinterGuy_1();
+    }
+
+    public static void Voice_Boss_Angry_PrinterGuy_2()
+    {
+        _voiceSounds.Voice_Boss_Angry_PrinterGuy_2();
+    }
+
+    public static void Voice_Boss_Angry_PrinterGuy_3()
+    {
+        _voiceSounds.Voice_Boss_Angry_PrinterGuy_3();
+    }
+
+    public static void Voice_Boss_Angry_WhatIsTheMatter_1()
+    {
+        _voiceSounds.Voice_Boss_Angry_WhatIsTheMatter_1();
+    }
+
+    public static void Voice_Boss_Angry_WhatIsTheMatter_2()
+    {
+        _voiceSounds.Voice_Boss_Angry_WhatIsTheMatter_2();
+    }
+
+    public static void Voice_Boss_Angry_WhatTheHell_1()
+    {
+        _voiceSounds.Voice_Boss_Angry_WhatTheHell_1();
+    }
+
+    public static void Voice_Boss_Angry_WhatTheHell_2()
+    {
+        _voiceSounds.Voice_Boss_Angry_WhatTheHell_2();
+    }
+
+    public static void Voice_Boss_Happy_Bravo_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_Bravo_1();
+    }
+
+    public static void Voice_Boss_Happy_Bravo_2()
+    {
+        _voiceSounds.Voice_Boss_Happy_Bravo_2();
+    }
+
+    public void Voice_Boss_Happy_Bravo_3()
+    {
+        _voiceSounds.Voice_Boss_Happy_Bravo_3();
+    }
+
+    public static void Voice_Boss_Happy_KeepGoing_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_KeepGoing_1();
+    }
+
+    public static void Voice_Boss_Happy_KeepGoing_2()
+    {
+        _voiceSounds.Voice_Boss_Happy_KeepGoing_2();
+    }
+
+    public static void Voice_Boss_Happy_KeepGoing_3()
+    {
+        _voiceSounds.Voice_Boss_Happy_KeepGoing_3();
+    }
+
+    public static void Voice_Boss_Happy_Know_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_Know_1();
+    }
+
+    public static void Voice_Boss_Happy_Know_2()
+    {
+        _voiceSounds.Voice_Boss_Happy_Know_2();
+    }
+
+    public static void Voice_Boss_Happy_NoRaise_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_NoRaise_1();
+    }
+
+    public static void Voice_Boss_Happy_NotBad_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_NotBad_1();
+    }
+
+    public static void Voice_Boss_Happy_NotBad_2()
+    {
+        _voiceSounds.Voice_Boss_Happy_NotBad_2();
+    }
+
+    public static void Voice_Boss_Happy_WellWell_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_WellWell_1();
+    }
+
+    public static void Voice_Boss_Happy_WellWell_2()
+    {
+        _voiceSounds.Voice_Boss_Happy_WellWell_2();
+    }
+
+    public static void Voice_Boss_Happy_YouGetIt_1()
+    {
+        _voiceSounds.Voice_Boss_Happy_YouGetIt_1();
+    }
+
+    public static void Voice_Boss_Happy_YouGetIt_2()
+    {
+        _voiceSounds.Voice_Boss_Happy_YouGetIt_2();
+    }
+
+    public static void Voice_Boss_Random_Mumbling()
+    {
+        _voiceSounds.Voice_Boss_Random_Mumbling();
+    }
+
+    public static void Voice_Boss_Random_WinEnd()
+    {
+        _voiceSounds.Voice_Boss_Random_WinEnd();
+    }
+
+    public static void Voice_Boss_Random_LoseEnd()
+    {
+        _voiceSounds.Voice_Boss_Random_LoseEnd();
+    }
+
+    public static void Voice_Boss_Random_PrinterGuy()
+    {
+        _voiceSounds.Voice_Boss_Random_PrinterGuy();
+    }
+
+    public static void Voice_Boss_Random_WhatIsTheMatter()
+    {
+        _voiceSounds.Voice_Boss_Random_WhatIsTheMatter();
+    }
+
+    public static void Voice_Boss_Random_WhatTheHell()
+    {
+        _voiceSounds.Voice_Boss_Random_WhatTheHell();
+    }
+
+    public static void Voice_Boss_Random_WellWell()
+    {
+        _voiceSounds.Voice_Boss_Random_WellWell();
+    }
+
+    public static void Voice_Boss_Random_YouGetIt()
+    {
+        _voiceSounds.Voice_Boss_Random_YouGetIt();
+    }
+
+    public static GenericSoundScript Voice_Boss_GetEndScript()
+    {
+        return _voiceSounds.GetEffectScriptEnd();
     }
     #endregion
 
@@ -439,6 +594,11 @@ public class SoundManager : MonoBehaviour
     {
         _machineSounds.Effect_Machine_TaskMissed();
     }
+
+    public static void Effect_InGame_Task_Unmatched()
+    {
+        _mainMenuSounds.Effect_Task_Unmatched();
+    }
     #endregion
 
     #region Menu Sounds
@@ -452,34 +612,9 @@ public class SoundManager : MonoBehaviour
         _mainMenuSounds.Effect_Menu_Click();
     }
 
-    public static void Effect_Menu_Stinger()
+    public static void Effect_Task_Unmatched()
     {
-        _mainMenuSounds.Effect_Menu_Stinger();
-    }
-
-    public static void Effect_Menu_Appear()
-    {
-        _mainMenuSounds.Effect_Menu_Appear();
-    }
-
-    public static void Effect_Menu_Disappear()
-    {
-        _mainMenuSounds.Effect_Menu_Disappear();
-    }
-
-    public static void Effect_Menu_Footsteps()
-    {
-        _mainMenuSounds.Effect_Menu_Footsteps();
-    }
-
-    public static void Effect_Menu_Credits()
-    {
-        _mainMenuSounds.Effect_Menu_Credits();
-    }
-
-    public static void Effect_Menu_Options()
-    {
-        _mainMenuSounds.Effect_Menu_Options();
+        _mainMenuSounds.Effect_Task_Unmatched();
     }
     #endregion
 
@@ -510,6 +645,9 @@ public class SoundManager : MonoBehaviour
             _audioVolume[index] = gss.GetVolume();
             gss.SetVolume(0.0f);
         }
+
+//        FadeAllMusic();
+//        StopAllSoundEffects();
     }
 
     public static void StopAllSoundEffects()
@@ -522,10 +660,24 @@ public class SoundManager : MonoBehaviour
 
     public static void FadeAllMusic()
     {
-        foreach(GenericSoundScript gss in _musicScripts)
-        {
-            gss.FadeVolume(_endMusicVolume, _fadeTime);
-        }
+        _inGameSounds.FadeMusicEnd(_fadeTime);
+        _mainMenuSounds.FadeMusicEnd(_fadeTime);
+    }
+
+    public static void UnFadeAllMusic()
+    {
+//        foreach(GenericSoundScript gss in _musicScripts)
+//        {
+//            gss.FadeVolume(_startMusicVolume, _fadeTime);
+//        }
+
+//        for(int i = 0; i < _musicScripts.Count; i++)
+//        {
+//            _musicScripts[i].FadeVolume(_musicVolume[i], _fadeTime);
+//        }
+
+        _inGameSounds.FadeMusic(_fadeTime);
+        _mainMenuSounds.FadeMusic(_fadeTime);
     }
 
     public static void ToogleAudio()
@@ -574,6 +726,80 @@ public class SoundManager : MonoBehaviour
                 ToogleAudio();
             }
         }
+    }
+
+    public static void StopPointSound()
+    {
+        _cutSceneSounds.GetEffectsScript().LoopClipStop();
+    }
+
+    public static void TurnOnMenuSounds()
+    {
+        _mainMenuSounds.GetEffectScript().SetVolume(_menuEffectsVolume);
+    }
+
+    public static void TurnOnVoice()
+    {
+        _voiceSounds.GetEffectScript().SetVolume(_voiceVolume);
+    }
+    #endregion
+
+    #region Dialogue Methods
+    public static void Voice_Boss_Random_FireYou()
+    {
+        _voiceSounds.Voice_Boss_Random_FireYou();
+    }
+
+    public static void Voice_Boss_Random_GiveUp()
+    {
+        _voiceSounds.Voice_Boss_Random_GiveUp();
+    }
+
+    public static void Voice_Boss_Random_Idiot()
+    {
+        _voiceSounds.Voice_Boss_Random_Idiot();
+    }
+
+    public static void Voice_Boss_Random_Bravo()
+    {
+        _voiceSounds.Voice_Boss_Random_Bravo();
+    }
+
+    public static void Voice_Boss_Random_KeepGoing()
+    {
+        _voiceSounds.Voice_Boss_Random_KeepGoing();
+    }
+
+    public static void Voice_Boss_Random_Know()
+    {
+        _voiceSounds.Voice_Boss_Random_Know();
+    }
+
+    public static void Voice_Boss_Random_NotBad()
+    {
+        _voiceSounds.Voice_Boss_Random_NotBad();
+    }
+    #endregion
+
+    #region Cutscene Sounds
+    public static void CutScene_Effect_Coffee_01()
+    {
+        _cutSceneSounds.CutScene_Effect_Coffee_01();
+    }
+
+    public static void CutScene_Effect_Point()
+    {
+        _cutSceneSounds.CutScene_Effect_Point();
+    }
+
+    public static void CutScene_Effect_Coffee_02()
+    {
+        _cutSceneSounds.CutScene_Effect_Coffee_02();
+    }
+
+    public static void CutScene_Random_Coffee()
+    {
+        _cutSceneSounds.CutScene_Random_Coffee();
     }
     #endregion
 }

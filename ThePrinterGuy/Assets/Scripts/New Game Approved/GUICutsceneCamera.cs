@@ -6,6 +6,8 @@ public class GUICutsceneCamera : MonoBehaviour
     #region Editor Publics
     //List of all gui elements.
     [SerializeField]
+    private float _bgOffsetSize;
+    [SerializeField]
     private GameObject[] _guiList;
     [SerializeField]
     private GameObject[] _textList;
@@ -29,6 +31,7 @@ public class GUICutsceneCamera : MonoBehaviour
     private int _textIndex = 0;
     private bool _isReady = true;
     private bool _isLast = false;
+    private bool _subtitleOn = true;
     #endregion
 	
     #region Enable and Disable
@@ -94,6 +97,23 @@ public class GUICutsceneCamera : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+        if(PlayerPrefs.HasKey("Subtitle"))
+        {
+            if(PlayerPrefs.GetString("Subtitle") == "On")
+            {
+                _subtitleOn = true;
+            }
+            else
+            {
+                _subtitleOn = false;
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetString("Subtitle", "On");
+            _subtitleOn = true;
+        }
+
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
@@ -117,43 +137,51 @@ public class GUICutsceneCamera : MonoBehaviour
         }
         //--------------------------------------------------//
 
-		UpdateText();
+    	UpdateText();
 
-		foreach(GameObject _text in _textList)
-		{
-			_text.SetActive(false);
-		}
-		
-		_timer = gameObject.AddComponent<TimerUtilities>();
-		UpdateSubtitle();
-        EnableGUICamera();
-	}
+    	foreach(GameObject _text in _textList)
+    	{
+    		_text.SetActive(false);
+    	}
+
+    	_timer = gameObject.AddComponent<TimerUtilities>();
+
+        if(_subtitleOn)
+        {
+    	    UpdateSubtitle();
+            EnableGUICamera();
+        }
+    }
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		_currentTimeStamp = Time.timeSinceLevelLoad;
-		if(_currentTimeStamp > _timeStampText && _isReady == true && _isLast == false)
-		{
-			ActivateSubtitle();
-			StartSubtitleTimer();
-			_isReady = false;
-		}
-		
-    	if(_timer.GetTimeLeft() == 0 && _isReady == false)
-    	{
-    		DeactivateSubtitle();
-    		if(_textIndex < _textList.Length)
-    		{
-    			UpdateSubtitle();
-    		}
-    		else
-    		{
-    			_isLast = true;
-    		}
-    		
-    		_isReady = true;
-    	}
+        if(_subtitleOn)
+        {
+        	_currentTimeStamp = Time.timeSinceLevelLoad;
+        	if(_currentTimeStamp > _timeStampText && _isReady == true && _isLast == false)
+        	{
+        		ActivateSubtitle();
+        		UpdateBG();
+        		StartSubtitleTimer();
+        		_isReady = false;
+        	}
+        	
+        	if(_timer.GetTimeLeft() == 0 && _isReady == false)
+        	{
+        		DeactivateSubtitle();
+        		if(_textIndex < _textList.Length)
+        		{
+        			UpdateSubtitle();
+        		}
+        		else
+        		{
+        			_isLast = true;
+        		}
+        		
+        		_isReady = true;
+        	}
+        }
 	}
 	
 	#region Class Methods
@@ -212,12 +240,18 @@ public class GUICutsceneCamera : MonoBehaviour
 		_timeStampText = _subtitleTimerList[_textIndex].timeStamp;
 		_durationText = _subtitleTimerList[_textIndex].duration;
 		
-		float _textLength = _textInFocus.GetComponent<TextMesh>().text.Length;
-		_bgTextMultiplier = _textLength / 50f;
-		Vector3 _size = new Vector3(_bgTextStartSize.x*_bgTextMultiplier, _bgTextStartSize.y, _bgTextStartSize.z);
-		_bgText.transform.localScale = _size;
-		
 		_textIndex++;
+    }
+    
+    private void UpdateBG()
+    {
+    	Bounds _bounds = _textInFocus.GetComponent<TextMesh>().renderer.bounds;
+    	float _max = _bounds.max.x;
+    	float _min = _bounds.min.x;
+    	float _distance = Mathf.Abs(_min - _max);
+    	Vector3 _bgScale = new Vector3(_distance + (_bgOffsetSize*_scaleMultiplierX),
+    									_bgText.transform.localScale.y, _bgText.transform.localScale.z);
+    	_bgText.transform.localScale = _bgScale;
     }
     
     private void UpdateText()

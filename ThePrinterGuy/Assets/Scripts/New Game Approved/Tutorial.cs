@@ -5,14 +5,11 @@ using System.Collections.Generic;
 public class Tutorial : MonoBehaviour {
 	
 	#region SerializeField
-	[SerializeField]
-    private LayerMask _layerMaskGUI;
-    [SerializeField]
-    private GameObject[] _guiList;
-	[SerializeField]
-	private Texture2D[] _tutorialEnglish;
-	[SerializeField]
-	private Texture2D[] _tutorialDanish;
+	[SerializeField] private LayerMask _layerMaskGUI;
+    [SerializeField] private GameObject[] _guiList;
+	[SerializeField] private Texture2D[] _tutorialEnglish;
+	[SerializeField] private Texture2D[] _tutorialDanish;
+	[SerializeField] private ButtonTextures _buttonTextures;
 	#endregion
 	
 	#region Private Variables
@@ -86,10 +83,9 @@ public class Tutorial : MonoBehaviour {
 
 	}
 	
+	private GameObject backButton;
     private void CheckCollision(GameObject _go, Vector2 _screenPosition)
     {
-		Ray _mainCamRay = Camera.main.ScreenPointToRay(_screenPosition);
-		
         if(_isGUI && _canTouch)
         {
             Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
@@ -102,12 +98,24 @@ public class Tutorial : MonoBehaviour {
                 {
                     if(_hit.collider.gameObject.name == "NextButton")
                     {
+						SoundManager.CutScene_Random_Coffee();
 						NextPage();
                         if(_index < _tutorialList.Count)
                             UpdatePage();
                     }
                     else if(_hit.collider.gameObject.name == "BackButton")
                     {
+						if(backButton == null)
+							backButton = _hit.collider.gameObject;
+
+                        SoundManager.TurnOnMenuSounds();
+                        SoundManager.Effect_Menu_Click();
+						//Do fancy 'User Pressed a button' Animation
+						SetTexture(backButton, _buttonTextures.leftPressed);
+						PunchButton(backButton);
+						//Reset
+						Invoke("ResetBackButton", _punchTime);						
+						
 						PreviousPage();
                         if(_index < _tutorialList.Count)
                             UpdatePage();
@@ -219,5 +227,33 @@ public class Tutorial : MonoBehaviour {
 			_previousObject.SetActive(false);
 		}
         UpdatePage();
+	}
+		
+	private void ResetBackButton()
+	{
+		if(backButton != null)
+			SetTexture(backButton, _buttonTextures.left);
+	}
+	
+	private float _punchTime = 0.4f;
+	private void PunchButton(GameObject button)
+	{		
+		iTween.PunchScale(button, new Vector3(35f, 35f, 35f), _punchTime);
+	}
+	private void PunchButtonPrecise(GameObject button, Vector3 scale)
+	{		
+		iTween.PunchScale(button, scale, _punchTime);
+	}
+	
+	private void SetTexture(GameObject go, Texture2D texture)
+	{
+		go.renderer.material.mainTexture = texture;
+	}
+	
+	[System.Serializable]
+	public class ButtonTextures
+	{
+		public Texture2D left;
+		public Texture2D leftPressed;
 	}
 }

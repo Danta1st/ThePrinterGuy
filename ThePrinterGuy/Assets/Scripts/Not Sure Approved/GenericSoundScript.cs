@@ -39,6 +39,11 @@ public class GenericSoundScript : MonoBehaviour
     void Start()
     {
         _audioSource.clip = _audioClips[0];
+
+//        if(gameObject.transform.parent.name == "In Game" || gameObject.transform.parent.name == "Main Menu")
+//        {
+            gameObject.audio.ignoreListenerPause = true;
+//        }
     }
     #endregion
 
@@ -183,16 +188,9 @@ public class GenericSoundScript : MonoBehaviour
         float thisStartPitch = Mathf.Clamp(startPitch, _pitchMIN, _pitchMAX);
         float thisEndPitch = Mathf.Clamp(endPitch, _pitchMIN, _pitchMAX);
 
-        float i = 0.0f;
-        float rate = 1.0f/time;
+        SetPitch(thisStartPitch);
 
-        while (i < 1.0f)
-        {
-             i += Time.deltaTime * rate;
-             _audioSource.pitch = Mathf.Lerp(thisStartPitch, thisEndPitch, i);
-             _currentPitch = _audioSource.pitch;
-             break;
-        }
+        iTween.AudioTo(gameObject, iTween.Hash("audiosource", audio, "pitch", thisEndPitch, "time", time, "easetype", iTween.EaseType.linear));
     }
     #endregion
 

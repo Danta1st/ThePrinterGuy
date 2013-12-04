@@ -2,17 +2,41 @@
 using System.Collections;
 
 public class DialogueText : MonoBehaviour {
-
+	
+	[SerializeField]
+	private float _bgOffsetSize;
+	
     private GameObject _bgText;
     private GameObject _text;
-    private float _bgTextMultiplyer;
-    private Vector3 _bgTextStartSize;
-
+    private Vector3 _bgPosition;
+    private float _bgTextMultiplier;
+    private bool _subtitleOn;
+	
     void Start()
     {
-        _bgText = gameObject.transform.FindChild("TextBG").gameObject;;
-        _text = gameObject.transform.FindChild("Text").gameObject;
-        _bgTextStartSize = _bgText.transform.localScale;
+    	_bgTextMultiplier = Screen.width / 1920f;
+    	
+        if(PlayerPrefs.HasKey("Subtitle"))
+        {
+            if(PlayerPrefs.GetString("Subtitle") == "On")
+            {
+                _subtitleOn = true;
+            }
+            else
+            {
+                _subtitleOn = false;
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetString("Subtitle", "On");
+            _subtitleOn = true;
+        }
+
+        _bgText = GameObject.Find("TextBG").gameObject;
+        _text = GameObject.Find("Text").gameObject;
+        _bgPosition = _text.transform.position;
+        _bgText.transform.position = _bgPosition;
         _bgText.renderer.enabled = false;
         _text.renderer.enabled = false;
     }
@@ -33,19 +57,35 @@ public class DialogueText : MonoBehaviour {
 
     private void ShowSubtitle(string localizationKey)
     {
-        _text.GetComponent<TextMesh>().text = LocalizationText.GetText(localizationKey);
-        float _textLength = _text.GetComponent<TextMesh>().text.Length;
-        _bgTextMultiplyer = _textLength / 20f;
-        Vector3 _size = new Vector3(_bgTextStartSize.x*_bgTextMultiplyer, _bgTextStartSize.y, _bgTextStartSize.z);
-        _bgText.transform.localScale = _size;
-        _bgText.renderer.enabled = true;
-        _text.renderer.enabled = true;
+        if(_subtitleOn)
+        {
+            _text.GetComponent<TextMesh>().text = LocalizationText.GetText(localizationKey);
+            _bgText.renderer.enabled = true;
+            _text.renderer.enabled = true;
+            UpdateBG();
+        }
     }
-
+	
+    private void UpdateBG()
+    {
+    	Bounds _bounds = _text.GetComponent<TextMesh>().renderer.bounds;
+    	float _max = _bounds.max.x;
+    	float _min = _bounds.min.x;
+    	float _distance = Mathf.Abs(_min - _max);
+		
+    	Vector3 _bgScale = new Vector3(_distance + (_bgOffsetSize*_bgTextMultiplier),
+    									_bgText.transform.localScale.y, _bgText.transform.localScale.z);
+    									
+    	_bgText.transform.localScale = _bgScale;
+    }
+	
     private void HideSubtitle()
     {
-        _bgText.renderer.enabled = false;
-        _text.renderer.enabled = false;
+        if(_subtitleOn)
+        {
+            _bgText.renderer.enabled = false;
+            _text.renderer.enabled = false;
+        }
     }
 
 }

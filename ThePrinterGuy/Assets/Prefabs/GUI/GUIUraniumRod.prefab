@@ -24,9 +24,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_LocalRotation: {x: 0, y: 0, z: 1, w: -4.37113883e-08}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 120, y: 120, z: 1}
+  m_LocalScale: {x: 90, y: 90, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
 --- !u!23 &2300000
@@ -53,7 +53,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -66,7 +66,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moduleName: UraniumRod
+  _scaleAmount: {x: 0, y: 25, z: 0}
   _easeTypeMove: 12
+  _particles:
+    completed: {fileID: 100000, guid: b0e2cce7163233e40ab693829eca7cd6, type: 2}
+    failed: {fileID: 100000, guid: b0e2cce7163233e40ab693829eca7cd6, type: 2}
+  _textures:
+    red: {fileID: 2800000, guid: 50e02fff41a27ed4e862fef074c71832, type: 3}
+    yellow: {fileID: 2800000, guid: 395801edebfc87d4dbca582649db33a2, type: 3}
+    green: {fileID: 2800000, guid: 265ca8008e9fbd24e842fe4f3b596455, type: 3}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

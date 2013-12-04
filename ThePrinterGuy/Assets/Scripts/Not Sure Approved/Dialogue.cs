@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Dialogue : MonoBehaviour {
+public class Dialogue : MonoBehaviour
+{
     #region Editor Publics
     [SerializeField]
     private Color _alertColor;
@@ -17,26 +18,49 @@ public class Dialogue : MonoBehaviour {
     private string _localizationKey;
     private string[] happyTuple;
     private string[] angryTuple;
+    private string[] endTuple;
     private Animation _characterAnimation;
     //animation, sound, localzation key
     private List<string[]> happyCollection;
     private List<string[]> angryCollection;
+    private List<string[]> endCollection;
     //1 AARGH, 2 næve, 3 smoke
 
     void Awake()
     {
         happyCollection = new List<string[]>();
-        happyCollection.Add(new string[] {"Good 01","6","InGameNotBad"});
+        happyCollection.Add(new string[] {"Good 02","6","InGameBravo"});
+        happyCollection.Add(new string[] {"Good 02","7","InGameKeepItGoing"});
+        happyCollection.Add(new string[] {"Good 01","8","InGameHaveKnown"});
+        happyCollection.Add(new string[] {"No Raise","9","InGameNoRaise"});
+        happyCollection.Add(new string[] {"Good 02","10","InGameNotBad"});
+        happyCollection.Add(new string[] {"Good 02","16","InGameVeryWell"});
+        happyCollection.Add(new string[] {"Good 01","17","InGameFinally"});
+
         angryCollection = new List<string[]>();
-        angryCollection.Add(new string[] {"Very Angry 01","11","InGameIdiot"});
+        angryCollection.Add(new string[] {"Angry 02","1","InGameGrandmother"});
+        angryCollection.Add(new string[] {"Angry 06","2","InGameGiveUp"});
+        angryCollection.Add(new string[] {"Angry 03","3","InGameIdiot"});
+        angryCollection.Add(new string[] {"Angry 05","4","InGameCompleteIdiot"});
+        angryCollection.Add(new string[] {"Angry 05","5","InGameAreAnIdiot"});
+        angryCollection.Add(new string[] {"Very Angry 01","13","InGamePrinterGuy"});
+        angryCollection.Add(new string[] {"Angry 04","14","InGameMatterWithYou"});
+        angryCollection.Add(new string[] {"Angry 04","15","InGameWhatTheHell"});
+
+        endCollection = new List<string[]>();
+        endCollection.Add(new string[] {"Not Fired","11","EndScreenNotFired"});
+        endCollection.Add(new string[] {"You're Fired","12","EndScreenFired"});
+
         _characterAnimation = _character.GetComponent<Animation>();
     }
 
     #region Delegates & Events
     public delegate void DialogueStart(string localizationKey);
+
     public static event DialogueStart OnDialogueStart;
 
     public delegate void DialogueEnd();
+
     public static event DialogueEnd OnDialogueEnd;
     #endregion
 
@@ -47,7 +71,8 @@ public class Dialogue : MonoBehaviour {
         StressOMeter.OnAngryZoneEntered += AngryCharacter;
         PathManager.OnCamPosChangeBegan += CameraStartedMoving;
         PathManager.OnCamPosChangeEnded += CameraStoppedMoving;
-
+        HighscoreSceneScript.OnCompletedLevel += WinCharacter;
+        HighscoreSceneScript.OnFailedLevel += LoseCharacter;
     }
 
     void OnDisable()
@@ -56,6 +81,8 @@ public class Dialogue : MonoBehaviour {
         StressOMeter.OnAngryZoneEntered -= AngryCharacter;
         PathManager.OnCamPosChangeBegan -= CameraStartedMoving;
         PathManager.OnCamPosChangeEnded -= CameraStoppedMoving;
+        HighscoreSceneScript.OnCompletedLevel -= WinCharacter;
+        HighscoreSceneScript.OnFailedLevel -= LoseCharacter;
     }
     #endregion
 
@@ -65,8 +92,11 @@ public class Dialogue : MonoBehaviour {
         _characterAnimation.CrossFade(happyTuple[0]);
         PlaySound(happyTuple[1]);
         if(OnDialogueStart != null)
+        {
             OnDialogueStart(happyTuple[2]);
+        }
         _characterAnimation.CrossFadeQueued("Idle");
+        StartCoroutine(CheckIfAnimationStopped(happyTuple[0]));
     }
 
     private void AngryCharacter()
@@ -75,24 +105,25 @@ public class Dialogue : MonoBehaviour {
         _characterAnimation.CrossFade(angryTuple[0]);
         PlaySound(angryTuple[1]);
         _localizationKey = angryTuple[2];
-		
-        if(OnDialogueStart != null){
+     
+        if(OnDialogueStart != null)
+        {
             OnDialogueStart(_localizationKey);
         }
-		
+     
         iTween.ColorFrom(Camera.main.gameObject, Color.red, 2f);
-		
+     
         _oldColor = Camera.main.backgroundColor;
-		
+     
         iTween.ValueTo(gameObject, iTween.Hash("from", _oldColor, "to", _alertColor, "time", 0.1f, "onupdate", "changeSkyboxValue"));
         iTween.ValueTo(gameObject, iTween.Hash("from", _alertColor, "to", _oldColor, "time", 0.1f, "onupdate", "changeSkyboxValue", "delay", 0.1f));
         
-		if(!_cameraMovement)
+        if(!_cameraMovement)
         {
-            iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f,0.5f,0.5f), "time", 0.2f));
+            iTween.ShakeRotation(Camera.main.gameObject, iTween.Hash("amount", new Vector3(0.5f, 0.5f, 0.5f), "time", 0.2f));
         }
-		
-        _characterAnimation.CrossFadeQueued("Idle");
+     
+        _characterAnimation.CrossFadeQueued("Idle Feedback");
         StartCoroutine(CheckIfAnimationStopped(angryTuple[0]));
     }
 
@@ -113,26 +144,100 @@ public class Dialogue : MonoBehaviour {
 
     private void PlaySound(string sound)
     {
-        switch (sound) {
-        case "6":
-            SoundManager.Voice_Boss_6();
-            break;
-        case "11":
-            SoundManager.Voice_Boss_11();
-            break;
-        default:
-        break;
+        switch(sound)
+        {
+            case "1":
+                SoundManager.Voice_Boss_Random_FireYou();
+                break;
+            case "2":
+                SoundManager.Voice_Boss_Random_GiveUp();
+                break;
+            case "3":
+                SoundManager.Voice_Boss_Random_Idiot();
+                break;
+            case "4":
+                SoundManager.Voice_Boss_Angry_Idiot_3();
+                break;
+            case "5":
+                SoundManager.Voice_Boss_Angry_Idiot_4();
+                break;
+            case "6":
+                SoundManager.Voice_Boss_Random_Bravo();
+                break;
+            case "7":
+                SoundManager.Voice_Boss_Random_KeepGoing();
+                break;
+            case "8":
+                SoundManager.Voice_Boss_Random_Know();
+                break;
+            case "9":
+                SoundManager.Voice_Boss_Happy_NoRaise_1();
+                break;
+            case "10":
+                SoundManager.Voice_Boss_Random_NotBad();
+                break;
+            case "11":
+                SoundManager.Voice_Boss_Random_WinEnd();
+                break;
+            case "12":
+                SoundManager.Voice_Boss_Random_LoseEnd();
+                break;
+            case "13":
+                SoundManager.Voice_Boss_Random_PrinterGuy();
+                break;
+            case "14":
+                SoundManager.Voice_Boss_Random_WhatIsTheMatter();
+                break;
+            case "15":
+                SoundManager.Voice_Boss_Random_WhatTheHell();
+                break;
+            case "16":
+                SoundManager.Voice_Boss_Random_WellWell();
+                break;
+            case "17":
+                SoundManager.Voice_Boss_Random_YouGetIt();
+                break;
+            default:
+                break;
         }
     }
 
     IEnumerator CheckIfAnimationStopped(string animation)
     {
-        while(_characterAnimation.IsPlaying(angryTuple[0]))
+        while(_characterAnimation.IsPlaying(animation))
         {
             yield return new WaitForSeconds(1f);
         }
         if(OnDialogueEnd != null)
+        {
             OnDialogueEnd();
+        }
+    }
+
+    private void WinCharacter(float score)
+    {
+        endTuple = endCollection[0];
+        _characterAnimation.CrossFade(endTuple[0]);
+        PlaySound(endTuple[1]);
+        if(OnDialogueStart != null)
+        {
+            OnDialogueStart(endTuple[2]);
+        }
+        _characterAnimation.CrossFadeQueued("Idle");
+        StartCoroutine(CheckIfAnimationStopped(endTuple[0]));
+    }
+
+    private void LoseCharacter(float score)
+    {
+        endTuple = endCollection[1];
+        _characterAnimation.CrossFade(endTuple[0]);
+        PlaySound(endTuple[1]);
+        if(OnDialogueStart != null)
+        {
+            OnDialogueStart(endTuple[2]);
+        }
+        _characterAnimation.CrossFadeQueued("Idle");
+        StartCoroutine(CheckIfAnimationStopped(endTuple[0]));
     }
 
 }

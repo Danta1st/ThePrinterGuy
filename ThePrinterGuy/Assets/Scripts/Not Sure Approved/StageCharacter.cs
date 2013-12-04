@@ -9,13 +9,25 @@ public class StageCharacter : MonoBehaviour
     [SerializeField]
     private bool _isUnlocked = false;
     [SerializeField]
-    private List<bool> _unlockedLevels = new List<bool>();
+    private List<Material> materialList = new List<Material>();
+    [SerializeField]
+    private List<Texture2D> textureList = new List<Texture2D>();
+    [SerializeField]
+    private Texture2D blackTexture;
     #endregion
+
+    private int[] highscores;
+
+    void Awake()
+    {
+        Unlock();
+    }
 
     #region StageUnlocked Get/Set
     public void SetUnlocked()
     {
         _isUnlocked = true;
+
     }
 
     public bool GetUnlocked()
@@ -24,30 +36,35 @@ public class StageCharacter : MonoBehaviour
     }
     #endregion
 
-    #region LevelUnlocked Get/Set
-    public void SetUnlockedLevel(int index)
+    public void Unlock()
     {
-        _unlockedLevels[index] = true;
-    }
+        highscores = SaveGame.GetPlayerHighscores();
+        if(highscores[4] >= 0)
+            _isUnlocked = true;
 
-    public bool GetUnlockedLevel(int index)
-    {
-        return _unlockedLevels[index];
-    }
-    #endregion
-
-    #region AllLevelsUnlocked Get/Set
-    public void SetUnlockedLevelsAll()
-    {
-        for (int i = 0; i < _unlockedLevels.Count; i++)
+        if(_isUnlocked)
         {
-            _unlockedLevels[i] = true;
+            int i = 0;
+            foreach(Material material in materialList)
+            {
+                material.mainTexture = textureList[i];
+                i++;
+            }
+            gameObject.transform.FindChild("Lock").renderer.enabled = false;
+            if((gameObject.name == "stage2Char" && highscores[4] >= 0))
+                gameObject.transform.FindChild("lobbyArrow").renderer.enabled = true;
+            if((gameObject.name == "stage1Char" && highscores[4] <= 0))
+                gameObject.transform.FindChild("lobbyArrow").renderer.enabled = false;
+        }
+        else
+        {
+            foreach(Material material in materialList)
+            {
+                material.mainTexture = blackTexture;
+            }
+            gameObject.transform.FindChild("Lock").renderer.enabled = true;
+            gameObject.transform.FindChild("lobbyArrow").renderer.enabled = false;
         }
     }
 
-    public List<bool> GetUnlockedLevelsAll()
-    {
-        return _unlockedLevels;
-    }
-    #endregion
 }

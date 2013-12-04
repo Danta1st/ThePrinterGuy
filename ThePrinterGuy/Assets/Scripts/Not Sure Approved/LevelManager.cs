@@ -4,26 +4,19 @@ using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour
 {
-    [SerializeField]
-    private float _charLockedDistance = 12.0f;
-    [SerializeField]
-    private float _charUnlockedDistance = 10.0f;
-    [SerializeField]
-    private float _charMoveTime = 2.0f;
-    [SerializeField]
-    private List<GameObject> _stageCharacters = new List<GameObject>();
-    [SerializeField]
-    private List<GameObject> _gameLevels = new List<GameObject>();
+    [SerializeField] private float _charLockedDistance = 12.0f;
+    [SerializeField] private float _charUnlockedDistance = 10.0f;
+    [SerializeField] private float _charMoveTime = 2.0f;
+    [SerializeField] private List<GameObject> _stageCharacters = new List<GameObject>();
+    [SerializeField] private List<GameObject> _gameLevels = new List<GameObject>();
     //[SerializeField]
     private List<bool> _gameLevelsUnlocked = new List<bool>();
-    [SerializeField]
-    private iTween.EaseType _easeType;
-    [SerializeField]
-    private int _levelBoxCount;
-    [SerializeField]
-    private iTween.EaseType _easyTypeOfLevelParentObjectIn = iTween.EaseType.easeOutBack;
-    [SerializeField]
-    private iTween.EaseType _easyTypeOfLevelParentObjectOut = iTween.EaseType.easeInBack;
+    [SerializeField] private iTween.EaseType _easeType;
+    [SerializeField] private int _levelBoxCount;
+    [SerializeField] private iTween.EaseType _easyTypeOfLevelParentObjectIn = iTween.EaseType.easeOutBack;
+    [SerializeField] private iTween.EaseType _easyTypeOfLevelParentObjectOut = iTween.EaseType.easeInBack;
+    [SerializeField] private Texture2D _levelUnlockedTexture;
+    [SerializeField] private Texture2D _levelUnlockedTutorialTexture;
 
     private GameObject _selectedStageChar;
     private GameObject _lookTarget;
@@ -58,30 +51,12 @@ public class LevelManager : MonoBehaviour
             SaveGame.ResetPlayerData();
         }
 
-
-        highScores = SaveGame.GetPlayerHighscores();
-
-        _levelBoxCount = _gameLevels.Count;
+        UnlockLevels();
     }
 
     // Use this for initialization
     void Start()
     {
-        #region Unlock Levels based on Highscore
-        _gameLevelsUnlocked.Clear();
-        foreach (int highscore in highScores)
-        {
-            if(highscore > -1)
-            {
-                _gameLevelsUnlocked.Add(true);
-            }
-            else
-            {
-                _gameLevelsUnlocked.Add(false);
-            }
-        }
-        #endregion
-
         #region Camera Positioning Objects
         _camPointDefault = new GameObject();
         _camPointDefault.name = "CamLookPosDefault";
@@ -97,39 +72,10 @@ public class LevelManager : MonoBehaviour
         _camStartPos.name = "CamStartPosition";
         _camStartPos.transform.position = path.nodes[path.nodes.Count - 1];
         #endregion
-
-        foreach(GameObject go in _stageCharacters)
-        {
-            go.collider.enabled = false;
-
-            StageCharacter thisChar = go.GetComponent<StageCharacter>();
-
-            GameObject thisProjectorHolder = go.transform.parent.FindChild("projectorHolder").gameObject;
-
-            Projector thisProjector = thisProjectorHolder.transform.GetComponent<Projector>();
-
-            Color thisColor = thisProjector.material.color;
-
-            thisColor.a = 1.0f;
-
-            thisProjector.material.SetColor("_Color", thisColor);
-
-            if(thisChar.GetUnlocked())
-            {
-                SilhouetteCharacter(thisProjectorHolder);
-            }
-        }
-
-        for(int i = 0; i < _gameLevels.Count; i++)
-        {
-            _gameLevels[i].SetActive(false);
-        }
     }
 
     void OnEnable()
     {
-//		GestureManager.OnTap += SelectStage;
-//        GestureManager.OnTap += SelectLevel;
         GUIMainMenuCamera.OnCreditScreen += ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen += ChangeViewToMain;
         GUIMainMenuCamera.OnOptionsScreen += ChangeViewToOptions;
@@ -138,12 +84,30 @@ public class LevelManager : MonoBehaviour
 
     void OnDisable()
     {
-//		GestureManager.OnTap -= SelectStage;
-//        GestureManager.OnTap -= SelectLevel;
         GUIMainMenuCamera.OnCreditScreen -= ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen -= ChangeViewToMain;
         GUIMainMenuCamera.OnOptionsScreen -= ChangeViewToOptions;
 		GUIMainMenuCamera.OnLevelManagerEvent -= SelectStage;
+    }
+
+    public void UnlockLevels()
+    {
+        highScores = SaveGame.GetPlayerHighscores();
+
+        #region Unlock Levels based on Highscore
+        _gameLevelsUnlocked.Clear();
+        foreach (int highscore in highScores)
+        {
+            if(highscore > -1)
+            {
+                _gameLevelsUnlocked.Add(true);
+            }
+            else
+            {
+                _gameLevelsUnlocked.Add(false);
+            }
+        }
+        #endregion 
     }
 
     public List<GameObject> GetStageCharacters()
@@ -226,13 +190,15 @@ public class LevelManager : MonoBehaviour
 			else if(go != null && _gameLevels.Contains(go))
 			{
 	            int index = _gameLevels.IndexOf(go);
+
+                SoundManager.Effect_Menu_Click();
 	
                 if(_gameLevelsUnlocked[index])
                 {
                     string correspondingLevelName = null;
                     switch (index) {
                         case 0:
-                            correspondingLevelName = "Stage1Cinematics";
+                            correspondingLevelName = "Tutorial1";
                             break;
                         case 1:
                             correspondingLevelName = "Tutorial2";
@@ -246,12 +212,15 @@ public class LevelManager : MonoBehaviour
                         case 4:
                             correspondingLevelName = "Tutorial5";
                             break;
+                        case 5:
+                            correspondingLevelName = "Stage1Cinematics";
+                            break;
                         default:
                             break;
                     }
                     if(correspondingLevelName == null)
                     {
-                        LoadingScreen.Load(index+1, true);
+                        LoadingScreen.Load(index + ConstantValues.GetLevel1, false);
                     }
                     else
                     {
@@ -288,38 +257,68 @@ public class LevelManager : MonoBehaviour
     void BeginMoveForwardAnimation(GameObject go)
     {
 		if(go != null) {
+			GUIMainMenuCamera.OnLevelManagerEvent -= SelectStage;
 	        Vector3 tmpPos = go.transform.position;
 	        tmpPos.z = _charUnlockedDistance;
 	
+			LevelBoxesAppear(go);
 	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveForwardAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
 
-	        LevelBoxesAppear(go);
 	        Animation characterAnimation = go.GetComponentInChildren<Animation>();
 	        characterAnimation.CrossFade("Selection");
-	        characterAnimation.CrossFadeQueued("Idle");
 		}
     }
 
     void OnMoveForwardAnimationEnd(GameObject go)
     {
+		GUIMainMenuCamera.OnLevelManagerEvent += SelectStage;
+    }
 
+    void DisappearLobbyArrow(GameObject stageChar)
+    {
+        GameObject Arrow = stageChar.transform.FindChild("lobbyArrow").gameObject;
+        iTween.ScaleTo(Arrow, iTween.Hash("scale", new Vector3(0,0,0),"time", 0.5f, "easeType", _easyTypeOfLevelParentObjectOut));
     }
 
     void LevelBoxesAppear(GameObject go)
     {
-        LevelParentObject = go.transform.FindChild("stageLevelSelection").gameObject;
-        GameObject Arrow = go.transform.FindChild("lobbyArrow").gameObject;
-        iTween.ScaleTo(Arrow, iTween.Hash("scale", new Vector3(0,0,0),"time", 0.5f, "easeType", _easyTypeOfLevelParentObjectOut));
+        List<GameObject> stageCharacters = GetStageCharacters();
+
+        foreach(GameObject stageChars in stageCharacters)
+        {
+            DisappearLobbyArrow(stageChars);
+        }
+
+        LevelParentObject = go.transform.FindChild("LevelBoxes").gameObject;
         iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(1,1,1),"time", 1f, "easeType", _easyTypeOfLevelParentObjectIn, "Delay", 0.5f));
 
         indexChar = _stageCharacters.IndexOf(go);
-        minIndex = indexChar * _levelBoxCount;
+        minIndex = indexChar * 5;
 
-        for(int i = minIndex; i < (minIndex + _levelBoxCount); i++)
+        for(int i = minIndex; i < (minIndex + 5); i++)
         {
             if(_gameLevelsUnlocked[i])
             {
-                _gameLevels[i].SetActive(true);
+                if(go.name == "stage1Char")
+                    _gameLevels[i].renderer.material.mainTexture = _levelUnlockedTutorialTexture;
+                else
+                    _gameLevels[i].renderer.material.mainTexture = _levelUnlockedTexture;
+
+                if(highScores[i] > 0)
+                {
+                    int boxNumber = (i % 5) + 1;
+                    GameObject box = LevelParentObject.transform.FindChild("Box" + boxNumber).gameObject;
+                    box.transform.FindChild("Completed").gameObject.renderer.enabled = true;
+                    int maxHighscore = SaveGame.GetMaxHighscores()[i];
+
+                    if(highScores[i] >= System.Convert.ToInt32(maxHighscore * 0.25))
+                        box.transform.FindChild("Star1").gameObject.renderer.enabled = true;
+                    if(highScores[i] >= System.Convert.ToInt32(maxHighscore * 0.50))
+                        box.transform.FindChild("Star2").gameObject.renderer.enabled = true;
+                    if(highScores[i] >= System.Convert.ToInt32(maxHighscore * 0.75))
+                        box.transform.FindChild("Star3").gameObject.renderer.enabled = true;
+                }
+
             }
         }
     }
@@ -330,36 +329,22 @@ public class LevelManager : MonoBehaviour
 			Vector3 tmpPos = go.transform.position;
 	        tmpPos.z = _charLockedDistance;
 	
-	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime, "oncomplete", "OnMoveBackAnimationEnd", "oncompletetarget", gameObject, "oncompleteparams", go));
+	        iTween.MoveTo(go, iTween.Hash("position", tmpPos, "time", _charMoveTime));
+
+            Animation characterAnimation = go.GetComponentInChildren<Animation>();
+            characterAnimation.CrossFade("SelectionBack");
+            characterAnimation.CrossFadeQueued("Idle");
 
 	        LevelBoxesDisappear(go);
 		}
     }
 
-    void OnMoveBackAnimationEnd(GameObject go)
-    {
-
-    }
-
     void LevelBoxesDisappear(GameObject go)
     {
-        LevelParentObject = go.transform.FindChild("stageLevelSelection").gameObject;
-        iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(0,0,0),"time", 1f, "easeType", _easyTypeOfLevelParentObjectOut, "onComplete", "LevelBoxesDisappearAfterEaseOut", "onCompleteTarget", gameObject));
+        LevelParentObject = go.transform.FindChild("LevelBoxes").gameObject;
+        iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(0,0,0),"time", 0.3f, "easeType", _easyTypeOfLevelParentObjectOut));
         indexChar = _stageCharacters.IndexOf(go);
         minIndex = indexChar * _levelBoxCount;
-    }
-
-
-     void LevelBoxesDisappearAfterEaseOut()
-     {
-        for(int i = minIndex; i < (minIndex + _levelBoxCount); i++)
-        {
-
-            if(_gameLevelsUnlocked[i])
-            {
-                _gameLevels[i].SetActive(false);
-            }
-        }
     }
 
     void SelectLevel(GameObject go, Vector2 screenPos)

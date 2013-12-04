@@ -50,7 +50,7 @@ public class StressOMeter : MonoBehaviour
     #endregion
     
 	#region Delegates & Events
-    public delegate void GameFailed();
+    public delegate void GameFailed(int _score);
     public static event GameFailed OnGameFailed;
 
     public delegate void AngryZoneTriggered();
@@ -128,8 +128,9 @@ public class StressOMeter : MonoBehaviour
     #endregion
 
     #region Reduct Point
-    void ReductPointsFailed()
+    public void ReductPointsFailed()
     {
+        SoundManager.Effect_InGame_Task_Unmatched();
         if(OnStressDecrease != null)
             OnStressDecrease();
          _paperAudioStreak = 0.0f;
@@ -315,6 +316,18 @@ public class StressOMeter : MonoBehaviour
     }
     #endregion
 
+    #region Public get methods for perfect score
+    public float GetHappyZone()
+    {
+        return _happyZone;
+    }
+
+    public float GetZonePoints()
+    {
+        return _inZonePoints;
+    }
+    #endregion
+
     #region Needlemovement functions
     void UpdateRotation()
     {
@@ -327,8 +340,14 @@ public class StressOMeter : MonoBehaviour
         _thisRotation.z = thisRotationScale;
 
         iTween.Stop(gameObject);
+		
+		if(OnGameFailed != null && _rotationScale == _stressMAX && !_isDead)
+        {
+            _isDead = true;
+            OnGameFailed(GameObject.Find("GUI List").GetComponent<GUIGameCamera>().GetScore());
+        }
 
-        iTween.RotateTo(gameObject, iTween.Hash("rotation", _thisRotation, "time", _rotationTime, "easetype", iTween.EaseType.linear, "islocal", true,
+        iTween.RotateTo(gameObject, iTween.Hash("rotation", _thisRotation, "time", _rotationTime, "easetype", iTween.EaseType.easeOutBack, "islocal", true,
             "oncomplete", "SlightMovement", "oncompletetarget", gameObject));
     }
 
@@ -337,7 +356,7 @@ public class StressOMeter : MonoBehaviour
         if(OnGameFailed != null && _rotationScale == _stressMAX && !_isDead)
         {
             _isDead = true;
-            OnGameFailed();
+            OnGameFailed(GameObject.Find("GUI List").GetComponent<GUIGameCamera>().GetScore());
         }
 
 		if((_happyZone < _rotationScale && _inHappyZone) || (_rotationScale < _angryZone && _inAngryZone) && _canTrigger)

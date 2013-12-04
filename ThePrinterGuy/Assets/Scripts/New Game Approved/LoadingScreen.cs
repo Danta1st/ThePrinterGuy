@@ -170,55 +170,69 @@ public class LoadingScreen : MonoBehaviour
 			TipText.SetStringText(temp);
 			TipText.LocalizeText();
 		}
-		
-		if (_levelName != "")
-            Async = Application.LoadLevelAsync(_levelName);
-        else
-            Async = Application.LoadLevelAsync(_levelIndex);
-		
-		Async.allowSceneActivation = false;
-		
-		while(Async.progress < 0.9f) // Load is actually done at 90% when allowSceneActivation = false
+		if(Application.HasProLicense())
 		{
-			yield return new WaitForEndOfFrame();
-		}
-		
-		LW.setLoading(false);
-		if(!_skipTap)
-		{
-			TapToCont.gameObject.SetActive(true);
-			TapToCont.LocalizeText();
-		}
-		while(true)
-		{
-			if(_skipTap)
-			{
-				_skipTap = false;
-				break;
-			}
-			if(Input.anyKey)
-			{
-				break;
-			}
-			yield return new WaitForEndOfFrame();
-		}
-		
-        while (alphaFloat<1.0f)
-        {
-            yield return new WaitForEndOfFrame();
-            alphaFloat = Mathf.Clamp01(alphaFloat + Time.deltaTime / aFadeOutTime);
-            DrawQuad(aColor, alphaFloat);
-        }
-		TapToCont.gameObject.GetComponent<TextMesh>().text = "";
-		Async.allowSceneActivation = true;
-		
-        while (alphaFloat>0.0f)
-        {
-            yield return new WaitForEndOfFrame();
-	        alphaFloat = Mathf.Clamp01(alphaFloat - Time.deltaTime / aFadeInTime);
-	        DrawQuad(aColor, alphaFloat);
+			if (_levelName != "")
+	            Async = Application.LoadLevelAsync(_levelName);
+	        else
+	            Async = Application.LoadLevelAsync(_levelIndex);
 			
-        }
+			Async.allowSceneActivation = false;
+		
+			while(Async.progress < 0.9f) // Load is actually done at 90% when allowSceneActivation = false
+			{
+				yield return new WaitForEndOfFrame();
+			}
+			
+			LW.setLoading(false);
+			if(!_skipTap)
+			{
+				TapToCont.gameObject.SetActive(true);
+				TapToCont.LocalizeText();
+			}
+			while(true)
+			{
+				if(_skipTap)
+				{
+					_skipTap = false;
+					break;
+				}
+				if(Input.anyKey)
+				{
+					break;
+				}
+				yield return new WaitForEndOfFrame();
+			}
+			
+	        while (alphaFloat<1.0f)
+	        {
+	            yield return new WaitForEndOfFrame();
+	            alphaFloat = Mathf.Clamp01(alphaFloat + Time.deltaTime / aFadeOutTime);
+	            DrawQuad(aColor, alphaFloat);
+	        }
+			
+			TapToCont.setText("");
+			
+			//TapToCont.gameObject.GetComponent<TextMesh>().text = "";
+			
+			Async.allowSceneActivation = true;
+			
+	        while (alphaFloat>0.0f)
+	        {
+	            yield return new WaitForEndOfFrame();
+		        alphaFloat = Mathf.Clamp01(alphaFloat - Time.deltaTime / aFadeInTime);
+		        DrawQuad(aColor, alphaFloat);
+				
+	        }
+		}
+		else
+		{
+			if (_levelName != "")
+	            Application.LoadLevel(_levelName);
+	        else
+	            Application.LoadLevel(_levelIndex);
+		}
+		
 		instance._levelName = "";
         _fading = false;
     }

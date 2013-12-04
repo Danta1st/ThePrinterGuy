@@ -10,8 +10,16 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
     [SerializeField] private List<PaperLightSet> _paperlightset;
+	[SerializeField] private Vector3 _idlePunchScaleAmount = new Vector3(0.2f, 0.2f, 0.2f);
+
 	//Particles - New
-	[SerializeField] private particles _particles;
+	[SerializeField] private Particles _particles;
+	[SerializeField] private GameObject[] _pathSuccess;
+	[SerializeField] private GameObject[] _pathFail;
+	[SerializeField] private Vector3 _circleAmount;
+	[SerializeField] private float _failPercentage;
+	[SerializeField] private GameObject _failTextPrefab;
+//    [SerializeField] private GameObject _paperParticles;
     #endregion
 
     #region Privates
@@ -23,12 +31,18 @@ public class PaperInsertion : MonoBehaviour
 	//Paper Slide variables
 	private iTween.EaseType _easeTypeSlide = iTween.EaseType.easeOutExpo;
 	private bool _IsSlideLocked		= false;
-	private float _slideTime		= 0.4f;
-	private float _slideWait		= 0.2f;
+	private float _slideTime		= 0.5f;
+	private float _slideWait		= 0.05f;
+	private Vector3[] _paperPathSuccess = new Vector3[4];
+	private Vector3[] _paperPathFail = new Vector3[4];
+	private Vector3 _startMovePositionSuccess;
+	private Vector3 _startMovePositionFail;
+	private Vector3 _failPercentagePosition;
 	
 	//Whatever
 	private GameObject _dynamicObjects;
-	
+    private GameObject _conveyorBelt;
+
 	//Gate positions
 	private Vector3 _beginPosition;
 	private Vector3 _openPosition;
@@ -41,6 +55,9 @@ public class PaperInsertion : MonoBehaviour
     #region Delegates & Events
     public delegate void OnPaperInsertedAction();
     public static event OnPaperInsertedAction OnCorrectPaperInserted;
+	
+	public delegate void PaperErrorAction();
+    public static event PaperErrorAction OnPaperError;
     //public static event OnPaperInsertedAction OnIncorrectPaperInserted;
     #endregion
 
@@ -50,23 +67,30 @@ public class PaperInsertion : MonoBehaviour
 		StartGate();		
 		BpmSequencer.OnPaperNode += TriggerLight;
 		BpmSequencer.OnPaperNode += EnablePaper;
-		BpmSequencerItem.OnFailed += Reset;
+		BpmSequencerItem.OnFailed += PaperNotCompleted;
     }
     void OnDisable()
     {
 		StopGate();		
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
-        GestureManager.OnTap -= TriggerSlide;
-		BpmSequencerItem.OnFailed -= Reset;
+		BpmSequencer.OnUraniumRodNode -= Reset;
+		BpmSequencer.OnInkNode -= Reset;
+        //GestureManager.OnTap -= TriggerSlide;
+		GestureManager.OnSwipeUp -= TriggerSlide;
+		BpmSequencerItem.OnFailed -= PaperNotCompleted;
     }	
 	void OnDestroy()
 	{
 		StopGate();
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
-		GestureManager.OnTap -= TriggerSlide;
-		BpmSequencerItem.OnFailed -= Reset;
+		//GestureManager.OnTap -= TriggerSlide;
+		GestureManager.OnSwipeUp -= TriggerSlide;
+		BpmSequencerItem.OnFailed -= PaperNotCompleted;
+		BpmSequencer.OnUraniumRodNode -= Reset;
+		BpmSequencer.OnInkNode -= Reset;
+		UnsubscribePaperPunch();
 	}
 
     #region Monobehaviour Functions
@@ -95,9 +119,36 @@ public class PaperInsertion : MonoBehaviour
 			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
 
 		InitializeLights();
-		DisablePaper();
+		DisablePaper(true);
+
+        _conveyorBelt = transform.FindChild("BB-9000_Paper").FindChild("convoyeBelt").gameObject;
+        
+        _paperPathSuccess[0] = _pathSuccess[0].transform.position;
+        _paperPathSuccess[1] = _pathSuccess[1].transform.position;
+        _paperPathSuccess[2] = _pathSuccess[2].transform.position;
+        _paperPathSuccess[3] = _pathSuccess[3].transform.position;
+        _pathSuccess[3].renderer.enabled = false;
+        
+        _paperPathFail[0] = _pathFail[0].transform.position;
+        _paperPathFail[1] = _pathFail[1].transform.position;
+        _paperPathFail[2] = _pathFail[2].transform.position;
+        _paperPathFail[3] = _pathFail[3].transform.position;
+        
+        _startMovePositionSuccess = _pathSuccess[1].transform.position;
+        _startMovePositionFail = _pathFail[1].transform.position;
 	}
+
+    void Start()
+    {
+        SoundManager.Effect_PaperTray_ConveyorBelt();
+        _failPercentagePosition = iTween.PointOnPath(_paperPathFail, _failPercentage);
+    }
     #endregion
+
+    void Update()
+    {
+        RollConvoreBelt();
+    }
 
     #region Class Methods
     //Gate Methods
@@ -122,7 +173,7 @@ public class PaperInsertion : MonoBehaviour
         if(!_isGateOpen)
         {
 			iTween.MoveTo(_gate, iTween.Hash("position", _openPosition, "time", _openTime, "easetype", _easeTypeOpen));
-			
+
             _isGateOpen = true;
         }
     }
@@ -146,7 +197,16 @@ public class PaperInsertion : MonoBehaviour
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].off;
         }
     }
-
+	
+	public void ReTriggerLight()
+	{
+		if(_paperlightset[_currentPaper].isOn == false)
+        {
+            TurnOnLight(_currentPaper);
+        }		
+	}
+	
+	private int _currentPaper = 0;
     private void TriggerLight(int itemNumber)
     {
 //		if(_paperlightset.Count < itemNumber)
@@ -156,45 +216,59 @@ public class PaperInsertion : MonoBehaviour
 //			Debug.Log("ERROR PAPER: Number out of index!");
 //			return;
 //		}
+		_currentPaper = itemNumber;
 		
 		if(_paperlightset[itemNumber].isOn == false)
         {
             TurnOnLight(itemNumber);
         }
-        
-		//Method for randomisation		
-		/*var identifier = Random.Range(0,_paperlightset.Length);
-
-        for(int i = 0; i < _paperlightset.Length; i++)
-        {
-            if(_paperlightset[identifier].isOn == false)
-            {
-                GSS.PlayClip(Random.Range(3, 4));
-                TurnOnLight(identifier);
-                break;
-            }
-            identifier++;
-
-            if(identifier == _paperlightset.Length)
-                identifier = 0;
-        }*/
     }
-
+	
     private void TurnOnLight(int i)
     {
         if(_paperlightset[i].isOn == false)
         {
+			SubscribePaperPunch(i);
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].on;
             _paperlightset[i].isOn = true;
+//            _paperParticles.transform.position = _paperlightset[i].paperToSlide.transform.position;
+//            _paperParticles.SetActive(true);
         }
     }
-
+	
+	private int _tempPunch = 0;
+	private float _punchTime = 0.45f;
+	private void SubscribePaperPunch(int itemNumber)
+	{
+		_tempPunch = itemNumber;
+		
+		BeatController.OnBeat4th1 += PunchPaper;
+		BeatController.OnBeat4th2 += PunchPaper;
+		BeatController.OnBeat4th3 += PunchPaper;
+		BeatController.OnBeat4th4 += PunchPaper;
+	}
+	private void UnsubscribePaperPunch()
+	{		
+		BeatController.OnBeat4th1 -= PunchPaper;
+		BeatController.OnBeat4th2 -= PunchPaper;
+		BeatController.OnBeat4th3 -= PunchPaper;
+		BeatController.OnBeat4th4 -= PunchPaper;
+	}
+		
+	private void PunchPaper()
+	{
+		if(_tempPunch != null)
+			iTween.PunchScale(_paperlightset[_tempPunch].paper, _idlePunchScaleAmount, _punchTime);
+	}
+	
     private void TurnOffLight(int i)
     {
         if(_paperlightset[i].isOn == true)
         {
+			UnsubscribePaperPunch();
             _paperlightset[i].light.renderer.material.mainTexture = _paperlightset[i].off;
             _paperlightset[i].isOn = false;
+//            _paperParticles.SetActive(false);
         }
     }
 
@@ -208,19 +282,22 @@ public class PaperInsertion : MonoBehaviour
 	
 	//Paper Methods
 	//TODO: Paper animations
-    private void DisablePaper()
+    private void DisablePaper(bool isNewTask)
     {
 		if(_isPaperEnabled)
 		{
-			GestureManager.OnTap -= TriggerSlide;
-	        for(int i = 0; i < _paperlightset.Count; i++)
-	        {
-				//Spawn particles
-				InstantiateParticles(_particles.disablePaper, _paperlightset[i].paper);
-				//Disable objects
-	            _paperlightset[i].paper.SetActive(false);
-				_paperlightset[i].paperToSlide.SetActive(false);
-	        }
+			//GestureManager.OnTap -= TriggerSlide;
+			GestureManager.OnSwipeUp -= TriggerSlide;
+			if(isNewTask) {
+		        for(int i = 0; i < _paperlightset.Count; i++)
+		        {
+					//Spawn particles
+					InstantiateParticles(_particles.disablePaper, _paperlightset[i].paper);
+					//Disable objects
+		            _paperlightset[i].paper.SetActive(false);
+					_paperlightset[i].paperToSlide.SetActive(false);
+		        }
+			}
             _isPaperEnabled = false;
 		}
     }
@@ -229,7 +306,8 @@ public class PaperInsertion : MonoBehaviour
     {
 		if(!_isPaperEnabled)
 		{
-			GestureManager.OnTap += TriggerSlide;
+			//GestureManager.OnTap += TriggerSlide;
+			GestureManager.OnSwipeUp += TriggerSlide;
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 				//Spawn particles
@@ -239,30 +317,17 @@ public class PaperInsertion : MonoBehaviour
 				_paperlightset[i].paperToSlide.SetActive(true);
 	        }
             _isPaperEnabled = true;
+			
+			BpmSequencer.OnUraniumRodNode += Reset;
+			BpmSequencer.OnInkNode += Reset;
 		}
     }
 	
-	private void TriggerSlide(GameObject go, Vector2 screenPosition)
+	private void TriggerSlide(GameObject go)//(GameObject go, Vector2 screenPosition)
 	{
 		
 		if(go != null)
-		{
-			//Please explain why this code is necessary
-//			int j = 0;
-//			PaperLightSet paper;
-//			int count = _paperlightset.Count;
-//			for(int i = 0; i < count; i++)
-//			{
-//				paper = _paperlightset[j];
-//				if(paper.paper == null)
-//				{
-//					_paperlightset.Remove(paper);
-//					_paperlightset.TrimExcess();
-//					continue;
-//				}
-//				j++;
-//			}
-			
+		{	
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 				//Succesfull Slide
@@ -275,7 +340,7 @@ public class PaperInsertion : MonoBehaviour
 				//Unsuccesfull Slide
 				else if(!_paperlightset[i].isOn && _paperlightset[i].paper.transform == go.transform)
 				{
-                    SoundManager.Effect_PaperTray_WrongSwipe();
+                    SoundManager.Effect_InGame_Task_Unmatched();
 					SlidePaper(i, false);
 					break;
 				}
@@ -292,21 +357,33 @@ public class PaperInsertion : MonoBehaviour
 				TurnOffLight(i);
 				
 				//Block the player from sliding
-				_IsSlideLocked = true;
+				//_IsSlideLocked = true;
 				
 				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
 				
 				//Enable Paper Trail or throw warning
-				if(paper.GetComponentInChildren<TrailRenderer>() != null)
-					paper.GetComponentInChildren<TrailRenderer>().enabled = true;
+				TrailRenderer[] _trails = paper.GetComponentsInChildren<TrailRenderer>();
+				if(_trails != null)
+					foreach(TrailRenderer _trail in _trails)
+					{
+						_trail.enabled = true;
+					}
 				else
-					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");				
+					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+				
+				_paperPathSuccess[0] = _paperlightset[i].paperToSlide.transform.position;
+				
+				Vector3 _offSet = new Vector3(Random.Range(-_circleAmount.x, _circleAmount.x), 
+												Random.Range(-_circleAmount.y, _circleAmount.y),
+												Random.Range(-_circleAmount.z, _circleAmount.z));
+				_paperPathSuccess[1] = _startMovePositionSuccess + _offSet;
 				
 				//Correct color inserted
 				if(colorMatch) 
 				{
-					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+					EnableShadowPaper();
+					iTween.MoveTo(paper, iTween.Hash("path", _paperPathSuccess, "time", _slideTime, "easetype", iTween.EaseType.linear, 
 													"oncomplete", "TriggerDestroyPaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 					
 					if(OnCorrectPaperInserted != null)
@@ -315,24 +392,69 @@ public class PaperInsertion : MonoBehaviour
 				//Wrong color inserted
 				else
 				{
-					iTween.MoveTo(paper, iTween.Hash("position", _target.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
+					EnableShadowPaper();
+					iTween.MoveTo(paper, iTween.Hash("path", _paperPathSuccess, "time", _slideTime, "easetype", iTween.EaseType.linear, 
 													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+					if(OnPaperError != null)
+						OnPaperError();
 				}				
 			}
 			else
 			{
-				_IsSlideLocked = true;
+				//_IsSlideLocked = true;
 				
 				var paper = (GameObject) Instantiate(_paperlightset[i].paperToSlide, _paperlightset[i].paper.transform.position, _paperlightset[i].paper.transform.rotation);
 				paper.transform.parent = _dynamicObjects.transform;
 				
-				iTween.MoveTo(paper, iTween.Hash("position", _gate.gameObject.transform.position, "time", _slideTime, "easetype", _easeTypeSlide, 
-													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));			
+				//Enable Paper Trail or throw warning
+				TrailRenderer[] _trails = paper.GetComponentsInChildren<TrailRenderer>();
+				if(_trails != null)
+					foreach(TrailRenderer _trail in _trails)
+					{
+						_trail.enabled = true;
+					}
+				else
+					Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+				
+				_paperPathFail[0] = _paperlightset[i].paperToSlide.transform.position;
+				
+				Vector3 _offSet = new Vector3(Random.Range(-_circleAmount.x, _circleAmount.x), 
+												Random.Range(-_circleAmount.y, _circleAmount.y),
+												Random.Range(-_circleAmount.z, _circleAmount.z));
+				_paperPathFail[1] = _startMovePositionFail + _offSet;
+				
+				iTween.MoveTo(paper, iTween.Hash("path", _paperPathFail, "time", _slideTime, "easetype", iTween.EaseType.linear, 
+													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+				
+				StartCoroutine("InstantiatePopupFail");
+				if(OnPaperError != null)
+						OnPaperError();
 			}
 
             InstantiateParticlesAtPaper(_particles.swipe, gameObject);
 		}
     }
+	
+	private IEnumerator InstantiatePopupFail()
+	{
+		yield return new WaitForSeconds(0.2f);
+		GameObject _popup = (GameObject)Instantiate(_failTextPrefab, _failPercentagePosition, Quaternion.identity);
+		yield return new WaitForSeconds(2f);
+		Destroy(_popup);
+	}
+	
+	private void EnableShadowPaper()
+	{
+		GameObject _go = _pathSuccess[3];
+		_go.renderer.enabled = true;
+		iTween.ScaleFrom(_go, iTween.Hash("scale", new Vector3(0.01f, 0.01f, 0.01f), "time", 0.5f, "easeType", iTween.EaseType.easeInOutCirc,
+																	"onComplete", "DisableShadowPaper", "onCompleteTarget", gameObject));
+	}
+	
+	private void DisableShadowPaper()
+	{
+		_pathSuccess[3].renderer.enabled = false;
+	}
 	
 	private void TriggerDestroyPaper(GameObject go)
 	{
@@ -373,10 +495,22 @@ public class PaperInsertion : MonoBehaviour
 	}
 	
 	//-----------
-	public void Reset()
+	public void Reset(int itemNumber)
 	{
-		DisablePaper();
+		DisablePaper(true);
 		TurnOfAllLights();
+		
+		BpmSequencer.OnUraniumRodNode -= Reset;
+		BpmSequencer.OnInkNode -= Reset;
+	}
+	
+	public void PaperNotCompleted()
+	{
+		DisablePaper(false);
+		TurnOfAllLights();
+		
+		BpmSequencer.OnUraniumRodNode -= Reset;
+		BpmSequencer.OnInkNode -= Reset;
 	}
 	
 	//Method for playing the correct swipe sound
@@ -417,7 +551,6 @@ public class PaperInsertion : MonoBehaviour
 					GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
 					//Child to DynamicObjects
 					tempParticles.transform.parent = _dynamicObjects.transform;
-					Debug.Log(gameObject.name+" instantiating particles");
 					return;
 				}
 			}
@@ -425,33 +558,38 @@ public class PaperInsertion : MonoBehaviour
 			GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
 			//Child to DynamicObjects
 			tempParticles1.transform.parent = _dynamicObjects.transform;
-			Debug.Log(gameObject.name+" instantiating particles");
 		}
 	}
 
     private void InstantiateParticlesAtPaper(GameObject particles, GameObject posRotGO)
- {
-     if(particles != null)
-     {
-         foreach(Transform child in posRotGO.transform)
-         {
-             if(child.name.Equals("ParticlePaperPos") && particles != null)
-             {
-                 //Instantiate Particle prefab. Rotation solution is a HACK
-                 GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
-                 //Child to DynamicObjects
-                 tempParticles.transform.parent = _dynamicObjects.transform;
-                 Debug.Log(gameObject.name+" instantiating particles");
-                 return;
-             }
-         }
-         //Instantiate Particle prefab. Rotation solution is a HACK
-         GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
-         //Child to DynamicObjects
-         tempParticles1.transform.parent = _dynamicObjects.transform;
-         Debug.Log(gameObject.name+" instantiating particles");
-     }
- }
+    {
+        if(particles != null)
+        {
+            foreach(Transform child in posRotGO.transform)
+            {
+                if(child.name.Equals("ParticlePaperPos") && particles != null)
+                {
+                    //Instantiate Particle prefab. Rotation solution is a HACK
+                    GameObject tempParticles = (GameObject) Instantiate(particles, child.position, Quaternion.identity);
+                    //Child to DynamicObjects
+                    tempParticles.transform.parent = _dynamicObjects.transform;
+                    return;
+                }
+            }
+
+            //Instantiate Particle prefab. Rotation solution is a HACK
+            GameObject tempParticles1 = (GameObject) Instantiate(particles, posRotGO.transform.position, Quaternion.identity);
+            //Child to DynamicObjects
+            tempParticles1.transform.parent = _dynamicObjects.transform;
+        }
+    }
+
+    public void RollConvoreBelt()
+    {
+
+        Vector2 thisOffset = _conveyorBelt.renderer.material.mainTextureOffset;
+        _conveyorBelt.renderer.material.mainTextureOffset = (thisOffset + new Vector2(0.0f, 0.001f));
+    }
 	#endregion
 
     #region SubClasses
@@ -462,12 +600,12 @@ public class PaperInsertion : MonoBehaviour
         public Texture on;
         public Texture off;
         public GameObject paper;
-        public bool isOn = false;
+        [HideInInspector] public bool isOn = false;
 		public GameObject paperToSlide;
     };
 	
     [System.Serializable]
-    public class particles
+    public class Particles
     {
 		public GameObject complete;
 		public GameObject failed;
