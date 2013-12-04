@@ -125,14 +125,14 @@ public class Ink : MonoBehaviour
 		BeatController.OnBeat8th7 += CloseGates;
 		//TODO: Insert close gate sound?
 		BeatController.OnBeat8th3 += OpenGates;
-		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen4;
+		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen;
     }
 
     private void StopGates()
     {
 		BeatController.OnBeat8th7 -= CloseGates;
 		BeatController.OnBeat8th3 -= OpenGates;
-		BeatController.OnBeat8th3 -= SoundManager.Effect_Ink_SlotOpen4;
+		BeatController.OnBeat8th3 -= SoundManager.Effect_Ink_SlotOpen;
     }
 	
 	private void OpenGates()
