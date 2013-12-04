@@ -290,9 +290,10 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailedWithItem != null)
 						OnFailedWithItem(_moduleName);
 					
-//					_guiGameCameraScript.EndZone(gameObject, false);
+					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                _guiGameCameraScript.SetPauseElement(gameObject);
                 KillTaskFailed();
 			}
 			
@@ -332,9 +333,10 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailedWithItem != null)
 						OnFailedWithItem(_moduleName);
 					
-//					_guiGameCameraScript.EndZone(gameObject, false);
+					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+                _guiGameCameraScript.SetPauseElement(gameObject);
                 KillTaskFailed();
 			}
 			ChangeTexture();
@@ -369,9 +371,10 @@ public class BpmSequencerItem : MonoBehaviour {
 					if(OnFailedWithItem != null)
 						OnFailedWithItem(_moduleName);
 					
-//					_guiGameCameraScript.EndZone(gameObject, false);
+					_guiGameCameraScript.EndZone(gameObject, false);
 				}
 				//TODO: Insert end dissapear method
+				_guiGameCameraScript.SetPauseElement(gameObject);
                 KillTaskFailed();
 			}
 			ChangeTexture();
@@ -439,9 +442,9 @@ public class BpmSequencerItem : MonoBehaviour {
 
 	private void KillFailed()
 	{
-		_guiGameCameraScript.EndZone(gameObject, false);
         InstantiateParticles(_particles.failed, gameObject);
-        Destroy(gameObject);
+		Destroy(gameObject);
+		_guiGameCameraScript.SetPauseElement(null);
 	}
 
     private void KillComplete()

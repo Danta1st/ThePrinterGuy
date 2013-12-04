@@ -40,6 +40,7 @@ public class GUIGameCamera : MonoBehaviour
     private bool _waitForMe = false;
     private string _currentTaskType;
     private GameObject resumeButtom;
+	private bool _isPaused = false;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -56,14 +57,7 @@ public class GUIGameCamera : MonoBehaviour
 	//Highscore Variables.
 	private int _score = 0;
 	private string _strScore = "0";
-	private HighscoreScreenLoader _highscoreLoader;
 	private GameObject _scoreValueObject;
-	private GameObject _star1Object;
-	private GameObject _star2Object;
-	private GameObject _star3Object;
-	private bool _isStar1Spawned;
-	private bool _isStar2Spawned;
-	private bool _isStar3Spawned;
 
     //Action Sequencer
     private Vector3 _spawnPoint;
@@ -72,6 +66,7 @@ public class GUIGameCamera : MonoBehaviour
     private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
     private int _zone = 0;
     private bool _isLastNode = false;
+	private GameObject _pausedGameObject = null;
 	
 	//Dialogue variables - Speech bubble
 	private GameObject _speechTextObject;
@@ -141,10 +136,10 @@ public class GUIGameCamera : MonoBehaviour
 	
 	void OnApplicationPause(bool status)
 	{
-		if(status == true)
+		if(status == true && !_isPaused)
 		{
 	        if(OnPause != null)
-	            OnPause();										
+	            OnPause();
 			
 			OpenIngameMenu();
 		}
@@ -245,7 +240,6 @@ public class GUIGameCamera : MonoBehaviour
         //--------------------------------------------------//
 		_pauseCurrScore = GameObject.Find("CurrentScoreValue").gameObject;
 		_pauseHighScore = GameObject.Find("HighscoreValue").gameObject;
-		_highscoreLoader = GameObject.Find("GUI List").GetComponent<HighscoreScreenLoader>();
 		
         foreach(GameObject _guiObject in _guiList)
         {
@@ -284,9 +278,6 @@ public class GUIGameCamera : MonoBehaviour
 			if(_guiObject.name == "Highscore")
             {
                 _scoreValueObject = _guiObject.transform.FindChild("ScoreValue").gameObject;
-				_star1Object = _guiObject.transform.FindChild("Star1").gameObject;
-				_star2Object = _guiObject.transform.FindChild("Star2").gameObject;
-				_star3Object = _guiObject.transform.FindChild("Star3").gameObject;
             }
 
             if(_guiObject.name == "ActionSequencer")
@@ -306,10 +297,6 @@ public class GUIGameCamera : MonoBehaviour
 		UpdateText();
 		
         EnableGUICamera();
-		
-		_star1Object.SetActive(false);
-		_star2Object.SetActive(false);
-		_star3Object.SetActive(false);
 		
 		_greenZoneScript = GameObject.Find("GreenZone").GetComponent<GreenZone>();
     }
@@ -377,7 +364,6 @@ public class GUIGameCamera : MonoBehaviour
 		_score += (int)_amount;
 		_strScore = _score.ToString();
 		ShowScore();
-		ShowStars();
 	}
 	
 	public void IncreaseScorePopup(float _amount)
@@ -399,68 +385,12 @@ public class GUIGameCamera : MonoBehaviour
 		}
 		
 		ShowScore();
-		ShowStars();
 	}
 	
 	private void ShowScore()
 	{
 		 _scoreValueObject.GetComponent<TextMesh>().text = _strScore;
 		iTween.PunchScale(_scoreValueObject, new Vector3(3f,3f,0f),0.4f);	
-	}
-	
-	private void ShowStars()
-	{
-		if(_score >= _highscoreLoader.GetStarOneScore() && _score < _highscoreLoader.GetStarTwoScore())
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(false);
-			_star3Object.SetActive(false);
-			
-			if(!_isStar1Spawned)
-			{
-				iTween.PunchScale(_star1Object, new Vector3(20f,20f,0f),1f);
-				_isStar1Spawned = true;
-			}
-			
-		}
-		else if(_score >= _highscoreLoader.GetStarTwoScore() && _score < _highscoreLoader.GetStarThreeScore())
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(true);
-			_star3Object.SetActive(false);
-			
-			if(!_isStar2Spawned)
-			{
-				iTween.PunchScale(_star2Object, new Vector3(20f,20f,0f),1f);
-				_isStar2Spawned = true;
-			}
-			
-		}
-		else if(_score >= _highscoreLoader.GetStarThreeScore())
-		{
-			_star1Object.SetActive(true);
-			_star2Object.SetActive(true);
-			_star3Object.SetActive(true);
-			
-			
-			if(!_isStar3Spawned)
-			{
-				iTween.PunchScale(_star3Object, new Vector3(20f,20f,0f),1f);
-				_isStar3Spawned = true;
-			}
-		}
-		else
-		{
-			_star1Object.SetActive(false);
-			_star2Object.SetActive(false);
-			_star3Object.SetActive(false);
-			
-			_isStar1Spawned = false;
-			_isStar2Spawned = false;
-			_isStar3Spawned = false;
-			
-			
-		}
 	}
 			
 	public void PopupTextSmall(string _str)
@@ -632,6 +562,7 @@ public class GUIGameCamera : MonoBehaviour
     #region GUI Ingame Menu
     private void OpenIngameMenu()
     {
+		_isPaused = true;
         SaveGUIState();
         DisableGUIElement("Pause");
 		ResetGuiTextures();
@@ -643,9 +574,9 @@ public class GUIGameCamera : MonoBehaviour
 		int[] highScores = SaveGame.GetPlayerHighscores();
 		try
 		{
-			_pauseHighScore.GetComponent<TextMesh>().text = highScores[Application.loadedLevel - 2].ToString();
+			_pauseHighScore.GetComponent<TextMesh>().text = highScores[ConstantValues.GetLoadedLevelMinusStartLevels(Application.loadedLevel)].ToString();
 		}
-		catch(Exception e)
+		catch(Exception)
 		{
 			_pauseHighScore.GetComponent<TextMesh>().text = "0";
 		}
@@ -691,6 +622,7 @@ public class GUIGameCamera : MonoBehaviour
     private void UnPauseTimeScale()
     {
         Time.timeScale = 1.0f;
+		_isPaused = false;
         AudioListener.pause = false;
         SoundManager.TurnOnMenuSounds();
         SoundManager.Effect_Menu_Click();
@@ -838,6 +770,14 @@ public class GUIGameCamera : MonoBehaviour
 		
 	}
 	
+	public void SetPauseElement(object obj)
+	{
+		if(obj != null)
+			_pausedGameObject = (GameObject)obj;
+		else
+			_pausedGameObject = null;
+	}
+	
     public void EndZone(GameObject _go, bool shouldDestroy)
     {
 		_greenZoneScript.GreenOff();
@@ -893,6 +833,9 @@ public class GUIGameCamera : MonoBehaviour
 				obj.SetActive(false);
 			}
 		}
+		
+		if(_pausedGameObject != null)
+			_pausedGameObject.SetActive(false);
 
         foreach(GameObject _gui in _guiList)
         {
@@ -915,6 +858,9 @@ public class GUIGameCamera : MonoBehaviour
 				obj.SetActive(true);
 			}
 		}
+		
+		if(_pausedGameObject != null)
+			_pausedGameObject.SetActive(true);
 		
         foreach(GameObject _gui in _guiSaveList)
         {
