@@ -68,17 +68,17 @@ public class HighscoreScreenLoader : MonoBehaviour
 
     public void SetRodTotalNodes(int _amountOfNodes)
     {
-        HighscoreSceneScript._targetScore._totalUranNodes = _amountOfNodes;
+        _totalRodNodes = _amountOfNodes;
     }
 
     public void SetInkTotalNodes(int _amountOfNodes)
     {
-        HighscoreSceneScript._targetScore._totalInkNodes = _amountOfNodes;
+        _totalInkNodes = _amountOfNodes;
     }
 
     public void SetPaperTotalNodes(int _amountOfNodes)
     {
-        HighscoreSceneScript._targetScore._totalPaperNodes = _amountOfNodes;
+        _totalPaperNodes = _amountOfNodes;
     }
 
     public void SetBarometerTotalNodes(int _amountOfNodes)
@@ -88,6 +88,9 @@ public class HighscoreScreenLoader : MonoBehaviour
 
 	public void DisplayEndScreenWin(int _score)
 	{
+		HighscoreSceneScript._targetScore._totalInkNodes = _totalInkNodes;
+		HighscoreSceneScript._targetScore._totalUranNodes = _totalRodNodes;
+		HighscoreSceneScript._targetScore._totalPaperNodes = _totalPaperNodes;
 		SoundManager.StopAllSoundEffects();
         SoundManager.Effect_PaperTray_StopConveyorBelt();
         SoundManager.FadeAllMusic();
@@ -96,6 +99,9 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	public void DisplayEndScreenLoose(int _score)
 	{
+		HighscoreSceneScript._targetScore._totalInkNodes = _totalInkNodes;
+		HighscoreSceneScript._targetScore._totalUranNodes = _totalRodNodes;
+		HighscoreSceneScript._targetScore._totalPaperNodes = _totalPaperNodes;
 		SoundManager.StopAllSoundEffects();
         SoundManager.Effect_PaperTray_StopConveyorBelt();
         SoundManager.FadeAllMusic();
