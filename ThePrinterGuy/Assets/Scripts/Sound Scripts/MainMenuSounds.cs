@@ -50,7 +50,7 @@ public class MainMenuSounds : MonoBehaviour
 
     public void Effect_Task_Unmatched()
     {
-        _tasks.PlayClip(1);
+        _tasks.PlayClip(0);
     }
 
     public void FadeMusic(float fadeTime)
