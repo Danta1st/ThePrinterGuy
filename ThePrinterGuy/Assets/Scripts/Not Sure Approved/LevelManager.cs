@@ -274,11 +274,22 @@ public class LevelManager : MonoBehaviour
 		GUIMainMenuCamera.OnLevelManagerEvent += SelectStage;
     }
 
+    void DisappearLobbyArrow(GameObject stageChar)
+    {
+        GameObject Arrow = stageChar.transform.FindChild("lobbyArrow").gameObject;
+        iTween.ScaleTo(Arrow, iTween.Hash("scale", new Vector3(0,0,0),"time", 0.5f, "easeType", _easyTypeOfLevelParentObjectOut));
+    }
+
     void LevelBoxesAppear(GameObject go)
     {
+        List<GameObject> stageCharacters = GetStageCharacters();
+
+        foreach(GameObject stageChars in stageCharacters)
+        {
+            DisappearLobbyArrow(stageChars);
+        }
+
         LevelParentObject = go.transform.FindChild("LevelBoxes").gameObject;
-        GameObject Arrow = go.transform.FindChild("lobbyArrow").gameObject;
-        iTween.ScaleTo(Arrow, iTween.Hash("scale", new Vector3(0,0,0),"time", 0.5f, "easeType", _easyTypeOfLevelParentObjectOut));
         iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(1,1,1),"time", 1f, "easeType", _easyTypeOfLevelParentObjectIn, "Delay", 0.5f));
 
         indexChar = _stageCharacters.IndexOf(go);
