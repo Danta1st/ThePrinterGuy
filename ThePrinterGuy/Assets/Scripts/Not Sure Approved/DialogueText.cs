@@ -36,7 +36,7 @@ public class DialogueText : MonoBehaviour {
         if(_subtitleOn)
         {
             _bgText = GameObject.Find("TextBG").gameObject;
-            _text = gameObject.transform.FindChild("Text").gameObject;
+            _text = GameObject.Find("Text").gameObject;
             _bgPosition = _text.transform.position;
             _bgText.transform.position = _bgPosition;
             _bgText.renderer.enabled = false;
