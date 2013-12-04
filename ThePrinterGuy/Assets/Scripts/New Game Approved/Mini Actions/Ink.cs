@@ -89,27 +89,32 @@ public class Ink : MonoBehaviour
 		StartGates();
 		
 		BpmSequencer.OnInkNode += StartInkTask;
-		BpmSequencerItem.OnFailed += InkReset;
+		BpmSequencerItem.OnFailed += InkNotCompleted;
 	}
 	
 	void OnDisable()
 	{
 		StopGates();
+		UnsubscribeInkPunch();
 		
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
-		BpmSequencerItem.OnFailed -= InkReset;
-		UnsubscribeInkPunch();
+		BpmSequencer.OnPaperNode -= InkReset;
+		BpmSequencer.OnUraniumRodNode -= InkReset;
+		BpmSequencerItem.OnFailed -= InkNotCompleted;
+		
 	}
 	
 	void OnDestroy()
 	{
 		StopGates();
+		UnsubscribeInkPunch();
 		
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
-		BpmSequencerItem.OnFailed -= InkReset;
-		UnsubscribeInkPunch();
+		BpmSequencer.OnPaperNode -= InkReset;
+		BpmSequencer.OnUraniumRodNode -= InkReset;
+		BpmSequencerItem.OnFailed -= InkNotCompleted;
 	}
 	
 	#region Class Methods	
@@ -200,12 +205,18 @@ public class Ink : MonoBehaviour
 	{
 		_tempPunch = itemNumber;
 		
-		BeatController.OnAll4Beats += PunchInk;
+		BeatController.OnBeat4th1 += PunchInk;
+		BeatController.OnBeat4th2 += PunchInk;
+		BeatController.OnBeat4th3 += PunchInk;
+		BeatController.OnBeat4th4 += PunchInk;
 		
 	}
 	private void UnsubscribeInkPunch()
 	{	
-		BeatController.OnAll4Beats -= PunchInk;
+		BeatController.OnBeat4th1 -= PunchInk;
+		BeatController.OnBeat4th2 -= PunchInk;
+		BeatController.OnBeat4th3 -= PunchInk;
+		BeatController.OnBeat4th4 -= PunchInk;
 	}
 		
 	private void PunchInk()
@@ -248,7 +259,7 @@ public class Ink : MonoBehaviour
 			return;
 
         PlaySwipeSound(index);
-
+		
 		//Succesfull swipe
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
@@ -257,6 +268,10 @@ public class Ink : MonoBehaviour
 			
 			//Unsubsribe gesture
 			GestureManager.OnSwipeRight -= InsertCartridge;
+			
+			//Stop Smoke
+			if(_particleSmoke != null)
+				_particleSmoke.particleSystem.Stop();
 			
 			currIcc.cartridgeEmpty = false;
 			currIcc.cartridge.renderer.material.mainTexture = currIcc.full;
@@ -292,17 +307,9 @@ public class Ink : MonoBehaviour
 	
 	private void InkSuccess(InkCartridgeClass icc)
 	{
-		
 		//Instantiate particles
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
-        InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);
-
-		//Stop Smoke
-		if(_particleSmoke != null)
-			_particleSmoke.particleSystem.Stop();		
-		
-		if(!isOnInk)
-        	InkReset();
+        InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);		
 		
 //		icc.insertableCartridge.gameObject.SetActive(true);
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
@@ -350,7 +357,7 @@ public class Ink : MonoBehaviour
         }
     }
 	
-	private void InkReset()
+	private void InkReset(int itemNumber)
 	{
 		//Unsubscribe from gesture
 		GestureManager.OnSwipeRight -= InsertCartridge;
@@ -378,6 +385,31 @@ public class Ink : MonoBehaviour
 			icc.insertableCartridgeClone.SetActive(false);
 //			j++;
 		}
+		BpmSequencer.OnPaperNode -= InkReset;
+		BpmSequencer.OnUraniumRodNode -= InkReset;
+	}
+	
+	private void InkNotCompleted()
+	{
+		InkCartridgeClass icc;
+		//FIXME: Particles
+		if(_particleSmoke != null)
+			_particleSmoke.particleSystem.Stop();
+		
+//		int j = 0;
+		for(int i = 0; i < _machineInks.Count; i++)
+		{
+			icc = _machineInks[i];
+			
+			icc.cartridgeEmpty = false;
+			icc.cartridge.renderer.material.mainTexture = icc.full;
+
+			icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
+			icc.insertableCartridgeClone.SetActive(false);
+//			j++;
+		}
+		
+		UnsubscribeInkPunch();
 	}
 	
 	//public function to retrigger ink task. Used in GUIGameCamera
@@ -388,7 +420,9 @@ public class Ink : MonoBehaviour
 	
 	private int _currentInk = 0;
 	private void StartInkTask(int itemNumber)
-	{		
+	{	
+		BpmSequencer.OnPaperNode += InkReset;
+		BpmSequencer.OnUraniumRodNode += InkReset;
 		_currentInk = itemNumber;
 		isOnInk = true;
 		//Subscribe to gesture
@@ -415,10 +449,9 @@ public class Ink : MonoBehaviour
 //			return;
 //		}
 		
-		if(_machineInks[itemNumber].cartridgeEmpty == false)
-        {
-            EmptyCartridge(itemNumber);
-        }
+		
+        EmptyCartridge(itemNumber);
+      
 		
 		//Randomisation method for ink calls
 		/*var identifier = Random.Range(0,_machineInks.Count);
