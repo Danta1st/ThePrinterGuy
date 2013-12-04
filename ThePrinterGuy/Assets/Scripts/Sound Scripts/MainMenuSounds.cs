@@ -3,6 +3,9 @@ using System.Collections;
 
 public class MainMenuSounds : MonoBehaviour
 {
+    [SerializeField] private float _musicVolume = 0.5f;
+    [SerializeField] private float _endVolume = 0.1f;
+
     #region Privates
     private GenericSoundScript _soundFx;
     private GenericSoundScript _music;
@@ -48,6 +51,16 @@ public class MainMenuSounds : MonoBehaviour
     public void Effect_Task_Unmatched()
     {
         _tasks.PlayClip(1);
+    }
+
+    public void FadeMusic(float fadeTime)
+    {
+        _music.FadeVolume(_musicVolume, fadeTime);
+    }
+
+    public void FadeMusicEnd(float fadeTime)
+    {
+        _music.FadeVolume(_endVolume, fadeTime);
     }
     #endregion
 
