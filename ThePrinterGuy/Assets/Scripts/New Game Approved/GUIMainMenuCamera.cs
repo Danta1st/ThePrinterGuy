@@ -32,6 +32,10 @@ public class GUIMainMenuCamera : MonoBehaviour
 	private GameObject _creditsButton;
 	private GameObject _menuButtonLeft;
 	private GameObject _menuButtonRight;
+    private LevelManager _levelManager;
+    GameObject _tutorialScaler;
+    private Vector3 _tutorialTransformScale;
+    private bool takeTutorial;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -146,6 +150,8 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         SoundManager.UnFadeAllMusic();
         SoundManager.TurnOnMenuSounds();
+        _levelManager = gameObject.GetComponent<LevelManager>();
+        _tutorialScaler = gameObject.transform.Find("TutorialScalar").gameObject;
 
         _danishCheck.renderer.enabled = false;
         _englishCheck.renderer.enabled = false;
@@ -258,6 +264,9 @@ public class GUIMainMenuCamera : MonoBehaviour
         EnableGUICamera();
         SwitchToMainMenu();
 		UpdateText();
+        _tutorialTransformScale = _tutorialScaler.transform.localScale;
+        _tutorialScaler.transform.localScale = new Vector3(0,0,0);
+
 
         SoundManager.Music_Menu_Main();
     }
@@ -418,12 +427,32 @@ public class GUIMainMenuCamera : MonoBehaviour
                         LocalizationText.SetLanguage("EN");
                         UpdateText();
                     }
+                    else if (_hit.collider.gameObject.name == "TakeTutorialNo")
+                    {
+                        PlayerPrefs.SetString("Tutorial", "Answered");
+                        int[] highScore = SaveGame.GetMaxHighscores();
+
+                        for (int i = 0; i < 6; i++) {
+                            highScore[i] = 0;
+                        }
+
+                        SaveGame.SavePlayerData(0,0,highScore);
+                        iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenu", "oncompletetarget", gameObject));
+                        LoadingScreen.Load(ConstantValues.GetStartScene);
+                    }
+                    else if (_hit.collider.gameObject.name == "TakeTutorialYes")
+                    {
+                        takeTutorial = false;
+                        PlayerPrefs.SetString("Tutorial", "Answered");
+                        iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenu", "oncompletetarget", gameObject));
+                        OnLevelManagerEvent(_levelManager.GetStageCharacters()[0], new Vector3(0,0,0));
+                    }
 
                     SoundManager.Effect_Menu_Click();
                 }
                 //-----------------------------------------------------------------------//
             }
-            else if(Physics.Raycast(_mainCamRay,out _hit))
+            else if(Physics.Raycast(_mainCamRay, out _hit))
 			{
 				if(_isOnStartScreen && _hit.collider.gameObject.name == "TapToPlay")
             	{
@@ -450,14 +479,32 @@ public class GUIMainMenuCamera : MonoBehaviour
                                                     "easetype", iTween.EaseType.linear,
                                                     "looktarget", lvlManager.getLookTarget().transform,
                                                     "looktime", 3,
-                                                    "oncomplete", "SwitchToMainMenu",
+                                                    "oncomplete", "CheckForTutorial",
                                                     "oncompletetarget", gameObject));
-				} else {
+				}
+                else
+                {
 					if(OnLevelManagerEvent != null)
 						OnLevelManagerEvent(_go, _screenPosition);
 				}
 				
             }
+        }
+    }
+
+    private void CheckForTutorial()
+    {
+        if(!PlayerPrefs.HasKey("Tutorial"))
+        {
+            PlayerPrefs.SetString("Tutorial", "NotAnswered");
+        }
+        else if(PlayerPrefs.GetString("Tutorial") == "NotAnswered")
+        {
+           iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", _tutorialTransformScale, "time", 1f, "easeType", iTween.EaseType.easeOutBack));
+        }
+        else
+        {
+            SwitchToMainMenu();
         }
     }
 

@@ -61,6 +61,7 @@ public class SaveGame : MonoBehaviour
         PlayerPrefs.SetInt("premiumCurrency", 0);
         PlayerPrefs.SetString("highscoresAsString", "0;-1;-1;-1;-1;-1;-1;-1;-1;-1");
         PlayerPrefs.SetString("maxHighscoresAsString", "-1;-1;-1;-1;-1;-1;-1;-1;-1;-1");
+        PlayerPrefs.SetString("Tutorial","NotAnswered");
     }
 
     private static string HighscoresArrayToString(int[] highscores)
