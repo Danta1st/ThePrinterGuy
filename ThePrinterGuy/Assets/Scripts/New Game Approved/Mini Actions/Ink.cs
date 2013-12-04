@@ -33,6 +33,9 @@ public class Ink : MonoBehaviour
 	#region Delegates & Events
 	public delegate void OnInkInsertedAction();
     public static event OnInkInsertedAction OnCorrectInkInserted;
+	
+	public delegate void InkErrorAction();
+	public static event InkErrorAction OnInkError;
 	#endregion
 
 	void Awake () 
@@ -125,14 +128,14 @@ public class Ink : MonoBehaviour
 		BeatController.OnBeat8th7 += CloseGates;
 		//TODO: Insert close gate sound?
 		BeatController.OnBeat8th3 += OpenGates;
-		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen4;
+		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen;
     }
 
     private void StopGates()
     {
 		BeatController.OnBeat8th7 -= CloseGates;
 		BeatController.OnBeat8th3 -= OpenGates;
-		BeatController.OnBeat8th3 -= SoundManager.Effect_Ink_SlotOpen4;
+		BeatController.OnBeat8th3 -= SoundManager.Effect_Ink_SlotOpen;
     }
 	
 	private void OpenGates()
@@ -292,6 +295,9 @@ public class Ink : MonoBehaviour
 		//Failed swipe
 		else
 		{	
+			if(OnInkError != null)
+				OnInkError();
+			
 			currIcc.insertableCartridgeClone.SetActive(true);
 			
 			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathFail, 
@@ -306,10 +312,8 @@ public class Ink : MonoBehaviour
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
         InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);		
 		
-
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
-
 		
         _canSlide = true;
 		UnsubscribeInkPunch();

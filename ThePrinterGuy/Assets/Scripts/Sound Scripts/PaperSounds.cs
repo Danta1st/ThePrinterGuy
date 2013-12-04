@@ -66,16 +66,6 @@ public class PaperSounds : MonoBehaviour
         _soundFx.LoopClipStop();
     }
 
-    public void Effect_PaperTray_ColorChange1()
-    {
-        _soundFx.PlayClip(3);
-    }
-
-    public void Effect_PaperTray_ColorChange2()
-    {
-        _soundFx.PlayClip(4);
-    }
-
     public void Effect_PaperTray_Swipe1()
     {
 //        _soundFx.PlayClip(5);

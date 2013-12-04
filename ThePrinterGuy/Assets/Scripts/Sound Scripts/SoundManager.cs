@@ -9,8 +9,6 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private static float _endMusicVolume = 0.2f;
     [SerializeField] private static float _menuEffectsVolume = 0.8f;
     [SerializeField] private static float _voiceVolume = 1.0f;
-    [SerializeField] private static float _gameMusic = 0.7f;
-    [SerializeField] private static float _menuMusic = 0.5f;
     #endregion
 
     #region Privates
@@ -86,9 +84,6 @@ public class SoundManager : MonoBehaviour
         }
 
         _soundFxScripts.Add(_inkSounds.GetEffectScript());
-        _soundFxScripts.Add(_machineSounds.GetEffectScriptCogwheels());
-        _soundFxScripts.Add(_machineSounds.GetEffectScriptMachine());
-        _soundFxScripts.Add(_machineSounds.GetEffectScriptSmoke());
         _soundFxScripts.Add(_paperSounds.GetEffectScript());
         _soundFxScripts.Add(_rodSounds.GetEffectScript());
         _soundFxScripts.Add(_mainMenuSounds.GetEffectScript());
@@ -103,7 +98,7 @@ public class SoundManager : MonoBehaviour
 
         for(int i = 0; i < _musicScripts.Count; i++)
         {
-            _musicVolume.Add(_audioScripts[i].GetVolume());
+            _musicVolume.Add(_musicScripts[i].GetVolume());
         }
 
         ToogleAudio();
@@ -172,16 +167,6 @@ public class SoundManager : MonoBehaviour
         _paperSounds.Effect_PaperTray_StopConveyorBelt();
     }
 
-    public static void Effect_PaperTray_ColorChange1()
-    {
-        _paperSounds.Effect_PaperTray_ColorChange1();
-    }
-
-    public static void Effect_PaperTray_ColorChange2()
-    {
-        _paperSounds.Effect_PaperTray_ColorChange2();
-    }
-
     public static void Effect_PaperTray_Swipe1()
     {
         _paperSounds.Effect_PaperTray_Swipe1();
@@ -219,24 +204,9 @@ public class SoundManager : MonoBehaviour
         _inkSounds.LowerVolume();
     }
 
-    public static void Effect_Ink_SlotOpen1()
+    public static void Effect_Ink_SlotOpen()
     {
-        _inkSounds.Effect_Ink_SlotOpen1();
-    }
-
-    public static void Effect_Ink_SlotOpen2()
-    {
-        _inkSounds.Effect_Ink_SlotOpen2();
-    }
-
-    public static void Effect_Ink_SlotOpen3()
-    {
-        _inkSounds.Effect_Ink_SlotOpen3();
-    }
-
-    public static void Effect_Ink_SlotOpen4()
-    {
-        _inkSounds.Effect_Ink_SlotOpen4();
+        _inkSounds.Effect_Ink_SlotOpen();
     }
 
     public static void Effect_Ink_RightSlot1()
@@ -262,26 +232,6 @@ public class SoundManager : MonoBehaviour
     public static void Effect_Ink_WrongSlot()
     {
         _inkSounds.Effect_Ink_WrongSlot();
-    }
-
-    public static void Effect_Ink_SlotClose1()
-    {
-        _inkSounds.Effect_Ink_SlotClose1();
-    }
-
-    public static void Effect_Ink_SlotClose2()
-    {
-        _inkSounds.Effect_Ink_SlotClose2();
-    }
-
-    public static void Effect_Ink_SlotClose3()
-    {
-        _inkSounds.Effect_Ink_SlotClose3();
-    }
-
-    public static void Effect_Ink_SlotClose4()
-    {
-        _inkSounds.Effect_Ink_SlotClose4();
     }
     #endregion
 
@@ -386,11 +336,6 @@ public class SoundManager : MonoBehaviour
     public static void Voice_Boss_Mumbling_Hmm_2()
     {
         _voiceSounds.Voice_Boss_Mumbling_Hmm_2();
-    }
-
-    public static void Voice_Boss_Mumbling_Hmm_3()
-    {
-        _voiceSounds.Voice_Boss_Mumbling_Hmm_3();
     }
 
     public static void Voice_Boss_Mumbling_Hrn_1()
@@ -588,16 +533,6 @@ public class SoundManager : MonoBehaviour
         _voiceSounds.Voice_Boss_Happy_YouGetIt_2();
     }
 
-    public static void Voice_Boss_Random_Happy()
-    {
-        _voiceSounds.Voice_Boss_Random_Happy();
-    }
-
-    public static void Voice_Boss_Random_Angry()
-    {
-        _voiceSounds.Voice_Boss_Random_Angry();
-    }
-
     public static void Voice_Boss_Random_Mumbling()
     {
         _voiceSounds.Voice_Boss_Random_Mumbling();
@@ -640,43 +575,6 @@ public class SoundManager : MonoBehaviour
 
     #endregion
 
-    #region Machine Sounds
-    public static void Effect_Machine_Cogwheels1()
-    {
-        _machineSounds.Effect_Machine_Cogwheels1();
-    }
-
-    public static void Effect_Machine_Cogwheels2()
-    {
-        _machineSounds.Effect_Machine_Cogwheels2();
-    }
-
-    public static void Effect_Machine_Cogwheels3()
-    {
-        _machineSounds.Effect_Machine_Cogwheels3();
-    }
-
-    public static void Effect_Machine_Electricity()
-    {
-        _machineSounds.Effect_Machine_Electricity();
-    }
-
-    public static void Effect_Machine_Smoke1()
-    {
-        _machineSounds.Effect_Machine_Smoke1();
-    }
-
-    public static void Effect_Machine_Smoke2()
-    {
-        _machineSounds.Effect_Machine_Smoke2();
-    }
-
-    public static void Effect_Machine_Smoke3()
-    {
-        _machineSounds.Effect_Machine_Smoke3();
-    }
-    #endregion
-
     #region In Game Sounds
     public static void Effect_InGame_Win()
     {
@@ -708,36 +606,6 @@ public class SoundManager : MonoBehaviour
     public static void Effect_Menu_Click()
     {
         _mainMenuSounds.Effect_Menu_Click();
-    }
-
-    public static void Effect_Menu_Stinger()
-    {
-        _mainMenuSounds.Effect_Menu_Stinger();
-    }
-
-    public static void Effect_Menu_Appear()
-    {
-        _mainMenuSounds.Effect_Menu_Appear();
-    }
-
-    public static void Effect_Menu_Disappear()
-    {
-        _mainMenuSounds.Effect_Menu_Disappear();
-    }
-
-    public static void Effect_Menu_Footsteps()
-    {
-        _mainMenuSounds.Effect_Menu_Footsteps();
-    }
-
-    public static void Effect_Menu_Credits()
-    {
-        _mainMenuSounds.Effect_Menu_Credits();
-    }
-
-    public static void Effect_Task_Perfected()
-    {
-        _mainMenuSounds.Effect_Task_Perfected();
     }
 
     public static void Effect_Task_Unmatched()
@@ -788,10 +656,8 @@ public class SoundManager : MonoBehaviour
 
     public static void FadeAllMusic()
     {
-        foreach(GenericSoundScript gss in _musicScripts)
-        {
-            gss.FadeVolume(_endMusicVolume, _fadeTime);
-        }
+        _inGameSounds.FadeMusicEnd(_fadeTime);
+        _mainMenuSounds.FadeMusicEnd(_fadeTime);
     }
 
     public static void UnFadeAllMusic()
@@ -806,8 +672,8 @@ public class SoundManager : MonoBehaviour
 //            _musicScripts[i].FadeVolume(_musicVolume[i], _fadeTime);
 //        }
 
-        _inGameSounds.GetMusicScript().FadeVolume(_gameMusic, _fadeTime);
-        _mainMenuSounds.GetMusicScript().FadeVolume(_menuMusic, _fadeTime);
+        _inGameSounds.FadeMusic(_fadeTime);
+        _mainMenuSounds.FadeMusic(_fadeTime);
     }
 
     public static void ToogleAudio()

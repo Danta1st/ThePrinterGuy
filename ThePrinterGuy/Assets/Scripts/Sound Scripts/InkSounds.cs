@@ -45,24 +45,9 @@ public class InkSounds : MonoBehaviour
     }
 
     #region Sounds
-    public void Effect_Ink_SlotOpen1()
+    public void Effect_Ink_SlotOpen()
     {
         _soundFx.PlayClip(0);
-    }
-
-    public void Effect_Ink_SlotOpen2()
-    {
-        _soundFx.PlayClip(1);
-    }
-
-    public void Effect_Ink_SlotOpen3()
-    {
-        _soundFx.PlayClip(2);
-    }
-
-    public void Effect_Ink_SlotOpen4()
-    {
-        _soundFx.PlayClip(3);
     }
 
     public void Effect_Ink_RightSlot1()
@@ -88,26 +73,6 @@ public class InkSounds : MonoBehaviour
     public void Effect_Ink_WrongSlot()
     {
         _gestures.PlayClip(4);
-    }
-
-    public void Effect_Ink_SlotClose1()
-    {
-        _soundFx.PlayClip(6);
-    }
-
-    public void Effect_Ink_SlotClose2()
-    {
-        _soundFx.PlayClip(7);
-    }
-
-    public void Effect_Ink_SlotClose3()
-    {
-        _soundFx.PlayClip(8);
-    }
-
-    public void Effect_Ink_SlotClose4()
-    {
-        _soundFx.PlayClip(9);
     }
     #endregion
 
