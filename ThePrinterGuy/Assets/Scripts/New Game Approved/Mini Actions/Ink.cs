@@ -287,7 +287,6 @@ public class Ink : MonoBehaviour
 			j++;
 		}
 
-		
 		if(currIcc == null)
 			return;
 
@@ -316,7 +315,16 @@ public class Ink : MonoBehaviour
 	        }
 
 			currIcc.insertableCartridgeClone.SetActive(true);
-
+			
+			TrailRenderer[] _trails = currIcc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
+			if(_trails != null)
+				foreach(TrailRenderer _trail in _trails)
+				{
+					_trail.enabled = true;
+				}
+			else
+				Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+			
 			//Move the ink
 			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathSucc, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
@@ -330,6 +338,15 @@ public class Ink : MonoBehaviour
 			
 			currIcc.insertableCartridgeClone.SetActive(true);
 			
+			TrailRenderer[] _trails = currIcc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
+			if(_trails != null)
+				foreach(TrailRenderer _trail in _trails)
+				{
+					_trail.enabled = true;
+				}
+			else
+				Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+			
 			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathFail, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
 							"oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
@@ -342,8 +359,18 @@ public class Ink : MonoBehaviour
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
         InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);		
 		
+		TrailRenderer[] _trails = icc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
+			if(_trails != null)
+				foreach(TrailRenderer _trail in _trails)
+				{
+					_trail.enabled = false;
+				}
+			else
+				Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+		
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
+		
 		
         _canSlide = true;
 		UnsubscribeInkPunch();
@@ -355,6 +382,15 @@ public class Ink : MonoBehaviour
 		InstantiateParticlesToWordPos(_particles.failed, icc.cartridge.gameObject);
 		//Play sound
         SoundManager.Effect_InGame_Task_Unmatched();
+		
+		TrailRenderer[] _trails = icc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
+			if(_trails != null)
+				foreach(TrailRenderer _trail in _trails)
+				{
+					_trail.enabled = false;
+				}
+			else
+				Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
 		
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
