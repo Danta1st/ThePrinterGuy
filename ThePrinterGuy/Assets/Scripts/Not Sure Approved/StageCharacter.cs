@@ -20,31 +20,7 @@ public class StageCharacter : MonoBehaviour
 
     void Awake()
     {
-        highscores = SaveGame.GetPlayerHighscores();
-        if(highscores[4] >= 0)
-            _isUnlocked = true;
-
-        if(_isUnlocked)
-        {
-            int i = 0;
-            foreach(Material material in materialList)
-            {
-                material.mainTexture = textureList[i];
-                i++;
-            }
-            gameObject.transform.FindChild("Lock").renderer.enabled = false;
-            if((gameObject.name == "stage2Char" && highscores[4] >= 0) || (gameObject.name == "stage1Char" && highscores[4] <= 0))
-                gameObject.transform.FindChild("lobbyArrow").renderer.enabled = true;
-        }
-        else
-        {
-            foreach(Material material in materialList)
-            {
-                material.mainTexture = blackTexture;
-            }
-            gameObject.transform.FindChild("Lock").renderer.enabled = true;
-            gameObject.transform.FindChild("lobbyArrow").renderer.enabled = false;
-        }
+        Unlock();
     }
 
     #region StageUnlocked Get/Set
@@ -60,5 +36,35 @@ public class StageCharacter : MonoBehaviour
     }
     #endregion
 
+    public void Unlock()
+    {
+        highscores = SaveGame.GetPlayerHighscores();
+        if(highscores[4] >= 0)
+            _isUnlocked = true;
+
+        if(_isUnlocked)
+        {
+            int i = 0;
+            foreach(Material material in materialList)
+            {
+                material.mainTexture = textureList[i];
+                i++;
+            }
+            gameObject.transform.FindChild("Lock").renderer.enabled = false;
+            if((gameObject.name == "stage2Char" && highscores[4] >= 0))
+                gameObject.transform.FindChild("lobbyArrow").renderer.enabled = true;
+            if((gameObject.name == "stage1Char" && highscores[4] <= 0))
+                gameObject.transform.FindChild("lobbyArrow").renderer.enabled = false;
+        }
+        else
+        {
+            foreach(Material material in materialList)
+            {
+                material.mainTexture = blackTexture;
+            }
+            gameObject.transform.FindChild("Lock").renderer.enabled = true;
+            gameObject.transform.FindChild("lobbyArrow").renderer.enabled = false;
+        }
+    }
 
 }

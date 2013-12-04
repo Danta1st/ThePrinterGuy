@@ -52,6 +52,9 @@ public class HighscoreScreenLoader : MonoBehaviour
 		HighscoreSceneScript._targetScore.perfectPaper = 0;
 		HighscoreSceneScript._targetScore.perfectUran = 0;
 		HighscoreSceneScript._targetScore._totalNodesHit = 0;
+		HighscoreSceneScript._targetScore._totalInkNodes = 0;
+		HighscoreSceneScript._targetScore._totalPaperNodes = 0;
+		HighscoreSceneScript._targetScore._totalUranNodes = 0;
 		HighscoreSceneScript._targetScore.starScoreOne = GetStarOneScore();
 		HighscoreSceneScript._targetScore.starScoreTwo = GetStarTwoScore();
 		HighscoreSceneScript._targetScore.starScoreThree = GetStarThreeScore();
@@ -85,6 +88,9 @@ public class HighscoreScreenLoader : MonoBehaviour
 
 	public void DisplayEndScreenWin(int _score)
 	{
+		HighscoreSceneScript._targetScore._totalInkNodes = _totalInkNodes;
+		HighscoreSceneScript._targetScore._totalUranNodes = _totalRodNodes;
+		HighscoreSceneScript._targetScore._totalPaperNodes = _totalPaperNodes;
 		SoundManager.StopAllSoundEffects();
         SoundManager.Effect_PaperTray_StopConveyorBelt();
         SoundManager.FadeAllMusic();
@@ -93,6 +99,9 @@ public class HighscoreScreenLoader : MonoBehaviour
 	
 	public void DisplayEndScreenLoose(int _score)
 	{
+		HighscoreSceneScript._targetScore._totalInkNodes = _totalInkNodes;
+		HighscoreSceneScript._targetScore._totalUranNodes = _totalRodNodes;
+		HighscoreSceneScript._targetScore._totalPaperNodes = _totalPaperNodes;
 		SoundManager.StopAllSoundEffects();
         SoundManager.Effect_PaperTray_StopConveyorBelt();
         SoundManager.FadeAllMusic();

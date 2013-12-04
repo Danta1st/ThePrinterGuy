@@ -99,6 +99,7 @@ public class Ink : MonoBehaviour
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
 		BpmSequencerItem.OnFailed -= InkReset;
+		UnsubscribeInkPunch();
 	}
 	
 	void OnDestroy()
@@ -108,6 +109,7 @@ public class Ink : MonoBehaviour
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
 		BpmSequencerItem.OnFailed -= InkReset;
+		UnsubscribeInkPunch();
 	}
 	
 	#region Class Methods	
@@ -191,10 +193,30 @@ public class Ink : MonoBehaviour
 	        }
 		}
     }
+	
+	private int _tempPunch = 0;
+	private float _punchTime = 0.45f;
+	private void SubscribeInkPunch(int itemNumber)
+	{
+		_tempPunch = itemNumber;
+		
+		BeatController.OnAll4Beats += PunchInk;
+		
+	}
+	private void UnsubscribeInkPunch()
+	{	
+		BeatController.OnAll4Beats -= PunchInk;
+	}
+		
+	private void PunchInk()
+	{
+		if(_tempPunch != null)
+			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, new Vector3(0.2f, 0.2f, 0.2f), _punchTime);
+	}
+	
 	#endregion
 	
 	#region Insertable Ink
-	
 	//POLISH: Remake to instantiate new ink instead of moving current
 	private void InsertCartridge(GameObject go)
 	{
@@ -346,10 +368,14 @@ public class Ink : MonoBehaviour
 			icc.cartridge.gameObject.SetActive(true);
 			
 			//Instantiate particles
-			InstantiateParticles(_particles.disable, icc.cartridge.gameObject);
+			InstantiateParticles(_particles.disable, icc.insertableCartridge.gameObject);
 			
 			icc.cartridgeEmpty = false;
 			icc.insertableCartridge.gameObject.SetActive(false);
+			icc.cartridge.renderer.material.mainTexture = icc.full;
+
+			icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
+			icc.insertableCartridgeClone.SetActive(false);
 //			j++;
 		}
 	}
@@ -372,7 +398,7 @@ public class Ink : MonoBehaviour
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			//Instantiate particles
-			InstantiateParticles(_particles.enable, icc.cartridge.gameObject);
+			InstantiateParticles(_particles.enable, icc.insertableCartridge.gameObject);
 			//Activate cartridge
 			icc.insertableCartridge.gameObject.SetActive(true);
 		}
@@ -409,7 +435,7 @@ public class Ink : MonoBehaviour
             if(identifier == _machineInks.Count)
                 identifier = 0;
         }*/
-		
+		SubscribeInkPunch(itemNumber);		
 	}
 	
 	private void EmptyCartridge(int iccnumber)
@@ -516,4 +542,6 @@ public class Ink : MonoBehaviour
 		Right
 	}
     #endregion
+	
+	
 }

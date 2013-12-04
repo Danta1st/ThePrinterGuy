@@ -51,30 +51,12 @@ public class LevelManager : MonoBehaviour
             SaveGame.ResetPlayerData();
         }
 
-
-        highScores = SaveGame.GetPlayerHighscores();
-
-        _levelBoxCount = _gameLevels.Count;
+        UnlockLevels();
     }
 
     // Use this for initialization
     void Start()
     {
-        #region Unlock Levels based on Highscore
-        _gameLevelsUnlocked.Clear();
-        foreach (int highscore in highScores)
-        {
-            if(highscore > -1)
-            {
-                _gameLevelsUnlocked.Add(true);
-            }
-            else
-            {
-                _gameLevelsUnlocked.Add(false);
-            }
-        }
-        #endregion
-
         #region Camera Positioning Objects
         _camPointDefault = new GameObject();
         _camPointDefault.name = "CamLookPosDefault";
@@ -94,8 +76,6 @@ public class LevelManager : MonoBehaviour
 
     void OnEnable()
     {
-//		GestureManager.OnTap += SelectStage;
-//        GestureManager.OnTap += SelectLevel;
         GUIMainMenuCamera.OnCreditScreen += ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen += ChangeViewToMain;
         GUIMainMenuCamera.OnOptionsScreen += ChangeViewToOptions;
@@ -104,12 +84,30 @@ public class LevelManager : MonoBehaviour
 
     void OnDisable()
     {
-//		GestureManager.OnTap -= SelectStage;
-//        GestureManager.OnTap -= SelectLevel;
         GUIMainMenuCamera.OnCreditScreen -= ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen -= ChangeViewToMain;
         GUIMainMenuCamera.OnOptionsScreen -= ChangeViewToOptions;
 		GUIMainMenuCamera.OnLevelManagerEvent -= SelectStage;
+    }
+
+    public void UnlockLevels()
+    {
+        highScores = SaveGame.GetPlayerHighscores();
+
+        #region Unlock Levels based on Highscore
+        _gameLevelsUnlocked.Clear();
+        foreach (int highscore in highScores)
+        {
+            if(highscore > -1)
+            {
+                _gameLevelsUnlocked.Add(true);
+            }
+            else
+            {
+                _gameLevelsUnlocked.Add(false);
+            }
+        }
+        #endregion 
     }
 
     public List<GameObject> GetStageCharacters()
@@ -276,11 +274,22 @@ public class LevelManager : MonoBehaviour
 		GUIMainMenuCamera.OnLevelManagerEvent += SelectStage;
     }
 
+    void DisappearLobbyArrow(GameObject stageChar)
+    {
+        GameObject Arrow = stageChar.transform.FindChild("lobbyArrow").gameObject;
+        iTween.ScaleTo(Arrow, iTween.Hash("scale", new Vector3(0,0,0),"time", 0.5f, "easeType", _easyTypeOfLevelParentObjectOut));
+    }
+
     void LevelBoxesAppear(GameObject go)
     {
+        List<GameObject> stageCharacters = GetStageCharacters();
+
+        foreach(GameObject stageChars in stageCharacters)
+        {
+            DisappearLobbyArrow(stageChars);
+        }
+
         LevelParentObject = go.transform.FindChild("LevelBoxes").gameObject;
-        GameObject Arrow = go.transform.FindChild("lobbyArrow").gameObject;
-        iTween.ScaleTo(Arrow, iTween.Hash("scale", new Vector3(0,0,0),"time", 0.5f, "easeType", _easyTypeOfLevelParentObjectOut));
         iTween.ScaleTo(LevelParentObject, iTween.Hash("scale", new Vector3(1,1,1),"time", 1f, "easeType", _easyTypeOfLevelParentObjectIn, "Delay", 0.5f));
 
         indexChar = _stageCharacters.IndexOf(go);
