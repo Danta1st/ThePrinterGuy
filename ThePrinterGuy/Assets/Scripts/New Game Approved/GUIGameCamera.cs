@@ -40,6 +40,7 @@ public class GUIGameCamera : MonoBehaviour
     private bool _waitForMe = false;
     private string _currentTaskType;
     private GameObject resumeButtom;
+	private bool _isPaused = false;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -56,7 +57,6 @@ public class GUIGameCamera : MonoBehaviour
 	//Highscore Variables.
 	private int _score = 0;
 	private string _strScore = "0";
-	private HighscoreScreenLoader _highscoreLoader;
 	private GameObject _scoreValueObject;
 
     //Action Sequencer
@@ -136,10 +136,10 @@ public class GUIGameCamera : MonoBehaviour
 	
 	void OnApplicationPause(bool status)
 	{
-		if(status == true)
+		if(status == true && !_isPaused)
 		{
 	        if(OnPause != null)
-	            OnPause();										
+	            OnPause();
 			
 			OpenIngameMenu();
 		}
@@ -240,7 +240,6 @@ public class GUIGameCamera : MonoBehaviour
         //--------------------------------------------------//
 		_pauseCurrScore = GameObject.Find("CurrentScoreValue").gameObject;
 		_pauseHighScore = GameObject.Find("HighscoreValue").gameObject;
-		_highscoreLoader = GameObject.Find("GUI List").GetComponent<HighscoreScreenLoader>();
 		
         foreach(GameObject _guiObject in _guiList)
         {
@@ -563,6 +562,7 @@ public class GUIGameCamera : MonoBehaviour
     #region GUI Ingame Menu
     private void OpenIngameMenu()
     {
+		_isPaused = true;
         SaveGUIState();
         DisableGUIElement("Pause");
 		ResetGuiTextures();
@@ -574,9 +574,9 @@ public class GUIGameCamera : MonoBehaviour
 		int[] highScores = SaveGame.GetPlayerHighscores();
 		try
 		{
-			_pauseHighScore.GetComponent<TextMesh>().text = highScores[Application.loadedLevel - 2].ToString();
+			_pauseHighScore.GetComponent<TextMesh>().text = highScores[ConstantValues.GetLoadedLevelMinusStartLevels(Application.loadedLevel)].ToString();
 		}
-		catch(Exception e)
+		catch(Exception)
 		{
 			_pauseHighScore.GetComponent<TextMesh>().text = "0";
 		}
@@ -622,6 +622,7 @@ public class GUIGameCamera : MonoBehaviour
     private void UnPauseTimeScale()
     {
         Time.timeScale = 1.0f;
+		_isPaused = false;
         AudioListener.pause = false;
         SoundManager.TurnOnMenuSounds();
         SoundManager.Effect_Menu_Click();

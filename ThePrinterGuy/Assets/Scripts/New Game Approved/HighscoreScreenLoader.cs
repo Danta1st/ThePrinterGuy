@@ -3,12 +3,6 @@ using System.Collections;
 
 public class HighscoreScreenLoader : MonoBehaviour 
 {
-	private int perfectInk = 0;
-	private int perfectPaper = 0;
-	private int perfectUran = 0;
-	private int failedInk = 0;
-	private int failedPaper = 0;
-	private int failedUran = 0;
     private int _totalNodes = 0;
     private int _totalInkNodes = 0;
     private int _totalRodNodes = 0;
@@ -94,7 +88,7 @@ public class HighscoreScreenLoader : MonoBehaviour
 		SoundManager.StopAllSoundEffects();
         SoundManager.Effect_PaperTray_StopConveyorBelt();
         SoundManager.FadeAllMusic();
-		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, true, GetPerfectScore());
+		hss.GoToHighScoreScreen(ConstantValues.GetLoadedLevelMinusStartLevels(Application.loadedLevel), _score, true, GetPerfectScore());
 	}
 	
 	public void DisplayEndScreenLoose(int _score)
@@ -105,7 +99,7 @@ public class HighscoreScreenLoader : MonoBehaviour
 		SoundManager.StopAllSoundEffects();
         SoundManager.Effect_PaperTray_StopConveyorBelt();
         SoundManager.FadeAllMusic();
-		hss.GoToHighScoreScreen(Application.loadedLevel - 2, _score, false, GetPerfectScore());
+		hss.GoToHighScoreScreen(ConstantValues.GetLoadedLevelMinusStartLevels(Application.loadedLevel), _score, false, GetPerfectScore());
 	}
 
     public int GetPerfectScore()
@@ -139,7 +133,7 @@ public class HighscoreScreenLoader : MonoBehaviour
     public void updateMaxHighscoreForCurrentLevel()
     {
         int[] maxHighscores = SaveGame.GetMaxHighscores();
-        maxHighscores[Application.loadedLevel - 2] = GetPerfectScore();
+        maxHighscores[ConstantValues.GetLoadedLevelMinusStartLevels(Application.loadedLevel)] = GetPerfectScore();
         SaveGame.SetMaxHighscores(maxHighscores);
     }
 	
