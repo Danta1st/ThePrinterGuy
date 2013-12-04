@@ -99,6 +99,7 @@ public class Ink : MonoBehaviour
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
 		BpmSequencerItem.OnFailed -= InkReset;
+		UnsubscribeInkPunch();
 	}
 	
 	void OnDestroy()
@@ -108,6 +109,7 @@ public class Ink : MonoBehaviour
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
 		BpmSequencerItem.OnFailed -= InkReset;
+		UnsubscribeInkPunch();
 	}
 	
 	#region Class Methods	
@@ -191,10 +193,30 @@ public class Ink : MonoBehaviour
 	        }
 		}
     }
+	
+	private int _tempPunch = 0;
+	private float _punchTime = 0.45f;
+	private void SubscribeInkPunch(int itemNumber)
+	{
+		_tempPunch = itemNumber;
+		
+		BeatController.OnAll4Beats += PunchInk;
+		
+	}
+	private void UnsubscribeInkPunch()
+	{	
+		BeatController.OnAll4Beats -= PunchInk;
+	}
+		
+	private void PunchInk()
+	{
+		if(_tempPunch != null)
+			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, new Vector3(0.2f, 0.2f, 0.2f), _punchTime);
+	}
+	
 	#endregion
 	
 	#region Insertable Ink
-	
 	//POLISH: Remake to instantiate new ink instead of moving current
 	private void InsertCartridge(GameObject go)
 	{
@@ -413,7 +435,7 @@ public class Ink : MonoBehaviour
             if(identifier == _machineInks.Count)
                 identifier = 0;
         }*/
-		
+		SubscribeInkPunch(itemNumber);		
 	}
 	
 	private void EmptyCartridge(int iccnumber)
@@ -520,4 +542,6 @@ public class Ink : MonoBehaviour
 		Right
 	}
     #endregion
+	
+	
 }
