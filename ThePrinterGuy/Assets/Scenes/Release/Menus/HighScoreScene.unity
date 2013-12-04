@@ -2891,6 +2891,7 @@ Transform:
   - {fileID: 1778974853}
   - {fileID: 511856436}
   - {fileID: 1320782186}
+  - {fileID: 824907759}
   - {fileID: 364165963}
   m_Father: {fileID: 1169483466}
 --- !u!1 &292048580
@@ -4349,7 +4350,6 @@ Transform:
   - {fileID: 1879750034}
   - {fileID: 38321632}
   - {fileID: 1342499298}
-  - {fileID: 824907759}
   m_Father: {fileID: 287031566}
 --- !u!114 &511856437
 MonoBehaviour:
@@ -6632,10 +6632,10 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 824907758}
   m_LocalRotation: {x: 0, y: 4.37113883e-08, z: 0, w: -1}
-  m_LocalPosition: {x: -800, y: -449.214111, z: 5}
+  m_LocalPosition: {x: 50, y: -449.214111, z: 5}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_Children: []
-  m_Father: {fileID: 511856436}
+  m_Father: {fileID: 287031566}
 --- !u!102 &824907760
 TextMesh:
   serializedVersion: 3
@@ -7081,6 +7081,75 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 293026313}
+--- !u!1 &889473427
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 100060, guid: 3a0069514c93b1143a40457189741441, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 889473428}
+  - 23: {fileID: 889473430}
+  - 102: {fileID: 889473429}
+  m_Layer: 9
+  m_Name: HighScoreText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &889473428
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 400060, guid: 3a0069514c93b1143a40457189741441, type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 889473427}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -33.2422295, y: -147.053452, z: 2.00001526}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1178895462}
+--- !u!102 &889473429
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 10200024, guid: 3a0069514c93b1143a40457189741441,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 889473427}
+  m_Text: 
+  m_OffsetZ: 0
+  m_CharacterSize: 10
+  m_LineSpacing: 1
+  m_Anchor: 4
+  m_Alignment: 1
+  m_TabSize: 4
+  m_FontSize: 50
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 12800000, guid: bb1d42aa86493b940b5db5e4e382481b, type: 3}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278190080
+--- !u!23 &889473430
+Renderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 2300048, guid: 3a0069514c93b1143a40457189741441,
+    type: 2}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 889473427}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 2100000, guid: bb1d42aa86493b940b5db5e4e382481b, type: 3}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
 --- !u!1 &902413729
 GameObject:
   m_ObjectHideFlags: 0
@@ -7092,7 +7161,7 @@ GameObject:
   - 23: {fileID: 902413732}
   - 102: {fileID: 902413731}
   m_Layer: 9
-  m_Name: HighScoreText
+  m_Name: HighScoreBestText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7105,7 +7174,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 902413729}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -33.2422295, y: -142.378891, z: 2.00001526}
+  m_LocalPosition: {x: -150.546478, y: -142.378891, z: 2.00001526}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1178895462}
@@ -7117,7 +7186,7 @@ TextMesh:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 902413729}
-  m_Text: 
+  m_Text: 'Best:'
   m_OffsetZ: 0
   m_CharacterSize: 10
   m_LineSpacing: 1
@@ -9048,6 +9117,7 @@ MonoBehaviour:
   - {fileID: 511856435}
   - {fileID: 1320782185}
   - {fileID: 364165962}
+  - {fileID: 824907758}
   _stars:
   - {fileID: 284878546}
   - {fileID: 1655791850}
@@ -9057,7 +9127,7 @@ MonoBehaviour:
   _ClueNoteGameObject: {fileID: 1213559314}
   _particle: {fileID: 49172501}
   _textList:
-  - {fileID: 902413729}
+  - {fileID: 889473427}
   - {fileID: 1615379602}
   _fadeInTime: .200000003
   _fadeOutTime: .200000003
@@ -9116,6 +9186,7 @@ Transform:
   - {fileID: 2027442279}
   - {fileID: 637466044}
   - {fileID: 1725478593}
+  - {fileID: 889473428}
   - {fileID: 1613896049}
   - {fileID: 1213559315}
   - {fileID: 1443332283}

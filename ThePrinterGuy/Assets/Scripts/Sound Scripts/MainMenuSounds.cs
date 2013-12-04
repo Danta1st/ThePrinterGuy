@@ -45,36 +45,6 @@ public class MainMenuSounds : MonoBehaviour
         _soundFx.PlayClip(1);
     }
 
-    public void Effect_Menu_Stinger()
-    {
-        _soundFx.PlayClip(2);
-    }
-
-    public void Effect_Menu_Appear()
-    {
-        _soundFx.PlayClip(3);
-    }
-
-    public void Effect_Menu_Disappear()
-    {
-        _soundFx.PlayClip(4);
-    }
-
-    public void Effect_Menu_Footsteps()
-    {
-        _soundFx.PlayClip(5);
-    }
-
-    public void Effect_Menu_Credits()
-    {
-        _soundFx.PlayClip(6);
-    }
-
-    public void Effect_Task_Perfected()
-    {
-        _tasks.PlayClip(0);
-    }
-
     public void Effect_Task_Unmatched()
     {
         _tasks.PlayClip(1);
