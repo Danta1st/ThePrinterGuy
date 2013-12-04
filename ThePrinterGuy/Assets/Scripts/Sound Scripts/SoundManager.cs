@@ -9,8 +9,8 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private static float _endMusicVolume = 0.2f;
     [SerializeField] private static float _menuEffectsVolume = 0.8f;
     [SerializeField] private static float _voiceVolume = 1.0f;
-    [SerializeField] private static float _gameMusic = 0.7f;
-    [SerializeField] private static float _menuMusic = 0.5f;
+    [SerializeField] private static float _gameMusic = 0.5f;
+    [SerializeField] private static float _menuMusic = 0.3f;
     #endregion
 
     #region Privates
