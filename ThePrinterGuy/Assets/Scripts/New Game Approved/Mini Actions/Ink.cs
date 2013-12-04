@@ -368,7 +368,7 @@ public class Ink : MonoBehaviour
 			icc.cartridge.gameObject.SetActive(true);
 			
 			//Instantiate particles
-			InstantiateParticles(_particles.disable, icc.cartridge.gameObject);
+			InstantiateParticles(_particles.disable, icc.insertableCartridge.gameObject);
 			
 			icc.cartridgeEmpty = false;
 			icc.insertableCartridge.gameObject.SetActive(false);
@@ -398,7 +398,7 @@ public class Ink : MonoBehaviour
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			//Instantiate particles
-			InstantiateParticles(_particles.enable, icc.cartridge.gameObject);
+			InstantiateParticles(_particles.enable, icc.insertableCartridge.gameObject);
 			//Activate cartridge
 			icc.insertableCartridge.gameObject.SetActive(true);
 		}
