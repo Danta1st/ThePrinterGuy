@@ -429,6 +429,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if (_hit.collider.gameObject.name == "TakeTutorialNo")
                     {
+                        //GameObject checkMark = _hit.collider.gameObject.transform.Find("TakeTutorialNo").gameObject;
                         PlayerPrefs.SetString("Tutorial", "Answered");
                         int[] highScore = SaveGame.GetPlayerHighscores();
 
@@ -437,17 +438,18 @@ public class GUIMainMenuCamera : MonoBehaviour
                         }
 
                         SaveGame.SavePlayerData(0,0,highScore);
-                        iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenu", "oncompletetarget", gameObject));
                         foreach(GameObject stageChar in _levelManager.GetStageCharacters())
                         {
                             StageCharacter stageCharScript = stageChar.GetComponent<StageCharacter>();
                             stageCharScript.Unlock();
                         }
                         _levelManager.UnlockLevels();
+
+                        ScaleArrowUpAndThenTutorialQuestionDown(_hit.collider.gameObject);
                     }
                     else if (_hit.collider.gameObject.name == "TakeTutorialYes")
-                    {
-                        iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenuJanitor", "oncompletetarget", gameObject));
+                    {   //GameObject checkMark = _hit.collider.gameObject.transform.Find("TakeTutorialYes").gameObject;
+                        ScaleArrowUpAndThenTutorialQuestionDown(_hit.collider.gameObject);
                     }
 
                     SoundManager.Effect_Menu_Click();
@@ -561,9 +563,17 @@ public class GUIMainMenuCamera : MonoBehaviour
 		}
     }
 
-    private void SwitchToMainMenuJanitor()
+    private void SwitchToJanitorFromMainMenu()
     {
         OnLevelManagerEvent(_levelManager.GetStageCharacters()[0], new Vector3(0,0,0));
+    }
+
+    private void ScaleArrowUpAndThenTutorialQuestionDown(GameObject _checkMark)
+    {
+        //_checkMark.transform.localScale = new Vector3(0,0,0);
+        //_checkMark.transform.renderer.enabled = true;
+        //iTween.ScaleTo(_checkMark, iTween.Hash("scale", new Vector3(1,1,1), "time", 1f, "easeType", iTween.EaseType.easeInBack, gameObject));
+        iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "delay", 1f, "oncomplete", "SwitchToMainMenuJanitor", "oncompletetarget", gameObject));
         SwitchToMainMenu();
         PlayerPrefs.SetString("Tutorial", "Answered");
     }
