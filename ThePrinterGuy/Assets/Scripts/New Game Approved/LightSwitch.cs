@@ -36,6 +36,7 @@ public class LightSwitch : MonoBehaviour {
 	private void OnEnableBeatType()
 	{
 		_type = _beatType.ToString();
+		
 		if(_type == "All3Beats")
 		{
 			BeatController.OnAll3Beats += UpdateTexture;
@@ -52,6 +53,7 @@ public class LightSwitch : MonoBehaviour {
 		{
 			BeatController.OnAll8Beats += UpdateTexture;
 		}
+		iTween.FadeTo(gameObject, 0f, 0.5f);
 	}
 	
 	private void OnDisableBeatType()
