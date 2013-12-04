@@ -575,7 +575,7 @@ public class GUIGameCamera : MonoBehaviour
 		int[] highScores = SaveGame.GetPlayerHighscores();
 		try
 		{
-			_pauseHighScore.GetComponent<TextMesh>().text = highScores[Application.loadedLevel - 2].ToString();
+			_pauseHighScore.GetComponent<TextMesh>().text = highScores[ConstantValues.GetLoadedLevelMinusStartLevels(Application.loadedLevel)].ToString();
 		}
 		catch(Exception e)
 		{

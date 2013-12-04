@@ -24,8 +24,8 @@ public class GAPlayerAnalytics : MonoBehaviour {
         GUIGameCamera.OnPause -= PlayerPause;
         GUIGameCamera.OnRestart -= PlayerRestartLevel;
         GUIGameCamera.OnToMainMenuFromLevel -= PlayerToMainMenuFromLevel;
-        GUIEndScreenCamera.OnFailedLevel -= PlayerFailedLevel;
-        GUIEndScreenCamera.OnCompletedLevel -= PlayerCompletedLevel;
+		HighscoreSceneScript.OnFailedLevel -= PlayerFailedLevel;
+        HighscoreSceneScript.OnCompletedLevel -= PlayerCompletedLevel;
         StressOMeter.OnStressIncrease -= StressIncrease;
         StressOMeter.OnStressDecrease -= StressDecrease;
         GUIGameCamera.OnTaskEnd -= TaskEnd;
