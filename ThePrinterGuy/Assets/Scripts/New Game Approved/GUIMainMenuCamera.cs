@@ -429,7 +429,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     else if (_hit.collider.gameObject.name == "TakeTutorialNo")
                     {
                         PlayerPrefs.SetString("Tutorial", "Answered");
-                        int[] highScore = SaveGame.GetMaxHighscores();
+                        int[] highScore = SaveGame.GetPlayerHighscores();
 
                         for (int i = 0; i < 6; i++) {
                             highScore[i] = 0;
@@ -480,7 +480,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                                                     "oncomplete", "CheckForTutorial",
                                                     "oncompletetarget", gameObject));
 				}
-                else
+                else if(PlayerPrefs.GetString("Tutorial") == "Answered")
                 {
 					if(OnLevelManagerEvent != null)
 						OnLevelManagerEvent(_go, _screenPosition);
