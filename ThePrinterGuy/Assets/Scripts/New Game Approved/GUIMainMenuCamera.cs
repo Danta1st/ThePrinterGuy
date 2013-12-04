@@ -437,7 +437,12 @@ public class GUIMainMenuCamera : MonoBehaviour
 
                         SaveGame.SavePlayerData(0,0,highScore);
                         iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenu", "oncompletetarget", gameObject));
-                        LoadingScreen.Load(ConstantValues.GetStartScene, true);
+                        foreach(GameObject stageChar in _levelManager.GetStageCharacters())
+                        {
+                            StageCharacter stageCharScript = stageChar.GetComponent<StageCharacter>();
+                            stageCharScript.Unlock();
+                        }
+                        _levelManager.UnlockLevels();
                     }
                     else if (_hit.collider.gameObject.name == "TakeTutorialYes")
                     {
