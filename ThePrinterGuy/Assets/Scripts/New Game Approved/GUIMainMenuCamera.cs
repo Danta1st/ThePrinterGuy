@@ -35,6 +35,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     private LevelManager _levelManager;
     GameObject _tutorialScaler;
     private Vector3 _tutorialTransformScale;
+    private bool walkAnimationOver = false;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -437,13 +438,16 @@ public class GUIMainMenuCamera : MonoBehaviour
 
                         SaveGame.SavePlayerData(0,0,highScore);
                         iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenu", "oncompletetarget", gameObject));
-                        LoadingScreen.Load(ConstantValues.GetStartScene, true);
+                        foreach(GameObject stageChar in _levelManager.GetStageCharacters())
+                        {
+                            StageCharacter stageCharScript = stageChar.GetComponent<StageCharacter>();
+                            stageCharScript.Unlock();
+                        }
+                        _levelManager.UnlockLevels();
                     }
                     else if (_hit.collider.gameObject.name == "TakeTutorialYes")
                     {
-                        PlayerPrefs.SetString("Tutorial", "Answered");
-                        iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenu", "oncompletetarget", gameObject));
-                        OnLevelManagerEvent(_levelManager.GetStageCharacters()[0], new Vector3(0,0,0));
+                        iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenuJanitor", "oncompletetarget", gameObject));
                     }
 
                     SoundManager.Effect_Menu_Click();
@@ -480,7 +484,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                                                     "oncomplete", "CheckForTutorial",
                                                     "oncompletetarget", gameObject));
 				}
-                else if(PlayerPrefs.GetString("Tutorial") == "Answered")
+                else if(PlayerPrefs.GetString("Tutorial") == "Answered" && walkAnimationOver)
                 {
 					if(OnLevelManagerEvent != null)
 						OnLevelManagerEvent(_go, _screenPosition);
@@ -503,6 +507,7 @@ public class GUIMainMenuCamera : MonoBehaviour
         else
         {
             SwitchToMainMenu();
+            walkAnimationOver = true;
         }
     }
 
@@ -540,6 +545,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 			iTweenPath path = Camera.main.GetComponent<iTweenPath>();
 		
 	        Camera.main.transform.position = path.nodes[path.nodes.Count - 1];
+            walkAnimationOver = true;
 			_isOnStartScreen = false;
 			
         	EnableGUIElement("OptionsButton");
@@ -553,6 +559,13 @@ public class GUIMainMenuCamera : MonoBehaviour
 	            go.collider.enabled = true;
 	        }
 		}
+    }
+
+    private void SwitchToMainMenuJanitor()
+    {
+        OnLevelManagerEvent(_levelManager.GetStageCharacters()[0], new Vector3(0,0,0));
+        SwitchToMainMenu();
+        PlayerPrefs.SetString("Tutorial", "Answered");
     }
 
     private void UpdateText()
