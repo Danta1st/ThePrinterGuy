@@ -85,49 +85,44 @@ public class VoiceSounds : MonoBehaviour
         _voiceBossMumbling.PlayClip(4);
     }
 
-    public void Voice_Boss_Mumbling_Hmm_3()
+    public void Voice_Boss_Mumbling_Hrn_1()
     {
         _voiceBossMumbling.PlayClip(5);
     }
 
-    public void Voice_Boss_Mumbling_Hrn_1()
+    public void Voice_Boss_Mumbling_Hrn2()
     {
         _voiceBossMumbling.PlayClip(6);
     }
 
-    public void Voice_Boss_Mumbling_Hrn2()
+    public void Voice_Boss_Mumbling_Hrn_3()
     {
         _voiceBossMumbling.PlayClip(7);
     }
 
-    public void Voice_Boss_Mumbling_Hrn_3()
+    public void Voice_Boss_Mumbling_Mumble_1()
     {
         _voiceBossMumbling.PlayClip(8);
     }
 
-    public void Voice_Boss_Mumbling_Mumble_1()
+    public void Voice_Boss_Mumbling_Mumble_2()
     {
         _voiceBossMumbling.PlayClip(9);
     }
 
-    public void Voice_Boss_Mumbling_Mumble_2()
+    public void Voice_Boss_Mumbling_Mumble_3()
     {
         _voiceBossMumbling.PlayClip(10);
     }
 
-    public void Voice_Boss_Mumbling_Mumble_3()
+    public void Voice_Boss_Mumbling_No_1()
     {
         _voiceBossMumbling.PlayClip(11);
     }
 
-    public void Voice_Boss_Mumbling_No_1()
-    {
-        _voiceBossMumbling.PlayClip(12);
-    }
-
     public void Voice_Boss_Mumbling_Ohh_1()
     {
-        _voiceBossMumbling.PlayClip(13);
+        _voiceBossMumbling.PlayClip(12);
     }
     #endregion
 
@@ -254,9 +249,14 @@ public class VoiceSounds : MonoBehaviour
         _voiceBoss.PlayClip(16);
     }
 
-    public void Voice_Boss_Happy_NoRaise_1()
+    public void Voice_Boss_Happy_Know_3()
     {
         _voiceBoss.PlayClip(17);
+    }
+
+    public void Voice_Boss_Happy_NoRaise_1()
+    {
+        _voiceBoss.PlayClip(31);
     }
 
     public void Voice_Boss_Happy_NotBad_1()
@@ -271,35 +271,25 @@ public class VoiceSounds : MonoBehaviour
 
     public void Voice_Boss_Happy_WellWell_1()
     {
-        _voiceBoss.PlayClip(18);
+        _voiceBoss.PlayClip(27);
     }
 
     public void Voice_Boss_Happy_WellWell_2()
     {
-        _voiceBoss.PlayClip(19);
+        _voiceBoss.PlayClip(28);
     }
 
     public void Voice_Boss_Happy_YouGetIt_1()
     {
-        _voiceBoss.PlayClip(18);
+        _voiceBoss.PlayClip(29);
     }
 
     public void Voice_Boss_Happy_YouGetIt_2()
     {
-        _voiceBoss.PlayClip(19);
+        _voiceBoss.PlayClip(30);
     }
 
     #endregion
-
-    public void Voice_Boss_Random_Happy()
-    {
-        _voiceBoss.PlayClip(Random.Range(9, 19));
-    }
-
-    public void Voice_Boss_Random_Angry()
-    {
-        _voiceBoss.PlayClip(Random.Range(0, 8));
-    }
 
     public void Voice_Boss_Random_Mumbling()
     {
@@ -343,7 +333,7 @@ public class VoiceSounds : MonoBehaviour
 
     public void Voice_Boss_Random_Know()
     {
-        _voiceBoss.PlayClip(Random.Range(15, 16));
+        _voiceBoss.PlayClip(Random.Range(15, 17));
     }
 
     public void Voice_Boss_Random_NotBad()
