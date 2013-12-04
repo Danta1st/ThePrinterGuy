@@ -57,7 +57,6 @@ public class GUIGameCamera : MonoBehaviour
 	//Highscore Variables.
 	private int _score = 0;
 	private string _strScore = "0";
-	private HighscoreScreenLoader _highscoreLoader;
 	private GameObject _scoreValueObject;
 
     //Action Sequencer
@@ -241,7 +240,6 @@ public class GUIGameCamera : MonoBehaviour
         //--------------------------------------------------//
 		_pauseCurrScore = GameObject.Find("CurrentScoreValue").gameObject;
 		_pauseHighScore = GameObject.Find("HighscoreValue").gameObject;
-		_highscoreLoader = GameObject.Find("GUI List").GetComponent<HighscoreScreenLoader>();
 		
         foreach(GameObject _guiObject in _guiList)
         {
@@ -578,7 +576,7 @@ public class GUIGameCamera : MonoBehaviour
 		{
 			_pauseHighScore.GetComponent<TextMesh>().text = highScores[ConstantValues.GetLoadedLevelMinusStartLevels(Application.loadedLevel)].ToString();
 		}
-		catch(Exception e)
+		catch(Exception)
 		{
 			_pauseHighScore.GetComponent<TextMesh>().text = "0";
 		}

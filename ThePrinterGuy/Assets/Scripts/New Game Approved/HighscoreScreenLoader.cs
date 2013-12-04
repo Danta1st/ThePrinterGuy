@@ -3,12 +3,6 @@ using System.Collections;
 
 public class HighscoreScreenLoader : MonoBehaviour 
 {
-	private int perfectInk = 0;
-	private int perfectPaper = 0;
-	private int perfectUran = 0;
-	private int failedInk = 0;
-	private int failedPaper = 0;
-	private int failedUran = 0;
     private int _totalNodes = 0;
     private int _totalInkNodes = 0;
     private int _totalRodNodes = 0;
