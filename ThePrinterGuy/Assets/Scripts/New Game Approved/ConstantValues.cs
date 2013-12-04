@@ -23,4 +23,8 @@ public static class ConstantValues
 	{
 		get { return 12; }
 	}
+	public static int GetLoadedLevelMinusStartLevels(int loadedLevel)
+	{
+		return loadedLevel - GetLevel1;
+	}
 }

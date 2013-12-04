@@ -13,6 +13,8 @@ public class GreenZone : MonoBehaviour {
     [SerializeField] private Texture2D _ringLit;
     [SerializeField] private Texture2D _ringUnlit;
 	
+	private enum ZoneStates { Green, Yellow, Red };
+	private ZoneStates zoneState = ZoneStates.Red;
 	
 	void Start () {
 //	    _greenInnerGlow.renderer.enabled = false;
@@ -26,30 +28,38 @@ public class GreenZone : MonoBehaviour {
 	
 	public void GreenOn()
 	{
-		YellowOff();
+//		YellowOff();
 		renderer.material.mainTexture = _green;
         _ring.renderer.material.mainTexture = _ringLit;
+		zoneState = ZoneStates.Green;
 //        _greenInnerGlow.renderer.enabled = true;
 	}	
 	public void GreenOff()
 	{
-		YellowOff();
+//		YellowOff();
 		renderer.material.mainTexture = _red;
         _ring.renderer.material.mainTexture = _ringUnlit;
+		zoneState = ZoneStates.Red;
 //        _greenInnerGlow.renderer.enabled = false;
 	}
 	
 	
 	public void YellowOn()
 	{
+		if(zoneState == ZoneStates.Green)
+			return;
+		
 		renderer.material.mainTexture = _yellow;
         _ring.renderer.material.mainTexture = _ringLit;
+		zoneState = ZoneStates.Yellow;
+
 //        _yellowInnerGlow.renderer.enabled = true;
 	}
 	public void YellowOff()
 	{
 		renderer.material.mainTexture = _red;
         _ring.renderer.material.mainTexture = _ringUnlit;
+		zoneState = ZoneStates.Red;
 //        _yellowInnerGlow.renderer.enabled = true;
 	}
 	

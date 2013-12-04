@@ -11,6 +11,7 @@ public class Ink : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeInExpo;
 	//Particles
 	[SerializeField] private Particles _particles;
+	[SerializeField] private Vector3 _idlePunchScaleAmount = new Vector3(0.5f, 0.5f, 0.5f);
 
     #endregion
 	
@@ -33,6 +34,9 @@ public class Ink : MonoBehaviour
 	#region Delegates & Events
 	public delegate void OnInkInsertedAction();
     public static event OnInkInsertedAction OnCorrectInkInserted;
+	
+	public delegate void InkErrorAction();
+	public static event InkErrorAction OnInkError;
 	#endregion
 
 	void Awake () 
@@ -89,27 +93,32 @@ public class Ink : MonoBehaviour
 		StartGates();
 		
 		BpmSequencer.OnInkNode += StartInkTask;
-		BpmSequencerItem.OnFailed += InkReset;
+		BpmSequencerItem.OnFailed += InkNotCompleted;
 	}
 	
 	void OnDisable()
 	{
 		StopGates();
+		UnsubscribeInkPunch();
 		
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
-		BpmSequencerItem.OnFailed -= InkReset;
-		UnsubscribeInkPunch();
+		BpmSequencer.OnPaperNode -= InkReset;
+		BpmSequencer.OnUraniumRodNode -= InkReset;
+		BpmSequencerItem.OnFailed -= InkNotCompleted;
+		
 	}
 	
 	void OnDestroy()
 	{
 		StopGates();
+		UnsubscribeInkPunch();
 		
 		GestureManager.OnSwipeRight -= InsertCartridge;
 		BpmSequencer.OnInkNode -= StartInkTask;
-		BpmSequencerItem.OnFailed -= InkReset;
-		UnsubscribeInkPunch();
+		BpmSequencer.OnPaperNode -= InkReset;
+		BpmSequencer.OnUraniumRodNode -= InkReset;
+		BpmSequencerItem.OnFailed -= InkNotCompleted;
 	}
 	
 	#region Class Methods	
@@ -120,14 +129,14 @@ public class Ink : MonoBehaviour
 		BeatController.OnBeat8th7 += CloseGates;
 		//TODO: Insert close gate sound?
 		BeatController.OnBeat8th3 += OpenGates;
-		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen4;
+		BeatController.OnBeat8th3 += SoundManager.Effect_Ink_SlotOpen;
     }
 
     private void StopGates()
     {
 		BeatController.OnBeat8th7 -= CloseGates;
 		BeatController.OnBeat8th3 -= OpenGates;
-		BeatController.OnBeat8th3 -= SoundManager.Effect_Ink_SlotOpen4;
+		BeatController.OnBeat8th3 -= SoundManager.Effect_Ink_SlotOpen;
     }
 	
 	private void OpenGates()
@@ -200,18 +209,24 @@ public class Ink : MonoBehaviour
 	{
 		_tempPunch = itemNumber;
 		
-		BeatController.OnAll4Beats += PunchInk;
+		BeatController.OnBeat4th1 += PunchInk;
+		BeatController.OnBeat4th2 += PunchInk;
+		BeatController.OnBeat4th3 += PunchInk;
+		BeatController.OnBeat4th4 += PunchInk;
 		
 	}
 	private void UnsubscribeInkPunch()
 	{	
-		BeatController.OnAll4Beats -= PunchInk;
+		BeatController.OnBeat4th1 -= PunchInk;
+		BeatController.OnBeat4th2 -= PunchInk;
+		BeatController.OnBeat4th3 -= PunchInk;
+		BeatController.OnBeat4th4 -= PunchInk;
 	}
 		
 	private void PunchInk()
 	{
 		if(_tempPunch != null)
-			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, new Vector3(0.2f, 0.2f, 0.2f), _punchTime);
+			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, _idlePunchScaleAmount, _punchTime);
 	}
 	
 	#endregion
@@ -248,7 +263,7 @@ public class Ink : MonoBehaviour
 			return;
 
         PlaySwipeSound(index);
-
+		
 		//Succesfull swipe
 		if(currIcc.lidIsOpen == true && currIcc.cartridgeEmpty)
 		{
@@ -258,6 +273,10 @@ public class Ink : MonoBehaviour
 			//Unsubsribe gesture
 			GestureManager.OnSwipeRight -= InsertCartridge;
 			
+			//Stop Smoke
+			if(_particleSmoke != null)
+				_particleSmoke.particleSystem.Stop();
+			
 			currIcc.cartridgeEmpty = false;
 			currIcc.cartridge.renderer.material.mainTexture = currIcc.full;
 			
@@ -266,8 +285,6 @@ public class Ink : MonoBehaviour
 	        {
 	            OnCorrectInkInserted();
 	        }
-						
-//			currIcc.insertableCartridge.gameObject.SetActive(false);
 
 			currIcc.insertableCartridgeClone.SetActive(true);
 
@@ -279,8 +296,8 @@ public class Ink : MonoBehaviour
 		//Failed swipe
 		else
 		{	
-			
-//			currIcc.insertableCartridge.gameObject.SetActive(false);
+			if(OnInkError != null)
+				OnInkError();
 			
 			currIcc.insertableCartridgeClone.SetActive(true);
 			
@@ -292,25 +309,15 @@ public class Ink : MonoBehaviour
 	
 	private void InkSuccess(InkCartridgeClass icc)
 	{
-		
 		//Instantiate particles
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
-        InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);
-
-		//Stop Smoke
-		if(_particleSmoke != null)
-			_particleSmoke.particleSystem.Stop();		
+        InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);		
 		
-		if(!isOnInk)
-        	InkReset();
-		
-//		icc.insertableCartridge.gameObject.SetActive(true);
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
-//        icc.insertableCartridge.transform.position = icc.insertableStartPos;
-//		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
 		
         _canSlide = true;
+		UnsubscribeInkPunch();
 	}	
 	
 	private void InkFailed(InkCartridgeClass icc)
@@ -320,9 +327,6 @@ public class Ink : MonoBehaviour
 		//Play sound
         SoundManager.Effect_InGame_Task_Unmatched();
 		
-//		icc.insertableCartridge.transform.position = icc.insertableStartPos;
-//		icc.insertableCartridge.GetComponent<ItemIdleState>().StartFloat();
-//		icc.insertableCartridge.gameObject.SetActive(true);
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
 		
@@ -350,7 +354,7 @@ public class Ink : MonoBehaviour
         }
     }
 	
-	private void InkReset()
+	private void InkReset(int itemNumber)
 	{
 		//Unsubscribe from gesture
 		GestureManager.OnSwipeRight -= InsertCartridge;
@@ -378,6 +382,35 @@ public class Ink : MonoBehaviour
 			icc.insertableCartridgeClone.SetActive(false);
 //			j++;
 		}
+		BpmSequencer.OnPaperNode -= InkReset;
+		BpmSequencer.OnUraniumRodNode -= InkReset;
+		UnsubscribeInkPunch();
+	}
+	
+	private void InkNotCompleted()
+	{
+		//Unsubscribe from gesture
+		GestureManager.OnSwipeRight -= InsertCartridge;
+		
+		InkCartridgeClass icc;
+		//FIXME: Particles
+		if(_particleSmoke != null)
+			_particleSmoke.particleSystem.Stop();
+		
+//		int j = 0;
+		for(int i = 0; i < _machineInks.Count; i++)
+		{
+			icc = _machineInks[i];
+			
+			icc.cartridgeEmpty = false;
+			icc.cartridge.renderer.material.mainTexture = icc.full;
+
+			icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
+			icc.insertableCartridgeClone.SetActive(false);
+//			j++;
+		}
+		
+		UnsubscribeInkPunch();
 	}
 	
 	//public function to retrigger ink task. Used in GUIGameCamera
@@ -388,7 +421,9 @@ public class Ink : MonoBehaviour
 	
 	private int _currentInk = 0;
 	private void StartInkTask(int itemNumber)
-	{		
+	{	
+		BpmSequencer.OnPaperNode += InkReset;
+		BpmSequencer.OnUraniumRodNode += InkReset;
 		_currentInk = itemNumber;
 		isOnInk = true;
 		//Subscribe to gesture
@@ -402,39 +437,9 @@ public class Ink : MonoBehaviour
 			//Activate cartridge
 			icc.insertableCartridge.gameObject.SetActive(true);
 		}
-		
-		//TODO: Comment on why this is necessary if put in again!
-//		if(_machineInks.Count < itemNumber + 1)
-//		{
-//			if(OnCorrectInkInserted != null)
-//            {
-//                OnCorrectInkInserted();
-//            }
-//
-//			Debug.Log("ERROR INK: Number out of index!");
-//			return;
-//		}
-		
-		if(_machineInks[itemNumber].cartridgeEmpty == false)
-        {
-            EmptyCartridge(itemNumber);
-        }
-		
-		//Randomisation method for ink calls
-		/*var identifier = Random.Range(0,_machineInks.Count);
-		
-        for(int i = 0; i < _machineInks.Count; i++)
-        {
-            if(_machineInks[identifier].cartridgeEmpty == false)
-            {
-                EmptyCartridge(identifier);
-                break;
-            }
-            identifier++;
 
-            if(identifier == _machineInks.Count)
-                identifier = 0;
-        }*/
+        EmptyCartridge(itemNumber);
+      
 		SubscribeInkPunch(itemNumber);		
 	}
 	

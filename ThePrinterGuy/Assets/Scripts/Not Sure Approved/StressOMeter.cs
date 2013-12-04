@@ -120,7 +120,6 @@ public class StressOMeter : MonoBehaviour
     #region Give Points
     void GivePoints()
     {
-        SoundManager.Effect_Task_Perfected();
         if(OnStressIncrease != null)
             OnStressIncrease();
         _rotationScale -= _inZonePoints;
@@ -341,6 +340,12 @@ public class StressOMeter : MonoBehaviour
         _thisRotation.z = thisRotationScale;
 
         iTween.Stop(gameObject);
+		
+		if(OnGameFailed != null && _rotationScale == _stressMAX && !_isDead)
+        {
+            _isDead = true;
+            OnGameFailed(GameObject.Find("GUI List").GetComponent<GUIGameCamera>().GetScore());
+        }
 
         iTween.RotateTo(gameObject, iTween.Hash("rotation", _thisRotation, "time", _rotationTime, "easetype", iTween.EaseType.easeOutBack, "islocal", true,
             "oncomplete", "SlightMovement", "oncompletetarget", gameObject));

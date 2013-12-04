@@ -86,8 +86,6 @@ public class Tutorial : MonoBehaviour {
 	private GameObject backButton;
     private void CheckCollision(GameObject _go, Vector2 _screenPosition)
     {
-		Ray _mainCamRay = Camera.main.ScreenPointToRay(_screenPosition);
-		
         if(_isGUI && _canTouch)
         {
             Ray _ray = _guiCamera.ScreenPointToRay(_screenPosition);
@@ -98,7 +96,6 @@ public class Tutorial : MonoBehaviour {
                 //-----------------------------------------------------------------------//
                 if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
                 {
-					var hitObject = _hit.collider.gameObject;
                     if(_hit.collider.gameObject.name == "NextButton")
                     {
 						SoundManager.CutScene_Random_Coffee();
