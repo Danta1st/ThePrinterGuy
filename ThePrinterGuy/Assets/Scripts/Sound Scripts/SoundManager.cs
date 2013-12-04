@@ -9,8 +9,6 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private static float _endMusicVolume = 0.2f;
     [SerializeField] private static float _menuEffectsVolume = 0.8f;
     [SerializeField] private static float _voiceVolume = 1.0f;
-    [SerializeField] private static float _gameMusic = 0.7f;
-    [SerializeField] private static float _menuMusic = 0.5f;
     #endregion
 
     #region Privates
@@ -100,7 +98,7 @@ public class SoundManager : MonoBehaviour
 
         for(int i = 0; i < _musicScripts.Count; i++)
         {
-            _musicVolume.Add(_audioScripts[i].GetVolume());
+            _musicVolume.Add(_musicScripts[i].GetVolume());
         }
 
         ToogleAudio();
@@ -575,6 +573,10 @@ public class SoundManager : MonoBehaviour
         _voiceSounds.Voice_Boss_Random_YouGetIt();
     }
 
+    public static GenericSoundScript Voice_Boss_GetEndScript()
+    {
+        return _voiceSounds.GetEffectScriptEnd();
+    }
     #endregion
 
     #region In Game Sounds
@@ -658,10 +660,8 @@ public class SoundManager : MonoBehaviour
 
     public static void FadeAllMusic()
     {
-        foreach(GenericSoundScript gss in _musicScripts)
-        {
-            gss.FadeVolume(_endMusicVolume, _fadeTime);
-        }
+        _inGameSounds.FadeMusicEnd(_fadeTime);
+        _mainMenuSounds.FadeMusicEnd(_fadeTime);
     }
 
     public static void UnFadeAllMusic()
@@ -676,8 +676,8 @@ public class SoundManager : MonoBehaviour
 //            _musicScripts[i].FadeVolume(_musicVolume[i], _fadeTime);
 //        }
 
-        _inGameSounds.GetMusicScript().FadeVolume(_gameMusic, _fadeTime);
-        _mainMenuSounds.GetMusicScript().FadeVolume(_menuMusic, _fadeTime);
+        _inGameSounds.FadeMusic(_fadeTime);
+        _mainMenuSounds.FadeMusic(_fadeTime);
     }
 
     public static void ToogleAudio()
