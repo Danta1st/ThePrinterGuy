@@ -67,6 +67,7 @@ public class GUIGameCamera : MonoBehaviour
     private Queue<GameObject> _sequencerObjectQueue = new Queue<GameObject>();
     private int _zone = 0;
     private bool _isLastNode = false;
+	private GameObject _pausedGameObject = null;
 	
 	//Dialogue variables - Speech bubble
 	private GameObject _speechTextObject;
@@ -771,6 +772,14 @@ public class GUIGameCamera : MonoBehaviour
 		
 	}
 	
+	public void SetPauseElement(object obj)
+	{
+		if(obj != null)
+			_pausedGameObject = (GameObject)obj;
+		else
+			_pausedGameObject = null;
+	}
+	
     public void EndZone(GameObject _go, bool shouldDestroy)
     {
 		_greenZoneScript.GreenOff();
@@ -826,6 +835,9 @@ public class GUIGameCamera : MonoBehaviour
 				obj.SetActive(false);
 			}
 		}
+		
+		if(_pausedGameObject != null)
+			_pausedGameObject.SetActive(false);
 
         foreach(GameObject _gui in _guiList)
         {
@@ -848,6 +860,9 @@ public class GUIGameCamera : MonoBehaviour
 				obj.SetActive(true);
 			}
 		}
+		
+		if(_pausedGameObject != null)
+			_pausedGameObject.SetActive(true);
 		
         foreach(GameObject _gui in _guiSaveList)
         {
