@@ -51,30 +51,12 @@ public class LevelManager : MonoBehaviour
             SaveGame.ResetPlayerData();
         }
 
-
-        highScores = SaveGame.GetPlayerHighscores();
-
-        _levelBoxCount = _gameLevels.Count;
+        UnlockLevels();
     }
 
     // Use this for initialization
     void Start()
     {
-        #region Unlock Levels based on Highscore
-        _gameLevelsUnlocked.Clear();
-        foreach (int highscore in highScores)
-        {
-            if(highscore > -1)
-            {
-                _gameLevelsUnlocked.Add(true);
-            }
-            else
-            {
-                _gameLevelsUnlocked.Add(false);
-            }
-        }
-        #endregion
-
         #region Camera Positioning Objects
         _camPointDefault = new GameObject();
         _camPointDefault.name = "CamLookPosDefault";
@@ -94,8 +76,6 @@ public class LevelManager : MonoBehaviour
 
     void OnEnable()
     {
-//		GestureManager.OnTap += SelectStage;
-//        GestureManager.OnTap += SelectLevel;
         GUIMainMenuCamera.OnCreditScreen += ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen += ChangeViewToMain;
         GUIMainMenuCamera.OnOptionsScreen += ChangeViewToOptions;
@@ -104,12 +84,30 @@ public class LevelManager : MonoBehaviour
 
     void OnDisable()
     {
-//		GestureManager.OnTap -= SelectStage;
-//        GestureManager.OnTap -= SelectLevel;
         GUIMainMenuCamera.OnCreditScreen -= ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen -= ChangeViewToMain;
         GUIMainMenuCamera.OnOptionsScreen -= ChangeViewToOptions;
 		GUIMainMenuCamera.OnLevelManagerEvent -= SelectStage;
+    }
+
+    public void UnlockLevels()
+    {
+        highScores = SaveGame.GetPlayerHighscores();
+
+        #region Unlock Levels based on Highscore
+        _gameLevelsUnlocked.Clear();
+        foreach (int highscore in highScores)
+        {
+            if(highscore > -1)
+            {
+                _gameLevelsUnlocked.Add(true);
+            }
+            else
+            {
+                _gameLevelsUnlocked.Add(false);
+            }
+        }
+        #endregion 
     }
 
     public List<GameObject> GetStageCharacters()

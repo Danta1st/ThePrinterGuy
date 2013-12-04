@@ -20,6 +20,24 @@ public class StageCharacter : MonoBehaviour
 
     void Awake()
     {
+        Unlock();
+    }
+
+    #region StageUnlocked Get/Set
+    public void SetUnlocked()
+    {
+        _isUnlocked = true;
+
+    }
+
+    public bool GetUnlocked()
+    {
+        return _isUnlocked;
+    }
+    #endregion
+
+    public void Unlock()
+    {
         highscores = SaveGame.GetPlayerHighscores();
         if(highscores[4] >= 0)
             _isUnlocked = true;
@@ -48,19 +66,5 @@ public class StageCharacter : MonoBehaviour
             gameObject.transform.FindChild("lobbyArrow").renderer.enabled = false;
         }
     }
-
-    #region StageUnlocked Get/Set
-    public void SetUnlocked()
-    {
-        _isUnlocked = true;
-
-    }
-
-    public bool GetUnlocked()
-    {
-        return _isUnlocked;
-    }
-    #endregion
-
 
 }
