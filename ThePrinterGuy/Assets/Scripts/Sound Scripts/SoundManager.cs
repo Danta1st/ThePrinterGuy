@@ -98,7 +98,7 @@ public class SoundManager : MonoBehaviour
 
         for(int i = 0; i < _musicScripts.Count; i++)
         {
-            _musicVolume.Add(_audioScripts[i].GetVolume());
+            _musicVolume.Add(_musicScripts[i].GetVolume());
         }
 
         ToogleAudio();
