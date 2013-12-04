@@ -33,15 +33,12 @@ public class DialogueText : MonoBehaviour {
             _subtitleOn = true;
         }
 
-        if(_subtitleOn)
-        {
-            _bgText = GameObject.Find("TextBG").gameObject;
-            _text = GameObject.Find("Text").gameObject;
-            _bgPosition = _text.transform.position;
-            _bgText.transform.position = _bgPosition;
-            _bgText.renderer.enabled = false;
-            _text.renderer.enabled = false;
-        }
+        _bgText = GameObject.Find("TextBG").gameObject;
+        _text = GameObject.Find("Text").gameObject;
+        _bgPosition = _text.transform.position;
+        _bgText.transform.position = _bgPosition;
+        _bgText.renderer.enabled = false;
+        _text.renderer.enabled = false;
     }
 
     #region Enable and Disable

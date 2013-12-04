@@ -62,16 +62,18 @@ public class PaperInsertion : MonoBehaviour
 		StartGate();		
 		BpmSequencer.OnPaperNode += TriggerLight;
 		BpmSequencer.OnPaperNode += EnablePaper;
-		BpmSequencerItem.OnFailed += Reset;
+		BpmSequencerItem.OnFailed += PaperNotCompleted;
     }
     void OnDisable()
     {
 		StopGate();		
 		BpmSequencer.OnPaperNode -= TriggerLight;
 		BpmSequencer.OnPaperNode -= EnablePaper;
+		BpmSequencer.OnUraniumRodNode -= Reset;
+		BpmSequencer.OnInkNode -= Reset;
         //GestureManager.OnTap -= TriggerSlide;
 		GestureManager.OnSwipeUp -= TriggerSlide;
-		BpmSequencerItem.OnFailed -= Reset;
+		BpmSequencerItem.OnFailed -= PaperNotCompleted;
     }	
 	void OnDestroy()
 	{
@@ -80,7 +82,9 @@ public class PaperInsertion : MonoBehaviour
 		BpmSequencer.OnPaperNode -= EnablePaper;
 		//GestureManager.OnTap -= TriggerSlide;
 		GestureManager.OnSwipeUp -= TriggerSlide;
-		BpmSequencerItem.OnFailed -= Reset;
+		BpmSequencerItem.OnFailed -= PaperNotCompleted;
+		BpmSequencer.OnUraniumRodNode -= Reset;
+		BpmSequencer.OnInkNode -= Reset;
 		UnsubscribePaperPunch();
 	}
 
@@ -110,7 +114,7 @@ public class PaperInsertion : MonoBehaviour
 			Debug.LogWarning(gameObject.name+" reported that a particle prefab in '_particles' is empty");
 
 		InitializeLights();
-		DisablePaper();
+		DisablePaper(true);
 
         _conveyorBelt = transform.FindChild("BB-9000_Paper").FindChild("convoyeBelt").gameObject;
         
@@ -273,20 +277,22 @@ public class PaperInsertion : MonoBehaviour
 	
 	//Paper Methods
 	//TODO: Paper animations
-    private void DisablePaper()
+    private void DisablePaper(bool isNewTask)
     {
 		if(_isPaperEnabled)
 		{
 			//GestureManager.OnTap -= TriggerSlide;
 			GestureManager.OnSwipeUp -= TriggerSlide;
-	        for(int i = 0; i < _paperlightset.Count; i++)
-	        {
-				//Spawn particles
-				InstantiateParticles(_particles.disablePaper, _paperlightset[i].paper);
-				//Disable objects
-	            _paperlightset[i].paper.SetActive(false);
-				_paperlightset[i].paperToSlide.SetActive(false);
-	        }
+			if(isNewTask) {
+		        for(int i = 0; i < _paperlightset.Count; i++)
+		        {
+					//Spawn particles
+					InstantiateParticles(_particles.disablePaper, _paperlightset[i].paper);
+					//Disable objects
+		            _paperlightset[i].paper.SetActive(false);
+					_paperlightset[i].paperToSlide.SetActive(false);
+		        }
+			}
             _isPaperEnabled = false;
 		}
     }
@@ -306,6 +312,9 @@ public class PaperInsertion : MonoBehaviour
 				_paperlightset[i].paperToSlide.SetActive(true);
 	        }
             _isPaperEnabled = true;
+			
+			BpmSequencer.OnUraniumRodNode += Reset;
+			BpmSequencer.OnInkNode += Reset;
 		}
     }
 	
@@ -493,10 +502,22 @@ public class PaperInsertion : MonoBehaviour
 	}
 	
 	//-----------
-	public void Reset()
+	public void Reset(int itemNumber)
 	{
-		DisablePaper();
+		DisablePaper(true);
 		TurnOfAllLights();
+		
+		BpmSequencer.OnUraniumRodNode -= Reset;
+		BpmSequencer.OnInkNode -= Reset;
+	}
+	
+	public void PaperNotCompleted()
+	{
+		DisablePaper(false);
+		TurnOfAllLights();
+		
+		BpmSequencer.OnUraniumRodNode -= Reset;
+		BpmSequencer.OnInkNode -= Reset;
 	}
 	
 	//Method for playing the correct swipe sound
