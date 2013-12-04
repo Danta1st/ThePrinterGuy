@@ -155,18 +155,19 @@ public class ScoreManager : MonoBehaviour
 		{
 			case 0:
                 Feedback.Clear();
-                Feedback.Add("TO EARLY!");
+                Feedback.Add("TOO EARLY!");
 				popupSize = 3;
 				_stressOmeterReference.ReductPointsFailed();
 				break;
             case 1:
                 Feedback.Clear();
-                Feedback.Add("GOOD!");
+                Feedback.Add("TOO EARLY!");
 				popupSize = 3;
+				_stressOmeterReference.ReductPointsFailed();
                 break;
 			case 2:
                 Feedback.Clear();
-                Feedback.Add("GREAT!");
+                Feedback.Add("Great!");
 				popupSize = 2;
 				calculatedValue = taskValue * YellowZoneModifier * _multiplier;
 				break;
