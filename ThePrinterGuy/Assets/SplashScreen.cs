@@ -19,27 +19,23 @@ public class SplashScreen : MonoBehaviour {
 		iTween.FadeTo(guiTextures.loading, 0.0f, 1.0f);
 		
 		//Wait for fade
-		yield return new WaitForSeconds (1.0f);
+		yield return new WaitForSeconds (1.5f);
 		
+		#if UNITY_ANDROID
 		//Play WhyNotJingle logo splash screen
-		Handheld.PlayFullScreenMovie("WhyNotJingle.mp4", Color.clear, FullScreenMovieControlMode.Hidden, 
-										FullScreenMovieScalingMode.Fill);
-		
-		yield return new WaitForSeconds (1.0f);
-		
-//		FadeTo Dadiu
-		iTween.FadeTo(guiTextures.dadiu, 1.0f, 1.0f);
-		
-//		Load Lobby		
-		yield return new WaitForSeconds (2.0f);
-		
-		//Fade Dadiu out
-		iTween.FadeTo(guiTextures.dadiu, 0.0f, 1.0f);
-		
-		yield return new WaitForSeconds (1.0f);
-		
-		//TODO: Load the main lobby
-		//LoadingScreen.Load(0, true);
+		//Allow players to skip if this is not the first time the game begins
+		if(PlayerPrefs.HasKey("Tutorial") && PlayerPrefs.GetString("Tutorial") == "Answered")
+		{
+			Handheld.PlayFullScreenMovie("IntroSplash.mp4", Color.clear, FullScreenMovieControlMode.CancelOnInput, 
+											FullScreenMovieScalingMode.Fill);
+		}
+		else
+			Handheld.PlayFullScreenMovie("IntroSplash.mp4", Color.clear, FullScreenMovieControlMode.Hidden, 
+											FullScreenMovieScalingMode.Fill);
+		#endif
+				
+		//Load the main lobby
+		LoadingScreen.Load(1, true);
 		
 	}
 	
@@ -49,6 +45,5 @@ public class SplashScreen : MonoBehaviour {
 	{
 		public GameObject loading;
 		public GameObject background;
-		public GameObject dadiu;		
 	}
 }
