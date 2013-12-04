@@ -40,6 +40,7 @@ public class GUIGameCamera : MonoBehaviour
     private bool _waitForMe = false;
     private string _currentTaskType;
     private GameObject resumeButtom;
+	private bool _isPaused = false;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -135,10 +136,10 @@ public class GUIGameCamera : MonoBehaviour
 	
 	void OnApplicationPause(bool status)
 	{
-		if(status == true)
+		if(status == true && !_isPaused)
 		{
 	        if(OnPause != null)
-	            OnPause();										
+	            OnPause();
 			
 			OpenIngameMenu();
 		}
@@ -562,6 +563,7 @@ public class GUIGameCamera : MonoBehaviour
     #region GUI Ingame Menu
     private void OpenIngameMenu()
     {
+		_isPaused = true;
         SaveGUIState();
         DisableGUIElement("Pause");
 		ResetGuiTextures();
@@ -621,6 +623,7 @@ public class GUIGameCamera : MonoBehaviour
     private void UnPauseTimeScale()
     {
         Time.timeScale = 1.0f;
+		_isPaused = false;
         AudioListener.pause = false;
         SoundManager.TurnOnMenuSounds();
         SoundManager.Effect_Menu_Click();
