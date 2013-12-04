@@ -52,6 +52,9 @@ public class HighscoreScreenLoader : MonoBehaviour
 		HighscoreSceneScript._targetScore.perfectPaper = 0;
 		HighscoreSceneScript._targetScore.perfectUran = 0;
 		HighscoreSceneScript._targetScore._totalNodesHit = 0;
+		HighscoreSceneScript._targetScore._totalInkNodes = 0;
+		HighscoreSceneScript._targetScore._totalPaperNodes = 0;
+		HighscoreSceneScript._targetScore._totalUranNodes = 0;
 		HighscoreSceneScript._targetScore.starScoreOne = GetStarOneScore();
 		HighscoreSceneScript._targetScore.starScoreTwo = GetStarTwoScore();
 		HighscoreSceneScript._targetScore.starScoreThree = GetStarThreeScore();
@@ -65,17 +68,17 @@ public class HighscoreScreenLoader : MonoBehaviour
 
     public void SetRodTotalNodes(int _amountOfNodes)
     {
-        _totalRodNodes = _amountOfNodes;
+        HighscoreSceneScript._targetScore._totalUranNodes = _amountOfNodes;
     }
 
     public void SetInkTotalNodes(int _amountOfNodes)
     {
-        _totalInkNodes = _amountOfNodes;
+        HighscoreSceneScript._targetScore._totalInkNodes = _amountOfNodes;
     }
 
     public void SetPaperTotalNodes(int _amountOfNodes)
     {
-        _totalPaperNodes = _amountOfNodes;
+        HighscoreSceneScript._targetScore._totalPaperNodes = _amountOfNodes;
     }
 
     public void SetBarometerTotalNodes(int _amountOfNodes)

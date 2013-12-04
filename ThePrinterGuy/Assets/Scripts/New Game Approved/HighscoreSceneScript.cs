@@ -24,6 +24,9 @@ public class HighscoreSceneScript : MonoBehaviour
 		public static float failedInk;
 		public static float failedPaper;
 		public static float failedUran;
+		public static float _totalPaperNodes;
+		public static float _totalInkNodes;
+		public static float _totalUranNodes;
 		public static float _totalNodesHit;
 		public static float _totalNodes;
 	}
@@ -378,13 +381,13 @@ public class HighscoreSceneScript : MonoBehaviour
 		    switch(child.name)
 			{
 			case "FailedInkText":
-				child.GetComponent<TextMesh>().text = _targetScore.failedInk + "/" + _targetScore._totalNodes;
+				child.GetComponent<TextMesh>().text = _targetScore.failedInk + "/" + _targetScore._totalInkNodes;
 				break;
 			case "FailedPaperText":
-				child.GetComponent<TextMesh>().text = _targetScore.failedPaper + "/" + _targetScore._totalNodes;
+				child.GetComponent<TextMesh>().text = _targetScore.failedPaper + "/" + _targetScore._totalPaperNodes;
 				break;
 			case "FailedRodsText":
-				child.GetComponent<TextMesh>().text = _targetScore.failedUran + "/" + _targetScore._totalNodes;
+				child.GetComponent<TextMesh>().text = _targetScore.failedUran + "/" + _targetScore._totalUranNodes;
 				break;
 			case "FailedText":
 				temp = _targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran;
@@ -395,13 +398,13 @@ public class HighscoreSceneScript : MonoBehaviour
 				child.GetComponent<TextMesh>().text = temp + "%";
 				break;
 			case "PerfectsInkText":
-				child.GetComponent<TextMesh>().text = _targetScore.perfectInk + "/" + _targetScore._totalNodes;
+				child.GetComponent<TextMesh>().text = _targetScore.perfectInk + "/" + _targetScore._totalInkNodes;
 				break;
 			case "PerfectsPaperText":
-				child.GetComponent<TextMesh>().text = _targetScore.perfectPaper + "/" + _targetScore._totalNodes;
+				child.GetComponent<TextMesh>().text = _targetScore.perfectPaper + "/" + _targetScore._totalPaperNodes;
 				break;
 			case "PerfectsRodsText":
-				child.GetComponent<TextMesh>().text = _targetScore.perfectUran + "/" + _targetScore._totalNodes;
+				child.GetComponent<TextMesh>().text = _targetScore.perfectUran + "/" + _targetScore._totalUranNodes;
 				break;
 			case "PerfectsText":
 				temp = _targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran;
