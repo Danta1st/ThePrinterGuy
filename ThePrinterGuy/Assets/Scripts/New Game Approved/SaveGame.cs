@@ -60,7 +60,7 @@ public class SaveGame : MonoBehaviour
         PlayerPrefs.SetInt("currency", 0);
         PlayerPrefs.SetInt("premiumCurrency", 0);
         PlayerPrefs.SetString("highscoresAsString", "0;-1;-1;-1;-1;-1;-1;-1;-1;-1");
-        PlayerPrefs.SetString("maxHighscoresAsString", "-1;-1;-1;-1;-1;-1;-1;-1;-1;-1");
+        PlayerPrefs.SetString("maxHighscoresAsString", "0;0;0;0;0;0;0;0;0;0");
         PlayerPrefs.SetString("Tutorial","NotAnswered");
     }
 

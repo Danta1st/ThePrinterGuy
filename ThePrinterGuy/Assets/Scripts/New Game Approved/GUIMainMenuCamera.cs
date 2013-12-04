@@ -35,7 +35,6 @@ public class GUIMainMenuCamera : MonoBehaviour
     private LevelManager _levelManager;
     GameObject _tutorialScaler;
     private Vector3 _tutorialTransformScale;
-    private bool takeTutorial;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -438,11 +437,10 @@ public class GUIMainMenuCamera : MonoBehaviour
 
                         SaveGame.SavePlayerData(0,0,highScore);
                         iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenu", "oncompletetarget", gameObject));
-                        LoadingScreen.Load(ConstantValues.GetStartScene);
+                        LoadingScreen.Load(ConstantValues.GetStartScene, true);
                     }
                     else if (_hit.collider.gameObject.name == "TakeTutorialYes")
                     {
-                        takeTutorial = false;
                         PlayerPrefs.SetString("Tutorial", "Answered");
                         iTween.ScaleTo(_tutorialScaler, iTween.Hash("scale", new Vector3(0,0,0), "time", 1f, "easeType", iTween.EaseType.easeInBack, "oncomplete", "SwitchToMainMenu", "oncompletetarget", gameObject));
                         OnLevelManagerEvent(_levelManager.GetStageCharacters()[0], new Vector3(0,0,0));
