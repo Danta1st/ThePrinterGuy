@@ -10,6 +10,8 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
     [SerializeField] private List<PaperLightSet> _paperlightset;
+	[SerializeField] private Vector3 _idlePunchScaleAmount = new Vector3(0.2f, 0.2f, 0.2f);
+
 	//Particles - New
 	[SerializeField] private Particles _particles;
 	[SerializeField] private GameObject[] _pathSuccess;
@@ -53,6 +55,9 @@ public class PaperInsertion : MonoBehaviour
     #region Delegates & Events
     public delegate void OnPaperInsertedAction();
     public static event OnPaperInsertedAction OnCorrectPaperInserted;
+	
+	public delegate void PaperErrorAction();
+    public static event PaperErrorAction OnPaperError;
     //public static event OnPaperInsertedAction OnIncorrectPaperInserted;
     #endregion
 
@@ -253,7 +258,7 @@ public class PaperInsertion : MonoBehaviour
 	private void PunchPaper()
 	{
 		if(_tempPunch != null)
-			iTween.PunchScale(_paperlightset[_tempPunch].paper, new Vector3(0.2f, 0.2f, 0.2f), _punchTime);
+			iTween.PunchScale(_paperlightset[_tempPunch].paper, _idlePunchScaleAmount, _punchTime);
 	}
 	
     private void TurnOffLight(int i)
@@ -322,23 +327,7 @@ public class PaperInsertion : MonoBehaviour
 	{
 		
 		if(go != null)
-		{
-			//Please explain why this code is necessary
-//			int j = 0;
-//			PaperLightSet paper;
-//			int count = _paperlightset.Count;
-//			for(int i = 0; i < count; i++)
-//			{
-//				paper = _paperlightset[j];
-//				if(paper.paper == null)
-//				{
-//					_paperlightset.Remove(paper);
-//					_paperlightset.TrimExcess();
-//					continue;
-//				}
-//				j++;
-//			}
-			
+		{	
 	        for(int i = 0; i < _paperlightset.Count; i++)
 	        {
 				//Succesfull Slide
@@ -406,6 +395,8 @@ public class PaperInsertion : MonoBehaviour
 					EnableShadowPaper();
 					iTween.MoveTo(paper, iTween.Hash("path", _paperPathSuccess, "time", _slideTime, "easetype", iTween.EaseType.linear, 
 													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
+					if(OnPaperError != null)
+						OnPaperError();
 				}				
 			}
 			else
@@ -436,6 +427,8 @@ public class PaperInsertion : MonoBehaviour
 													"oncomplete", "TriggerIncineratePaper", "oncompleteparams", paper, "oncompletetarget", gameObject));
 				
 				StartCoroutine("InstantiatePopupFail");
+				if(OnPaperError != null)
+						OnPaperError();
 			}
 
             InstantiateParticlesAtPaper(_particles.swipe, gameObject);
