@@ -114,43 +114,44 @@ public class GUICutsceneCamera : MonoBehaviour
             _subtitleOn = true;
         }
 
+        //GUI Camera and rescale of GUI elements.
+        //--------------------------------------------------//
+        _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
+        transform.position = _guiCamera.transform.position;
+
+        _scaleMultiplierX = Screen.width / 1920f;
+        _scaleMultiplierY = Screen.height / 1200f;
+        AdjustCameraSize();
+        //--------------------------------------------------//
+
+        //Find specific gui objects in the gui list.
+        //--------------------------------------------------//
+        foreach(GameObject _guiObject in _guiList)
+        {
+            if(_guiObject.name == "BGSubtitle")
+            {
+            	_bgText = _guiObject;
+            	_bgTextStartSize = _bgText.transform.localScale;
+                _guiObject.SetActive(false);
+            }
+        }
+        //--------------------------------------------------//
+
+    	UpdateText();
+
+    	foreach(GameObject _text in _textList)
+    	{
+    		_text.SetActive(false);
+    	}
+
+    	_timer = gameObject.AddComponent<TimerUtilities>();
+
         if(_subtitleOn)
         {
-            //GUI Camera and rescale of GUI elements.
-            //--------------------------------------------------//
-            _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
-            transform.position = _guiCamera.transform.position;
-        
-            _scaleMultiplierX = Screen.width / 1920f;
-            _scaleMultiplierY = Screen.height / 1200f;
-            AdjustCameraSize();
-            //--------------------------------------------------//
-        
-            //Find specific gui objects in the gui list.
-            //--------------------------------------------------//
-            foreach(GameObject _guiObject in _guiList)
-            {
-                if(_guiObject.name == "BGSubtitle")
-                {
-                	_bgText = _guiObject;
-                	_bgTextStartSize = _bgText.transform.localScale;
-                    _guiObject.SetActive(false);
-                }
-            }
-            //--------------------------------------------------//
-
-        	UpdateText();
-        
-        	foreach(GameObject _text in _textList)
-        	{
-        		_text.SetActive(false);
-        	}
-
-        	_timer = gameObject.AddComponent<TimerUtilities>();
-        	UpdateSubtitle();
+    	    UpdateSubtitle();
             EnableGUICamera();
         }
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () 
