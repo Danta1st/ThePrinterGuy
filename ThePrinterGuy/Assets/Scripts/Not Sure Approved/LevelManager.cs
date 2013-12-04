@@ -220,7 +220,7 @@ public class LevelManager : MonoBehaviour
                     }
                     if(correspondingLevelName == null)
                     {
-                        LoadingScreen.Load(index + 2, true);
+                        LoadingScreen.Load(index + ConstantValues.GetLevel1, false);
                     }
                     else
                     {
