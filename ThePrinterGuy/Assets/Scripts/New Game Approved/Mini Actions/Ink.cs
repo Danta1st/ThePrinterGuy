@@ -25,6 +25,7 @@ public class Ink : MonoBehaviour
 	private float _inkMoveSpeed		= 0.5f;
 	private bool _canSlide = true;
 	private bool isOnInk = false;
+    private float _waitTime = 0.0f;
 	
 	//References
 	private GameObject _particleSmoke;	
@@ -85,7 +86,9 @@ public class Ink : MonoBehaviour
 			icc.pathFail[1] = icc.pathSucc[1];
 			icc.pathFail[2] = icc.pathSucc[2];
 			icc.pathFail[2].z -= 1.5f;
-		}	
+		}
+
+        _waitTime = _openTime - _inkMoveSpeed - 0.05f;
 	}	
 	
 	void OnEnable()
@@ -138,9 +141,30 @@ public class Ink : MonoBehaviour
 		BeatController.OnBeat8th3 -= OpenGates;
 		BeatController.OnBeat8th3 -= SoundManager.Effect_Ink_SlotOpen;
     }
+
+    IEnumerator PauseForCheckOpen(InkCartridgeClass icc)
+    {
+        yield return new WaitForSeconds(_waitTime);
+
+        icc.lidIsOpen = true;
+        Debug.Log("Opening gate");
+    }
+
+    IEnumerator PauseForCheckClose(InkCartridgeClass icc)
+    {
+        yield return new WaitForSeconds(_waitTime);
+
+        icc.lidIsOpen = false;
+        Debug.Log("Closing gate");
+    }
 	
 	private void OpenGates()
     {
+        foreach(InkCartridgeClass icc in _machineInks)
+        {
+            StartCoroutine(PauseForCheckOpen(icc));
+        }
+
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			GameObject go = icc.lid;
@@ -166,13 +190,18 @@ public class Ink : MonoBehaviour
 		            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x + 90, "time", _openTime,
 		                                            "islocal", true, "easetype", _easeTypeOpen));
 				}
-	            icc.lidIsOpen = true;
+//	            icc.lidIsOpen = true;
 	        }
 		}
     }
 
     private void CloseGates()
     {
+        foreach(InkCartridgeClass icc in _machineInks)
+        {
+            StartCoroutine(PauseForCheckClose(icc));
+        }
+
 		foreach(InkCartridgeClass icc in _machineInks)
 		{
 			GameObject go = icc.lid;
@@ -198,7 +227,7 @@ public class Ink : MonoBehaviour
 		            iTween.RotateTo(go,iTween.Hash("x", go.transform.localRotation.eulerAngles.x - 90, "time", _closeTime,
 		                                            "islocal", true, "easetype", _easeTypeClose));
 				}
-	            icc.lidIsOpen = false;
+//	            icc.lidIsOpen = false;
 	        }
 		}
     }
@@ -258,7 +287,6 @@ public class Ink : MonoBehaviour
 			j++;
 		}
 
-		
 		if(currIcc == null)
 			return;
 
@@ -287,7 +315,16 @@ public class Ink : MonoBehaviour
 	        }
 
 			currIcc.insertableCartridgeClone.SetActive(true);
-
+			
+			TrailRenderer[] _trails = currIcc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
+			if(_trails != null)
+				foreach(TrailRenderer _trail in _trails)
+				{
+					_trail.enabled = true;
+				}
+			else
+				Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+			
 			//Move the ink
 			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathSucc, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
@@ -301,6 +338,15 @@ public class Ink : MonoBehaviour
 			
 			currIcc.insertableCartridgeClone.SetActive(true);
 			
+			TrailRenderer[] _trails = currIcc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
+			if(_trails != null)
+				foreach(TrailRenderer _trail in _trails)
+				{
+					_trail.enabled = true;
+				}
+			else
+				Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+			
 			iTween.MoveTo(currIcc.insertableCartridgeClone, iTween.Hash("path", currIcc.pathFail, 
 						  	"easetype", _easeTypeSlide, "time", _inkMoveSpeed, 
 							"oncomplete", "InkFailed", "oncompletetarget", this.gameObject, "oncompleteparams", currIcc));	
@@ -313,8 +359,18 @@ public class Ink : MonoBehaviour
 		InstantiateParticles(_particles.complete, icc.cartridge.gameObject);
         InstantiateParticlesToWordPos(_particles.completeClick, icc.cartridge.gameObject);		
 		
+		TrailRenderer[] _trails = icc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
+			if(_trails != null)
+				foreach(TrailRenderer _trail in _trails)
+				{
+					_trail.enabled = false;
+				}
+			else
+				Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
+		
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
+		
 		
         _canSlide = true;
 		UnsubscribeInkPunch();
@@ -326,6 +382,15 @@ public class Ink : MonoBehaviour
 		InstantiateParticlesToWordPos(_particles.failed, icc.cartridge.gameObject);
 		//Play sound
         SoundManager.Effect_InGame_Task_Unmatched();
+		
+		TrailRenderer[] _trails = icc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
+			if(_trails != null)
+				foreach(TrailRenderer _trail in _trails)
+				{
+					_trail.enabled = false;
+				}
+			else
+				Debug.LogWarning(gameObject.name+" found no trailrenderer on paper prefab");
 		
 		icc.insertableCartridgeClone.transform.position = icc.insertableStartPos;
 		icc.insertableCartridgeClone.SetActive(false);
