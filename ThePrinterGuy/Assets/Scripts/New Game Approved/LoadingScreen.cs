@@ -144,6 +144,10 @@ public class LoadingScreen : MonoBehaviour
 		tempRotation.z = 0;
 		RotationPointLoadArrow.transform.rotation = tempRotation;
 		float difference = 0;
+		
+		TapToCont.gameObject.SetActive(true);
+		TapToCont.SetStringText("Loading");
+		TapToCont.LocalizeText();
 		//LW.setLoading(true);
         alphaFloat = 0.0f;
 		
@@ -196,8 +200,11 @@ public class LoadingScreen : MonoBehaviour
 			if(!_skipTap)
 			{
 				TapToCont.gameObject.SetActive(true);
+				TapToCont.SetStringText("TapToCont");
 				TapToCont.LocalizeText();
 			}
+			else
+				TapToCont.gameObject.GetComponent<GUIText>().text = "";
 			while(true)
 			{
 				if(_skipTap)
