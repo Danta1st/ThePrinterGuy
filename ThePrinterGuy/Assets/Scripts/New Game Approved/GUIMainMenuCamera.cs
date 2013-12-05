@@ -41,6 +41,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     GameObject _tutorialScaler;
     private Vector3 _tutorialTransformScale;
     private bool walkAnimationOver = false;
+	private bool _levelManagerIsReady = true;
 
     private Vector3 _guiCameraMoveAmount;
     private float _guiCameraDuration = 1.0f;
@@ -439,7 +440,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                         GameObject checkMark = _hit.collider.gameObject;
                         PlayerPrefs.SetString("Tutorial", "Answered");
                         int[] highScore = SaveGame.GetPlayerHighscores();
-
+						
                         for (int i = 0; i < 6; i++) {
                             highScore[i] = 0;
                         }
@@ -458,6 +459,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     {   //GameObject checkMark = _hit.collider.gameObject.transform.Find("TakeTutorialYes").gameObject;
 						_tutorialYes = true;
                         ScaleArrowUpAndThenTutorialQuestionDown(_hit.collider.gameObject);
+						_levelManagerIsReady = false;
                         Invoke("SwitchToJanitorFromMainMenu", 1f);
                     }
 
@@ -498,7 +500,7 @@ public class GUIMainMenuCamera : MonoBehaviour
 				}
                 else if(PlayerPrefs.GetString("Tutorial") == "Answered" && walkAnimationOver)
                 {
-					if(OnLevelManagerEvent != null)
+					if(OnLevelManagerEvent != null && _levelManagerIsReady)
 						OnLevelManagerEvent(_go, _screenPosition);
 				}
 				
@@ -584,10 +586,11 @@ public class GUIMainMenuCamera : MonoBehaviour
 		}
 		
     }
-
+	
     private void SwitchToJanitorFromMainMenu()
     {
         OnLevelManagerEvent(_levelManager.GetStageCharacters()[0], new Vector3(0,0,0));
+		_levelManagerIsReady = true;
     }
 
     private void ScaleArrowUpAndThenTutorialQuestionDown(GameObject checkMark)

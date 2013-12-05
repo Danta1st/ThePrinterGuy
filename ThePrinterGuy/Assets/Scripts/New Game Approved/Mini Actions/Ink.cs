@@ -356,9 +356,7 @@ public class Ink : MonoBehaviour
 	{
 		//Instantiate fail particles
 		InstantiateParticlesToWordPos(_particles.failed, icc.cartridge.gameObject);
-		//Play sound
-        SoundManager.Effect_InGame_Task_Unmatched();
-		
+
 		TrailRenderer[] _trails = icc.insertableCartridgeClone.GetComponentsInChildren<TrailRenderer>();
 			if(_trails != null)
 				foreach(TrailRenderer _trail in _trails)
