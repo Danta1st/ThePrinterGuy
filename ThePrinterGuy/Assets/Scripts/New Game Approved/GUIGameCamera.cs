@@ -449,6 +449,7 @@ public class GUIGameCamera : MonoBehaviour
 		_particleSystem.particleSystem.startColor = _particleColor;
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
+		_popupTextObject.GetComponent<TextMesh>().color = new Color(_particleColor.r,_particleColor.g,_particleColor.b, 1f);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
 		
 		iTween.MoveTo(_popupTextObject, iTween.Hash("position", _popupTextPos + new Vector3(0f,_moveLength,0f), 
