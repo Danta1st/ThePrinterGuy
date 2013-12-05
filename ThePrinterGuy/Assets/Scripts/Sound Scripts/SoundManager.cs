@@ -35,6 +35,7 @@ public class SoundManager : MonoBehaviour
     private static List<GenericSoundScript> _musicScripts = new List<GenericSoundScript>();
 
     private static GameObject _audioRelay;
+    private static ChimneySmoke _chimney;
     #endregion
 
     #region MonoBehavior
@@ -71,6 +72,8 @@ public class SoundManager : MonoBehaviour
         _voiceSounds = transform.FindChild("Voice").GetComponent<VoiceSounds>();
         _machineSounds = transform.FindChild("Machine").GetComponent<MachineSounds>();
         _cutSceneSounds = transform.FindChild("CutScene").GetComponent<CutsceneSounds>();
+
+
     }
 
     void Start()
@@ -112,9 +115,21 @@ public class SoundManager : MonoBehaviour
             StopAllSoundSources();
         }
 
-        if(!Application.isLoadingLevel)
+        if(!Application.isLoadingLevel && _hasReset)
         {
             _hasReset = false;
+
+            if((FindObjectOfType(typeof(ChimneySmoke)) as ChimneySmoke) != null)
+            {
+                _chimney = FindObjectOfType(typeof(ChimneySmoke)) as ChimneySmoke;
+
+                if(_allSoundOn)
+                    _chimney.gameObject.audio.mute = false;
+                else
+                {
+                    _chimney.gameObject.audio.mute = true;
+                }
+            }
         }
     }
     #endregion
@@ -655,9 +670,6 @@ public class SoundManager : MonoBehaviour
             _audioVolume[index] = gss.GetVolume();
             gss.SetVolume(0.0f);
         }
-
-//        FadeAllMusic();
-//        StopAllSoundEffects();
     }
 
     public static void StopAllSoundEffects()
@@ -676,16 +688,6 @@ public class SoundManager : MonoBehaviour
 
     public static void UnFadeAllMusic()
     {
-//        foreach(GenericSoundScript gss in _musicScripts)
-//        {
-//            gss.FadeVolume(_startMusicVolume, _fadeTime);
-//        }
-
-//        for(int i = 0; i < _musicScripts.Count; i++)
-//        {
-//            _musicScripts[i].FadeVolume(_musicVolume[i], _fadeTime);
-//        }
-
         _inGameSounds.FadeMusic(_fadeTime);
         _mainMenuSounds.FadeMusic(_fadeTime);
     }
@@ -695,6 +697,7 @@ public class SoundManager : MonoBehaviour
         if(_allSoundOn)
         {
             _allSoundOn = false;
+
             foreach(GenericSoundScript gss in _audioScripts)
             {
                 gss.audio.mute = true;
@@ -704,6 +707,7 @@ public class SoundManager : MonoBehaviour
         else if(!_allSoundOn)
         {
             _allSoundOn = true;
+
             foreach(GenericSoundScript gss in _audioScripts)
             {
                 gss.audio.mute = false;
