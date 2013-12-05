@@ -6,7 +6,6 @@ public class BpmSequencerItem : MonoBehaviour {
     #region SerializeField
     [SerializeField] private string _moduleName;
     [SerializeField] private Vector3 _scaleAmount;
-    [SerializeField] private iTween.EaseType _easeTypeMove = iTween.EaseType.easeInSine;
 	[SerializeField] Particles _particles;
 	[SerializeField] Textures _textures;	
     #endregion
@@ -244,7 +243,7 @@ public class BpmSequencerItem : MonoBehaviour {
 		
 		//Move the darn thing		
 		iTween.MoveTo(gameObject, iTween.Hash("position", _partialPosition, "time", moveTime,
-                                                    "easeType", _easeTypeMove));
+                                                    "easeType", iTween.EaseType.easeInSine));
 		//Increase step count!
 		_steps.stepsMoved++;
 	}
