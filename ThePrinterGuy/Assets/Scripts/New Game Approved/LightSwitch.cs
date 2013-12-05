@@ -82,25 +82,28 @@ public class LightSwitch : MonoBehaviour
  
     private void UpdateTexture()
     {
-        if(_allowedToPlay)
+        if(_on == false)
         {
-            if(_on == false)
+            if(_allowedToPlay)
             {
-                Debug.Log("Turn On");
                 SoundManager.Effect_UraniumRods_Light1();
-                renderer.material.mainTexture = _textureOn;
-                _on = true;
             }
-            else if(_on == true)
+
+            renderer.material.mainTexture = _textureOn;
+            _on = true;
+        }
+        else if(_on == true)
+        {
+            if(_allowedToPlay)
             {
-                Debug.Log("Turn Off");
                 SoundManager.Effect_UraniumRods_Light2();
-                renderer.material.mainTexture = _textureOff;
-                _on = false;
             }
+
+            renderer.material.mainTexture = _textureOff;
+            _on = false;
         }
     }
- 
+
     private enum BeatType
     {
         All3Beats,
