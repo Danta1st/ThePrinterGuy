@@ -3,28 +3,27 @@ using System.Collections;
 
 public class LocalizationKeywordText : MonoBehaviour {
 
-    [SerializeField]
-    private string _stringText = "";
-
-	// Use this for initialization
-	void Start ()
-    {
-
-	}
+    [SerializeField] private string _stringText = "";
 	
-	// Update is called once per frame
-	void Update ()
-    {
-	
-	}
-
     public void LocalizeText()
     {
-        gameObject.GetComponent<TextMesh>().text = LocalizationText.GetText(_stringText);
+		if(guiText != null)
+			guiText.text = LocalizationText.GetText(_stringText);
+		else
+        	gameObject.GetComponent<TextMesh>().text = LocalizationText.GetText(_stringText);
     }
 	
 	public void SetStringText(string LocaleText)
 	{
 		_stringText = LocaleText;
+	}
+	
+	public void setText(string text)
+	{
+		if(guiText != null)
+			guiText.text = text;
+		else
+			gameObject.GetComponent<TextMesh>().text = text;
+		
 	}
 }
