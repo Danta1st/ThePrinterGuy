@@ -41,6 +41,7 @@ public class GUIGameCamera : MonoBehaviour
     private string _currentTaskType;
     private GameObject resumeButtom;
 	private bool _isPaused = false;
+    private GameObject _progressBar;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -224,6 +225,7 @@ public class GUIGameCamera : MonoBehaviour
     {
         SoundManager.UnFadeAllMusic();
         SoundManager.TurnOnVoice();
+        //_progressBar = gameObject.transform.FindChild("Bar").gameObject;
 
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
@@ -571,6 +573,7 @@ public class GUIGameCamera : MonoBehaviour
         EnableGUIElement("IngameMenu");
 		EnableGUIElement("StatsOverview");
 		EnableGUIElement("BGIngameMenu");
+        //_progressBar.renderer.material.SetFloat("_Progress", 0.5f);
 		
 		_pauseCurrScore.GetComponent<TextMesh>().text = GetScore().ToString();
 		int[] highScores = SaveGame.GetPlayerHighscores();
@@ -582,6 +585,8 @@ public class GUIGameCamera : MonoBehaviour
 		{
 			_pauseHighScore.GetComponent<TextMesh>().text = "0";
 		}
+
+
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
 						"time", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
