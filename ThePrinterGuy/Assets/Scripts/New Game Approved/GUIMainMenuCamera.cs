@@ -244,6 +244,7 @@ public class GUIMainMenuCamera : MonoBehaviour
             {
                 _guiObject.SetActive(false);
             }*/
+			
             if(_guiObject.name == "MenuButtonLeft")
             {
 				_menuButtonLeft = _guiObject;
@@ -387,14 +388,13 @@ public class GUIMainMenuCamera : MonoBehaviour
                         {
                             OnCreditScreen();
 							
+							LoadingScreen.Load(ConstantValues.GetCreditsIndex, true);
 							
 							//Do fancy 'User Pressed a button' Animation
-							SetTexture(hitObject, _menuTextures.creditsPressed);
-							PunchButton(hitObject);
+//							SetTexture(hitObject, _menuTextures.creditsPressed);
+//							PunchButton(hitObject);
 							//Reset
-                            Invoke("DisableGUIElementAll", _punchTime);
-							
-							credits.SetCreditsRunning(true);
+                            //Invoke("DisableGUIElementAll", _punchTime);
                         }
                     }
                     else if(_hit.collider.gameObject.name == "MenuButtonLeft")
