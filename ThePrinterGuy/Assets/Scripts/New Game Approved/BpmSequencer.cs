@@ -96,6 +96,7 @@ public class BpmSequencer : MonoBehaviour {
         _highscoreScreenLoader.SetInkTotalNodes(countInkTotalNodes());
         _highscoreScreenLoader.SetPaperTotalNodes(countPaperTotalNodes());
         _highscoreScreenLoader.SetBarometerTotalNodes(countBarometerTotalNodes());
+        _gGameCam.SetTotalNodes(countTotalNodes());
 	}
 		
 	void Update()

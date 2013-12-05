@@ -41,6 +41,9 @@ public class GUIGameCamera : MonoBehaviour
     private string _currentTaskType;
     private GameObject resumeButtom;
 	private bool _isPaused = false;
+    private GameObject _progressBar;
+    private int _totalNodes;
+    private float _currentSpawnedNodes;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -111,6 +114,7 @@ public class GUIGameCamera : MonoBehaviour
         BpmSequencer.OnBarometerNode += SetCurrentTaskTypeToBarometer;
 		
 		BpmSequencer.OnCreateNewNode += InstantiateNodeAction;
+        BpmSequencer.OnCreateNewNode += increaseSpawnedNodeCount;
 		BpmSequencer.OnLastNode += LastNode;
 		
         ScoreManager.OnTaskCompleted += CheckZone;
@@ -129,6 +133,7 @@ public class GUIGameCamera : MonoBehaviour
         BpmSequencer.OnBarometerNode -= SetCurrentTaskTypeToBarometer;
 		
 		BpmSequencer.OnCreateNewNode -= InstantiateNodeAction;
+        BpmSequencer.OnCreateNewNode -= increaseSpawnedNodeCount;
 		BpmSequencer.OnLastNode -= LastNode;
 		
         ScoreManager.OnTaskCompleted -= CheckZone;
@@ -224,6 +229,7 @@ public class GUIGameCamera : MonoBehaviour
     {
         SoundManager.UnFadeAllMusic();
         SoundManager.TurnOnVoice();
+        _progressBar = gameObject.transform.FindChild("StatsOverview").transform.FindChild("ProgressBar").transform.FindChild("Bar").gameObject;
 
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
@@ -571,6 +577,8 @@ public class GUIGameCamera : MonoBehaviour
         EnableGUIElement("IngameMenu");
 		EnableGUIElement("StatsOverview");
 		EnableGUIElement("BGIngameMenu");
+        float progressionInProcent = _currentSpawnedNodes / _totalNodes;
+        _progressBar.renderer.material.SetFloat("_Progress", progressionInProcent);
 		
 		_pauseCurrScore.GetComponent<TextMesh>().text = GetScore().ToString();
 		int[] highScores = SaveGame.GetPlayerHighscores();
@@ -582,6 +590,8 @@ public class GUIGameCamera : MonoBehaviour
 		{
 			_pauseHighScore.GetComponent<TextMesh>().text = "0";
 		}
+
+
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
 						"time", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
@@ -589,6 +599,16 @@ public class GUIGameCamera : MonoBehaviour
         Time.timeScale = 0.0f;
         AudioListener.pause = true;
         SoundManager.StoreVolumes();
+    }
+
+    public void SetTotalNodes(int totalNodes)
+    {
+        _totalNodes = totalNodes;
+    }
+
+    public void increaseSpawnedNodeCount(string notUsed)
+    {
+        _currentSpawnedNodes++;
     }
 
     private void CloseIngameMenu()
