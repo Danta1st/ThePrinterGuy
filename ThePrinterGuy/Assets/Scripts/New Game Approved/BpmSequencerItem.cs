@@ -441,7 +441,7 @@ public class BpmSequencerItem : MonoBehaviour {
 
 	private void KillFailed()
 	{
-        InstantiateParticles(_particles.failed, gameObject);
+        //InstantiateParticles(_particles.failed, gameObject);
 		Destroy(gameObject);
 		_guiGameCameraScript.SetPauseElement(null);
 	}
@@ -449,7 +449,7 @@ public class BpmSequencerItem : MonoBehaviour {
     private void KillComplete()
  {
      //TODO: implement kill particle task
-        InstantiateParticles(_particles.completed, gameObject);
+        //InstantiateParticles(_particles.completed, gameObject);
         Destroy(gameObject);
  }
 
