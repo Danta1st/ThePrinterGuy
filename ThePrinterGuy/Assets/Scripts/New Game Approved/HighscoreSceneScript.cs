@@ -341,7 +341,7 @@ public class HighscoreSceneScript : MonoBehaviour
         _waitTime = true;
 
         GestureManager.OnTap -= CheckCollision;
-        LoadingScreen.Load(_levelCompleted + 2, true);
+        LoadingScreen.Load(_levelCompleted + ConstantValues.GetLevel1, true);
     }
 	
 	private void LaunchEndScreen()
@@ -486,8 +486,7 @@ public class HighscoreSceneScript : MonoBehaviour
 
             yield return new WaitForSeconds(1.65f);
 
-            //ToDo: Insert correct sound here, currently placeholder...
-            SoundManager.CutScene_Effect_Coffee_01();
+            SoundManager.CutScene_Effect_Stamp();
 
             _firedTextGameObject.SetActive(true);
         }
