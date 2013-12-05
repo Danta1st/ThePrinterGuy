@@ -203,6 +203,8 @@ public class LoadingScreen : MonoBehaviour
 				TapToCont.SetStringText("TapToCont");
 				TapToCont.LocalizeText();
 			}
+			else
+				TapToCont.gameObject.GetComponent<GUIText>().text = "";
 			while(true)
 			{
 				if(_skipTap)
