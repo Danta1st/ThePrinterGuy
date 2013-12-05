@@ -190,7 +190,6 @@ public class LoadingScreen : MonoBehaviour
 		
 			while(Async.progress < 0.9f) // Load is actually done at 90% when allowSceneActivation = false
 			{
-				Debug.Log(Async.progress);
 				tempRotation.z = (Async.progress + 0.1f) * 180 * -1;
 				RotationPointLoadArrow.transform.rotation = tempRotation;
 				yield return new WaitForEndOfFrame();

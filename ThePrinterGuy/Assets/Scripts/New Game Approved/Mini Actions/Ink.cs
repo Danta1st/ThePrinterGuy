@@ -269,6 +269,8 @@ public class Ink : MonoBehaviour
 			
 			//Unsubsribe gesture
 			GestureManager.OnSwipeRight -= InsertCartridge;
+			BpmSequencer.OnPaperNode -= InkReset;
+			BpmSequencer.OnUraniumRodNode -= InkReset;
 			
 			//Stop Smoke
 			if(_particleSmoke != null)
