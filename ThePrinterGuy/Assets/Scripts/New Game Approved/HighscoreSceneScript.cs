@@ -390,7 +390,7 @@ public class HighscoreSceneScript : MonoBehaviour
 			highScores[_levelCompleted] = _levelScore;
 
             //Unlocking next level!
-            if(highScores[_levelCompleted + 1] == -1)
+            if((_levelCompleted + ConstantValues.GetLevel1) != ConstantValues.GetLastLevel && highScores[_levelCompleted + 1] == -1)
                  highScores[_levelCompleted + 1] = 0;
 
 			_levelHighscore = _levelScore;
