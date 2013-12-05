@@ -521,6 +521,7 @@ public class HighscoreSceneScript : MonoBehaviour
         }
 		else if(!_isWin)
         {
+			_progressBar.renderer.material.SetFloat("_Progress", 0f);
             yield return new WaitForSeconds(0.25f);
 
 
