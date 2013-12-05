@@ -14,6 +14,9 @@ public class GUIGameCamera : MonoBehaviour
 	//Feedback prefabs for rewards (points)
 	[SerializeField] private GameObject _popupPrefab;
 	[SerializeField] private GameObject _popupTextPrefab;
+	[SerializeField] private Color _popupSmallColor = new Color();
+	[SerializeField] private Color _popupMediumColor = new Color();
+	[SerializeField] private Color _popupBigColor = new Color();
 	//Task Prefabs for the sequencer
     [SerializeField] private GameObject _inkPrefab;
     [SerializeField] private GameObject _paperPrefab;
@@ -402,18 +405,18 @@ public class GUIGameCamera : MonoBehaviour
 	public void PopupTextSmall(string _str)
 	{
 		//PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
-		PopupText(_str, new Color(1f ,0.7f ,0f, 0f));
+		PopupText(_str, _popupSmallColor);
 	}
 	
 	public void PopupTextMedium(string _str)
 	{
 		//PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
-		PopupText(_str, new Color(1f ,0.7f ,0f, 1f));
+		PopupText(_str, _popupMediumColor);
 	}
 	
 	public void PopupTextBig(string _str)
 	{
-		PopupText(_str, new Color(1f ,0.7f ,0f, 1f));
+		PopupText(_str, _popupBigColor);
 		//PopupText(_str);
 	}
 	
