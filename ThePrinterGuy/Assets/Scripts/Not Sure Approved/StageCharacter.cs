@@ -39,7 +39,7 @@ public class StageCharacter : MonoBehaviour
     public void Unlock()
     {
         highscores = SaveGame.GetPlayerHighscores();
-        if(highscores[4] >= 0)
+        if(highscores[4] > 0)
             _isUnlocked = true;
 
         if(_isUnlocked)
