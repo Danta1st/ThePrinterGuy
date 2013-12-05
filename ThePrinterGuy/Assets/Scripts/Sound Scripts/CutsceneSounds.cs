@@ -6,6 +6,7 @@ public class CutsceneSounds : MonoBehaviour
     [SerializeField] private float _beginPitch = 1.0f;
     [SerializeField] private float _endPitch = 1.5f;
     [SerializeField] private float _pitchTime = 2.0f;
+    [SerializeField] private float _stampVolume = 1.0f;
 
     #region Privates
     private GenericSoundScript _music;
@@ -47,6 +48,14 @@ public class CutsceneSounds : MonoBehaviour
     public void CutScene_Random_Coffee()
     {
         _soundFx.PlayClip(Random.Range(1, 2));
+    }
+
+    public void CutScene_Effect_Stamp()
+    {
+        float tmpVolume = _soundFx.GetVolume();
+        _soundFx.SetVolume(_stampVolume);
+        _soundFx.PlayClip(3);
+        _soundFx.SetVolume(tmpVolume);
     }
 
     public GenericSoundScript GetMusicScript()
