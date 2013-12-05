@@ -136,10 +136,15 @@ public class LoadingScreen : MonoBehaviour
 	private IEnumerator FadeToLevel(float aFadeOutTime, float aFadeInTime, Color aColor)
     {
 		//AdjustCameraSize();
-		LoadingWheel LW = GameObject.Find("LoadingEffect").GetComponent<LoadingWheel>();
+		//LoadingWheel LW = GameObject.Find("LoadingEffect").GetComponent<LoadingWheel>();
 		LocalizationKeywordText TapToCont = GameObject.Find("ContinueText").GetComponent<LocalizationKeywordText>();
 		LocalizationKeywordText TipText = GameObject.Find("TipText").GetComponent<LocalizationKeywordText>();
-		LW.setLoading(true);
+		GameObject RotationPointLoadArrow = GameObject.Find("Arrow");
+		Quaternion tempRotation = RotationPointLoadArrow.transform.rotation;
+		tempRotation.z = 0;
+		RotationPointLoadArrow.transform.rotation = tempRotation;
+		float difference = 0;
+		//LW.setLoading(true);
         alphaFloat = 0.0f;
 		
 		string temp = "";
@@ -181,10 +186,13 @@ public class LoadingScreen : MonoBehaviour
 		
 			while(Async.progress < 0.9f) // Load is actually done at 90% when allowSceneActivation = false
 			{
+				Debug.Log(Async.progress);
+				tempRotation.z = (Async.progress + 0.1f) * 180 * -1;
+				RotationPointLoadArrow.transform.rotation = tempRotation;
 				yield return new WaitForEndOfFrame();
 			}
 			
-			LW.setLoading(false);
+			//LW.setLoading(false);
 			if(!_skipTap)
 			{
 				TapToCont.gameObject.SetActive(true);
