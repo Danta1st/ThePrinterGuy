@@ -3689,11 +3689,11 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 461934188}
-  m_LocalRotation: {x: 0, y: -.0263460632, z: 0, w: .999652922}
-  m_LocalPosition: {x: -.713993073, y: -6.83158016, z: 3.71453285}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 25.365593, y: -426.905273, z: 50}
+  m_LocalScale: {x: 100, y: 100, z: 1}
   m_Children: []
-  m_Father: {fileID: 1546464197}
+  m_Father: {fileID: 1809546426}
 --- !u!114 &461934190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3705,7 +3705,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f672f7e0d3fee5541af57835ebc1caff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stringText: 
+  _stringText: BossSelectedText
 --- !u!102 &461934191
 TextMesh:
   serializedVersion: 3
@@ -7282,7 +7282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f672f7e0d3fee5541af57835ebc1caff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stringText: 
+  _stringText: JanitorSelectedText
 --- !u!102 &967407186
 TextMesh:
   serializedVersion: 3
@@ -7328,11 +7328,11 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 967407184}
-  m_LocalRotation: {x: 0, y: -.0263460632, z: 0, w: .999652922}
-  m_LocalPosition: {x: -5.88565302, y: -6.83154392, z: 3.77050591}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 25.365593, y: -426.905273, z: 50}
+  m_LocalScale: {x: 100, y: 100, z: 1}
   m_Children: []
-  m_Father: {fileID: 1546464197}
+  m_Father: {fileID: 1809546426}
 --- !u!1 &972480726
 GameObject:
   m_ObjectHideFlags: 0
@@ -8857,6 +8857,14 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
+      propertyPath: _guiList.Array.size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
+      propertyPath: _textList.Array.size
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -8949,6 +8957,30 @@ Prefab:
       propertyPath: _subtitleCheck
       value: 
       objectReference: {fileID: 1161196440}
+    - target: {fileID: 11400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
+      propertyPath: _textList.Array.data[1]
+      value: 
+      objectReference: {fileID: 461934188}
+    - target: {fileID: 11400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
+      propertyPath: _textList.Array.data[2]
+      value: 
+      objectReference: {fileID: 967407184}
+    - target: {fileID: 11400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
+      propertyPath: _textList.Array.data[3]
+      value: 
+      objectReference: {fileID: 2083674353}
+    - target: {fileID: 11400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
+      propertyPath: _guiList.Array.data[7]
+      value: 
+      objectReference: {fileID: 461934188}
+    - target: {fileID: 11400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
+      propertyPath: _guiList.Array.data[8]
+      value: 
+      objectReference: {fileID: 967407184}
+    - target: {fileID: 11400000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
+      propertyPath: _guiList.Array.data[9]
+      value: 
+      objectReference: {fileID: 2083674353}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9a49bc5e39af7834baee616ea6d9c8d6, type: 2}
   m_RootGameObject: {fileID: 2031099947}
@@ -12606,35 +12638,6 @@ Transform:
   - {fileID: 179940040}
   - {fileID: 133102391}
   m_Father: {fileID: 610886965}
---- !u!1 &1546464196
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 1546464197}
-  m_Layer: 0
-  m_Name: 3DWorldTexts
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1546464197
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1546464196}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.63198853, y: 7.40447998, z: -2.79199219}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 461934189}
-  - {fileID: 967407188}
-  - {fileID: 2083674354}
-  m_Father: {fileID: 0}
 --- !u!1 &1547675969
 GameObject:
   m_ObjectHideFlags: 0
@@ -14904,6 +14907,9 @@ Transform:
   - {fileID: 594448044}
   - {fileID: 1084689273}
   - {fileID: 990105211}
+  - {fileID: 461934189}
+  - {fileID: 967407188}
+  - {fileID: 2083674354}
   m_Father: {fileID: 2031099948}
 --- !u!114 &1809546427
 MonoBehaviour:
@@ -14965,8 +14971,14 @@ MonoBehaviour:
   - {fileID: 134405681}
   - {fileID: 1084689272}
   - {fileID: 990105210}
+  - {fileID: 461934188}
+  - {fileID: 967407184}
+  - {fileID: 2083674353}
   _textList:
   - {fileID: 273755883}
+  - {fileID: 461934188}
+  - {fileID: 967407184}
+  - {fileID: 2083674353}
   _easeTypeCamera: 21
   _menuTextures:
     options: {fileID: 2800000, guid: 72ddb34f46305c14782b9b12e5387a3f, type: 3}
@@ -17158,11 +17170,11 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2083674353}
-  m_LocalRotation: {x: 0, y: -.0263460632, z: 0, w: .999652922}
-  m_LocalPosition: {x: 2.80754757, y: -6.49402046, z: 5.21045876}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 25.3639832, y: -501.657227, z: 50}
+  m_LocalScale: {x: 100, y: 100, z: 1}
   m_Children: []
-  m_Father: {fileID: 1546464197}
+  m_Father: {fileID: 1809546426}
 --- !u!114 &2083674355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17174,7 +17186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f672f7e0d3fee5541af57835ebc1caff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stringText: 
+  _stringText: SelectCharText
 --- !u!102 &2083674356
 TextMesh:
   serializedVersion: 3
