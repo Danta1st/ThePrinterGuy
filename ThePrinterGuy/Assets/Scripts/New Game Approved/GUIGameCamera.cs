@@ -402,27 +402,28 @@ public class GUIGameCamera : MonoBehaviour
 	public void PopupTextSmall(string _str)
 	{
 		//PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
-		PopupText(_str);
+		PopupText(_str, new Color(1f ,0.7f ,0f, 1f));
 	}
 	
 	public void PopupTextMedium(string _str)
 	{
 		//PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
-		PopupText(_str);
+		PopupText(_str, new Color(1f ,0.7f ,0f, 1f));
 	}
 	
 	public void PopupTextBig(string _str)
 	{
-		//PopupText(_str, 10f, 100f, new Color(1f ,0.7f ,0f, 1f), new Color(1f ,0.7f ,0f, 0.7f));
-		PopupText(_str);
+		PopupText(_str, new Color(1f ,0.7f ,0f, 1f));
+		//PopupText(_str);
 	}
 	
-	public void PopupText(string _str)
+	public void PopupText(string _str, Color _particleColor)
 	{
-		StartCoroutine(InstantiatePopup(_str));
+		StartCoroutine(InstantiatePopup(_str, _particleColor));
+		
 	}
 	
-	private IEnumerator InstantiatePopup(string _str)
+	private IEnumerator InstantiatePopup(string _str, Color _particleColor)
 	{	
 		
 		//float _xPopupPos = UnityEngine.Random.Range(_offsetValues.startX,_offsetValues.endX);
@@ -439,6 +440,10 @@ public class GUIGameCamera : MonoBehaviour
 		
 		GameObject _popupObject = (GameObject)Instantiate(_popupPrefab, _popupTextPos , Quaternion.identity);
 		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
+		
+		ParticleSystem _particleSystem = _popupObject.GetComponentInChildren<ParticleSystem>();
+		
+		_particleSystem.particleSystem.startColor = _particleColor;
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
