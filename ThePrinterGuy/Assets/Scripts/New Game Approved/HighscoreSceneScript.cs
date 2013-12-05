@@ -529,8 +529,7 @@ public class HighscoreSceneScript : MonoBehaviour
 
             yield return new WaitForSeconds(1.65f);
 
-            //ToDo: Insert correct sound here, currently placeholder...
-            SoundManager.CutScene_Effect_Coffee_01();
+            SoundManager.CutScene_Effect_Stamp();
 
             _firedTextGameObject.SetActive(true);
         }
