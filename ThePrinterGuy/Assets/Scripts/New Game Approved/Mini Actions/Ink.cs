@@ -403,6 +403,8 @@ public class Ink : MonoBehaviour
 		for(int i = 0; i < _machineInks.Count; i++)
 		{
 			icc = _machineInks[i];
+			if(icc.cartridge == null)
+				continue;
 			icc.cartridge.gameObject.SetActive(true);
 			
 			//Instantiate particles
