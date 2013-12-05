@@ -540,6 +540,11 @@ public class HighscoreSceneScript : MonoBehaviour
     {
         SoundManager.StopPointSound();
     }
+
+    public int GetCompletedLevel()
+    {
+        return _levelCompleted;
+    }
 	
 	[System.Serializable]
 	public class ButtonTextures

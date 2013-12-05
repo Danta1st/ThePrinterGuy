@@ -24,7 +24,7 @@ public class Dialogue : MonoBehaviour
     private List<string[]> happyCollection;
     private List<string[]> angryCollection;
     private List<string[]> endCollection;
-    //1 AARGH, 2 næve, 3 smoke
+    private HighscoreSceneScript highscoreSceneScript;
 
     void Awake()
     {
@@ -52,6 +52,7 @@ public class Dialogue : MonoBehaviour
         endCollection.Add(new string[] {"You're Fired","12","EndScreenFired"});
 
         _characterAnimation = _character.GetComponent<Animation>();
+        highscoreSceneScript = gameObject.transform.root.GetComponent<HighscoreSceneScript>();
     }
 
     #region Delegates & Events
@@ -216,15 +217,27 @@ public class Dialogue : MonoBehaviour
 
     private void WinCharacter(float score)
     {
-        endTuple = endCollection[0];
-        _characterAnimation.CrossFade(endTuple[0]);
-        PlaySound(endTuple[1]);
-        if(OnDialogueStart != null)
+        int currentLevel = highscoreSceneScript.GetCompletedLevel() + ConstantValues.GetLevel1;
+        int lastLevel = ConstantValues.GetLastLevel;
+        if(currentLevel == lastLevel)
         {
-            OnDialogueStart(endTuple[2]);
+            SoundManager.StopIngameMusic();
+            SoundManager.Music_Menu_Main();
+            _characterAnimation.CrossFade("Dance");
+            _characterAnimation.CrossFadeQueued("Idle");
         }
-        _characterAnimation.CrossFadeQueued("Idle");
-        StartCoroutine(CheckIfAnimationStopped(endTuple[0]));
+        else
+        {
+            endTuple = endCollection[0];
+            _characterAnimation.CrossFade(endTuple[0]);
+            PlaySound(endTuple[1]);
+            if(OnDialogueStart != null)
+            {
+                OnDialogueStart(endTuple[2]);
+            }
+            _characterAnimation.CrossFadeQueued("Idle");
+            StartCoroutine(CheckIfAnimationStopped(endTuple[0]));
+        }
     }
 
     private void LoseCharacter(float score)

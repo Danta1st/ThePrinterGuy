@@ -662,6 +662,11 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public static void StopIngameMusic()
+    {
+        _inGameSounds.StopIngameMusic();
+    }
+
     public static void StoreVolumes()
     {
         foreach(GenericSoundScript gss in _audioScripts)

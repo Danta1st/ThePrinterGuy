@@ -56,6 +56,11 @@ public class InGameSounds : MonoBehaviour
         _music.FadeVolume(_endVolume, fadeTime);
     }
 
+    public void StopIngameMusic()
+    {
+        _music.SetVolume(0.0f);
+    }
+
     public GenericSoundScript GetEffectScript()
     {
         return _soundFx;
