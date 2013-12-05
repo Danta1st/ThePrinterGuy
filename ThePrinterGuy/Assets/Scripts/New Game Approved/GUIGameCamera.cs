@@ -523,6 +523,7 @@ public class GUIGameCamera : MonoBehaviour
                     }
                     else if(_hit.collider.gameObject.name == "ResumeButton")
                     {
+						GestureManager.OnTap -= CheckCollision;
 						SetTexture(hitObject, _buttonTextures.resumePressed);
 						//punch and close menu
 						PunchButtonOnComplete(hitObject, "CloseIngameMenu");
@@ -531,7 +532,7 @@ public class GUIGameCamera : MonoBehaviour
                     {
                         if(OnRestart != null)
                             OnRestart();
-						
+						GestureManager.OnTap -= CheckCollision;
 						SetTexture(hitObject, _buttonTextures.restartPressed);						
 						//Punch & restart level
 						PunchButtonOnComplete(hitObject, "RestartLevel");
@@ -541,6 +542,7 @@ public class GUIGameCamera : MonoBehaviour
                         if(OnToMainMenuFromLevel != null)
                             OnToMainMenuFromLevel();
 						
+						GestureManager.OnTap -= CheckCollision;
 						SetTexture(hitObject, _buttonTextures.homePressed);	
 						//Punch and quit level
 						PunchButtonOnComplete(hitObject, "QuitLevel");
@@ -621,6 +623,7 @@ public class GUIGameCamera : MonoBehaviour
 
     private void UnPauseTimeScale()
     {
+		GestureManager.OnTap += CheckCollision;
         Time.timeScale = 1.0f;
 		_isPaused = false;
         AudioListener.pause = false;

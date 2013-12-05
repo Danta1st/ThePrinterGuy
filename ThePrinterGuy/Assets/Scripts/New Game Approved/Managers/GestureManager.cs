@@ -140,16 +140,33 @@ public class GestureManager : MonoBehaviour
 		Screen.autorotateToPortraitUpsideDown = false;
 		Screen.orientation = ScreenOrientation.AutoRotation;
 	}
-
+	
+    private int screenshotCount = 0;
     void Update()
-    {
+    {		 
+		
+        // take screenshot when pressing F9
+        if (Input.GetKeyDown("f9"))
+        {        
+            string screenshotFilename;
+            do
+            {
+                screenshotCount++;
+                screenshotFilename = "screenshot" + screenshotCount + ".png";
+ 
+            } while (System.IO.File.Exists(screenshotFilename));
+ 
+            Application.CaptureScreenshot(screenshotFilename,5);
+			
+			Debug.Log("Capture a screenshot");
+        }
+		
+		
         //Universal Quit Button
         if(Input.GetKey(KeyCode.Escape))
         {
             Application.Quit();
         }
-
-
 
     #if UNITY_ANDROID
         UpdateTouchBeginGameObject();
