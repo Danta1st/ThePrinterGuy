@@ -32,6 +32,9 @@ public class GUIMainMenuCamera : MonoBehaviour
 	private GameObject _creditsButton;
 	private GameObject _menuButtonLeft;
 	private GameObject _menuButtonRight;
+	private GameObject _janitorText;
+	private GameObject _bossText;
+	private GameObject _selectionText;
     private LevelManager _levelManager;
     GameObject _tutorialScaler;
     private Vector3 _tutorialTransformScale;
@@ -576,6 +579,19 @@ public class GUIMainMenuCamera : MonoBehaviour
             	_text.GetComponent<LocalizationKeywordText>().LocalizeText();
 			else
 				Debug.LogWarning(gameObject.name+" found no text in _textList");
+			
+			if(_text.name == "BossSelectionText")
+			{
+				_janitorText = _text;
+			}
+			if(_text.name == "JanitorSelectedText")
+			{
+				_bossText = _text;
+			}
+			if(_text.name == "SelectCharText")
+			{
+				_selectionText = _text;
+			}
         }		
     }
 	
