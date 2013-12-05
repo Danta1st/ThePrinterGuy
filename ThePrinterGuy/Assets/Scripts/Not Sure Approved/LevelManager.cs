@@ -62,9 +62,7 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         #region Camera Positioning Objects
-        _camPointDefault = new GameObject();
-        _camPointDefault.name = "CamLookPosDefault";
-        _camPointDefault.transform.position = new Vector3(0, 3, 14);
+        _camPointDefault = GameObject.Find("CamLookPosDefault");
 
         _lookTarget = new GameObject();
         _lookTarget.name = "LookTarget";
