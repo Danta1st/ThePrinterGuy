@@ -88,7 +88,8 @@ public class HighscoreSceneScript : MonoBehaviour
 		
 		_scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
-
+		
+		nextLevelButton = GameObject.Find("NextButton");
 		
 		foreach(GameObject _textObject in _textList)
         {
