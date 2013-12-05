@@ -152,7 +152,7 @@ public class GestureManager : MonoBehaviour
             do
             {
                 screenshotCount++;
-                screenshotFilename = "screenshot" + screenshotCount + ".png";
+                screenshotFilename = "printerGuyScreenshot" + screenshotCount + ".png";
  
             } while (System.IO.File.Exists(screenshotFilename));
  
