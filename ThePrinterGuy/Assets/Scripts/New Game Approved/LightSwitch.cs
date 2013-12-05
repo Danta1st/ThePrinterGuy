@@ -80,11 +80,15 @@ public class LightSwitch : MonoBehaviour {
 	{
 		if(_on == false)
 		{
+            Debug.Log("Turn On");
+            SoundManager.Effect_UraniumRods_Light1();
 			renderer.material.mainTexture = _textureOn;
 			_on = true;
 		}
 		else if(_on == true)
 		{
+            Debug.Log("Turn Off");
+            SoundManager.Effect_UraniumRods_Light2();
 			renderer.material.mainTexture = _textureOff;
 			_on = false;
 		}
