@@ -50,8 +50,8 @@ public class Tutorial : MonoBehaviour {
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
 
-        _scaleMultiplierX = Screen.width / 1920f;
-        _scaleMultiplierY = Screen.height / 1200f;
+        _scaleMultiplierX = Screen.width / 1280f;
+        _scaleMultiplierY = Screen.height / 800f;
         AdjustCameraSize();
         //--------------------------------------------------//
 
@@ -128,8 +128,8 @@ public class Tutorial : MonoBehaviour {
 	
     private void AdjustCameraSize()
     {
-        float _aspectRatio = 1920f / 1200f;
-        float _startCameraSize = 600f;
+        float _aspectRatio = 1280f / 800f;
+        float _startCameraSize = 400f;
         float _newCameraSize = _guiCamera.orthographicSize * _scaleMultiplierY;
 
         foreach(GameObject _guiObject in _guiList)

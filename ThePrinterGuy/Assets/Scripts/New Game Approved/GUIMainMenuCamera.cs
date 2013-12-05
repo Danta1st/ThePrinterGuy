@@ -67,7 +67,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     void OnEnable()
     {
         GestureManager.OnTap += CheckCollision;
-        LevelManager.OnCreditsView += ChangeToCredits;
+        //LevelManager.OnCreditsView += ChangeToCredits;
         LevelManager.OnMainView += ChangeToMain;
         LevelManager.OnOptionsView += ChangeToOptions;
     }
@@ -75,7 +75,7 @@ public class GUIMainMenuCamera : MonoBehaviour
     void OnDisable()
     {
         GestureManager.OnTap -= CheckCollision;
-        LevelManager.OnCreditsView -= ChangeToCredits;
+        //LevelManager.OnCreditsView -= ChangeToCredits;
         LevelManager.OnMainView -= ChangeToMain;
         LevelManager.OnOptionsView -= ChangeToOptions;
     }
@@ -212,7 +212,6 @@ public class GUIMainMenuCamera : MonoBehaviour
 		lvlManager = gameObject.GetComponent<LevelManager>();
         _guiCamera = GameObject.FindGameObjectWithTag("GUICamera").camera;
         transform.position = _guiCamera.transform.position;
-		credits = GameObject.Find("Television").GetComponent<Credits>();
 
         _scaleMultiplierX = Screen.width / 1920f;
         _scaleMultiplierY = Screen.height / 1200f;
@@ -244,6 +243,7 @@ public class GUIMainMenuCamera : MonoBehaviour
             {
                 _guiObject.SetActive(false);
             }*/
+			
             if(_guiObject.name == "MenuButtonLeft")
             {
 				_menuButtonLeft = _guiObject;
@@ -383,19 +383,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if(_hit.collider.gameObject.name == "CreditsButton")
                     {
-                        if(OnCreditScreen != null)
-                        {
-                            OnCreditScreen();
-							
-							
-							//Do fancy 'User Pressed a button' Animation
-							SetTexture(hitObject, _menuTextures.creditsPressed);
-							PunchButton(hitObject);
-							//Reset
-                            Invoke("DisableGUIElementAll", _punchTime);
-							
-							credits.SetCreditsRunning(true);
-                        }
+						LoadingScreen.Load(ConstantValues.GetCreditsIndex, true);                        
                     }
                     else if(_hit.collider.gameObject.name == "MenuButtonLeft")
                     {
@@ -415,7 +403,6 @@ public class GUIMainMenuCamera : MonoBehaviour
                         if(OnMainScreen != null)
                         {
                             OnMainScreen();
-							credits.SetCreditsRunning(false);
                             DisableGUIElementAll();
                         }
                     }

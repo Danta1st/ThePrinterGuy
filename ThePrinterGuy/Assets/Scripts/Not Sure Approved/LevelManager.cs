@@ -78,7 +78,7 @@ public class LevelManager : MonoBehaviour
 
     void OnEnable()
     {
-        GUIMainMenuCamera.OnCreditScreen += ChangeViewToCredits;
+        //GUIMainMenuCamera.OnCreditScreen += ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen += ChangeViewToMain;
         GUIMainMenuCamera.OnOptionsScreen += ChangeViewToOptions;
 		GUIMainMenuCamera.OnLevelManagerEvent += SelectStage;
@@ -86,7 +86,7 @@ public class LevelManager : MonoBehaviour
 
     void OnDisable()
     {
-        GUIMainMenuCamera.OnCreditScreen -= ChangeViewToCredits;
+        //GUIMainMenuCamera.OnCreditScreen -= ChangeViewToCredits;
         GUIMainMenuCamera.OnMainScreen -= ChangeViewToMain;
         GUIMainMenuCamera.OnOptionsScreen -= ChangeViewToOptions;
 		GUIMainMenuCamera.OnLevelManagerEvent -= SelectStage;
