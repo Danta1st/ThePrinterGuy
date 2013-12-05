@@ -180,8 +180,6 @@ public class HighscoreSceneScript : MonoBehaviour
 		
 		Application.LoadLevel(ConstantValues.GetHighScoreScreenLevel);
 		
-		
-		
         while (alphaFloat>0.0f)
         {
             yield return new WaitForEndOfFrame();
@@ -271,7 +269,8 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	private void RestartLevel()
 	{
-		StartCoroutine(PlayNotFired());
+//		StartCoroutine(PlayNotFired());
+		LoadingScreen.Load(_levelCompleted + ConstantValues.GetLevel1, true);
 	}
 	
 	private void NextLevel()
