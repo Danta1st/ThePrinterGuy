@@ -66,6 +66,16 @@ public class RodSounds : MonoBehaviour
     {
         _soundFx.PlayClip(4);
     }
+
+    public void Effect_UraniumRods_Light1()
+    {
+        _soundFx.PlayClip(5);
+    }
+
+    public void Effect_UraniumRods_Light2()
+    {
+        _soundFx.PlayClip(6);
+    }
     #endregion
 
     public GenericSoundScript GetEffectScript()
