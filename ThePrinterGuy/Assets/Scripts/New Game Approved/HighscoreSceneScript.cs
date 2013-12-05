@@ -341,7 +341,7 @@ public class HighscoreSceneScript : MonoBehaviour
         _waitTime = true;
 
         GestureManager.OnTap -= CheckCollision;
-        LoadingScreen.Load(_levelCompleted + 2, true);
+        LoadingScreen.Load(_levelCompleted + ConstantValues.GetLevel1, true);
     }
 	
 	private void LaunchEndScreen()
@@ -420,54 +420,8 @@ public class HighscoreSceneScript : MonoBehaviour
             //<--------------------***------------------->
              float _percent;
         
-             Transform go = GameObject.Find("PerfectFailedTexts").transform;
              GameObject clueNoteStartPos = GameObject.Find ("ClueNoteStartPos");
              _ClueNoteGameObject.transform.position = clueNoteStartPos.transform.position;
-             float temp = 0;
-             temp = (_targetScore._totalNodesHit +_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes;
-             
-             GameObject.Find("TotalPrints").renderer.material.SetFloat("_Progress", temp);
-        
-             foreach(Transform child in go)
-             {
-                 switch(child.name)
-                 {
-                 case "FailedInkText":
-                     child.GetComponent<TextMesh>().text = _targetScore.failedInk + "/" + _targetScore._totalInkNodes;
-                     break;
-                 case "FailedPaperText":
-                     child.GetComponent<TextMesh>().text = _targetScore.failedPaper + "/" + _targetScore._totalPaperNodes;
-                     break;
-                 case "FailedRodsText":
-                     child.GetComponent<TextMesh>().text = _targetScore.failedUran + "/" + _targetScore._totalUranNodes;
-                     break;
-                 case "FailedText":
-                     temp = _targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran;
-                     child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
-                     break;
-                 case "FailedPercentsText":
-                     temp = System.Convert.ToInt32(((_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes) * 100);
-                     child.GetComponent<TextMesh>().text = temp + "%";
-                     break;
-                 case "PerfectsInkText":
-                     child.GetComponent<TextMesh>().text = _targetScore.perfectInk + "/" + _targetScore._totalInkNodes;
-                     break;
-                 case "PerfectsPaperText":
-                     child.GetComponent<TextMesh>().text = _targetScore.perfectPaper + "/" + _targetScore._totalPaperNodes;
-                     break;
-                 case "PerfectsRodsText":
-                     child.GetComponent<TextMesh>().text = _targetScore.perfectUran + "/" + _targetScore._totalUranNodes;
-                     break;
-                 case "PerfectsText":
-                     temp = _targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran;
-                     child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
-                     break;
-                 case "PerfectsPercentText":
-                     temp = System.Convert.ToInt32(((_targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran) / _targetScore._totalNodes) * 100);
-                     child.GetComponent<TextMesh>().text = temp + "%";
-                     break;
-                 }
-             }
         
              SoundManager.CutScene_Effect_Point();
              iTween.ValueTo(gameObject, iTween.Hash("from", 0, "to", _levelScore, "time", 2, "easetype", iTween.EaseType.easeInCubic, "onupdate", "updateCountingScoreValue",
@@ -476,7 +430,8 @@ public class HighscoreSceneScript : MonoBehaviour
              GameObject scoreBotPoint = GameObject.Find ("ScoreBotPoint");
              GameObject scoreText = GameObject.Find ("ScoreText");
              GameObject clueNoteMoveTo = GameObject.Find ("ClueNoteMoveTo");
-
+			
+			 UpdatePlayerStatistics();
         
              float difference;
              Vector3 newPos;
@@ -521,6 +476,7 @@ public class HighscoreSceneScript : MonoBehaviour
         }
 		else if(!_isWin)
         {
+			UpdatePlayerStatistics();
 			_progressBar.renderer.material.SetFloat("_Progress", 0f);
             yield return new WaitForSeconds(0.25f);
 
@@ -530,11 +486,61 @@ public class HighscoreSceneScript : MonoBehaviour
 
             yield return new WaitForSeconds(1.65f);
 
-            //ToDo: Insert correct sound here, currently placeholder...
-            SoundManager.CutScene_Effect_Coffee_01();
+            SoundManager.CutScene_Effect_Stamp();
 
             _firedTextGameObject.SetActive(true);
         }
+	}
+	
+	private void UpdatePlayerStatistics()
+	{
+		Transform go = GameObject.Find("PerfectFailedTexts").transform;
+		float temp = 0;
+        temp = (_targetScore._totalNodesHit +_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes;
+             
+		GameObject.Find("TotalPrints").renderer.material.SetFloat("_Progress", temp);
+		
+		foreach(Transform child in go)
+		{
+		 switch(child.name)
+		 {
+		 case "FailedInkText":
+		     child.GetComponent<TextMesh>().text = _targetScore.failedInk + "/" + _targetScore._totalInkNodes;
+		     break;
+		 case "FailedPaperText":
+		     child.GetComponent<TextMesh>().text = _targetScore.failedPaper + "/" + _targetScore._totalPaperNodes;
+		     break;
+		 case "FailedRodsText":
+		     child.GetComponent<TextMesh>().text = _targetScore.failedUran + "/" + _targetScore._totalUranNodes;
+		     break;
+		 case "FailedText":
+		     temp = _targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran;
+		     child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
+		     break;
+		 case "FailedPercentsText":
+		     temp = System.Convert.ToInt32(((_targetScore.failedInk + _targetScore.failedPaper + _targetScore.failedUran) / _targetScore._totalNodes) * 100);
+		     child.GetComponent<TextMesh>().text = temp + "%";
+		     break;
+		 case "PerfectsInkText":
+		     child.GetComponent<TextMesh>().text = _targetScore.perfectInk + "/" + _targetScore._totalInkNodes;
+		     break;
+		 case "PerfectsPaperText":
+		     child.GetComponent<TextMesh>().text = _targetScore.perfectPaper + "/" + _targetScore._totalPaperNodes;
+		     break;
+		 case "PerfectsRodsText":
+		     child.GetComponent<TextMesh>().text = _targetScore.perfectUran + "/" + _targetScore._totalUranNodes;
+		     break;
+		 case "PerfectsText":
+		     temp = _targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran;
+		     child.GetComponent<TextMesh>().text = temp + "/" + _targetScore._totalNodes;
+		     break;
+		 case "PerfectsPercentText":
+		     temp = System.Convert.ToInt32(((_targetScore.perfectInk + _targetScore.perfectPaper + _targetScore.perfectUran) / _targetScore._totalNodes) * 100);
+		     child.GetComponent<TextMesh>().text = temp + "%";
+		     break;
+		 }
+		}
+             
 	}
 	
 	private void updateCountingScoreValue(int score)
