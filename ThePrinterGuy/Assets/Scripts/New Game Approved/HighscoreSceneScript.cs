@@ -89,17 +89,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		_scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
 
-		foreach(GameObject _guiObject in _guiList)
-        {
-            if(_guiObject.name == "IngameMenu")
-            {
-                nextLevelButton = _guiObject.transform.FindChild("NextButton").gameObject;
-                if((_levelCompleted + 1) % 5 == 0 || _levelCompleted == ConstantValues.GetLastLevel || !_isPrepared)
-                {
-                    nextLevelButton.SetActive(false);
-                }
-            }
-        }
+		
 		foreach(GameObject _textObject in _textList)
         {
             if(_textObject.name == "ScoreText")
@@ -275,33 +265,32 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	private void NextLevel()
 	{
-		if(_levelCompleted == ConstantValues.GetLastLevel)
+		if(_levelCompleted == ConstantValues.GetLastLevel || ((_levelCompleted + 1) % 5 == 0))
         {
             LoadingScreen.Load(ConstantValues.GetStartScene);
         }
         else
         {
             string correspondingLevelName = null;
-            int indexOfNextLevel = _levelCompleted + ConstantValues.GetLevel1;
-            switch (indexOfNextLevel) {
-                case 2:
-                    correspondingLevelName = "Stage1Cinematics";
-                    break;
-                case 3:
-                    correspondingLevelName = "Tutorial2";
-                    break;
-                case 4:
-                    correspondingLevelName = "Tutorial3";
-                    break;
-                case 5:
-                    correspondingLevelName = "Tutorial4";
-                    break;
-                case 6:
-                    correspondingLevelName = "Tutorial5";
-                    break;
-                default:
-                    break;
-            }
+            int indexOfNextLevel = _levelCompleted + ConstantValues.GetLevel1 + 1;
+			
+			if(indexOfNextLevel == (ConstantValues.GetLevel1 + 1))
+			{
+				correspondingLevelName = "Tutorial2";
+			}
+			else if(indexOfNextLevel == (ConstantValues.GetLevel1 + 2))
+			{
+				correspondingLevelName = "Tutorial3";
+			}
+			else if(indexOfNextLevel == (ConstantValues.GetLevel1 + 3))
+			{
+				correspondingLevelName = "Tutorial4";
+			}
+			else if(indexOfNextLevel == (ConstantValues.GetLevel1 + 4))
+			{
+				correspondingLevelName = "Tutorial5";
+			}
+			
             if(correspondingLevelName == null)
             {
                 LoadingScreen.Load(indexOfNextLevel, true);
