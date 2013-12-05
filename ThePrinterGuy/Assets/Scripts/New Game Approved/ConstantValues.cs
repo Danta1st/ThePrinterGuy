@@ -27,4 +27,8 @@ public static class ConstantValues
 	{
 		return loadedLevel - GetLevel1;
 	}
+	public static int GetCreditsIndex
+	{
+		get { return 20; }
+	}	
 }
