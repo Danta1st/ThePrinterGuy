@@ -370,4 +370,14 @@ public class VoiceSounds : MonoBehaviour
     {
         return _voiceBoss;
     }
+
+    public GenericSoundScript GetEffectScriptEnd()
+    {
+        return _voiceBossEnd;
+    }
+
+    public GenericSoundScript GetEffectScriptMumbling()
+    {
+        return _voiceBossMumbling;
+    }
 }

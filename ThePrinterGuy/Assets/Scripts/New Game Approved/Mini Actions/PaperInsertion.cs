@@ -10,6 +10,8 @@ public class PaperInsertion : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeOutBounce;
 	[SerializeField] private GameObject _target;
     [SerializeField] private List<PaperLightSet> _paperlightset;
+	[SerializeField] private Vector3 _idlePunchScaleAmount = new Vector3(0.2f, 0.2f, 0.2f);
+
 	//Particles - New
 	[SerializeField] private Particles _particles;
 	[SerializeField] private GameObject[] _pathSuccess;
@@ -256,7 +258,7 @@ public class PaperInsertion : MonoBehaviour
 	private void PunchPaper()
 	{
 		if(_tempPunch != null)
-			iTween.PunchScale(_paperlightset[_tempPunch].paper, new Vector3(0.2f, 0.2f, 0.2f), _punchTime);
+			iTween.PunchScale(_paperlightset[_tempPunch].paper, _idlePunchScaleAmount, _punchTime);
 	}
 	
     private void TurnOffLight(int i)
