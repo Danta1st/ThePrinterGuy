@@ -341,7 +341,7 @@ public class HighscoreSceneScript : MonoBehaviour
         _waitTime = true;
 
         GestureManager.OnTap -= CheckCollision;
-        LoadingScreen.Load(_levelCompleted + 2, true);
+        LoadingScreen.Load(_levelCompleted + ConstantValues.GetLevel1, true);
     }
 	
 	private void LaunchEndScreen()
