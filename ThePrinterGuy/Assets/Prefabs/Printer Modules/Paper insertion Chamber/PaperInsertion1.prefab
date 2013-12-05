@@ -729,9 +729,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400090}
-  - 95: {fileID: 9500000}
+  - 111: {fileID: 11100000}
   m_Layer: 0
-  m_Name: Chimney
+  m_Name: chimney01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1281,8 +1281,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100090}
-  m_LocalRotation: {x: 0, y: -0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.55067635, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400088}
@@ -1725,18 +1725,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.9853754, y: .379201859, z: 2.9676106}
   m_Center: {x: 2.98023295e-08, y: 0, z: -1.96695328e-06}
---- !u!95 &9500000
-Animator:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100090}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: df43bd87cd04cd8479d72bda162755e7, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_ApplyRootMotion: 1
-  m_AnimatePhysics: 0
 --- !u!96 &9600000
 TrailRenderer:
   m_ObjectHideFlags: 1
@@ -1854,6 +1842,24 @@ TrailRenderer:
       rgba: 16777215
   m_MinVertexDistance: .100000001
   m_Autodestruct: 0
+--- !u!111 &11100000
+Animation:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100090}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: df43bd87cd04cd8479d72bda162755e7, type: 3}
+  m_Animations:
+  - {fileID: 7400000, guid: df43bd87cd04cd8479d72bda162755e7, type: 3}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 1
+  m_UserAABB:
+    m_Center: {x: -.931177855, y: 5.15245724, z: -7.98218822}
+    m_Extent: {x: .523728013, y: 1.37257862, z: 1.37335873}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1961,7 +1967,7 @@ SkinnedMeshRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: e3a7298635bc3694f8c024c8cab9a34a, type: 2}
+  - {fileID: 2100000, guid: d386a2da0b83d1947a2cf01944c2787e, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -1977,8 +1983,8 @@ SkinnedMeshRenderer:
   - {fileID: 400076}
   m_RootBone: {fileID: 400082}
   m_AABB:
-    m_Center: {x: -.762942255, y: .885566831, z: .0103321075}
-    m_Extent: {x: 1.27563953, y: 1.5306114, z: .631525993}
+    m_Center: {x: -1.07311082, y: .893962383, z: .0103321075}
+    m_Extent: {x: 1.58580923, y: 1.67845511, z: .631525993}
   m_DirtyAABB: 0
 --- !u!198 &19800000
 ParticleSystem:
