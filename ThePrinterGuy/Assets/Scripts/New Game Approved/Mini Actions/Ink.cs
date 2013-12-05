@@ -11,7 +11,7 @@ public class Ink : MonoBehaviour
     [SerializeField] private iTween.EaseType _easeTypeClose = iTween.EaseType.easeInExpo;
 	//Particles
 	[SerializeField] private Particles _particles;
-	[SerializeField] private Vector3 _idlePunchScaleAmount = new Vector3(0.5f, 0.5f, 0.5f);
+	[SerializeField] private Vector3 _idlePunchRotationAmount = new Vector3(25.0f, 0.0f, 0.0f);
 
     #endregion
 	
@@ -214,24 +214,17 @@ public class Ink : MonoBehaviour
 	{
 		_tempPunch = itemNumber;
 		
-		BeatController.OnBeat4th1 += PunchInk;
-		BeatController.OnBeat4th2 += PunchInk;
-		BeatController.OnBeat4th3 += PunchInk;
-		BeatController.OnBeat4th4 += PunchInk;
-		
+		BeatController.OnAll4Beats += PunchInk;		
 	}
 	private void UnsubscribeInkPunch()
 	{	
-		BeatController.OnBeat4th1 -= PunchInk;
-		BeatController.OnBeat4th2 -= PunchInk;
-		BeatController.OnBeat4th3 -= PunchInk;
-		BeatController.OnBeat4th4 -= PunchInk;
+		BeatController.OnAll4Beats -= PunchInk;
 	}
 		
 	private void PunchInk()
 	{
 		if(_tempPunch != null)
-			iTween.PunchScale(_machineInks[_tempPunch].insertableCartridge.gameObject, _idlePunchScaleAmount, _punchTime);
+			iTween.PunchRotation(_machineInks[_tempPunch].insertableCartridge.gameObject, _idlePunchRotationAmount, _punchTime);
 	}
 	
 	#endregion
