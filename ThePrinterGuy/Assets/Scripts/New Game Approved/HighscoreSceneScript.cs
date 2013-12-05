@@ -89,17 +89,7 @@ public class HighscoreSceneScript : MonoBehaviour
 		_scaleMultiplierX = Screen.width / 1920f;
 		_scaleMultiplierY = Screen.height / 1200f;
 
-		foreach(GameObject _guiObject in _guiList)
-        {
-            if(_guiObject.name == "IngameMenu")
-            {
-                nextLevelButton = _guiObject.transform.FindChild("NextButton").gameObject;
-                if((_levelCompleted + 1) % 5 == 0 || _levelCompleted == ConstantValues.GetLastLevel || !_isPrepared)
-                {
-                    nextLevelButton.SetActive(false);
-                }
-            }
-        }
+		
 		foreach(GameObject _textObject in _textList)
         {
             if(_textObject.name == "ScoreText")
@@ -275,7 +265,7 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	private void NextLevel()
 	{
-		if(_levelCompleted == ConstantValues.GetLastLevel)
+		if(_levelCompleted == ConstantValues.GetLastLevel || ((_levelCompleted + 1) % 5 == 0))
         {
             LoadingScreen.Load(ConstantValues.GetStartScene);
         }
