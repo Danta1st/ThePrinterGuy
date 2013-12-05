@@ -14,6 +14,9 @@ public class GUIGameCamera : MonoBehaviour
 	//Feedback prefabs for rewards (points)
 	[SerializeField] private GameObject _popupPrefab;
 	[SerializeField] private GameObject _popupTextPrefab;
+	[SerializeField] private Color _popupSmallColor = new Color();
+	[SerializeField] private Color _popupMediumColor = new Color();
+	[SerializeField] private Color _popupBigColor = new Color();
 	//Task Prefabs for the sequencer
     [SerializeField] private GameObject _inkPrefab;
     [SerializeField] private GameObject _paperPrefab;
@@ -41,6 +44,9 @@ public class GUIGameCamera : MonoBehaviour
     private string _currentTaskType;
     private GameObject resumeButtom;
 	private bool _isPaused = false;
+    private GameObject _progressBar;
+    private int _totalNodes;
+    private float _currentSpawnedNodes;
 
     private List<GameObject> _guiSaveList = new List<GameObject>();
 
@@ -111,6 +117,7 @@ public class GUIGameCamera : MonoBehaviour
         BpmSequencer.OnBarometerNode += SetCurrentTaskTypeToBarometer;
 		
 		BpmSequencer.OnCreateNewNode += InstantiateNodeAction;
+        BpmSequencer.OnCreateNewNode += increaseSpawnedNodeCount;
 		BpmSequencer.OnLastNode += LastNode;
 		
         ScoreManager.OnTaskCompleted += CheckZone;
@@ -129,6 +136,7 @@ public class GUIGameCamera : MonoBehaviour
         BpmSequencer.OnBarometerNode -= SetCurrentTaskTypeToBarometer;
 		
 		BpmSequencer.OnCreateNewNode -= InstantiateNodeAction;
+        BpmSequencer.OnCreateNewNode -= increaseSpawnedNodeCount;
 		BpmSequencer.OnLastNode -= LastNode;
 		
         ScoreManager.OnTaskCompleted -= CheckZone;
@@ -224,6 +232,7 @@ public class GUIGameCamera : MonoBehaviour
     {
         SoundManager.UnFadeAllMusic();
         SoundManager.TurnOnVoice();
+        _progressBar = gameObject.transform.FindChild("StatsOverview").transform.FindChild("ProgressBar").transform.FindChild("Bar").gameObject;
 
         //GUI Camera and rescale of GUI elements.
         //--------------------------------------------------//
@@ -396,27 +405,28 @@ public class GUIGameCamera : MonoBehaviour
 	public void PopupTextSmall(string _str)
 	{
 		//PopupText(_str, 4f, 10f, new Color(0.82f,0.55f,0.3f, 1f), new Color(0.82f,0.55f,0.3f, 0.5f));
-		PopupText(_str);
+		PopupText(_str, _popupSmallColor);
 	}
 	
 	public void PopupTextMedium(string _str)
 	{
 		//PopupText(_str, 6f, 50f, new Color(0.7f,0.8f,0.84f, 1f), new Color(0.7f,0.8f,0.84f, 0.5f));
-		PopupText(_str);
+		PopupText(_str, _popupMediumColor);
 	}
 	
 	public void PopupTextBig(string _str)
 	{
-		//PopupText(_str, 10f, 100f, new Color(1f ,0.7f ,0f, 1f), new Color(1f ,0.7f ,0f, 0.7f));
-		PopupText(_str);
+		PopupText(_str, _popupBigColor);
+		//PopupText(_str);
 	}
 	
-	public void PopupText(string _str)
+	public void PopupText(string _str, Color _particleColor)
 	{
-		StartCoroutine(InstantiatePopup(_str));
+		StartCoroutine(InstantiatePopup(_str, _particleColor));
+		
 	}
 	
-	private IEnumerator InstantiatePopup(string _str)
+	private IEnumerator InstantiatePopup(string _str, Color _particleColor)
 	{	
 		
 		//float _xPopupPos = UnityEngine.Random.Range(_offsetValues.startX,_offsetValues.endX);
@@ -433,6 +443,10 @@ public class GUIGameCamera : MonoBehaviour
 		
 		GameObject _popupObject = (GameObject)Instantiate(_popupPrefab, _popupTextPos , Quaternion.identity);
 		GameObject _popupTextObject = (GameObject)Instantiate(_popupTextPrefab, _popupTextPos , Quaternion.identity);
+		
+		ParticleSystem _particleSystem = _popupObject.GetComponentInChildren<ParticleSystem>();
+		
+		_particleSystem.particleSystem.startColor = _particleColor;
 		
 		_popupTextObject.GetComponent<TextMesh>().fontSize = Mathf.CeilToInt(_fontSize * _scaleMultiplierY);
 		_popupTextObject.GetComponent<TextMesh>().text = _str;
@@ -571,6 +585,8 @@ public class GUIGameCamera : MonoBehaviour
         EnableGUIElement("IngameMenu");
 		EnableGUIElement("StatsOverview");
 		EnableGUIElement("BGIngameMenu");
+        float progressionInProcent = _currentSpawnedNodes / _totalNodes;
+        _progressBar.renderer.material.SetFloat("_Progress", progressionInProcent);
 		
 		_pauseCurrScore.GetComponent<TextMesh>().text = GetScore().ToString();
 		int[] highScores = SaveGame.GetPlayerHighscores();
@@ -582,6 +598,8 @@ public class GUIGameCamera : MonoBehaviour
 		{
 			_pauseHighScore.GetComponent<TextMesh>().text = "0";
 		}
+
+
 		
 		iTween.MoveAdd(_statsOverviewObject, iTween.Hash("amount", _statsOverviewMoveAmount,
 						"time", _statsOverviewDuration, "easetype", _easeTypeIngameMenu, "ignoretimescale", true));
@@ -589,6 +607,16 @@ public class GUIGameCamera : MonoBehaviour
         Time.timeScale = 0.0f;
         AudioListener.pause = true;
         SoundManager.StoreVolumes();
+    }
+
+    public void SetTotalNodes(int totalNodes)
+    {
+        _totalNodes = totalNodes;
+    }
+
+    public void increaseSpawnedNodeCount(string notUsed)
+    {
+        _currentSpawnedNodes++;
     }
 
     private void CloseIngameMenu()
