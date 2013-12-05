@@ -60,7 +60,7 @@ public class BeatController : MonoBehaviour {
             SoundManager.Music_InGame_Main();
             _hasPlayed = true;
         }
-		if(_beatCounter +1 <= 240)
+		if(_beatCounter +1 < 240)
 			_beatCounter++;
 		else
 			_beatCounter = 0;

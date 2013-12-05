@@ -23,6 +23,8 @@ public class LevelManager : MonoBehaviour
     private GameObject _creditsLookTarget;
     private GameObject _optionsLookTarget;
     private GameObject _camPointDefault;
+	private GUIMainMenuCamera _guiMainCam;
+	private int forwardMoves = 0;
     private bool _isZoomed = false;
     private GameObject _camStartPos;
     private bool _camAtRest = true;
@@ -47,7 +49,9 @@ public class LevelManager : MonoBehaviour
     {
         _creditsLookTarget = GameObject.Find("Television");
         _optionsLookTarget = GameObject.Find("OptionButtons");
-        if(!PlayerPrefs.HasKey("highscoresAsString")){
+		_guiMainCam = GameObject.Find("GUI List").GetComponent<GUIMainMenuCamera>();
+        if(!PlayerPrefs.HasKey("highscoresAsString"))
+		{
             SaveGame.ResetPlayerData();
         }
 
@@ -182,6 +186,7 @@ public class LevelManager : MonoBehaviour
 				{
 					CameraFocusOnStage(go);
 					BeginMoveForwardAnimation(go);
+					
 	
 					BeginMoveBackAnimation(_selectedStageChar);
 					_selectedStageChar = go;
@@ -257,6 +262,7 @@ public class LevelManager : MonoBehaviour
     void BeginMoveForwardAnimation(GameObject go)
     {
 		if(go != null) {
+			forwardMoves++;
 			GUIMainMenuCamera.OnLevelManagerEvent -= SelectStage;
 	        Vector3 tmpPos = go.transform.position;
 	        tmpPos.z = _charUnlockedDistance;
@@ -266,6 +272,15 @@ public class LevelManager : MonoBehaviour
 
 	        Animation characterAnimation = go.GetComponentInChildren<Animation>();
 	        characterAnimation.CrossFade("Selection");
+			
+			if(go.name == "stage1Char")
+			{
+				_guiMainCam.ActivateJanitorSelected();
+			}
+			else if(go.name == "stage2Char")
+			{
+				_guiMainCam.ActivateBossSelected();
+			}
 		}
     }
 
@@ -326,6 +341,14 @@ public class LevelManager : MonoBehaviour
     void BeginMoveBackAnimation(GameObject go)
     {
         if(go != null) {
+			forwardMoves--;
+			
+			// Fixes a problem where switching between bosses caused wrong texts because of call-order
+			if(forwardMoves == 0)
+			{
+				_guiMainCam.ActivateSelectChar();
+			}
+			
 			Vector3 tmpPos = go.transform.position;
 	        tmpPos.z = _charLockedDistance;
 	
@@ -334,7 +357,7 @@ public class LevelManager : MonoBehaviour
             Animation characterAnimation = go.GetComponentInChildren<Animation>();
             characterAnimation.CrossFade("SelectionBack");
             characterAnimation.CrossFadeQueued("Idle");
-
+			
 	        LevelBoxesDisappear(go);
 		}
     }

@@ -27,11 +27,16 @@ public class GUIMainMenuCamera : MonoBehaviour
     private bool _isGUI = true;
     private bool _canTouch = true;
 	private bool _isOnStartScreen = true;
+	private bool _tutorialYes = false;
+	private bool _inMainView = false;
 	private Credits credits;
 	private GameObject _optionsButton;
 	private GameObject _creditsButton;
 	private GameObject _menuButtonLeft;
 	private GameObject _menuButtonRight;
+	private GameObject _janitorText;
+	private GameObject _bossText;
+	private GameObject _selectionText;
     private LevelManager _levelManager;
     GameObject _tutorialScaler;
     private Vector3 _tutorialTransformScale;
@@ -262,8 +267,8 @@ public class GUIMainMenuCamera : MonoBehaviour
         //--------------------------------------------------//
 
         EnableGUICamera();
-        SwitchToMainMenu();
 		UpdateText();
+        SwitchToMainMenu();
         _tutorialTransformScale = _tutorialScaler.transform.localScale;
         _tutorialScaler.transform.localScale = new Vector3(0,0,0);
 
@@ -366,6 +371,8 @@ public class GUIMainMenuCamera : MonoBehaviour
                         {
                             OnOptionsScreen();
 							
+							DeactivateAllSelectionText();
+							
 							//Do fancy 'User Pressed a button' Animation
 							SetTexture(hitObject, _menuTextures.optionsPressed);
 							PunchButton(hitObject);
@@ -449,6 +456,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if (_hit.collider.gameObject.name == "TakeTutorialYes")
                     {   //GameObject checkMark = _hit.collider.gameObject.transform.Find("TakeTutorialYes").gameObject;
+						_tutorialYes = true;
                         ScaleArrowUpAndThenTutorialQuestionDown(_hit.collider.gameObject);
                         Invoke("SwitchToJanitorFromMainMenu", 1f);
                     }
@@ -486,6 +494,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                                                     "looktime", 3,
                                                     "oncomplete", "CheckForTutorial",
                                                     "oncompletetarget", gameObject));
+					_inMainView = true;
 				}
                 else if(PlayerPrefs.GetString("Tutorial") == "Answered" && walkAnimationOver)
                 {
@@ -532,6 +541,8 @@ public class GUIMainMenuCamera : MonoBehaviour
     {
         DisableGUIElementAll();
         EnableGUIElement("OptionsButton");
+		ActivateSelectChar();
+		
         //EnableGUIElement("CreditsButton");
     }
 
@@ -561,7 +572,17 @@ public class GUIMainMenuCamera : MonoBehaviour
 	        {
 	            go.collider.enabled = true;
 	        }
+			_inMainView = true;
 		}
+		if(!_tutorialYes && _inMainView)
+		{
+			ActivateSelectChar();
+		}
+		else if(_tutorialYes && _inMainView)
+		{
+			ActivateJanitorSelected();
+		}
+		
     }
 
     private void SwitchToJanitorFromMainMenu()
@@ -587,6 +608,20 @@ public class GUIMainMenuCamera : MonoBehaviour
             	_text.GetComponent<LocalizationKeywordText>().LocalizeText();
 			else
 				Debug.LogWarning(gameObject.name+" found no text in _textList");
+			
+			
+			if(_text.name == "BossSelectedText")
+			{
+				_bossText = _text;
+			}
+			if(_text.name == "JanitorSelectedText")
+			{
+				_janitorText = _text;
+			}
+			if(_text.name == "SelectCharText")
+			{
+				_selectionText = _text;
+			}
         }		
     }
 	
@@ -626,6 +661,34 @@ public class GUIMainMenuCamera : MonoBehaviour
 	private void SetTexture(GameObject go, Texture2D texture)
 	{
 		go.renderer.material.mainTexture = texture;
+	}
+	
+	public void ActivateSelectChar()
+	{
+		_janitorText.SetActive(false);
+		_bossText.SetActive(false);
+		_selectionText.SetActive(true);
+		iTween.PunchScale(_selectionText, new Vector3(8f, 8f, 8f), 0.4f);
+	}
+	public void ActivateBossSelected()
+	{
+		_janitorText.SetActive(false);
+		_bossText.SetActive(true);
+		_selectionText.SetActive(false);
+		iTween.PunchScale(_bossText, new Vector3(8f, 8f, 8f), 0.4f);
+	}
+	public void ActivateJanitorSelected()
+	{
+		_janitorText.SetActive(true);
+		_bossText.SetActive(false);
+		_selectionText.SetActive(false);
+		iTween.PunchScale(_janitorText, new Vector3(8f, 8f, 8f), 0.4f);
+	}
+	public void DeactivateAllSelectionText()
+	{
+		_janitorText.SetActive(false);
+		_bossText.SetActive(false);
+		_selectionText.SetActive(false);
 	}
     #endregion
 	
