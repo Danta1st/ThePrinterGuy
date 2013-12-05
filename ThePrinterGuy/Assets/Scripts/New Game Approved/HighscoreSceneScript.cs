@@ -12,7 +12,9 @@ public class HighscoreSceneScript : MonoBehaviour
 	
 	[SerializeField] private ParticleSystem _particle;
 	[SerializeField] private GameObject[] _textList;
-	
+	//Pressed and Non-pressed icon textures
+	[SerializeField] private ButtonTextures _buttonTextures;
+
 	public static class _targetScore 
 	{
 		public static float starScoreOne;
@@ -237,63 +239,99 @@ public class HighscoreSceneScript : MonoBehaviour
 
         if(Physics.Raycast(_ray, out _hit, 100, _layerMaskGUI.value))
         {
+			var hitObject = _hit.collider.gameObject;
             if(_hit.collider.gameObject.layer == LayerMask.NameToLayer("GUI"))
             {
                 if(_hit.collider.gameObject.name == "RestartButton")
                 {
-                    StartCoroutine(PlayNotFired());
+					GestureManager.OnTap -= CheckCollision;
+					
+					SetTexture(hitObject, _buttonTextures.restartPressed);						
+					//Punch & restart level
+					PunchButtonOnComplete(hitObject, "RestartLevel");                    
                 }
                 else if(_hit.collider.gameObject.name == "QuitButton")
                 {
                     GestureManager.OnTap -= CheckCollision;
-					LoadingScreen.Load(ConstantValues.GetStartScene, false);
+					
+					SetTexture(hitObject, _buttonTextures.homePressed);	
+					//Punch and quit level
+					PunchButtonOnComplete(hitObject, "QuitLevel");					
                 }
 				else if(_hit.collider.gameObject.name == "NextButton")
 				{
-                    if(_levelCompleted == ConstantValues.GetLastLevel)
-                    {
-                        GestureManager.OnTap -= CheckCollision;
-                        LoadingScreen.Load(ConstantValues.GetStartScene);
-                    }
-                    else
-                    {
-                        GestureManager.OnTap -= CheckCollision;
-
-                        string correspondingLevelName = null;
-                        int indexOfNextLevel = _levelCompleted + 3;
-                        switch (indexOfNextLevel) {
-                            case 2:
-                                correspondingLevelName = "Stage1Cinematics";
-                                break;
-                            case 3:
-                                correspondingLevelName = "Tutorial2";
-                                break;
-                            case 4:
-                                correspondingLevelName = "Tutorial3";
-                                break;
-                            case 5:
-                                correspondingLevelName = "Tutorial4";
-                                break;
-                            case 6:
-                                correspondingLevelName = "Tutorial5";
-                                break;
-                            default:
-                                break;
-                        }
-                        if(correspondingLevelName == null)
-                        {
-                            LoadingScreen.Load(indexOfNextLevel, true);
-                        }
-                        else
-                        {
-                            LoadingScreen.Load(correspondingLevelName, true);
-                        }
-                    }
+					GestureManager.OnTap -= CheckCollision;
+					SetTexture(hitObject, _buttonTextures.playPressed);	
+					//Punch and quit level
+					PunchButtonOnComplete(hitObject, "NextLevel");
 				}
             }
         }
     }
-
+	
+	private void RestartLevel()
+	{
+		StartCoroutine(PlayNotFired());
+	}
+	
+	private void NextLevel()
+	{
+		if(_levelCompleted == ConstantValues.GetLastLevel)
+        {
+            LoadingScreen.Load(ConstantValues.GetStartScene);
+        }
+        else
+        {
+            string correspondingLevelName = null;
+            int indexOfNextLevel = _levelCompleted + ConstantValues.GetLevel1;
+            switch (indexOfNextLevel) {
+                case 2:
+                    correspondingLevelName = "Stage1Cinematics";
+                    break;
+                case 3:
+                    correspondingLevelName = "Tutorial2";
+                    break;
+                case 4:
+                    correspondingLevelName = "Tutorial3";
+                    break;
+                case 5:
+                    correspondingLevelName = "Tutorial4";
+                    break;
+                case 6:
+                    correspondingLevelName = "Tutorial5";
+                    break;
+                default:
+                    break;
+            }
+            if(correspondingLevelName == null)
+            {
+                LoadingScreen.Load(indexOfNextLevel, true);
+            }
+            else
+            {
+                LoadingScreen.Load(correspondingLevelName, true);
+            }
+		}
+	}
+	
+	private void QuitLevel()
+	{
+		LoadingScreen.Load(ConstantValues.GetStartScene, false);
+	}
+	
+	private float _punchTime = 0.4f;
+	private void PunchButtonOnComplete(GameObject button, string onCompleteMethod)
+	{		
+		var scale = new Vector3(35f, 35f, 35f);
+		iTween.PunchScale(button, iTween.Hash("amount", scale, "time", _punchTime, "ignoretimescale", true,
+												"oncomplete", onCompleteMethod, "oncompletetarget", this.gameObject));
+	}
+	
+	private void SetTexture(GameObject go, Texture2D texture)
+	{
+		go.renderer.material.mainTexture = texture;
+	}
+	
     IEnumerator PlayNotFired()
     {
         SoundManager.Voice_Boss_EndScene_NotFired1();
@@ -507,4 +545,17 @@ public class HighscoreSceneScript : MonoBehaviour
     {
         SoundManager.StopPointSound();
     }
+	
+	[System.Serializable]
+	public class ButtonTextures
+	{
+		public Texture2D play;
+		public Texture2D playPressed;
+		public Texture2D restart;
+		public Texture2D restartPressed;
+		public Texture2D home;
+		public Texture2D homePressed;
+	}
 }
+
+	
