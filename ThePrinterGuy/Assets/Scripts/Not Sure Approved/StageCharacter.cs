@@ -17,6 +17,7 @@ public class StageCharacter : MonoBehaviour
     #endregion
 
     private int[] highscores;
+    string skippedTutorial;
 
     void Awake()
     {
@@ -38,8 +39,12 @@ public class StageCharacter : MonoBehaviour
 
     public void Unlock()
     {
+        if(PlayerPrefs.HasKey("SkippedTutorial"))
+        {
+            skippedTutorial = PlayerPrefs.GetString("SkippedTutorial");
+        }
         highscores = SaveGame.GetPlayerHighscores();
-        if(highscores[4] > 0)
+        if(highscores[4] > 0 || skippedTutorial == "True")
             _isUnlocked = true;
 
         if(_isUnlocked)

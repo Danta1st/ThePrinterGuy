@@ -424,6 +424,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if (_hit.collider.gameObject.name == "TakeTutorialNo")
                     {
+                        PlayerPrefs.SetString("SkippedTutorial", "True");
                         GameObject checkMark = _hit.collider.gameObject;
                         PlayerPrefs.SetString("Tutorial", "Answered");
                         int[] highScore = SaveGame.GetPlayerHighscores();
@@ -444,6 +445,7 @@ public class GUIMainMenuCamera : MonoBehaviour
                     }
                     else if (_hit.collider.gameObject.name == "TakeTutorialYes")
                     {   //GameObject checkMark = _hit.collider.gameObject.transform.Find("TakeTutorialYes").gameObject;
+                        PlayerPrefs.SetString("SkippedTutorial", "False");
 						_tutorialYes = true;
                         ScaleArrowUpAndThenTutorialQuestionDown(_hit.collider.gameObject);
 						_levelManagerIsReady = false;

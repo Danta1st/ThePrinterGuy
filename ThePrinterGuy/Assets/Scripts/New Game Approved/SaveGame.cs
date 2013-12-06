@@ -62,6 +62,7 @@ public class SaveGame : MonoBehaviour
         PlayerPrefs.SetString("highscoresAsString", "0;-1;-1;-1;-1;-1;-1;-1;-1;-1");
         PlayerPrefs.SetString("maxHighscoresAsString", "0;0;0;0;0;0;0;0;0;0");
         PlayerPrefs.SetString("Tutorial","NotAnswered");
+        PlayerPrefs.SetString("SkippedTutorial", "False");
     }
 
     private static string HighscoresArrayToString(int[] highscores)
