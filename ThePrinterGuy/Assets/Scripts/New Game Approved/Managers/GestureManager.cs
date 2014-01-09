@@ -348,7 +348,7 @@ public class GestureManager : MonoBehaviour
 		
     #endif
 
-    #if UNITY_EDITOR
+        #if UNITY_EDITOR || UNITY_WEBPLAYER
          if(Input.GetMouseButtonDown(0))
          {
              var mousePosition = new Vector2(Input.mousePosition.x,Input.mousePosition.y);
@@ -470,7 +470,7 @@ public class GestureManager : MonoBehaviour
             }
 		}
 	#endif
-	#if UNITY_EDITOR
+        #if UNITY_EDITOR || UNITY_WEBPLAYER
         if(Input.GetMouseButtonDown(0))
         {
             Ray ray = camera.ScreenPointToRay(Input.mousePosition);

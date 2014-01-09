@@ -35,7 +35,7 @@ public class BeatController : MonoBehaviour {
 	public static event OnBeatAction OnBeat8th6;
 	public static event OnBeatAction OnBeat8th7;
 	public static event OnBeatAction OnBeat8th8;
-	
+	//Universal all tact beats
 	public static event OnBeatAction OnAll3Beats;
 	public static event OnBeatAction OnAll4Beats;
 	public static event OnBeatAction OnAll6Beats;
@@ -60,6 +60,7 @@ public class BeatController : MonoBehaviour {
             SoundManager.Music_InGame_Main();
             _hasPlayed = true;
         }
+
 		if(_beatCounter +1 < 240)
 			_beatCounter++;
 		else

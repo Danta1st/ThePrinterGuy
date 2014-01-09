@@ -2,8 +2,7 @@
 using System.Collections;
 
 public class BpmManager : MonoBehaviour
-{
-	
+{	
 	#region Privates
 	private double _bpm = 120.0f;
 	private double _waitTime;
@@ -13,7 +12,6 @@ public class BpmManager : MonoBehaviour
 	
 	#region Delegates & Events
 	public delegate void OnBeatAction ();
-
 	public static event OnBeatAction OnBeat;
 	#endregion
 	
